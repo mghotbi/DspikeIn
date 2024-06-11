@@ -72,7 +72,7 @@ otu <- read.csv("otu.csv", header = TRUE, sep = ",", row.names = 1)
 tax <- read.csv("tax.csv", header = TRUE, sep = ",", row.names = 1)
 meta <- read.csv("metadata.csv", header = TRUE, sep = ",")
 
-# Convert data frames to appropriate formats
+# Convert data to appropriate formats
 meta <- as.data.frame(meta)
 taxmat <- as.matrix(tax)
 otumat <- as.matrix(otu)
@@ -92,7 +92,7 @@ physeq_16S <- tidy_phyloseq(physeq_16S)
 saveRDS(physeq_16S, file = "physeq_16S.rds")
 physeq_16S <- readRDS("physeq_16S.rds")
 
-# Ensure your metadata contains:
+# Ensure your metadata contains spiked volumes:
 # physeq_ITS@sam_data$spiked_volume
 
 # Alternatively, you can make your phyloseq object using the BIOM JSON format:
