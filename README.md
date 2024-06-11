@@ -97,6 +97,6 @@ physeq_16S <- readRDS("physeq_16S.rds")
 
 # Alternatively, you can make your phyloseq object using the BIOM JSON format:
 # mydata <- import_biom(BIOMfilename = "taxonomy.feature-table.biom", parseFunction = parse_taxonomy_default)
-# mapfile <- import_qiime_sample_data("Meta.txt")
-# physeq_ITS <- merge_phyloseq(mydata, mapfile, tree, reference_seqs)
+# mapfile <- import_qiime_sample_data("metadata.txt")
+# physeq_16S <- merge_phyloseq(mydata, mapfile, tree, reference_seqs)
 ```
