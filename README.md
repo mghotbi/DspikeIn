@@ -104,6 +104,10 @@ physeq_16S <- readRDS("physeq_16S.rds")
 
 # Prepare the required information 
 
+
+```r
+# Required Information
+
 # 16S rRNA
 spiked_cells <- 1847
 species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp")
@@ -117,3 +121,4 @@ hashcodes <- row.names(tax_table(Tetragenococcus_halophilus))
 # ITS rDNA
 spiked_cells <- 733
 species_names <- spiked_species <- merged_spiked_species <- "Dekkera_bruxellensis"
+```
