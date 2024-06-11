@@ -8,8 +8,7 @@ The importance of converting relative to absolute abundance in the context of mi
 
 ## Introduction
 
-In our study, *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples based on our previous studies.
-
+In our study, *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples  based on our previous studies.
 ## Methodology
 
 ### 1. Growth of Stock Cell Suspensions
@@ -22,6 +21,9 @@ In our study, *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selec
 - These DNA isolations served as standards to determine the appropriate spike-in volume of cells to represent 0.1-10% of a sample, as detailed in [this Nature article](https://www.nature.com/articles/s41586-021-03241-8).
 
 ## Bioinformatics Processing
+
+### Gene Marker Analysis
+- 16S rRNA and ITS rDNA gene markers were analyzed.
 
 ### Normalization
 - Normalization was performed for community-weighted mean ribosomal operon copy numbers.
@@ -38,3 +40,4 @@ We provide a step-by-step walkthrough of each procedure within the **DspikeIn** 
 
 For more detailed methodology and results, please refer to our soon-to-be-published paper.
 
+---
