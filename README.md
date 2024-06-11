@@ -63,7 +63,7 @@ getwd()
 # Please note that these functions have been primarily written based on the 
 # phyloseq(https://github.com/joey711/phyloseq) and microbiome (https://github.com/microbiome/microbiome) packages.
 # Therefore, please start by creating a phyloseq object and follow the instructions.
-# To create your phyloseq object, please refer to the [phyloseq tutorial](https://joey711.github.io/phyloseq/import-data.html).
+# To create your phyloseq object, please refer to the phyloseq tutorial (https://joey711.github.io/phyloseq/import-data.html).
 # The phyloseq object needs to include OTU/ASV, Taxa, phylogenetic tree, DNA reference, 
 # and metadata containing spiked species volume, starting from 0 (no spike species added) to 4 (4 μl of spike cell added).
 
