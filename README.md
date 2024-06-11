@@ -100,3 +100,20 @@ physeq_16S <- readRDS("physeq_16S.rds")
 # mapfile <- import_qiime_sample_data("metadata.txt")
 # physeq_16S <- merge_phyloseq(mydata, mapfile, tree, reference_seqs)
 ```
+
+
+# Prepare the required information 
+
+# 16S rRNA
+spiked_cells <- 1847
+species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp")
+merged_spiked_species <- "Tetragenococcus_halophilus"
+Tetragenococcus_halophilus <- subset_taxa(physeq_16S_OTU, Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp")
+hashcodes <- row.names(tax_table(Tetragenococcus_halophilus))
+
+# If you intend to use the hashcodes to identify your spiked species, please skip this line of code:
+# taxa_names(physeq_16S) <- paste0("ASV", seq(ntaxa(physeq_16S)))
+
+# ITS rDNA
+spiked_cells <- 733
+species_names <- spiked_species <- merged_spiked_species <- "Dekkera_bruxellensis"
