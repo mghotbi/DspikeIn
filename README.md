@@ -65,7 +65,7 @@ getwd()
 # Therefore, please start by creating a phyloseq object and follow the instructions.
 # To create your phyloseq object, please refer to the [phyloseq tutorial](https://joey711.github.io/phyloseq/import-data.html).
 # The phyloseq object needs to include OTU/ASV, Taxa, phylogenetic tree, DNA reference, 
-# and metadata containing spiked species volume, starting from 0 (no spike species added) to 4 (4 microliters of spike cell added).
+# and metadata containing spiked species volume, starting from 0 (no spike species added) to 4 (4 μl of spike cell added).
 
 # Briefly:
 otu <- read.csv("otu.csv", header = TRUE, sep = ",", row.names = 1)
