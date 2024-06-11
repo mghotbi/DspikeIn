@@ -46,7 +46,8 @@ For more detailed methodology and results, please refer to our soon-to-be-publis
 ---
 
 
-Similar to the debate on the application of OTUs vs. ASVs, which has many contrasting views on their benefits and drawbacks ([Callahan et al., 2017](https://doi.org/10.1038/ismej.2017.119); [Schloss et al., 2021](https://doi.org/10.1128/msphere.00191-21)), there are differing opinions on estimating gene copy numbers and making corrections accordingly ([Gao and Wu et al., 2023](https://doi.org/10.1038/s43705-023-00266-0))  ([Louca et al., 2018](https://doi.org/10.1038/s43705-023-00266-0)).
+Similar to the debate on the application of OTUs vs. ASVs, which has many contrasting views on their benefits and drawbacks ([Callahan et al., 2017](https://doi.org/10.1038/ismej.2017.119); [Schloss et al., 2021](https://doi.org/10.1128/msphere.00191-21)), there are differing opinions on estimating gene copy numbers and making corrections accordingly ([Gao and Wu et al., 2023](https://doi.org/10.1038/s43705-023-00266-0); [Louca et al., 2018](https://doi.org/10.1038/s43705-023-00266-0)).
+
 
 
 Using our spike-in positive controls and assessing the percentage of retrieved spiked species, we were able to compare the results at each step before selecting a pathway. We utilized q2-gcn-norm based on rrnDB database (version 5.7) to normalize for 16S rRNA gene marker copy numbers ([qiime2 plugin; gcn-norm](https://github.com/Jiung-Wen/q2-gcn-norm)). Due to the variability in rDNA gene copy numbers, straightforward translation of rDNA read counts into the abundance of individual organisms is precluded ([Lavrinienko et al., 2021](https://doi.org/10.1016/j.tim.2020.05.019)).
