@@ -55,3 +55,48 @@ Using our spike-in positive controls and assessing the percentage of retrieved s
 For ITS, we did not need to use copy number correction. However, we recommend conducting a literature review before deciding whether to sum or select the maximum abundance of OTUs/ASVs rooted from spiked-in species and calculating spike-in factors. We believe systematic evaluation before selecting or refuting each method can help prevent miscalculations ([Lofgren et al., 2018](https://doi.org/10.1111/mec.14995)), which can aid in establishing a system-dependent method for copy number correction in ITS markers.
 
 ---
+```r
+# Make a new directory and set it as your working directory
+create_directory("ExampleITS", set_working_dir = TRUE)
+getwd()
+
+# Please note that these functions have been primarily written based on the 
+# [phyloseq](https://github.com/joey711/phyloseq) and [microbiome](https://github.com/microbiome/microbiome) packages.
+# Therefore, please start by creating a phyloseq object and follow the instructions.
+# To create your phyloseq object, please refer to the [phyloseq tutorial](https://joey711.github.io/phyloseq/import-data.html).
+# The phyloseq object needs to include OTU/ASV, Taxa, phylogenetic tree, DNA reference, 
+# and metadata containing spiked species volume, starting from 0 (no spike species added) to 4 (4 microliters of spike cell added).
+
+# Briefly:
+otu <- read.csv("otu.csv", header = TRUE, sep = ",", row.names = 1)
+tax <- read.csv("tax.csv", header = TRUE, sep = ",", row.names = 1)
+meta <- read.csv("metadata.csv", header = TRUE, sep = ",")
+
+# Convert data frames to appropriate formats
+meta <- as.data.frame(meta)
+taxmat <- as.matrix(tax)
+otumat <- as.matrix(otu)
+colnames(taxmat) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+OTU <- otu_table(otumat, taxa_are_rows = TRUE)
+TAX <- phyloseq::tax_table(taxmat)
+
+row.names(meta) <- sample_names(OTU)
+metadata <- sample_data(meta)
+physeq <- phyloseq(OTU, TAX, metadata)
+MyTree <- read.tree("tree.nwk")
+reference_seqs <- readDNAStringSet(file = "dna-sequences.fasta", format = "fasta")
+physeq_16S <- merge_phyloseq(physeq, reference_seqs, MyTree)
+physeq_16S <- subset_taxa(physeq_16S, apply(tax_table(physeq_16S), 1, function(x) all(x != "" & !is.na(x))))
+physeq_16S <- tidy_phyloseq(physeq_16S)
+
+saveRDS(physeq_16S, file = "physeq_16S.rds")
+physeq_16S <- readRDS("physeq_16S.rds")
+
+# Ensure your metadata contains:
+# physeq_ITS@sam_data$spiked_volume
+
+# Alternatively, you can make your phyloseq object using the BIOM JSON format:
+# mydata <- import_biom(BIOMfilename = "taxonomy.feature-table.biom", parseFunction = parse_taxonomy_default)
+# mapfile <- import_qiime_sample_data("Meta.txt")
+# physeq_ITS <- merge_phyloseq(mydata, mapfile, tree, reference_seqs)
+```
