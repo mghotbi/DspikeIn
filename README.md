@@ -207,7 +207,12 @@ DNAStringSet object of length 5:
 
 
 # By now, we have an idea of what works well for our approach, whether it's OTUs or ASVs. 
-Moreover, we have learned which ASVs/OTUs need to be merged and whether their abundance should be summed up or if the maximum abundance is sufficient. We will proceed with OTUs. We used VSEARCH with de novo robust clustering algorithms at a 97% similarity threshold to reduce potential mistakes.
+We will proceed with OTUs. To learn more about why we chose OTUs over ASVs, please read our soon-to-be-published paper. For now, check the schematic of our experiment below:
+
+![WhyOTUs](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/WhyOTUs.png)
+
+
+* * The VSEARCH with de novo robust clustering algorithms at a 97% similarity threshold was used to reduce potential mistakes.
 
 
 
