@@ -191,5 +191,5 @@ print(tree_dist)
 
 
 Figure 2.
-![Tree Alignment](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/tree_alignment.png)
+![Tree Alignment](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/tetra.png)
 
