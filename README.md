@@ -282,11 +282,8 @@ If you are using OTUs and have only one OTU rooted from the spiked species, you 
 ```r
 # Preprocess the spiked species
 Spiked_16S_OTU_scaled <- Pre_processing_species(spiked_16S_OTU, species_name)
+Spiked_16S_OTU_scaled<-Pre_processing_species(spiked_16S_OTU, "Tetragenococcus_halophilus")
 Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_OTU_scaled)
-
-
-Spiked_16S_OTU_scaled<-Pre_processing_species(spiked_16S_OTU, species_name)
-Spiked_16S_OTU_scaled<-tidy_phyloseq(Spiked_16S_OTU_scaled)
 
 Spiked_16S_OTU_scaled <- calculate_spike_percentage_hashcodes(Spiked_16S_OTU_scaled, hashcodes, output_path = NULL, passed_range = c(0.1, 11))
 Spiked_16S_OTU_scaled <- calculate_spike_percentage_hashcodes(Spiked_16S_OTU_scaled, hashcodes, output_path = NULL, passed_range = c(0.1, 35))
