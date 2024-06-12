@@ -213,10 +213,6 @@ Moreover, we have learned which ASVs/OTUs need to be merged and whether their ab
 
 ```markdown
 
-### Preprocessing for ASVs
-
-If you are using OTUs and have only one OTU rooted from the spiked species, you can skip this pre-processing step. For those using ASVs, follow the steps below:
-
 ### Examine Your Count Data/Biome Before Calculating Absolute going further
 # Summarize the initial statistics for ASVs/OTUs
 initial_stat_ASV<-summ_phyloseq_ASV_OTUID(physeq_16S_OTU)
