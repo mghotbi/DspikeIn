@@ -156,8 +156,9 @@ dev.off()
 
 ```
 
+
 Figure 1.
-![Pattern Comparison]([https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/pattern.comparision.tiff](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/pattern.comparision.png)
+![Pattern Comparison](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/pattern.comparision.png)
 
 
 
@@ -188,4 +189,5 @@ print(tree_dist)
 
 
 Figure 2.
-![Pattern Comparison]([https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/pattern.comparision.tiff](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/pattern.comparision.png)
+![Tree Alignment](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/tree_alignment.png)
+
