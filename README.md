@@ -219,9 +219,6 @@ Moreover, we have learned which ASVs/OTUs need to be merged and whether their ab
 If you are using OTUs and have only one OTU rooted from the spiked species, you can skip this pre-processing step. For those using ASVs, follow the steps below:
 
 ### Examine Your Count Data/Biome Before Calculating Absolute going further
-
-
-```r
 # Summarize the initial statistics for ASVs
 initial_stat_ASV <- summ_phyloseq_ASVID(physeq_16S_OTU)
 
@@ -232,6 +229,7 @@ initial_stat_sampleWise <- summ_phyloseq_sampleID(physeq_16S_OTU)
 summ_count_phyloseq(physeq_16S_OTU)
 
 # Check the summary statistics
-# Ensure the input is in dataframe format
+# Ensure the input is in dataframe format for this function
 calculate_summary_stats_table(initial_stat_sampleWise)
+
 ```
