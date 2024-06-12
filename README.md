@@ -136,7 +136,7 @@ species_names <- spiked_species <- merged_spiked_species <- "Dekkera_bruxellensi
 # Phylogenetic tree using a Neighbor-Joining method based on a Jukes-Cantor distance matrix with tip labels represent different Species, olored # by OTU IDs. Let's start by comparing the Sanger read of Tetragenococcus halophilus with the FASTA sequence of Tetragenococcus halophilus from # our phyloseq object.
 
 # Read the DNA sequences from a FASTA file
-sequence <- readDNAStringSet("tetra.fasta")
+sequence <- readDNAStringSet("tetra_2.fasta")
  my_alignment <- msa(sequence)
 # Convert alignment to DNAStringSet
  aligned_sequences <- as(my_alignment, "DNAStringSet")
