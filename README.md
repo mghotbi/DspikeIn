@@ -185,7 +185,9 @@ plot(tree)
 # Calculate cophenetic distances
 tree_dist <- cophenetic.phylo(tree)
 print(tree_dist)
+
 ```
+
 
 
 Figure 2.
