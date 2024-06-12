@@ -129,16 +129,32 @@ species_names <- spiked_species <- merged_spiked_species <- "Dekkera_bruxellensi
 
 
 ```r
-## ASVs with/without Gene Copy Number Correction
+## This step can be helpful for handling ASVs with/without Gene Copy Number Correction
 # This section demonstrates how to use various functions from the package
 # to plot and analyze phylogenetic trees.
+# In case there are still several ASVs rooted from the spiked species, you may want to check the phylogenetic distances.
+# Phylogenetic tree using a Neighbor-Joining method based on a Jukes-Cantor distance matrix with tip labels represent different Species, olored # by OTU IDs. Let's start by comparing the Sanger read of Tetragenococcus halophilus with the FASTA sequence of Tetragenococcus halophilus from # our phyloseq object.
 
-# In case there are still several ASVs rooted from the spiked species, 
-# you may want to check the phylogenetic distances.
+# Read the DNA sequences from a FASTA file
+sequence <- readDNAStringSet("tetra.fasta")
+ my_alignment <- msa(sequence)
+# Convert alignment to DNAStringSet
+ aligned_sequences <- as(my_alignment, "DNAStringSet")
 
-# Phylogenetic tree using a Neighbor-Joining method based on a Jukes-Cantor distance matrix.
-# Tip labels represent different Species, colored by OTU IDs.
+# then convert DNAStringSet to phyDat format
+phyDat_alignment <- phyDat(as(aligned_sequences, "matrix"), type = "DNA")
 
+# now compute distance matrix using maximum likelihood 
+distance_matrix <- dist.ml(phyDat_alignment)
+
+# check the phylogenetic tree cunstructed by the Neighbor-Joining method
+phylo_tree <- nj(distance_matrix)
+plot(phylo_tree, main = "Neighbor Joining Tree", cex = 1, tip.color = "navy")
+# Save the plot
+dev.copy(png, "neighbor_joining_tree.png")
+dev.off()
+
+# additional ways to plot phylogenetic distances using different methods
 # Plot phylogenetic tree
 plot_tree(Tetragenococcus, output_prefix = "p0", width = 24, height = 26)
 
