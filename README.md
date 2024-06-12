@@ -178,10 +178,11 @@ DNAStringSet object of length 5:
 
 
 
+
 ```r
 
-## Additional ways to plot phylogenetic distances using different methods
-# Plot phylogenetic tree
+# Additional ways to plot phylogenetic distances using different methods
+## Plot phylogenetic tree
 plot_tree(Tetragenococcus, output_prefix = "p0", width = 24, height = 26)
 
 # Plot the tree with glommed OTUs at 0.2 resolution
