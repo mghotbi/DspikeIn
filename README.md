@@ -157,7 +157,7 @@ dev.off()
 ```
 
 Figure 1.
-![Pattern Comparison](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/pattern.comparision.tiff)
+![Pattern Comparison]([https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/pattern.comparision.tiff](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/pattern.comparision.png)
 
 
 
@@ -185,3 +185,7 @@ plot(tree)
 tree_dist <- cophenetic.phylo(tree)
 print(tree_dist)
 ```
+
+
+Figure 2.
+![Pattern Comparison]([https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/pattern.comparision.tiff](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/pattern.comparision.png)
