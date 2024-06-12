@@ -213,7 +213,7 @@ _The VSEARCH with de novo robust clustering algorithms at a 97% similarity thres
 
 
 
-![WhyOTUs](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/WhyOTUs.png)
+![WhyOTUs](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/WhyOTUsOverASVs.png)
 
 
 
