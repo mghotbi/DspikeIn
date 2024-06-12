@@ -207,4 +207,63 @@ DNAStringSet object of length 5:
 
 
 
+# By now, we have an idea of what works well for our approach, whether it's OTUs or ASVs. Moreover, we have learned which ASVs/OTUs need to be merged and whether their abundance should be summed up or if the maximum abundance is sufficient. We will proceed with OTUs. We used VSEARCH with de novo robust clustering algorithms at a 97% similarity threshold to reduce potential mistakes.
+
+
+
+```markdown
+
+### Preprocessing for ASVs
+
+If you are using OTUs and have only one OTU rooted from the spiked species, you can skip this pre-processing step. For those using ASVs, follow the steps below:
+
+### Examine Your Count Data/Biome Before Calculating Absolute going further
+
+
+```r
+# Summarize the initial statistics for ASVs
+initial_stat_ASV <- summ_phyloseq_ASVID(physeq_16S_OTU)
+
+# Summarize the initial statistics sample-wise
+initial_stat_sampleWise <- summ_phyloseq_sampleID(physeq_16S_OTU)
+
+# Summarize the count data
+summ_count_phyloseq(physeq_16S_OTU)
+
+# Check the summary statistics
+# Ensure the input is in dataframe format
+calculate_summary_stats_table(initial_stat_sampleWise)
+```
+```
+
+### Explanation of Scripts:
+
+1. **Summarize the Initial Statistics for ASVs**:
+    ```r
+    initial_stat_ASV <- summ_phyloseq_ASVID(physeq_16S_OTU)
+    ```
+    This function summarizes the initial statistics for ASVs from your phyloseq object.
+
+2. **Summarize the Initial Statistics Sample-wise**:
+    ```r
+    initial_stat_sampleWise <- summ_phyloseq_sampleID(physeq_16S_OTU)
+    ```
+    This function provides a summary of the initial statistics sample-wise from your phyloseq object.
+
+3. **Summarize the Count Data**:
+    ```r
+    summ_count_phyloseq(physeq_16S_OTU)
+    ```
+    This function summarizes the count data from your phyloseq object.
+
+4. **Check the Summary Statistics**:
+    ```r
+    calculate_summary_stats_table(initial_stat_sampleWise)
+    ```
+    This function calculates and checks the summary statistics. Ensure that the input is in dataframe format.
+
+By following these steps, you can effectively examine and preprocess your data for further analysis.
+```
+
+
 
