@@ -168,7 +168,7 @@ plot_tree_nj("tetra.fasta", output_file = "neighbor_joining_tree_with_bootstrap.
 
 
 Figure 1.
-![neighbor_joining_tree_with_bootstrap](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/neighbor_joining_tree_with_bootstrap.png)
+![neighbor_joining_tree_with_bootstrap](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/trees.png)
 
 
 
