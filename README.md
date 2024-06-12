@@ -272,8 +272,38 @@ summ_count_phyloseq(spiked_16S_evenDepth)
 
 ```
 
+## Preprocessing for Scaling Factor Calculation Considerations 
+
+If you are using OTUs and have only one OTU rooted from the spiked species, you can skip this preprocessing step. Follow the steps below to estimate the success of spike-in, particularly check if you have any samples with under or over-spikes.
 
 
+**Modify the threshold of acceptable spiked species % as needed. For detailed guidance on acceptable thresholds (passed_range), please refer to the instructions in our upcoming paper.**
+
+```r
+# Preprocess the spiked species
+Spiked_16S_OTU_scaled <- Pre_processing_species(spiked_16S_OTU, species_name)
+Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_OTU_scaled)
+
+
+Spiked_16S_OTU_scaled<-Pre_processing_species(spiked_16S_OTU, species_name)
+Spiked_16S_OTU_scaled<-tidy_phyloseq(Spiked_16S_OTU_scaled)
+
+Spiked_16S_OTU_scaled <- calculate_spike_percentage_hashcodes(Spiked_16S_OTU_scaled, hashcodes, output_path = NULL, passed_range = c(0.1, 11))
+Spiked_16S_OTU_scaled <- calculate_spike_percentage_hashcodes(Spiked_16S_OTU_scaled, hashcodes, output_path = NULL, passed_range = c(0.1, 35))
+calculate_summary_stats_table(Spiked_16S_OTU_scaled)
+
+merg<-calculate_spike_percentage_hashcodes(Spiked_16S_OTU_scaled, spiked_species, identifier_type = "species", output_path = NULL)
+merg<-calculate_spike_percentage_species(Spiked_16S_OTU_scaled, spiked_species, identifier_type = "species", output_path = NULL, passed_range = c(0.1, 35))
+calculate_summary_stats_table(merg)
+
+```
+
+## Data Normalization and Transformation
+*Experiment Repetition*
+
+We checked if we needed to normalize our data before calculating our spiked species to account for spiked volume variations and library preparation. We evaluated the need for compositionally aware data transformations, including centered log-ratio (CLR) transformation, DESeq2 variance stabilizing transformation (`run_vst_analysis`), subsampling with a reduced factor for count data (`random_subsample_WithReductionFactor`), proportion adjustment (`proportion.adj`), and prevalence adjustment (`adjusted_prevalence`). Additionally, we considered compositionally naïve data transformations, such as raw data and relative abundance-based transformations (`relativized_filtered_taxa`) [Yerk et al., 2024](https://doi.org/10.1186/s40168-023-01747-z), before calculating spike-in scaling factors. The only significant variation in the percentage of retrieved spiked species was relevant to VST, so we continued with raw data.
+
+You can repeat the experiment by transforming the data, calculating spike percentage using `calculate_spike_percentage_species()` or `calculate_spike_percentage_hashcodes()`, then checking for the homogeneity of variances using `Bartlett.test()` and ensuring the data is normally distributed using `Shapiro_Wilk_test()`. Finally, plot the results using `transform_plot()`.
 
 ```r
 # Example usage:
@@ -285,11 +315,10 @@ Shapiro_Wilk_test(data)
 
 # Plot the results
 transform_plot(data)
+
 ```
 
 
-We checked if we needed to normalize our data before calculating our spiked species to account for spiked volume variations and library preparation. We evaluated the need for compositionally aware data transformations, including centered log-ratio (CLR) transformation, DESeq2 variance stabilizing transformation (`run_vst_analysis`), subsampling with a reduced factor for count data (`random_subsample_WithReductionFactor`), proportion adjustment (`proportion.adj`), and prevalence adjustment (`adjusted_prevalence`). Additionally, we considered compositionally naïve data transformations, such as raw data and relative abundance-based transformations (`relativized_filtered_taxa`) [Yerk et al., 2024](https://doi.org/10.1186/s40168-023-01747-z), before calculating spike-in scaling factors. The only significant variation in the percentage of retrieved spiked species was relevant to VST, so we continued with raw data.
-
-
-
 ![Transformation](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/image%20(7).png)
+
+
