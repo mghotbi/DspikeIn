@@ -31,13 +31,17 @@ In our study, *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selec
 ### Normalization
 - Normalization was performed for community-weighted mean ribosomal operon copy numbers.
 
+
 ```markdown
-# DspikeIn: Handling ASVs with/without Gene Copy Number Correction
 
 ## Using QIIME2 Plugin for GCN Normalization
-To normalize your data by gene copy number (GCN) using the QIIME2 plugin, you can use the following command:
 
-```bash https://github.com/Jiung-Wen/q2-gcn-norm 
+To normalize your data by gene copy number (GCN) using the QIIME2 plugin, follow the steps below. For more information, visit the [q2-gcn-norm GitHub repository](https://github.com/Jiung-Wen/q2-gcn-norm).
+
+### Command
+Run the following command to perform GCN normalization:
+
+```bash
 qiime gcn-norm copy-num-normalize \
   --i-table table-dada2.qza \
   --i-taxonomy taxonomy.qza \
