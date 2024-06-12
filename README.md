@@ -144,13 +144,12 @@ species_names <- spiked_species <- merged_spiked_species <- "Dekkera_bruxellensi
 
 
 # Plot phylogenetic tree with Bootstrap Values
-
+This step will be helpful for handling ASVs with/without Gene Copy Number Correction
+This section demonstrates how to use various functions from the package to plot and analyze phylogenetic trees.
 
 
 
 ```r
-# This step is helpful for handling ASVs with/without Gene Copy Number Correction
-# This section demonstrates how to use various functions from the package to plot and analyze phylogenetic trees.
 # In case there are still several ASVs rooted from the spiked species, you may want to check the phylogenetic distances.
 # We first reads DNA sequences from a FASTA file, to perform multiple sequence alignment and compute a distance matrix using the maximum likelihood method, then we construct a phylogenetic tree
 # using the Neighbor-Joining method  based on a Jukes-Cantor distance matrix, and plots the tree with bootstrap values.
