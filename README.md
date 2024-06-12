@@ -135,9 +135,34 @@ species_names <- spiked_species <- merged_spiked_species <- "Dekkera_bruxellensi
 # In case there are still several ASVs rooted from the spiked species, you may want to check the phylogenetic distances.
 # We first reads DNA sequences from a FASTA file, to perform multiple sequence alignment and compute a distance matrix using the maximum likelihood method, then we construct a phylogenetic tree
 # using the Neighbor-Joining method  based on a Jukes-Cantor distance matrix, and plots the tree with bootstrap values.
-# Let's start by comparing the Sanger read of Tetragenococcus halophilus with the FASTA sequence of Tetragenococcus halophilus from our phyloseq object.
+# we compare the Sanger read of Tetragenococcus halophilus with the FASTA sequence of Tetragenococcus halophilus from our phyloseq object.
 
-Bootstrap_tree("tetra.fasta", output_file = "neighbor_joining_tree_with_bootstrap.png", bootstrap_replicates = 500)
+# Subset the phyloseq object to include only Tetragenococcus species
+Tetragenococcus <- subset_taxa(physeq_16S_ASVs, Species == "Tetragenococcus_halophilus")
+Tetragenococcus <- subset_taxa(Tetragenococcus, !is.na(taxa_names(Tetragenococcus)) & taxa_names(Tetragenococcus) != "")
+tree <- phy_tree(Tetragenococcus)
+
+# Extract DNA sequences from the phyloseq object
+ref_sequences <- refseq(Tetragenococcus)
+
+# Write the sequences to a FASTA format and add the sanger fasta of Tetragenococcus positve control 
+writeXStringSet(ref_sequences, "tetra.fasta")
+
+# Now we can run these functions together
+# Plot phylogenetic tree
+plot_tree(Tetragenococcus, output_prefix = "p0", width = 18, height = 18)
+
+# Plot the tree with glommed OTUs at 0.2 resolution/ or modify it
+plot_glommed_tree(Tetragenococcus, resolution = 0.2, output_prefix = "top", width = 18, height = 18)
+
+# Plot the phylogenetic tree with multiple sequence alignment
+plot_tree_with_alignment(Tetragenococcus, output_prefix = "tree_alignment", width = 15, height = 15)
+
+# Plot phylogenetic tree with bootstrap values and cophenetic distances
+Bootstrap_phy_tree_with_cophenetic(Tetragenococcus, output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 500)
+
+# Plot Neighbor-Joining tree with bootstrap values
+plot_tree_nj("tetra.fasta", output_file = "neighbor_joining_tree_with_bootstrap.png")
 
 ```
 
