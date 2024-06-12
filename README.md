@@ -304,11 +304,14 @@ Getting help from [Yerk et al., 2024](https://doi.org/10.1186/s40168-023-01747-z
 You can repeat the experiment by transforming the data, calculating spike percentage using `calculate_spike_percentage_species()` or `calculate_spike_percentage_hashcodes()`, then checking for the homogeneity of variances using `Bartlett.test()` and ensuring the data is normally distributed using `Shapiro_Wilk_test()`. Finally, plot the results using `transform_plot()`.
 
 ```r
+
+methods<-read.csv("methods.csv")
+
 # Check homogeneity of variances
-Bartlett.test(data)
+Bartlett.test(methods)
 
 # Check if data is normally distributed
-Shapiro_Wilk_test(data)
+Shapiro_Wilk_test(methods)
 
 # First, use plotbox to get the comparison results
 comparison_results <- plotbox(X = numeric_vars_plus_one$Percentage, Y = numeric_vars_plus_one$Methods_processing_Spiked_dataset)
