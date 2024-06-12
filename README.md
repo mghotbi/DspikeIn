@@ -31,6 +31,20 @@ In our study, *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selec
 ### Normalization
 - Normalization was performed for community-weighted mean ribosomal operon copy numbers.
 
+```markdown
+# DspikeIn: Handling ASVs with/without Gene Copy Number Correction
+
+## Using QIIME2 Plugin for GCN Normalization
+To normalize your data by gene copy number (GCN) using the QIIME2 plugin, you can use the following command:
+
+```bash
+qiime gcn-norm copy-num-normalize \
+  --i-table table-dada2.qza \
+  --i-taxonomy taxonomy.qza \
+  --o-gcn-norm-table table-normalized.qza
+```
+```
+
 ### DspikeIn Package
 The **DspikeIn** package was developed to facilitate:
 - Verifying the phylogenetic distances of ASVs/OTUs rooted from spiked species.
