@@ -37,7 +37,7 @@ In our study, *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selec
 ## Using QIIME2 Plugin for GCN Normalization
 To normalize your data by gene copy number (GCN) using the QIIME2 plugin, you can use the following command:
 
-```bash
+```bash https://github.com/Jiung-Wen/q2-gcn-norm 
 qiime gcn-norm copy-num-normalize \
   --i-table table-dada2.qza \
   --i-taxonomy taxonomy.qza \
