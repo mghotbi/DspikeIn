@@ -123,7 +123,10 @@ spiked_cells <- 733
 species_names <- spiked_species <- merged_spiked_species <- "Dekkera_bruxellensis"
 ```
 
-plot phylogenetic tree
+
+# Plot phylogenetic tree
+
+
 
 ```r
 ## ASVs with/without Gene Copy Number Correction
