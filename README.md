@@ -213,7 +213,7 @@ Moreover, we have learned which ASVs/OTUs need to be merged and whether their ab
 
 ```markdown
 
-### Examine Your Count Data/Biome Before Calculating Absolute going further
+### Examine Your Count Data/Biome Before going further
 # Summarize the initial statistics for ASVs/OTUs
 initial_stat_ASV<-summ_phyloseq_ASV_OTUID(physeq_16S_OTU)
 
