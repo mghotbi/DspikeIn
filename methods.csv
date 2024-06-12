@@ -1,0 +1,74 @@
+Methods,Description,Total reads,Spike reads,Spike percentage,Result
+raw data,spiked.blank.20433_S84,8,8,100,failed
+raw data,spiked.blank.20817_S84,46822,46801,99.955149,failed
+raw data,Std2uL.20625_S84,62463,62441,99.964779,failed
+raw data,StdSwab1uL.20624_S72,"25,008",17809,71.213212,failed
+raw data,UHM369.20773_S31,"7,498",234,3.120832,passed
+raw data,UHM370.20774_S43,"3,598",86,2.390217,passed
+raw data,UHM372.20775_S55,253,30,11.857708,passed
+raw data,UHM373.20776_S67,3156,84,2.661597,passed
+raw data,UHM374.20777_S79,4280,70,1.635514,passed
+raw data,UHM375.20778_S91,"6,872",709,10.317229,passed
+raw data,UHM373.20872_S163,"19,827",478,2.4108539,passed
+raw data,UHM374.20873_S175,"16,281",73,0.4483754,passed
+raw data,UHM375.20874_S187,"20,569","1,193",5.7999903,passed
+read adjusted_onethird,spiked.blank.20433_S84,2.666667,2.666667,100,failed
+read adjusted_onethird,spiked.blank.20817_S84,15607.33333,15600.33333,99.955149,failed
+read adjusted_onethird,Std2uL.20625_S84,20821,20813.66667,99.964779,failed
+read adjusted_onethird,StdSwab1uL.20624_S72,8336,5936.333333,71.213212,failed
+read adjusted_onethird,UHM369.20773_S31,2499.333333,78,3.120832,passed
+read adjusted_onethird,UHM370.20774_S43,1199.333333,28.666667,2.390217,passed
+read adjusted_onethird,UHM372.20775_S55,84.333333,10,11.857708,passed
+read adjusted_onethird,UHM373.20776_S67,1052,28,2.661597,passed
+read adjusted_onethird,UHM374.20777_S79,1426.666667,23.333333,1.635514,passed
+read adjusted_onethird,UHM375.20778_S91,2290.666667,236.333333,10.317229,passed
+reducedReadNTaxa,spiked.blank.20433_S84,1,1,100,failed
+reducedReadNTaxa,spiked.blank.20817_S84,4682,4680,99.957283,failed
+reducedReadNTaxa,Std2uL.20625_S84,6246,6244,99.96798,failed
+reducedReadNTaxa,StdSwab1uL.20624_S72,2471,1781,72.076083,failed
+reducedReadNTaxa,UHM369.20773_S31,726,23,3.168044,passed
+reducedReadNTaxa,UHM370.20774_S43,349,9,2.578797,passed
+reducedReadNTaxa,UHM372.20775_S55,20,3,15,passed
+reducedReadNTaxa,UHM373.20776_S67,299,8,2.675585,passed
+reducedReadNTaxa,UHM374.20777_S79,417,7,1.678657,passed
+reducedReadNTaxa,UHM375.20778_S91,672,71,10.565476,passed
+Porportion_adj,spiked.blank.20433_S84,62463,62463,100,failed
+Porportion_adj,spiked.blank.20817_S84,62463,62435,99.955173,failed
+Porportion_adj,Std2uL.20625_S84,62463,62441,99.964779,failed
+Porportion_adj,StdSwab1uL.20624_S72,62414,44482,71.269267,failed
+Porportion_adj,UHM369.20773_S31,62466,1949,3.120097,passed
+Porportion_adj,UHM370.20774_S43,62457,1493,2.390445,passed
+Porportion_adj,UHM372.20775_S55,62468,7407,11.857271,passed
+Porportion_adj,UHM373.20776_S67,62459,1663,2.662547,passed
+Porportion_adj,UHM374.20777_S79,62467,1022,1.636064,passed
+Porportion_adj,UHM375.20778_S91,62446,6444,10.319316,passed
+VST,spiked.blank.20433_S84,-1936.9967,3.151385,-0.1626944,failed
+VST,spiked.blank.20817_S84,-1908.5619,15.691522,-0.8221646,failed
+VST,Std2uL.20625_S84,-1904.4877,16.173996,-0.8492571,failed
+VST,StdSwab1uL.20624_S72,-838.9537,14.180923,-1.6903106,failed
+VST,UHM369.20773_S31,-857.9639,8.359314,-0.97432,failed
+VST,UHM370.20774_S43,-1293.3676,6.933172,-0.5360558,failed
+VST,UHM372.20775_S55,-1773.0907,5.349184,-0.301687,failed
+VST,UHM373.20776_S67,-1504.5224,6.898433,-0.4585131,failed
+VST,UHM374.20777_S79,-1208.2357,6.627126,-0.5484961,failed
+VST,UHM375.20778_S91,-954.5597,9.851836,-1.0320816,failed
+relativized,spiked.blank.20433_S84,8,8,100,failed
+relativized,spiked.blank.20817_S84,46817,46801,99.965824,failed
+relativized,Std2uL.20625_S84,62455,62441,99.977584,failed
+relativized,StdSwab1uL.20624_S72,24610,17809,72.364892,failed
+relativized,UHM369.20773_S31,7228,234,3.23741,passed
+relativized,UHM370.20774_S43,3431,86,2.506558,passed
+relativized,UHM372.20775_S55,215,30,13.953488,passed
+relativized,UHM373.20776_S67,3033,84,2.769535,passed
+relativized,UHM374.20777_S79,4105,70,1.705238,passed
+relativized,UHM375.20778_S91,6640,709,10.677711,passed
+TrimmedNrerified,spiked.blank.20433_S84,8,8,100,failed
+TrimmedNrerified,spiked.blank.20817_S84,8,8,100,failed
+TrimmedNrerified,Std2uL.20625_S84,8,8,100,failed
+TrimmedNrerified,StdSwab1uL.20624_S72,8,6,75,failed
+TrimmedNrerified,UHM369.20773_S31,8,1,12.5,passed
+TrimmedNrerified,UHM370.20774_S43,8,0,0,failed
+TrimmedNrerified,UHM372.20775_S55,8,1,12.5,passed
+TrimmedNrerified,UHM373.20776_S67,8,0,0,failed
+TrimmedNrerified,UHM374.20777_S79,8,0,0,failed
+TrimmedNrerified,UHM375.20778_S91,8,0,0,failed
