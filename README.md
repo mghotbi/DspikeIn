@@ -199,8 +199,6 @@ Figure 2.
 ## Aligned Sequences
 
 The result of the aligned sequences is shown below:
-
-```r
 DNAStringSet object of length 5:
     width seq                                                                                                                                         names               
 [1]   292 -------------------TACGTAGGTGGCAAGCGTTGTCCGGATTTATTGGGCGTAAAGCGAGCGC...CTGGTCTGTAACTGACGCTGAGGCTCGAAAGCGTGGGTAGCAAACAGG-------------------- 2ddb215ff668b6a24...
