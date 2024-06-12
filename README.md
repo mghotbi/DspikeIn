@@ -143,7 +143,7 @@ Bootstrap_tree("tetra.fasta", output_file = "neighbor_joining_tree_with_bootstra
 
 
 Figure 1.
-![Pattern Comparison](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/pattern.comparision.png)
+![neighbor_joining_tree_with_bootstrap](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/neighbor_joining_tree_with_bootstrap.png)
 
 
 
