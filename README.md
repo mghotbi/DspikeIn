@@ -122,3 +122,37 @@ hashcodes <- row.names(tax_table(Tetragenococcus_halophilus))
 spiked_cells <- 733
 species_names <- spiked_species <- merged_spiked_species <- "Dekkera_bruxellensis"
 ```
+
+plot phylogenetic tree
+
+```r
+## ASVs with/without Gene Copy Number Correction
+# This section demonstrates how to use various functions from the package
+# to plot and analyze phylogenetic trees.
+
+# In case there are still several ASVs rooted from the spiked species, 
+# you may want to check the phylogenetic distances.
+
+# Phylogenetic tree using a Neighbor-Joining method based on a Jukes-Cantor distance matrix.
+# Tip labels represent different Species, colored by OTU IDs.
+
+# Plot phylogenetic tree
+plot_tree(Tetragenococcus, output_prefix = "p0", width = 24, height = 26)
+
+# Plot the tree with glommed OTUs at 0.2 resolution
+plot_glommed_tree(Tetragenococcus, resolution = 0.2, output_prefix = "top", width = 18, height = 18)
+
+# Plot the phylogenetic tree with multiple sequence alignment
+plot_tree_with_alignment(Tetragenococcus, output_prefix = "tree_alignment", width = 15, height = 15)
+
+# If you prefer to check the cophenetic distance:
+# Cophenetic distance is the total length of the path connecting two tips through their common ancestor.
+
+# Extract the phylogenetic tree 
+tree <- phy_tree(Tetragenococcus)
+plot(tree)
+
+# Calculate cophenetic distances
+tree_dist <- cophenetic.phylo(tree)
+print(tree_dist)
+```
