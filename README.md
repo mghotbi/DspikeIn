@@ -124,7 +124,7 @@ species_names <- spiked_species <- merged_spiked_species <- "Dekkera_bruxellensi
 ```
 
 
-# Plot phylogenetic tree and Visualize it with Bootstrap Values
+# Plot phylogenetic tree with Bootstrap Values
 
 
 
