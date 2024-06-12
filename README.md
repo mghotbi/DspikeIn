@@ -208,6 +208,7 @@ DNAStringSet object of length 5:
 
 # By now, we have an idea of what works well for our approach, whether it's OTUs or ASVs. 
 We will proceed with OTUs. To learn more about why we chose OTUs over ASVs, and what percentage of retrieved spiked species can be considered passed or failed and why, please read our soon-to-be-published paper. For now, check the schematic of our experiment below;
+
 _The VSEARCH with de novo robust clustering algorithms at a 97% similarity threshold was used to reduce potential mistakes._ [Westcott and Schloss 2015](https://doi.org/10.7717/peerj.1487)
 
 
