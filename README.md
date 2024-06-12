@@ -240,37 +240,39 @@ summ_count_phyloseq(physeq_16S_OTU)
 # Ensure the input is in dataframe format for this function
 calculate_summary_stats_table(initial_stat_sampleWise)
 
-# transformation
+#### Transformation
 # Adjust abundance by one-third
-readAdj16S <- adjust_abundance_one_third(physeq_16S_OTU, factor = 3)
+readAdj16S <- adjust_abundance_one_third(spiked_16S_OTU, factor = 3)
 summ_count_phyloseq(readAdj16S)
 
 # Random subsampling with reduction factor
-red16S <- random_subsample_WithReductionFactor(physeq_16S_OTU, reduction_factor = 10)
+red16S <- random_subsample_WithReductionFactor(spiked_16S_OTU, reduction_factor = 10)
 summ_count_phyloseq(red16S)
 
 # Proportion adjustment
-normalized_16S <- proportion_adj(physeq_16S_OTU, output_file = "proportion_adjusted_physeq.rds")
+normalized_16S <- proportion_adj(spiked_16S_OTU, output_file = "proportion_adjusted_physeq.rds")
 summ_count_phyloseq(normalized_16S)
 
 # DESeq2 variance stabilizing transformation (VST)
-transformed_16S <- run_vst_analysis(physeq_16S_OTU)
+transformed_16S <- run_vst_analysis(spiked_16S_OTU)
 summ_count_phyloseq(transformed_16S)
 
 # Relativize and filter taxa based on selected thresholds
 FTspiked_16S <- relativized_filtered_taxa(
-  physeq_16S_OTU,
+  spiked_16S_OTU,
   threshold_percentage = 0.001,
   threshold_mean_abundance = 0.001,
   threshold_count = 5,
   threshold_relative_abundance = 0.001)
-summ_count_phyloseq(FTspiked_16S)
+ summ_count_phyloseq(FTspiked_16S)
 
 # Random subsampling to even depth with a smalltrim
-spiked_16S_evenDepth <- randomsubsample_Trimmed_evenDepth(physeq_16S_OTU, smalltrim = 0.001)
+spiked_16S_evenDepth <- randomsubsample_Trimmed_evenDepth(spiked_16S_OTU, smalltrim = 0.001)
 summ_count_phyloseq(spiked_16S_evenDepth)
 
 ```
+
+
 
 
 ```r
