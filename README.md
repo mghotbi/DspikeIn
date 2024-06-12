@@ -243,6 +243,7 @@ calculate_summary_stats_table(initial_stat_sampleWise)
 # transformation
 # Adjust abundance by one-third
 readAdj16S <- adjust_abundance_one_third(physeq_16S_OTU, factor = 3)
+summ_count_phyloseq(readAdj16S)
 
 # Random subsampling with reduction factor
 red16S <- random_subsample_WithReductionFactor(physeq_16S_OTU, reduction_factor = 10)
@@ -250,9 +251,11 @@ summ_count_phyloseq(red16S)
 
 # Proportion adjustment
 normalized_16S <- proportion_adj(physeq_16S_OTU, output_file = "proportion_adjusted_physeq.rds")
+summ_count_phyloseq(normalized_16S)
 
 # DESeq2 variance stabilizing transformation (VST)
 transformed_16S <- run_vst_analysis(physeq_16S_OTU)
+summ_count_phyloseq(transformed_16S)
 
 # Relativize and filter taxa based on selected thresholds
 FTspiked_16S <- relativized_filtered_taxa(
@@ -261,15 +264,24 @@ FTspiked_16S <- relativized_filtered_taxa(
   threshold_mean_abundance = 0.001,
   threshold_count = 5,
   threshold_relative_abundance = 0.001)
+summ_count_phyloseq(FTspiked_16S)
 
 # Random subsampling to even depth with a smalltrim
 spiked_16S_evenDepth <- randomsubsample_Trimmed_evenDepth(physeq_16S_OTU, smalltrim = 0.001)
-
-
-
-
+summ_count_phyloseq(spiked_16S_evenDepth)
 
 ```
 
 
 We checked if we needed to normalize our data before calculating our spiked species to account for spiked volume variations and library preparation. We evaluated the need for compositionally aware data transformations, including centered log-ratio (CLR) transformation, DESeq2 variance stabilizing transformation (`run_vst_analysis`), subsampling with a reduced factor for count data (`random_subsample_WithReductionFactor`), proportion adjustment (`proportion.adj`), and prevalence adjustment (`adjusted_prevalence`). Additionally, we considered compositionally naïve data transformations, such as raw data and relative abundance-based transformations (`relativized_filtered_taxa`) [Yerk et al., 2024](https://doi.org/10.1186/s40168-023-01747-z), before calculating spike-in scaling factors. The only significant variation in the percentage of retrieved spiked species was relevant to VST, so we continued with raw data.
+
+
+```markdown
+You can repeat the experiment by checking the homogeneity of variances using `Bartlett.test()` and ensuring the data is normally distributed using `Shapiro_Wilk_test()`. Then, plot the results using `transform_plot()`.
+```
+
+
+![Transformation](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/image%20(7).png)
+
+
+
