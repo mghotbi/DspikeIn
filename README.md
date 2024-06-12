@@ -235,3 +235,6 @@ summ_count_phyloseq(physeq_16S_OTU)
 calculate_summary_stats_table(initial_stat_sampleWise)
 
 ```
+
+
+We checked if we needed to normalize our data before calculating our spiked species to account for spiked volume variations and library preparation. We evaluated the need for compositionally aware data transformations, including centered log-ratio (CLR) transformation, DESeq2 variance stabilizing transformation (`run_vst_analysis`), subsampling with a reduced factor for count data (`random_subsample_WithReductionFactor`), proportion adjustment (`proportion.adj`), and prevalence adjustment (`adjusted_prevalence`). Additionally, we considered compositionally naïve data transformations, such as raw data and relative abundance-based transformations (`relativized_filtered_taxa`) [Yerk et al., 2024](https://doi.org/10.1186/s40168-023-01747-z), before calculating spike-in scaling factors. The only significant variation in the percentage of retrieved spiked species was relevant to VST, so we continued with raw data.
