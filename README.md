@@ -306,15 +306,21 @@ We checked if we needed to normalize our data before calculating our spiked spec
 You can repeat the experiment by transforming the data, calculating spike percentage using `calculate_spike_percentage_species()` or `calculate_spike_percentage_hashcodes()`, then checking for the homogeneity of variances using `Bartlett.test()` and ensuring the data is normally distributed using `Shapiro_Wilk_test()`. Finally, plot the results using `transform_plot()`.
 
 ```r
-# Example usage:
 # Check homogeneity of variances
 Bartlett.test(data)
 
 # Check if data is normally distributed
 Shapiro_Wilk_test(data)
 
-# Plot the results
-transform_plot(data)
+# First, use plotbox to get the comparison results
+comparison_results <- plotbox(X = numeric_vars_plus_one$Percentage, Y = numeric_vars_plus_one$Methods_processing_Spiked_dataset)
+
+# Then, use your df with transform_plot
+y_vars <- c("Percentage", "Total_Reads_spiked", "Total_Reads_total")
+colors <- my_custom_theme() 
+
+transform_plot(data = numeric_vars_plus_one, x_var = "Methods_processing_Spiked_dataset", y_vars = y_vars, methods_var = "Methods_processing_Spiked_dataset", colors = colors)
+
 
 ```
 
