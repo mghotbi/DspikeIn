@@ -189,36 +189,3 @@ DNAStringSet object of length 5:
 
 
 
-```r
-
-# Additional ways to plot phylogenetic distances using different methods
-## Plot phylogenetic tree
-plot_tree(Tetragenococcus, output_prefix = "p0", width = 24, height = 26)
-
-# Plot the tree with glommed OTUs at 0.2 resolution
-plot_glommed_tree(Tetragenococcus, resolution = 0.2, output_prefix = "top", width = 18, height = 18)
-
-# Plot the phylogenetic tree with multiple sequence alignment
-plot_tree_with_alignment(Tetragenococcus, output_prefix = "tree_alignment", width = 15, height = 15)
-
-# If you prefer to check the cophenetic distance:
-# Cophenetic distance is the total length of the path connecting two tips through their common ancestor.
-
-# Extract the phylogenetic tree
-tree <- phy_tree(Tetragenococcus)
-plot(tree)
-
-# Calculate cophenetic distances
-tree_dist <- cophenetic.phylo(tree)
-print(tree_dist)
-
-```
-
-
-
-Figure 2.
-![Tree Alignment](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/tetra.png)
-
-
-
-
