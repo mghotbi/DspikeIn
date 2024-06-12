@@ -273,11 +273,35 @@ summ_count_phyloseq(spiked_16S_evenDepth)
 ```
 
 
+```markdown
+# DspikeIn: Handling ASVs with/without Gene Copy Number Correction
+
+## Data Normalization and Transformation
+
+We checked if we needed to normalize our data before calculating our spiked species to account for spiked volume variations and library preparation. We evaluated the need for compositionally aware data transformations, including centered log-ratio (CLR) transformation, DESeq2 variance stabilizing transformation (`run_vst_analysis`), subsampling with a reduced factor for count data (`random_subsample_WithReductionFactor`), proportion adjustment (`proportion.adj`), and prevalence adjustment (`adjusted_prevalence`). Additionally, we considered compositionally naïve data transformations, such as raw data and relative abundance-based transformations (`relativized_filtered_taxa`) [Yerk et al., 2024](https://doi.org/10.1186/s40168-023-01747-z), before calculating spike-in scaling factors. The only significant variation in the percentage of retrieved spiked species was relevant to VST, so we continued with raw data.
+
+## Experiment Repetition
+
+You can repeat the experiment by checking the homogeneity of variances using `Bartlett.test()`
+and ensuring the data is normally distributed using `Shapiro_Wilk_test()`.
+Then, plot the results using `transform_plot()`.
+
+```r
+# Example usage:
+# Check homogeneity of variances
+Bartlett.test(data)
+
+# Check if data is normally distributed
+Shapiro_Wilk_test(data)
+
+# Plot the results
+transform_plot(data)
+```
+
+
 We checked if we needed to normalize our data before calculating our spiked species to account for spiked volume variations and library preparation. We evaluated the need for compositionally aware data transformations, including centered log-ratio (CLR) transformation, DESeq2 variance stabilizing transformation (`run_vst_analysis`), subsampling with a reduced factor for count data (`random_subsample_WithReductionFactor`), proportion adjustment (`proportion.adj`), and prevalence adjustment (`adjusted_prevalence`). Additionally, we considered compositionally naïve data transformations, such as raw data and relative abundance-based transformations (`relativized_filtered_taxa`) [Yerk et al., 2024](https://doi.org/10.1186/s40168-023-01747-z), before calculating spike-in scaling factors. The only significant variation in the percentage of retrieved spiked species was relevant to VST, so we continued with raw data.
 
 
-```markdown
-You can repeat the experiment by checking the homogeneity of variances using `Bartlett.test()` and ensuring the data is normally distributed using `Shapiro_Wilk_test()`. Then, plot the results using `transform_plot()`.
 ```
 
 
