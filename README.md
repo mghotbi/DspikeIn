@@ -220,6 +220,12 @@ _The VSEARCH with de novo robust clustering algorithms at a 97% similarity thres
 
 ```markdown
 
+# Subset part of data which is spiked
+#keep soley spiked samples, using spiked_volume column -> 264 samples are spiked 
+spiked_16S_OTU <- subset_samples(physeq_16S_OTU, spiked_volume %in% c("2", "1"))
+spiked_16S_OTU <-tidy_phyloseq(spiked_16S_OTU)
+
+
 ### Examine Your Count Data/Biome Before going further
 # Summarize the initial statistics for ASVs/OTUs
 initial_stat_ASV<-summ_phyloseq_ASV_OTUID(physeq_16S_OTU)
@@ -235,8 +241,31 @@ summ_count_phyloseq(physeq_16S_OTU)
 calculate_summary_stats_table(initial_stat_sampleWise)
 
 # transformation
-reducedspiked_16S<-random_subsample_WithReductionFactor(spiked_16S, reduction_factor = 3)
-summ_phyloseq_sampleID(reducedspiked_16S)
+# Adjust abundance by one-third
+readAdj16S <- adjust_abundance_one_third(physeq_16S_OTU, factor = 3)
+
+# Random subsampling with reduction factor
+red16S <- random_subsample_WithReductionFactor(physeq_16S_OTU, reduction_factor = 10)
+summ_count_phyloseq(red16S)
+
+# Proportion adjustment
+normalized_16S <- proportion_adj(physeq_16S_OTU, output_file = "proportion_adjusted_physeq.rds")
+
+# DESeq2 variance stabilizing transformation (VST)
+transformed_16S <- run_vst_analysis(physeq_16S_OTU)
+
+# Relativize and filter taxa based on selected thresholds
+FTspiked_16S <- relativized_filtered_taxa(
+  physeq_16S_OTU,
+  threshold_percentage = 0.001,
+  threshold_mean_abundance = 0.001,
+  threshold_count = 5,
+  threshold_relative_abundance = 0.001)
+
+# Random subsampling to even depth with a smalltrim
+spiked_16S_evenDepth <- randomsubsample_Trimmed_evenDepth(physeq_16S_OTU, smalltrim = 0.001)
+
+
 
 
 
