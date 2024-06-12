@@ -208,11 +208,11 @@ DNAStringSet object of length 5:
 
 # By now, we have an idea of what works well for our approach, whether it's OTUs or ASVs. 
 We will proceed with OTUs. To learn more about why we chose OTUs over ASVs, please read our soon-to-be-published paper. For now, check the schematic of our experiment below:
+_The VSEARCH with de novo robust clustering algorithms at a 97% similarity threshold was used to reduce potential mistakes._
+
 
 ![WhyOTUs](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/WhyOTUs.png)
 
-
-* * The VSEARCH with de novo robust clustering algorithms at a 97% similarity threshold was used to reduce potential mistakes.
 
 
 
