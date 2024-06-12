@@ -304,8 +304,4 @@ We checked if we needed to normalize our data before calculating our spiked spec
 
 ```
 
-
 ![Transformation](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/image%20(7).png)
-
-
-
