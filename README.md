@@ -234,6 +234,12 @@ summ_count_phyloseq(physeq_16S_OTU)
 # Ensure the input is in dataframe format for this function
 calculate_summary_stats_table(initial_stat_sampleWise)
 
+# transformation
+reducedspiked_16S<-random_subsample_WithReductionFactor(spiked_16S, reduction_factor = 3)
+summ_phyloseq_sampleID(reducedspiked_16S)
+
+
+
 ```
 
 
