@@ -162,6 +162,7 @@ Figure 1.
 
 
 
+
 ```markdown
 ## Aligned Sequences
 
