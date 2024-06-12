@@ -156,6 +156,9 @@ dev.off()
 
 ```
 
+Figure 1.
+![Pattern Comparison](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/pattern.comparision.tiff)
+
 
 
 
