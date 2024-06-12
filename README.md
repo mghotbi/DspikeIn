@@ -43,7 +43,7 @@ qiime gcn-norm copy-num-normalize \
   --i-taxonomy taxonomy.qza \
   --o-gcn-norm-table table-normalized.qza
 ```
-```
+
 
 ### DspikeIn Package
 The **DspikeIn** package was developed to facilitate:
