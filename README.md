@@ -360,3 +360,23 @@ spiked_species_reads <- result$spiked_species_reads
 ```
 
 
+# Convert Relative Counts to Absolute Counts and Create a New Phyloseq Object
+
+
+```r
+
+# Convert relative counts data to absolute counts
+physeq_16S_adj_scaled_AbsoluteCount <- convert_to_absolute_counts(Spiked_16S_OTU_scaled, scaling_factors)
+
+# summary statistics 
+post_eval_summary <- calculate_summary_stats_table(physeq_16S_adj_scaled_AbsoluteCount)
+print(post_eval_summary)
+
+# Create a new phyloseq obj with absolute counts
+physeq_ITS_adj_scaled_absolute_abundance <- phyloseq(
+  otu_table(physeq_16S_adj_scaled_AbsoluteCount, taxa_are_rows = TRUE),
+  tax_table(as.matrix(read.csv("taxa_table.csv", row.names = 1))),
+  phy_tree(read_tree("phy_tree.nwk")),
+  sample_data(read.csv("sample_data.csv", row.names = 1)))
+
+```
