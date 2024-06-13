@@ -87,7 +87,7 @@ create_directory("DspikeIn_16S_OTU", set_working_dir = TRUE)
 getwd()
 
 # Please note that these functions have been primarily written based on the 
-# phyloseq(https://github.com/joey711/phyloseq) and microbiome (https://github.com/microbiome/microbiome) packages.
+# phyloseq(https://github.com/joey711/phyloseq) and tidyverse/dplyr (https://github.com/tidyverse/dplyr) packages.
 # Therefore, please start by creating a phyloseq object and follow the instructions.
 # To create your phyloseq object, please refer to the phyloseq tutorial (https://joey711.github.io/phyloseq).
 # The phyloseq object needs to include OTU/ASV, Taxa, phylogenetic tree, DNA reference, 
@@ -439,8 +439,9 @@ print(plot_absolute)
 
 # Check abundance distribution via Ridge Plots before and after converting to absolute abundance
 
-ridgeP_before <- ridge_plot_it(physeq_16S_adj_scaled)
-ridgeP_after <- ridge_plot_it(physeq_16S_adj_scaled_absolute_abundance)
+ridgeP_before <- ridge_plot_it(spiked_16S, taxrank = "Family", top_n = 10)
+ridgeP_after <- ridge_plot_it(spiked_16S, taxrank = "Family", top_n = 10)
+
 
 #core_microbiome
 plot_core_microbiome_custom(physeq_16S_adj_scaled_absolute_abundance,taxrank = "Phylum")+mytheme
