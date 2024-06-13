@@ -313,19 +313,24 @@ Bartlett.test(methods)
 # Check if data is normally distributed
 Shapiro_Wilk_test(methods)
 
-# First, use plotbox to get the comparison results
-comparison_results <- plotbox(X = numeric_vars_plus_one$Percentage, Y = numeric_vars_plus_one$Methods_processing_Spiked_dataset)
+y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
 
-# Then, use your df with transform_plot
-y_vars <- c("Percentage", "Total_Reads_spiked", "Total_Reads_total")
-colors <- my_custom_theme() 
+# scale data
+scaled <- methods %>% mutate_at(c("Total.reads", "Spike.reads", "Spike.percentage" ), ~(scale(.) %>% as.vector))
+ 
+# Perform Kruskal-Wallis test
+transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", colors = MG, stat_test = "kruskal.test")
 
-transform_plot(data = numeric_vars_plus_one, x_var = "Methods_processing_Spiked_dataset", y_vars = y_vars, methods_var = "Methods_processing_Spiked_dataset", colors = colors)
+# Perform one-way ANOVA
+transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", colors = MG, stat_test = "anova")
+
 
 
 ```
 
 
-![Transformation](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/image%20(7).png)
+| Spike Percentage ANOVA | Spike Reads ANOVA | Total Reads ANOVA |
+|:----------------------:|:-----------------:|:-----------------:|
+| ![Spike Percentage ANOVA](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/plot_Spike.percentage_ANOVA.png?raw=true) | ![Spike Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/plot_Spike.reads_ANOVA.png?raw=true) | ![Total Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/plot_Total.reads_ANOVA.png?raw=true) |
 
 
