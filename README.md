@@ -186,7 +186,10 @@ plot_tree_nj("tetra.fasta", output_file = "neighbor_joining_tree_with_bootstrap.
 
 
 Figure 1.
-![neighbor_joining_tree_with_bootstrap](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/trees.png)
+
+| Neighbor Joining Tree with Bootstrap | Tetra Plot with Bootstrap | Cophenetic tree |
+|:------------------------------------:|:----------:|:---------:|
+| ![Neighbor Joining Tree](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/neighbor_joining_tree_with_bootstrap.png?raw=true) | ![Tetra Plot](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/tetra.png?raw=true) | ![cophenetic](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/Rplot02.png?raw=true) |
 
 
 
