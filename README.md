@@ -81,7 +81,7 @@ In fact, for ITS we did not need to use copy number correction. However, we reco
 ---
 ```r
 # Make a new directory and set it as your working directory
-create_directory("ExampleITS", set_working_dir = TRUE)
+create_directory("DspikeIn_16S_OTU", set_working_dir = TRUE)
 getwd()
 
 # Please note that these functions have been primarily written based on the 
