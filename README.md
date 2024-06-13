@@ -29,7 +29,7 @@ In our study, *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selec
 - 16S rRNA and ITS rDNA gene markers were analyzed.
 
 ### Normalization
-- Normalization was performed for community-weighted mean ribosomal operon copy numbers.
+- Normalization was performed on the 16S community-weighted mean ribosomal operon copy numbers to correct for potential biases in the representation of Tetragenococcus halophilus species in our ASV approach.
 
 
 ```markdown
