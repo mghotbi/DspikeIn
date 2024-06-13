@@ -444,8 +444,10 @@ ridgeP_after <- ridge_plot_it(physeq_16S_adj_scaled_absolute_abundance, taxrank 
 
 
 #core_microbiome
-plot_core_microbiome_custom(physeq_16S_adj_scaled_absolute_abundance,taxrank = "Phylum")+mytheme
-taxa_barplot(core.microbiome, target_rank = "Genus", normalize = TRUE, treatment_variable = "Animal_type")
+plot_core_microbiome_custom(physeq_16S_adj_scaled_absolute_abundance,taxrank = "Phylum")+my_custom_theme()
+# core.microbiome is automatically saved in your working directory
+core.microbiome <- readRDS("core.microbiome.rds")
+taxa_barplot(core.microbiome, target_rank = "Genus", normalize = TRUE, treatment_variable = "animal_type")
 
 
 #shift to dataframe and plot the abundance of shared taxa across the factors
