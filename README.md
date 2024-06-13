@@ -222,11 +222,6 @@ _The VSEARCH with de novo robust clustering algorithms at a 97% similarity thres
 
 
 
-
-```markdown
-
-To change the topic color to black and keep the rest of the text in the default color (blue) in Markdown, you can use HTML within your Markdown file. Here’s how you can do it:
-
 ```markdown
 
 # Subset part of data which is spiked
