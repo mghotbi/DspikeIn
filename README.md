@@ -397,5 +397,13 @@ physeq_16S_adj_scaled_perc <- subset_samples(physeq_ITS_adj_scaled_absolute_abun
 conclusion(physeq_16S_adj_scaled_perc, spiked_species, identifier_type, output_path)
 
 ```
+*Save your file for later. Stay tuned for the rest: transformation and several visualization methods and displaying the importance of converting relative to absolute abundance in the context of microbial ecology.*
 
 
+```r
+
+taxa_names(physeq_16S_adj_scaled_absolute_abundance) <- paste0("ASV", seq(ntaxa(physeq_16S_adj_scaled_absolute_abundance)))
+physeq_16S_adj_scaled_absolute_abundance <- tidy_phyloseq(physeq_16S_adj_scaled_absolute_abundance)
+saveRDS(physeq_16S_adj_scaled_absolute_abundance, "physeq_16S_adj_scaled_absolute_abundance.rds")
+
+```
