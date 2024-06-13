@@ -45,7 +45,6 @@ For more information, visit the q2-gcn-norm GitHub repository (https://github.co
 ### Command
 Run the following command to perform GCN normalization:
 
-```bash
 qiime gcn-norm copy-num-normalize \
   --i-table table-dada2.qza \
   --i-taxonomy taxonomy.qza \
