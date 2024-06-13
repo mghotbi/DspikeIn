@@ -26,7 +26,7 @@ In our study, *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selec
 
 ---
 
-## Bioinformatics Processing and Downstream Analyses
+## Bioinformatics and Downstream Analyses
 
 ### Gene Marker Analysis
 - 16S rRNA and ITS rDNA gene markers were analyzed.
