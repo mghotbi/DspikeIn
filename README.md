@@ -380,3 +380,22 @@ physeq_16S_adj_scaled_absolute_abundance <- phyloseq(
   sample_data = sample_data(Spiked_16S_OTU_scaled))
 
 ```
+
+
+# Let's check the final conclusion and get the report table of spiked species success or failure.
+
+
+
+```r
+
+# Define the parameters once. Do not repeat if already done.
+species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp")
+identifier_type <- "species"
+output_path <- "spike_success_report.docx"
+
+physeq_16S_adj_scaled_perc <- subset_samples(physeq_ITS_adj_scaled_absolute_abundance, sample_or_blank != "blank")
+conclusion(physeq_16S_adj_scaled_perc, spiked_species, identifier_type, output_path)
+
+```
+
+
