@@ -440,7 +440,7 @@ print(plot_absolute)
 # Check abundance distribution via Ridge Plots before and after converting to absolute abundance
 
 ridgeP_before <- ridge_plot_it(spiked_16S, taxrank = "Family", top_n = 10)
-ridgeP_after <- ridge_plot_it(spiked_16S, taxrank = "Family", top_n = 10)
+ridgeP_after <- ridge_plot_it(physeq_16S_adj_scaled_absolute_abundance, taxrank = "Family", top_n = 10)
 
 
 #core_microbiome
