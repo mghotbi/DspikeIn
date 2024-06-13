@@ -9,6 +9,7 @@ The importance of converting relative to absolute abundance in the context of mi
 ## Introduction
 
 In our study, *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples  based on our previous studies.
+
 ## Methodology
 
 ### Growth of Stock Cell Suspensions
@@ -29,7 +30,7 @@ In our study, *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selec
 - 16S rRNA and ITS rDNA gene markers were analyzed.
 
 ### Normalization
-- Normalization was performed on the 16S community-weighted mean ribosomal operon copy numbers to correct for potential biases in the representation of Tetragenococcus halophilus species in our ASV approach.
+- Normalization was performed on the 16S community-weighted mean ribosomal operon copy numbers to correct for potential biases in the representation of *Tetragenococcus halophilus* species in our ASV approach.
 
 
 ```markdown
