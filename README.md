@@ -285,16 +285,16 @@ If you are using OTUs and have only one OTU rooted from the spiked species, you 
 **Modify the threshold of acceptable spiked species % as needed. For detailed guidance on acceptable thresholds (passed_range), please refer to the instructions in our upcoming paper.**
 
 ```r
-# Preprocess the spiked species
+# Merg the spiked species
 Spiked_16S_OTU_scaled <- Pre_processing_species(spiked_16S_OTU, species_name)
 Spiked_16S_OTU_scaled<-Pre_processing_species(spiked_16S_OTU, "Tetragenococcus_halophilus")
 Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_OTU_scaled)
 
-Spiked_16S_OTU_scaled <- calculate_spike_percentage_hashcodes(Spiked_16S_OTU_scaled, hashcodes, output_path = NULL, passed_range = c(0.1, 11))
+Spiked_16S_OTU_scaled <- calculate_spike_percentage_hashcodes(Spiked_16S_OTU_scaled, hashcodes, output_path = NULL, passed_range = c(0.1, 10))
 Spiked_16S_OTU_scaled <- calculate_spike_percentage_hashcodes(Spiked_16S_OTU_scaled, hashcodes, output_path = NULL, passed_range = c(0.1, 35))
 calculate_summary_stats_table(Spiked_16S_OTU_scaled)
 
-merg<-calculate_spike_percentage_hashcodes(Spiked_16S_OTU_scaled, spiked_species, identifier_type = "species", output_path = NULL)
+merg<-calculate_spike_percentage_species(Spiked_16S_OTU_scaled, spiked_species, identifier_type = "species", output_path = NULL, passed_range = c(0.1, 10))
 merg<-calculate_spike_percentage_species(Spiked_16S_OTU_scaled, spiked_species, identifier_type = "species", output_path = NULL, passed_range = c(0.1, 35))
 calculate_summary_stats_table(merg)
 
@@ -340,34 +340,7 @@ transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = 
 
 
 
-```markdown
-# DspikeIn: Handling ASVs with/without Gene Copy Number Correction
-
-## Estimating Scaling Factors
-
-After preprocessing and choosing raw data to proceed, we can estimate scaling factors. The `merged_spiked_species` data is necessary at this stage, as it contains the merged species derived from the spiking process.
-
-### Preprocessing for ASVs with Raw Data
-
-If you are using OTUs and have only one OTU rooted from the spiked species, you can skip this preprocessing step. For those using ASVs, follow the steps below to estimate how the spike-in worked, particularly if you have any samples with under or over-spikes.
-
-### Pre-scaling Factor Calculation Considerations
-
-If you have more than one ASV/OTU rooted from the spiked species, merge them before estimating the spike-in scaling factor and the percentage of spiked species retrieved from each sample.
-
-# Preprocess the spiked species
-Spiked_16S_OTU_scaled <- Pre_processing_species(spiked_16S_OTU, species_name)
-Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_OTU_scaled)
-
-# Modify the threshold as needed
-# Calculate spiked species percentage after preprocessing
-calculate_spike_percentage_species(Spiked_16S_OTU_scaled, spiked_species, identifier_type = "species", output_path = NULL)
-merged <- calculate_spike_percentage_species(Spiked_16S_OTU_scaled, spiked_species, identifier_type = "species", output_path = NULL, passed_range = c(0.1, 35))
-calculate_summary_stats_table(merged)
-
-```
-
-### Estimating Scaling Factors
+### Estimating Scaling Factors After Pre-Processing
 
 To estimate scaling factors, ensure you have the `merged_spiked_species` data, which contains the merged species derived from the spiking process.
 
