@@ -260,7 +260,7 @@ calculate_summary_stats_table(initial_stat_sampleWise)
 
 ### Data Transformation
 
-*Apply various transformations to the spiked data.*
+*Check if the transformations is required.*
 
 ```r
 
