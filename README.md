@@ -431,8 +431,13 @@ taxa_barplot(core.microbiome, target_rank = "Genus", normalize = TRUE, treatment
 
 
 #shift to dataframe and plot the abundance of shared taxa across the factors
+meli<-psmelt(physeq_16S_adj_scaled_absolute_abundance)
+library(dplyr)
+result <- meli %>% 
+  dplyr::filter(Abundance > 500) %>% 
+  dplyr::select(Abundance, factor1, factor2, factor3, Phylum, Genus)
 is_alluvia_form(as.data.frame(meli), axes = 1:6, silent = TRUE)
-alluvial_plot <- alluvial_plot(data = meli,axes = c("Abundance", "Genotype", "Class", "Treatment", "Phylum", "Genus"),abundance_threshold = 500,silent=TRUE)
+alluvial_plot <- alluvial_plot(data = meli,axes = c(Abundance, factor1, factor2, factor3, Phylum, Genus),abundance_threshold = 500,silent=TRUE)
 
 
 #selecting the most important ASVs/OTUs through RandomForest classification
