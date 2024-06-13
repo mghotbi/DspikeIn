@@ -222,15 +222,24 @@ _The VSEARCH with de novo robust clustering algorithms at a 97% similarity thres
 
 
 
-```markdown
+## Subsetting and Preprocessing Spiked Data
 
-# Subset part of data which is spiked
 
-#keep soley spiked samples, using spiked_volume column -> 264 samples are spiked
+*Subset the part of the data which is spiked. Keep solely spiked samples using the `spiked_volume` column.*
+
+
+```r
+
+# Subset spiked samples (264 samples are spiked)
 spiked_16S_OTU <- subset_samples(physeq_16S_OTU, spiked_volume %in% c("2", "1"))
-spiked_16S_OTU <-tidy_phyloseq(spiked_16S_OTU)
+spiked_16S_OTU <- tidy_phyloseq(spiked_16S_OTU)
 
-### Examine Your Count Data/Biome Before going further
+```
+
+### Examine Your Count Data/Biome Before Going Further
+
+
+```r
 
 # Summarize the initial statistics for ASVs/OTUs
 initial_stat_ASV <- summ_phyloseq_ASV_OTUID(physeq_16S_OTU)
@@ -245,13 +254,21 @@ summ_count_phyloseq(physeq_16S_OTU)
 # Ensure the input is in dataframe format for this function
 calculate_summary_stats_table(initial_stat_sampleWise)
 
-#### Transformation
+
+```
+
+
+### Data Transformation
+
+*Apply various transformations to the spiked data.*
+
+```r
 
 # Adjust abundance by one-third
 readAdj16S <- adjust_abundance_one_third(spiked_16S_OTU, factor = 3)
 summ_count_phyloseq(readAdj16S)
 
-<span style="color: black;"># Random subsampling with reduction factor</span>
+# Random subsampling with reduction factor
 red16S <- random_subsample_WithReductionFactor(spiked_16S_OTU, reduction_factor = 10)
 summ_count_phyloseq(red16S)
 
@@ -272,7 +289,7 @@ FTspiked_16S <- relativized_filtered_taxa(
   threshold_relative_abundance = 0.001)
 summ_count_phyloseq(FTspiked_16S)
 
-# Random subsampling to even depth with a smalltrim
+# Random subsampling to even depth with a small trim
 spiked_16S_evenDepth <- randomsubsample_Trimmed_evenDepth(spiked_16S_OTU, smalltrim = 0.001)
 summ_count_phyloseq(spiked_16S_evenDepth)
 
