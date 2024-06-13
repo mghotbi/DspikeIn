@@ -226,28 +226,28 @@ _The VSEARCH with de novo robust clustering algorithms at a 97% similarity thres
 
 # Subset part of data which is spiked
 
-<span style="color: black;">#keep soley spiked samples, using spiked_volume column -> 264 samples are spiked</span>
+#keep soley spiked samples, using spiked_volume column -> 264 samples are spiked
 spiked_16S_OTU <- subset_samples(physeq_16S_OTU, spiked_volume %in% c("2", "1"))
 spiked_16S_OTU <-tidy_phyloseq(spiked_16S_OTU)
 
 ### Examine Your Count Data/Biome Before going further
 
-<span style="color: black;"># Summarize the initial statistics for ASVs/OTUs</span>
+# Summarize the initial statistics for ASVs/OTUs
 initial_stat_ASV <- summ_phyloseq_ASV_OTUID(physeq_16S_OTU)
 
-<span style="color: black;"># Summarize the initial statistics sample-wise</span>
+# Summarize the initial statistics sample-wise
 initial_stat_sampleWise <- summ_phyloseq_sampleID(physeq_16S_OTU)
 
-<span style="color: black;"># Summarize the count data</span>
+# Summarize the count data
 summ_count_phyloseq(physeq_16S_OTU)
 
-<span style="color: black;"># Check the summary statistics</span>
-<span style="color: black;"># Ensure the input is in dataframe format for this function</span>
+# Check the summary statistics
+# Ensure the input is in dataframe format for this function
 calculate_summary_stats_table(initial_stat_sampleWise)
 
 #### Transformation
 
-<span style="color: black;"># Adjust abundance by one-third</span>
+# Adjust abundance by one-third
 readAdj16S <- adjust_abundance_one_third(spiked_16S_OTU, factor = 3)
 summ_count_phyloseq(readAdj16S)
 
@@ -255,15 +255,15 @@ summ_count_phyloseq(readAdj16S)
 red16S <- random_subsample_WithReductionFactor(spiked_16S_OTU, reduction_factor = 10)
 summ_count_phyloseq(red16S)
 
-<span style="color: black;"># Proportion adjustment</span>
+# Proportion adjustment
 normalized_16S <- proportion_adj(spiked_16S_OTU, output_file = "proportion_adjusted_physeq.rds")
 summ_count_phyloseq(normalized_16S)
 
-<span style="color: black;"># DESeq2 variance stabilizing transformation (VST)</span>
+# DESeq2 variance stabilizing transformation (VST)
 transformed_16S <- run_vst_analysis(spiked_16S_OTU)
 summ_count_phyloseq(transformed_16S)
 
-<span style="color: black;"># Relativize and filter taxa based on selected thresholds</span>
+# Relativize and filter taxa based on selected thresholds
 FTspiked_16S <- relativized_filtered_taxa(
   spiked_16S_OTU,
   threshold_percentage = 0.001,
@@ -272,7 +272,7 @@ FTspiked_16S <- relativized_filtered_taxa(
   threshold_relative_abundance = 0.001)
 summ_count_phyloseq(FTspiked_16S)
 
-<span style="color: black;"># Random subsampling to even depth with a smalltrim</span>
+# Random subsampling to even depth with a smalltrim
 spiked_16S_evenDepth <- randomsubsample_Trimmed_evenDepth(spiked_16S_OTU, smalltrim = 0.001)
 summ_count_phyloseq(spiked_16S_evenDepth)
 
