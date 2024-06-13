@@ -406,4 +406,21 @@ taxa_names(physeq_16S_adj_scaled_absolute_abundance) <- paste0("ASV", seq(ntaxa(
 physeq_16S_adj_scaled_absolute_abundance <- tidy_phyloseq(physeq_16S_adj_scaled_absolute_abundance)
 saveRDS(physeq_16S_adj_scaled_absolute_abundance, "physeq_16S_adj_scaled_absolute_abundance.rds")
 
+#core_microbiome
+plot_core_microbiome_custom(physeq_16S_adj_scaled_absolute_abundance,taxrank = "Phylum")+mytheme
+taxa_barplot(core.microbiome, target_rank = "Genus", normalize = TRUE, treatment_variable = "Animal_type")
+
+
+#shift to dataframe and plot the abundance of shared taxa across the factors
+is_alluvia_form(as.data.frame(meli), axes = 1:6, silent = TRUE)
+alluvial_plot <- alluvial_plot(data = meli,axes = c("Abundance", "Genotype", "Class", "Treatment", "Phylum", "Genus"),abundance_threshold = 500,silent=TRUE)
+
+
+#selecting the most important ASVs/OTUs through RandomForest classification
+rf_physeq <- RandomForest_selected_ASVs(physeq_16S_adj_scaled_absolute_abundance, response_var = "host.species")
+plot_asvs_abundance(rf_physeq, response_var = "host.species", x_var = "ecoregion.III", rank_var = "Phylum")
+
+ridgeP <- ridge_plot_it(physeq_16S_adj_scaled_absolute_abundance)
+
+
 ```
