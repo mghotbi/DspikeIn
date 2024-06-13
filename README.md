@@ -340,10 +340,6 @@ transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = 
 
 
 
-Here is a corrected and nicely formatted version for your GitHub page:
-
-### README.md
-
 ```markdown
 # DspikeIn: Handling ASVs with/without Gene Copy Number Correction
 
@@ -359,7 +355,6 @@ If you are using OTUs and have only one OTU rooted from the spiked species, you 
 
 If you have more than one ASV/OTU rooted from the spiked species, merge them before estimating the spike-in scaling factor and the percentage of spiked species retrieved from each sample.
 
-```r
 # Preprocess the spiked species
 Spiked_16S_OTU_scaled <- Pre_processing_species(spiked_16S_OTU, species_name)
 Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_OTU_scaled)
@@ -369,6 +364,7 @@ Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_OTU_scaled)
 calculate_spike_percentage_species(Spiked_16S_OTU_scaled, spiked_species, identifier_type = "species", output_path = NULL)
 merged <- calculate_spike_percentage_species(Spiked_16S_OTU_scaled, spiked_species, identifier_type = "species", output_path = NULL, passed_range = c(0.1, 35))
 calculate_summary_stats_table(merged)
+
 ```
 
 ### Estimating Scaling Factors
