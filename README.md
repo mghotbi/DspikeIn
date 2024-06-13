@@ -299,7 +299,7 @@ summ_count_phyloseq(spiked_16S_evenDepth)
 ```
 
 
-## Preprocessing for Scaling Factor Calculation Considerations 
+## Preprocessing for Scaling Factor Calculation  
 
 If you are using OTUs and have only one OTU rooted from the spiked species, you can skip this preprocessing step. Follow the steps below to estimate the success of spike-in, particularly check if you have any samples with under or over-spikes.
 
