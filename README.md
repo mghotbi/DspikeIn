@@ -194,6 +194,7 @@ Figure 1.
 
 
 
+
 ```markdown
 ## Aligned Sequences
 
@@ -205,6 +206,7 @@ DNAStringSet object of length 5:
 [3]   292 -------------------TACGTAGGTGGCAAGCGTTGTCCGGATTTATTGGGCGTAAAGCGAGCGC...CTGGTCTGTAACTGACGCTGAGGCTCGAAAGCGTAGGTAGCAAACAGG-------------------- 65ab824f29da71010...
 [4]   292 -------------------TACGTAGGTGGCAAGCGTTGTCCGGATTTATTGGGCGTAAAGCGAGCGC...CTGGTCTGTAACTGACGCTGAGACTCGAAAGCGTGGGTAGCAAACAGG-------------------- e49935179f23c00fb...
 [5]   292 -------------------TACGTAGGTGGCAAGCGTTGTCCGGATTTATTGGGCGTAAAGCGAGCGC...CTGGACTGTAACTGACGCTGAGGCTCGAAAGCGTGGGGAGCAAACAGG-------------------- 0350f990080b4757a...
+
 ```
 
 
@@ -336,4 +338,57 @@ transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = 
 |:----------------------:|:-----------------:|:-----------------:|
 | ![Spike Percentage ANOVA](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/plot_Spike.percentage_ANOVA.png?raw=true) | ![Spike Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/plot_Spike.reads_ANOVA.png?raw=true) | ![Total Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/plot_Total.reads_ANOVA.png?raw=true) |
 
+
+
+Here is a corrected and nicely formatted version for your GitHub page:
+
+### README.md
+
+```markdown
+# DspikeIn: Handling ASVs with/without Gene Copy Number Correction
+
+## Estimating Scaling Factors
+
+After preprocessing and choosing raw data to proceed, we can estimate scaling factors. The `merged_spiked_species` data is necessary at this stage, as it contains the merged species derived from the spiking process.
+
+### Preprocessing for ASVs with Raw Data
+
+If you are using OTUs and have only one OTU rooted from the spiked species, you can skip this preprocessing step. For those using ASVs, follow the steps below to estimate how the spike-in worked, particularly if you have any samples with under or over-spikes.
+
+### Pre-scaling Factor Calculation Considerations
+
+If you have more than one ASV/OTU rooted from the spiked species, merge them before estimating the spike-in scaling factor and the percentage of spiked species retrieved from each sample.
+
+```r
+# Preprocess the spiked species
+Spiked_16S_OTU_scaled <- Pre_processing_species(spiked_16S_OTU, species_name)
+Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_OTU_scaled)
+
+# Modify the threshold as needed
+# Calculate spiked species percentage after preprocessing
+calculate_spike_percentage_species(Spiked_16S_OTU_scaled, spiked_species, identifier_type = "species", output_path = NULL)
+merged <- calculate_spike_percentage_species(Spiked_16S_OTU_scaled, spiked_species, identifier_type = "species", output_path = NULL, passed_range = c(0.1, 35))
+calculate_summary_stats_table(merged)
+```
+
+### Estimating Scaling Factors
+
+To estimate scaling factors, ensure you have the `merged_spiked_species` data, which contains the merged species derived from the spiking process.
+
+```r
+# Define the merged spiked species
+merged_spiked_species <- c("Tetragenococcus_halophilus")
+
+# Calculate spikeIn factors
+result <- calculate_spikeIn_factors(Spiked_16S_OTU_scaled, spiked_cells, merged_spiked_species)
+
+# Check the outputs
+scaling_factors <- result$scaling_factors
+physeq_no_spiked <- result$physeq_no_spiked
+spiked_16S_total_reads <- result$spiked_16S_total_reads
+spiked_species <- result$spiked_species
+spiked_species_merged <- result$spiked_species_merged
+spiked_species_reads <- result$spiked_species_reads
+
+```
 
