@@ -373,10 +373,10 @@ post_eval_summary <- calculate_summary_stats_table(physeq_16S_adj_scaled_Absolut
 print(post_eval_summary)
 
 # Create a new phyloseq obj with absolute counts
-physeq_ITS_adj_scaled_absolute_abundance <- phyloseq(
-  otu_table(physeq_16S_adj_scaled_AbsoluteCount, taxa_are_rows = TRUE),
-  tax_table(as.matrix(read.csv("taxa_table.csv", row.names = 1))),
-  phy_tree(read_tree("phy_tree.nwk")),
-  sample_data(read.csv("sample_data.csv", row.names = 1)))
+physeq_16S_adj_scaled_absolute_abundance <- phyloseq(
+  otu_table = round(otu_table(Spiked_16S_OTU_scaled) * scaling_factors), 
+  taxa_table = tax_table(Spiked_16S_OTU_scaled),
+  phy_tree = phy_tree(Spiked_16S_OTU_scaled),
+  sample_data = sample_data(Spiked_16S_OTU_scaled))
 
 ```
