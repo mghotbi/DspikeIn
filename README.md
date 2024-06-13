@@ -443,14 +443,14 @@ ridgeP_before <- ridge_plot_it(spiked_16S, taxrank = "Family", top_n = 10)
 ridgeP_after <- ridge_plot_it(physeq_16S_adj_scaled_absolute_abundance, taxrank = "Family", top_n = 10)
 
 
-#core_microbiome
+# core_microbiome
 plot_core_microbiome_custom(physeq_16S_adj_scaled_absolute_abundance,taxrank = "Phylum")+my_custom_theme()
 # core.microbiome is automatically saved in your working directory
 core.microbiome <- readRDS("core.microbiome.rds")
 taxa_barplot(core.microbiome, target_rank = "Genus", normalize = TRUE, treatment_variable = "animal_type")
 
 
-#shift to dataframe and plot the abundance of shared taxa across the factors
+# shift to dataframe and plot the abundance of shared taxa across the factors
 meli<-psmelt(physeq_16S_adj_scaled_absolute_abundance)
 library(dplyr)
 result <- meli %>% 
@@ -460,7 +460,7 @@ is_alluvia_form(as.data.frame(meli), axes = 1:6, silent = TRUE)
 alluvial_plot <- alluvial_plot(data = meli,axes = c(Abundance, factor1, factor2, factor3, Phylum, Genus),abundance_threshold = 500,silent=TRUE)
 
 
-#selecting the most important ASVs/OTUs through RandomForest classification
+# selecting the most important ASVs/OTUs through RandomForest classification
 rf_physeq <- RandomForest_selected_ASVs(physeq_16S_adj_scaled_absolute_abundance, response_var = "host.species")
 plot_asvs_abundance(rf_physeq, response_var = "host.species", x_var = "ecoregion.III", rank_var = "Phylum")
 
