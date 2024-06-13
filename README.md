@@ -355,9 +355,8 @@ result <- calculate_spikeIn_factors(Spiked_16S_OTU_scaled, spiked_cells, merged_
 scaling_factors <- result$scaling_factors
 physeq_no_spiked <- result$physeq_no_spiked
 spiked_16S_total_reads <- result$spiked_16S_total_reads
-spiked_species <- result$spiked_species
-spiked_species_merged <- result$spiked_species_merged
 spiked_species_reads <- result$spiked_species_reads
 
 ```
+
 
