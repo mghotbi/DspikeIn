@@ -191,7 +191,7 @@ plot_tree_nj("tetra.fasta", output_file = "neighbor_joining_tree_with_bootstrap.
 
 Figure 1.
 
-| Neighbor Joining Tree with Bootstrap | Tetra Plot with Bootstrap | Cophenetic tree |
+| Neighbor Joining Tree with Bootstrap | Tetra Plot with Bootstrap | Cophenetic tree with Bootstrap|
 |:------------------------------------:|:----------:|:---------:|
 | ![Neighbor Joining Tree](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/neighbor_joining_tree_with_bootstrap.png?raw=true) | ![Tetra Plot](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/tetra.png?raw=true) | ![cophenetic](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/Rplot02.png?raw=true) |
 
@@ -358,8 +358,10 @@ transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = 
 
 
 | Spiked sp Percentage ANOVA | Spiked sp Reads ANOVA | Total Reads ANOVA |
-|:----------------------:|:-----------------:|:-----------------:|
-| ![Spike Percentage ANOVA](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/plot_Spike.percentage_ANOVA.pdf?raw=true) | ![Spike Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/plot_Spike.reads_ANOVA.pdf?raw=true) | ![Total Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/plot_Total.reads_ANOVA.pdf?raw=true) |
+|:--------------------------:|:---------------------:|:-----------------:|
+| ![Spike Percentage ANOVA](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/plot_Spike.percentage_ANOVA.png?raw=true) | ![Spike Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/plot_Spike.reads_ANOVA.png?raw=true) | ![Total Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/plot_Total.reads_ANOVA.png?raw=true) |
+
+---
 
 
 
