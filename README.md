@@ -193,7 +193,7 @@ Figure 1.
 
 | Neighbor Joining Tree with Bootstrap | Tetra Plot with Bootstrap | Cophenetic tree with Bootstrap|
 |:------------------------------------:|:----------:|:---------:|
-| ![Neighbor Joining Tree](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/neighbor_joining_tree_with_bootstrap.png?raw=true) | ![Tetra Plot](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/tetra.png?raw=true) | ![cophenetic](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/Rplot02.png?raw=true) |
+| ![Neighbor Joining Tree](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/JU.png?raw=true) | ![Tetra Plot](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/tetra.png?raw=true) | ![cophenetic](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/Rplot02.png?raw=true) |
 
 
 
