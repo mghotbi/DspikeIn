@@ -452,7 +452,7 @@ core.microbiome <- readRDS("core.microbiome.rds")
 taxa_barplot(core.microbiome, target_rank = "Genus", normalize = TRUE, treatment_variable = "animal_type")
 
 
-# shift to dataframe and plot the abundance of shared taxa across the factors
+# shift to dataframe and plot the abundance of taxa across the factors
 meli<-psmelt(physeq_16S_adj_scaled_absolute_abundance)
 library(dplyr)
 result <- meli %>% 
