@@ -310,9 +310,14 @@ If you are using OTUs and have only one OTU rooted from the spiked species, you 
 ```r
 # Merg the spiked species
 species_name <- "Tetragenococcus_halophilus"
-Spiked_16S_OTU_scaled <- Pre_processing_species_Sum(spiked_16S_OTU, species_name)
-Spiked_16S_OTU_scaled<- Pre_processing_species_Sum(spiked_16S_OTU, "Tetragenococcus_halophilus")
-Spiked_16S_OTU_scaled<- Pre_processing_hashcodes_Max(spiked_16S_OTU, "hashcodes")
+Spiked_16S_OTU_scaled <- Pre_processing_species(physeqASV16, species_name, merge_method = "sum", output_file = "merged_physeq_sum.rds")
+Spiked_16S_OTU_scaled <- Pre_processing_species(physeqASV16, species_name, merge_method = "max", output_file = "merged_physeq_max.rds")
+
+Spiked_16S_OTU_scaled <- Pre_processing_hashcodes(physeqASV16, hashcodes, merge_method = "sum", output_prefix = "merged_physeq_sum")
+Spiked_16S_OTU_scaled <- Pre_processing_hashcodes(physeqASV16, hashcodes, merge_method = "max", output_prefix = "merged_physeq_max")
+summ_count_phyloseq(Spiked_16S_OTU_scaled)
+
+
 Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_OTU_scaled)
 
 Spiked_16S_OTU_scaled <- calculate_spike_percentage_hashcodes(Spiked_16S_OTU_scaled, hashcodes, output_path = NULL, passed_range = c(0.1, 10))
