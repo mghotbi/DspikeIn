@@ -438,6 +438,17 @@ taxa_names(physeq_16S_adj_scaled_absolute_abundance) <- paste0("ASV", seq(ntaxa(
 physeq_16S_adj_scaled_absolute_abundance <- tidy_phyloseq(physeq_16S_adj_scaled_absolute_abundance)
 saveRDS(physeq_16S_adj_scaled_absolute_abundance, "physeq_16S_adj_scaled_absolute_abundance.rds")
 
+# simple barplot of taxonomy abundance
+# subset salamander variable from both relative and absolute abundance
+Salamander_relative <- subset_samples(spiked_16S, animal.type=="Salamander")
+Salamander_relative <- subset_samples(physeq_16S_adj_scaled_absolute_abundance, animal.type=="Salamander")
+
+bp <- taxa_barplot(Salamander_relative, target_glom = "Genus", normalize = TRUE, treatment_variable = "host.genus", abundance_type = "relative", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet")
+print(bp$barplot)
+
+bp <- taxa_barplot(Salamander_absolute, target_glom = "Genus", normalize = FALSE, treatment_variable = "host.genus", abundance_type = "absolute", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet")
+print(bp$barplot)
+
 
 # simple barplot of taxonomy abundance
 plot_relative <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", group = "Env_broad_scale.x", top = 10, x_axes_font = 10, y_axes_font = 10, legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = TRUE, output_prefix = "relativized_abundance_plot")
@@ -447,18 +458,8 @@ plot_absolute <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, lev
 print(plot_absolute)
 
 
-#subset salamander from both relative and absolute abundance
-Salamander_relative <- subset_samples(physeq_16S_relative_abundance, animal.type=="Salamander")
-bp <- taxa_barplot(Salamander_relative, target_glom = "Genus", normalize = TRUE, treatment_variable = "host.genus", abundance_type = "relative", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet")
-print(bp$barplot)
-
-Salamander_absolute <- subset_samples(physeq_16S_adj_scaled_absolute_abundance, animal.type=="Salamander")
-bp <- taxa_barplot(Salamander_absolute, target_glom = "Genus", normalize = FALSE, treatment_variable = "host.genus", abundance_type = "absolute", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet")
-print(bp$barplot)
-
 
 # Check abundance distribution via Ridge Plots before and after converting to absolute abundance
-
 ridgeP_before <- ridge_plot_it(spiked_16S, taxrank = "Family", top_n = 10)
 ridgeP_after <- ridge_plot_it(physeq_16S_adj_scaled_absolute_abundance, taxrank = "Family", top_n = 10)
 
