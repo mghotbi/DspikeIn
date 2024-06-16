@@ -473,5 +473,9 @@ alluvial_plot <- alluvial_plot(data = meli,axes = c(Abundance, factor1, factor2,
 rf_physeq <- RandomForest_selected_ASVs(physeq_16S_adj_scaled_absolute_abundance, response_var = "host.species")
 plot_asvs_abundance(rf_physeq, response_var = "host.species", x_var = "ecoregion.III", rank_var = "Phylum")
 
+#detect common ASVs/OTUs
+common_asvs_data <- common_asvs(rf_physeq, core.microbiome, output_csv = "common_asvs.csv", output_rds = "common_asvs.rds")
+physeq16S_subset <- prune_taxa(common_asvs_data, physeq_16S_adj_scaled_absolute_abundance)
+plot_asvs_abundance(physeq16S_subset, response_var = "host.species", x_var = "ecoregion.III", rank_var = "Phylum")
 
 ```
