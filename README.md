@@ -483,8 +483,9 @@ alluvial_plot <- alluvial_plot(data = meli,axes = c(Abundance, factor1, factor2,
 
 # selecting the most important ASVs/OTUs through RandomForest classification
 #Salamander_absolute= subset of our phyloseq object
-rf_physeq <- RandomForest_selected_ASVs(Salamander_absolute, response_var = "Host_Species", na_vars = c("Habitat", "Ecoregion_III", "Host_genus", "Animal_type"))
-plot_asvs_abundance(rf_physeq, response_var = "host.species", x_var = "ecoregion.III", rank_var = "Phylum")
+rf_physeq <- RandomForest_selected_ASVs(Salamander_absolute, response_var = "Host_Species", na_vars = c("Habitat","Diet", "Ecoregion_III", "Host_genus", "Animal_type"))
+RP=ridge_plot_it(rf_physeq)
+RP+facet_wrap(~Diet)
 
 
 #detect common ASVs/OTUs
