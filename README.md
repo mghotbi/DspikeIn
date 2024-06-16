@@ -441,7 +441,7 @@ saveRDS(physeq_16S_adj_scaled_absolute_abundance, "physeq_16S_adj_scaled_absolut
 
 # subset salamander variable from both relative and absolute abundance
 Salamander_relative <- subset_samples(spiked_16S, animal.type=="Salamander")
-Salamander_relative <- subset_samples(physeq_16S_adj_scaled_absolute_abundance, animal.type=="Salamander")
+Salamander_absolute <- subset_samples(physeq_16S_adj_scaled_absolute_abundance, animal.type=="Salamander")
 
 # taxa barplot 
 bp <- taxa_barplot(Salamander_relative, target_glom = "Genus", normalize = TRUE, treatment_variable = "host.genus", abundance_type = "relative", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet")
@@ -457,7 +457,6 @@ print(plot_relative)
 
 plot_absolute <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", group = "Env_broad_scale.x", top = 10, x_axes_font = 10, y_axes_font = 10, legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = FALSE, output_prefix = "non_relativized_abundance_plot")
 print(plot_absolute)
-
 
 
 # Check abundance distribution via Ridge Plots before and after converting to absolute abundance
@@ -483,8 +482,10 @@ alluvial_plot <- alluvial_plot(data = meli,axes = c(Abundance, factor1, factor2,
 
 
 # selecting the most important ASVs/OTUs through RandomForest classification
-rf_physeq <- RandomForest_selected_ASVs(physeq_16S_adj_scaled_absolute_abundance, response_var = "host.species")
+#Salamander_absolute= subset of our phyloseq object
+rf_physeq <- RandomForest_selected_ASVs(Salamander_absolute, response_var = "Host_Species", na_vars = c("Habitat", "Ecoregion_III", "Host_genus", "Animal_type"))
 plot_asvs_abundance(rf_physeq, response_var = "host.species", x_var = "ecoregion.III", rank_var = "Phylum")
+
 
 #detect common ASVs/OTUs
 common_asvs_data <- common_asvs(rf_physeq, core.microbiome, output_csv = "common_asvs.csv", output_rds = "common_asvs.rds")
