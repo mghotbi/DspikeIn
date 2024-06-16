@@ -172,7 +172,7 @@ writeXStringSet(ref_sequences, "tetra.fasta")
 
 # Now we can run these functions together
 # Plot phylogenetic tree
-plot_tree(Tetragenococcus, output_prefix = "p0", width = 18, height = 18)
+plot_tree_custom(Tetragenococcus, output_prefix = "p0", width = 18, height = 18, layout = "circular")
 
 # Plot the tree with glommed OTUs at 0.2 resolution/ or modify it
 plot_glommed_tree(Tetragenococcus, resolution = 0.2, output_prefix = "top", width = 18, height = 18)
