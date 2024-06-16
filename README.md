@@ -438,11 +438,12 @@ taxa_names(physeq_16S_adj_scaled_absolute_abundance) <- paste0("ASV", seq(ntaxa(
 physeq_16S_adj_scaled_absolute_abundance <- tidy_phyloseq(physeq_16S_adj_scaled_absolute_abundance)
 saveRDS(physeq_16S_adj_scaled_absolute_abundance, "physeq_16S_adj_scaled_absolute_abundance.rds")
 
-# simple barplot of taxonomy abundance
+
 # subset salamander variable from both relative and absolute abundance
 Salamander_relative <- subset_samples(spiked_16S, animal.type=="Salamander")
 Salamander_relative <- subset_samples(physeq_16S_adj_scaled_absolute_abundance, animal.type=="Salamander")
 
+# taxa barplot 
 bp <- taxa_barplot(Salamander_relative, target_glom = "Genus", normalize = TRUE, treatment_variable = "host.genus", abundance_type = "relative", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet")
 print(bp$barplot)
 
