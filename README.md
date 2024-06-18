@@ -221,6 +221,8 @@ Retrieved spiked species are correlated with abundance and can therefore vary pe
 
 
 
+
+
 | Overal relationship between abundance and retrived spiked species | ASVs Or OTUs | Acceptable range|
 |:------------------------------------:|:----------:|:---------:|
 | ![Overal relationship between abundance and spiked sp reterival](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/re.png) | ![ASVs vs OTUs](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/pngof%20desired.png) | ![Acceptable range](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/Acceptable%20percentage%20(1).png) |
