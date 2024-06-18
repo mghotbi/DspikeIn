@@ -253,7 +253,7 @@ spiked_16S_OTU <- tidy_phyloseq(spiked_16S_OTU)
 
 ```
 
-### Examine Your Count Data/Biome Before Going Further
+### Examine Your Count Table/Biom File Before Going Further
 
 
 ```r
