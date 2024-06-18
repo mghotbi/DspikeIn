@@ -317,7 +317,7 @@ summ_count_phyloseq(spiked_16S_evenDepth)
 
 ## Preprocessing for Scaling Factor Calculation  
 
-If you are using OTUs and have only one OTU rooted from the spiked species, you can skip this preprocessing step. Follow the steps below to estimate the success of spike-in, particularly check if you have any samples with under or over-spikes.
+If you are using OTUs and have only one OTU rooted from the spiked species, you can skip this preprocessing step. Follow the steps below to estimate the success of spike-in, particularly check if you have any samples with under or over-spikes.If the spiked species appear in several ASVs, check their phylogenetic distances and compare them to the reference sequences of your positive control. If the spiked species of interest has gene copy number variations and you prefer not to sum their abundances, use the MAX option instead of SUM to combine these ASVs under a single taxon, simplifying data processing.
 
 
 **Modify the threshold of acceptable spiked species % as needed. For detailed guidance on acceptable thresholds (passed_range), please refer to the instructions in our upcoming paper.**
