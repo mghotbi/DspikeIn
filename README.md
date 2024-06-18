@@ -198,7 +198,6 @@ Figure 1.
 
 
 
-
 ```markdown
 ## Aligned Sequences
 
@@ -215,7 +214,7 @@ DNAStringSet object of length 5:
 
 
 
-![WhyOTUs](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/Copy%20of%20Untitled%20(17).png)
+![WhyOTUs](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/ASVOTU.png)
 
 
 Retrieved spiked species are correlated with abundance and can therefore vary per system of study. The retrieved spiked species across taxa abundance was tested. We divided this range into 0-10%, 10-15%, 15-25%, 25-35%, and 35-100% to test which range can lead to significant variation in the percentage of retrieved spiked species and scaling factors across abundance. The results revealed that we can expand the acceptable range of retrieved spiked species percentage to 35% in our model system, which contrasts with [Roa et al., 2021](https://www.nature.com/articles/s41586-021-03241-8), who noted that the acceptable range of retrieved spiked species needs to be between 0.1% and 10%.
