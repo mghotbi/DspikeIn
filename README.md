@@ -218,7 +218,7 @@ DNAStringSet object of length 5:
 
 ---
 
-Retrieved spiked species are correlated with abundance and can therefore vary per system of study. The retrieved spiked species across taxa abundance was tested. We divided this range into *0-10%, 10-15%, 15-25%, 25-35%, and 35-100%* to test which range can lead to significant variation in the percentage of retrieved spiked species and scaling factors across abundance. The results revealed that we can expand the acceptable range of retrieved spiked species percentage to 35% in our model system, which contrasts with [Roa et al., 2021](https://www.nature.com/articles/s41586-021-03241-8), who noted that the acceptable range of retrieved spiked species should be between 0.1% and 10%.
+Retrieved spiked species are correlated with abundance and can therefore vary per system of study. The retrieved spiked species across taxa abundance was tested. We divided this range into *0-10%, 10-15%, 15-25%, 25-35%, and 35-100%* to test which range can lead to significant variation in the percentage of retrieved spiked species and scaling factors across abundance. The results revealed that we can expand the acceptable range of retrieved spiked species percentage to 35% in our model system, which contrasts with [Roa et al., 2021](https://www.nature.com/articles/s41586-021-03241-8), who noted that the acceptable range of retrieved spiked species can be between 0.1% and 10%.
 
 
 ---
@@ -317,13 +317,18 @@ summ_count_phyloseq(spiked_16S_evenDepth)
 
 ## Preprocessing for Scaling Factor Calculation  
 
-If you are using OTUs and have only one OTU rooted from the spiked species, you can skip this preprocessing step. Follow the steps below to estimate the success of spike-in, particularly check if you have any samples with under or over-spikes.If the spiked species appear in several ASVs, check their phylogenetic distances and compare them to the reference sequences of your positive control. If the spiked species of interest has gene copy number variations and you prefer not to sum their abundances, use the MAX option instead of SUM to combine these ASVs under a single taxon, simplifying data processing.
+If you are using OTUs and have only one OTU rooted from the spiked species, you can skip this preprocessing step. Follow the steps below to estimate the success of spike-in, particularly check if you have any samples with under or over-spikes.If the spiked species appear in several ASVs, check their phylogenetic distances and compare them to the reference sequences of your positive control. If the spiked species of interest has gene copy number variations and you prefer not to sum their abundances, use the `max` option instead of `sum` to combine these ASVs under a single taxon, simplifying data processing.
+
+```
 
 
 **Modify the threshold of acceptable spiked species % as needed. For detailed guidance on acceptable thresholds (passed_range), please refer to the instructions in our upcoming paper.**
 
 ```r
 # Merg the spiked species
+- **merge_method = "max"**: Selects the maximum abundance among ASVs of the spiked species, ensuring the most abundant ASV is retained.
+- **merge_method = "sum"**: Sums the abundances of ASVs of the spiked species, providing a cumulative total.
+
 species_name <- "Tetragenococcus_halophilus"
 Spiked_16S_OTU_scaled <- Pre_processing_species(spiked_16S_OTU, species_name, merge_method = "sum", output_file = "merged_physeq_sum.rds")
 Spiked_16S_OTU_scaled <- Pre_processing_species(spiked_16S_OTU, species_name, merge_method = "max", output_file = "merged_physeq_max.rds")
@@ -334,6 +339,9 @@ summ_count_phyloseq(Spiked_16S_OTU_scaled)
 
 
 Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_OTU_scaled)
+
+- **passed_range = "c(0.1, 10) "**: threshold of acceptable spiked species %
+- **passed_range = "c(0.1, 35) "**: threshold of acceptable spiked species %
 
 Spiked_16S_OTU_scaled <- calculate_spike_percentage_hashcodes(Spiked_16S_OTU_scaled, hashcodes, output_path = NULL, passed_range = c(0.1, 10))
 Spiked_16S_OTU_scaled <- calculate_spike_percentage_hashcodes(Spiked_16S_OTU_scaled, hashcodes, output_path = NULL, passed_range = c(0.1, 35))
