@@ -215,16 +215,23 @@ DNAStringSet object of length 5:
 
 
 
+![WhyOTUs](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/Copy%20of%20Untitled%20(17).png)
+
+
+Retrieved spiked species are correlated with abundance and can therefore vary per system of study. The retrieved spiked species across taxa abundance was tested. We divided this range into 0-10%, 10-15%, 15-25%, 25-35%, and 35-100% to test which range can lead to significant variation in the percentage of retrieved spiked species and scaling factors across abundance. The results revealed that we can expand the acceptable range of retrieved spiked species percentage to 35% in our model system, which contrasts with [Roa et al., 2021](https://www.nature.com/articles/s41586-021-03241-8), who noted that the acceptable range of retrieved spiked species needs to be between 0.1% and 10%.
+
+
+
+| Overal relationship between abundance and retrived spiked species | ASVs Or OTUs | Acceptable range|
+|:------------------------------------:|:----------:|:---------:|
+| ![Overal relationship between abundance and spiked sp reterival](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/re.png) | ![ASVs vs OTUs](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/pngof%20desired.png) | ![Acceptable range](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/Acceptable%20percentage%20(1).png) |
+
+
+
 # By now, we have an idea of what works well for our approach, whether it's OTUs or ASVs. 
 We will proceed with OTUs. To learn more about why we chose OTUs over ASVs, and what percentage of retrieved spiked species can be considered passed or failed and why, please read our soon-to-be-published paper. For now, check the schematic of our experiment below;
 
 _The VSEARCH with de novo robust clustering algorithms at a 97% similarity threshold was used to reduce potential mistakes._ [Westcott and Schloss 2015](https://doi.org/10.7717/peerj.1487)
-
-
-
-![WhyOTUs](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/Copy%20of%20Untitled%20(17).png)
-
-Retrieved spiked species are correlated with abundance and can therefore vary per system of study. The retrieved spiked species across taxa abundance was tested. We divided this range into 0-10%, 10-15%, 15-25%, 25-35%, and 35-100% to test which range can lead to significant variation in the percentage of retrieved spiked species and scaling factors across abundance. The results revealed that we can expand the acceptable range of retrieved spiked species percentage to 35% in our model system, which contrasts with [Roa et al., 2021](https://www.nature.com/articles/s41586-021-03241-8), who noted that the acceptable range of retrieved spiked species needs to be between 0.1% and 10%.
 
 
 
