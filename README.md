@@ -15,8 +15,8 @@ In our study, *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selec
 ## Methodology
 
 ### Growth of Stock Cell Suspensions
-- **Tetragenococcus halophilus**: Cultivated in tryptic soy broth.
-- **Dekkera bruxellensis**: Cultivated in potato dextrose broth.
+- _**Tetragenococcus halophilus**_: Cultivated in tryptic soy broth.
+- _**Dekkera bruxellensis**_: Cultivated in potato dextrose broth.
 - Both microbial cultures were serially diluted, and optical density (OD) measurements were obtained using a ClarioStar plate reader. To obtain an aliquot and follow our procedure, please contact [Prof. Donnald Walker](mailto:Donald.Walker@mtsu.edu).
 
 ### DNA Extraction
