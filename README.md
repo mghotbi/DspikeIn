@@ -519,7 +519,7 @@ RP+facet_wrap(~Diet)
 
 #detect common ASVs/OTUs
 # The input is the list of phyloseq objects
-results <- detect_common_asvs_taxa(list(rf_physeq, FT, core.microbiome), 
+results <- detect_common_asvs_taxa(list(rf_physeq, FTspiked_16S , core.microbiome), 
                                    output_common_asvs_csv = "common_asvs.csv", 
                                    output_common_asvs_rds = "common_asvs.rds", 
                                    output_common_taxa_csv = "common_taxa.csv", 
