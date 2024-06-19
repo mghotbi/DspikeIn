@@ -520,18 +520,15 @@ RP+facet_wrap(~Diet)
 
 #detect common ASVs/OTUs
 # The input is the list of phyloseq objects
-# Example usage:
 results <- detect_common_asvs_taxa(list(rf_physeq, FT, core.microbiome), 
                                    output_common_asvs_csv = "common_asvs.csv", 
                                    output_common_asvs_rds = "common_asvs.rds", 
                                    output_common_taxa_csv = "common_taxa.csv", 
                                    output_common_taxa_rds = "common_taxa.rds")
 
-# Access the results
 common_asvs_phyloseq <- results$common_asvs_phyloseq
 common_taxa_phyloseq <- results$common_taxa_phyloseq
 
-physeq16S_subset <- prune_taxa(common_asvs_phyloseq, physeq_16S_adj_scaled_absolute_abundance)
-plot_asvs_abundance(physeq16S_subset, response_var = "host.species", x_var = "ecoregion.III", rank_var = "Phylum")
+plot_asvs_abundance(common_asvs_phyloseq, response_var = "host.species", x_var = "ecoregion.III", rank_var = "Phylum")
 
 ```
