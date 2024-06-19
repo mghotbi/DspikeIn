@@ -86,8 +86,7 @@ In fact, for ITS we did not need to use copy number correction. However, we reco
 create_directory("DspikeIn_16S_OTU", set_working_dir = TRUE)
 getwd()
 
-# Please note that these functions have been primarily written based on the 
-# phyloseq(https://github.com/joey711/phyloseq) and tidyverse/dplyr (https://github.com/tidyverse/dplyr) packages.
+# Please note that these functions have been primarily built using several wonderful packages, including phyloseq (https://github.com/joey711/phyloseq) and tidyverse/dplyr (https://github.com/tidyverse/dplyr).
 # Therefore, please start by creating a phyloseq object and follow the instructions.
 # To create your phyloseq object, please refer to the phyloseq tutorial (https://joey711.github.io/phyloseq).
 # The phyloseq object needs to include OTU/ASV, Taxa, phylogenetic tree, DNA reference, 
