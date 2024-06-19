@@ -129,7 +129,8 @@ physeq_16S <- readRDS("physeq_16S.rds")
 
 
 ```r
-# Required Information
+# Required Information 
+# Please note that the Spike cell numbers, species name, and selected hashcode are customizable and can be tailored to the specific needs of individual studies.
 
 # 16S rRNA
 spiked_cells <- 1847
