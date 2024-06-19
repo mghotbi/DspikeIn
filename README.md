@@ -131,6 +131,7 @@ physeq_16S <- readRDS("physeq_16S.rds")
 ```r
 # Required Information 
 # Please note that the Spike cell numbers, species name, and selected hashcode are customizable and can be tailored to the specific needs of individual studies.
+# Moreover, to proceed with the DspikeIn package, you only need to select one method to specify your spiked species: either by hashcodes or species name.
 
 # 16S rRNA
 spiked_cells <- 1847
