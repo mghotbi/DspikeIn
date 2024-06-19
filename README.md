@@ -325,7 +325,6 @@ If you are using OTUs and have only one OTU rooted from the spiked species, you 
 
 **Modify the threshold of acceptable spiked species % as needed. For detailed guidance on acceptable thresholds (passed_range), please refer to the instructions in our upcoming paper.**
 
-```r
 # Merg the spiked species
 #- merge_method = "max": Selects the maximum abundance among ASVs of the spiked species, ensuring the most abundant ASV is retained.
 #- merge_method = "sum": Sums the abundances of ASVs of the spiked species, providing a cumulative total.
