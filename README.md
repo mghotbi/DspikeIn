@@ -326,8 +326,8 @@ If you are using OTUs and have only one OTU rooted from the spiked species, you 
 
 ```r
 # Merg the spiked species
-- **merge_method = "max"**: Selects the maximum abundance among ASVs of the spiked species, ensuring the most abundant ASV is retained.
-- **merge_method = "sum"**: Sums the abundances of ASVs of the spiked species, providing a cumulative total.
+#- merge_method = "max": Selects the maximum abundance among ASVs of the spiked species, ensuring the most abundant ASV is retained.
+#- merge_method = "sum": Sums the abundances of ASVs of the spiked species, providing a cumulative total.
 
 species_name <- "Tetragenococcus_halophilus"
 Spiked_16S_OTU_scaled <- Pre_processing_species(spiked_16S_OTU, species_name, merge_method = "sum", output_file = "merged_physeq_sum.rds")
@@ -340,8 +340,8 @@ summ_count_phyloseq(Spiked_16S_OTU_scaled)
 
 Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_OTU_scaled)
 
-- **passed_range = "c(0.1, 10) "**: threshold of acceptable spiked species %
-- **passed_range = "c(0.1, 35) "**: threshold of acceptable spiked species %
+#- passed_range = "c(0.1, 10) ": threshold of acceptable spiked species %
+#- passed_range = "c(0.1, 35) ": threshold of acceptable spiked species %
 
 Spiked_16S_OTU_scaled <- calculate_spike_percentage_hashcodes(Spiked_16S_OTU_scaled, hashcodes, output_path = NULL, passed_range = c(0.1, 10))
 Spiked_16S_OTU_scaled <- calculate_spike_percentage_hashcodes(Spiked_16S_OTU_scaled, hashcodes, output_path = NULL, passed_range = c(0.1, 35))
