@@ -366,7 +366,8 @@ You can repeat the experiment by transforming the data, calculating spike percen
 methods<-read.csv("methods.csv")
 
 # Check homogeneity of variances
-Bartlett.test(methods)
+#grouping_variable needs to be categorical "Methods"
+Bartlett_test(methods_df, "Methods")
 
 # Check if data is normally distributed
 Shapiro_Wilk_test(methods)
