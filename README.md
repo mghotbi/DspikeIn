@@ -454,6 +454,12 @@ physeq_16S_adj_scaled_perc <- subset_samples(physeq_ITS_adj_scaled_absolute_abun
 conclusion(physeq_16S_adj_scaled_perc, spiked_species, identifier_type, output_path)
 
 ```
+
+Here is an example of a success or failure report:
+![Success](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/image.png)
+
+
+
 *Save your file for later. Stay tuned for the rest: transformation and several visualization methods and displaying the importance of converting relative to absolute abundance in the context of microbial ecology.*
 
 
