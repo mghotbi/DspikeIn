@@ -110,6 +110,9 @@ getwd()
 # To create your phyloseq object, please refer to the phyloseq tutorial (https://joey711.github.io/phyloseq).
 # The phyloseq object needs to include OTU/ASV, Taxa, phylogenetic tree, DNA reference, 
 # and metadata containing spiked species volume, starting from 0 (no spike species added) to 4 (4 μl of spike cell added).
+# Note: DspikeIn requires 'spiked.volume'; any other format is not readable.
+print_sentence("¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯")
+
 
 # Briefly:
 otu <- read.csv("otu.csv", header = TRUE, sep = ",", row.names = 1)
@@ -447,6 +450,8 @@ transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = 
 ### Estimating Scaling Factors After Pre-Processing
 
 To estimate scaling factors, ensure you have the `merged_spiked_species` data, which contains the merged species derived from the spiking process.
+*Note: The metadata in the phyloseq object must contain a column named 'spiked.volume' with the appropriate values.*
+
 
 ```r
 # Define the merged spiked species
