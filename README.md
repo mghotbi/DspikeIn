@@ -129,15 +129,15 @@ metadata <- sample_data(meta)
 physeq <- phyloseq(OTU, TAX, metadata)
 MyTree <- read.tree("tree.nwk")
 reference_seqs <- readDNAStringSet(file = "dna-sequences.fasta", format = "fasta")
-physeq_16S <- merge_phyloseq(physeq, reference_seqs, MyTree)
-physeq_16S <- subset_taxa(physeq_16S, apply(tax_table(physeq_16S), 1, function(x) all(x != "" & !is.na(x))))
-physeq_16S <- tidy_phyloseq(physeq_16S)
+physeq_16SASV <- merge_phyloseq(physeq, reference_seqs, MyTree)
+physeq_16SASV <- subset_taxa(physeq_16SASV, apply(tax_table(physeq_16SASV), 1, function(x) all(x != "" & !is.na(x))))
+physeq_16SASV <- tidy_phyloseq(physeq_16SASV)
 
-saveRDS(physeq_16S, file = "physeq_16S.rds")
-physeq_16S <- readRDS("physeq_16S.rds")
+saveRDS(physeq_16SASV, file = "physeq_16SASV.rds")
+physeq_16SASV <- readRDS("physeq_16SASV.rds")
 
 # Ensure your metadata contains spiked volumes:
-# physeq_ITS@sam_data$spiked_volume
+physeq_16SASV@sam_data$spiked.volume
 
 
 ```
