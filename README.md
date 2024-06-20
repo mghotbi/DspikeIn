@@ -85,21 +85,21 @@ To access the full dataset, please download it from the following link:
 [Download Full Dataset](https://drive.google.com/file/d/1AXfPRgYC2YDpUxr0p4gWQrrs0CIen8jD/view?usp=drive_link)
 
 
-```markdown
+```r
 
-## Installation
+# Installation
 
 Instructions for how to install the project.
 
-## Optional Package Installation
+# Optional Package Installation
 
 For user convenience, we provide a helper function to install and load several microbial-ecology-relevant packages, some of which are required for running the `DspikeIn` package. You can use the `install_load_packages_helper()` function to easily install and load these packages.
 
 ### Example
 
-```r
 # Use the helper function to install and load required packages
 install_load_packages_helper()
+
 ```
 
 
