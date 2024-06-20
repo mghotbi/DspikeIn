@@ -88,7 +88,7 @@ To access the full dataset, please download it from the following link:
 ```r
 
 # Installation
-#Instructions for how to install the project.
+#Instructions for how to install the DspikeIn package.
 
 
 # Optional Package Installation
