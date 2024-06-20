@@ -333,9 +333,9 @@ FTspiked_16S <- relativized_filtered_taxa(
   threshold_relative_abundance = 0.001)
 summ_count_phyloseq(FTspiked_16S)
 
-# Random subsampling to even depth with a small trim
-spiked_16S_evenDepth <- randomsubsample_Trimmed_evenDepth(spiked_16S_OTU, smalltrim = 0.001)
-summ_count_phyloseq(spiked_16S_evenDepth)
+# Adjust prevalence based on the minimum reads
+spiked_16S_min <- adjusted_prevalence(spiked_16S_OTU, method = "min")
+
 
 ```
 
