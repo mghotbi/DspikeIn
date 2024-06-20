@@ -402,26 +402,35 @@ You can repeat the experiment by transforming the data, calculating spike percen
 
 ```r
 
-methods<-read.csv("methods.csv")
+methods<-readRDS("methods.rds")
+methods$Total.reads <- as.numeric(gsub(",", "", methods$Total.reads))
+methods$Spike.reads <- as.numeric(gsub(",", "", methods$Spike.reads))
 
-# Check homogeneity of variances
-#grouping_variable needs to be categorical "Methods"
-Bartlett_test(methods_df, "Methods")
+# Ensure grouping variable is a factor
+methods$Methods <- as.factor(methods$Methods)
+methods$Result <- as.factor(methods$Result)
+
+# Perform Bartlett test/homogeneity of variances
+Bartlett_test(methods, "Result")
+Bartlett_test(methods, "Methods")
 
 # Check if data is normally distributed
-Shapiro_Wilk_test(methods)
+Shapiro_Wilk_test(methods, "Methods")
+Shapiro_Wilk_test(methods, "Result")
 
+# y_vars are numerical variables of your interest to be analysed
 y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
+# x_var is a categorical variable
+x_var <- "Methods"
+# the color_pallet is MG here
 
 # scale data
 scaled <- methods %>% mutate_at(c("Total.reads", "Spike.reads", "Spike.percentage" ), ~(scale(.) %>% as.vector))
- 
+
 # Perform Kruskal-Wallis test
-transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", colors = MG, stat_test = "kruskal.test")
-
+transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "anova")
 # Perform one-way ANOVA
-transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", colors = MG, stat_test = "anova")
-
+transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
 
 
 ```
