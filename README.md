@@ -347,11 +347,11 @@ If you are using OTUs and have only one OTU rooted from the spiked species, you 
 ```
 
 
-#**Modify the threshold of acceptable spiked species % as needed. For detailed guidance on acceptable thresholds (passed_range), please refer to the instructions in our upcoming paper.**
+# Modify the threshold of acceptable spiked species % as needed. For detailed guidance on acceptable thresholds (passed_range), please refer to the instructions in our upcoming paper.
 
 # Merg the spiked species
-#- merge_method = "max": Selects the maximum abundance among ASVs of the spiked species, ensuring the most abundant ASV is retained.
-#- merge_method = "sum": Sums the abundances of ASVs of the spiked species, providing a cumulative total.
+# merge_method = "max": Selects the maximum abundance among ASVs of the spiked species, ensuring the most abundant ASV is retained.
+# merge_method = "sum": Sums the abundances of ASVs of the spiked species, providing a cumulative total.
 
 
 species_name <- "Tetragenococcus_halophilus"
@@ -364,7 +364,7 @@ summ_count_phyloseq(Spiked_16S_sum_scaled)
 
 
 Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_sum_scaled)
-
+# Now calculate the spiked species retrieval percentage. Customize the passed_range and merged_spiked_species/merged_spiked_hashcodes based on your preferences.
 # passed_range = "c(0.1, 10) ": threshold of acceptable spiked species %
 # passed_range = "c(0.1, 35) ": threshold of acceptable spiked species %
 ## select either merged_spiked_species or merged_spiked_hashcodes
