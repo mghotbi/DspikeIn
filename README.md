@@ -327,10 +327,10 @@ summ_count_phyloseq(transformed_16S)
 # Relativize and filter taxa based on selected thresholds
 FTspiked_16S <- relativized_filtered_taxa(
   spiked_16S_OTU,
-  threshold_percentage = 0.001,
-  threshold_mean_abundance = 0.001,
+  threshold_percentage = 0.0001,
+  threshold_mean_abundance = 0.0001,
   threshold_count = 5,
-  threshold_relative_abundance = 0.001)
+  threshold_relative_abundance = 0.0001)
 summ_count_phyloseq(FTspiked_16S)
 
 # Adjust prevalence based on the minimum reads
@@ -355,26 +355,32 @@ If you are using OTUs and have only one OTU rooted from the spiked species, you 
 
 
 species_name <- "Tetragenococcus_halophilus"
-Spiked_16S_OTU_scaled <- Pre_processing_species(spiked_16S_OTU, species_name, merge_method = "sum", output_file = "merged_physeq_sum.rds")
-Spiked_16S_OTU_scaled <- Pre_processing_species(spiked_16S_OTU, species_name, merge_method = "max", output_file = "merged_physeq_max.rds")
+Spiked_16S_sum_scaled <- Pre_processing_species(spiked_16S_OTU, species_name, merge_method = "sum", output_file = "merged_physeq_sum.rds")
+Spiked_16S_max_scaled <- Pre_processing_species(spiked_16S_OTU, species_name, merge_method = "max", output_file = "merged_physeq_max.rds")
 
-Spiked_16S_OTU_scaled <- Pre_processing_hashcodes(spiked_16S_OTU, hashcodes, merge_method = "sum", output_prefix = "merged_physeq_sum")
-Spiked_16S_OTU_scaled <- Pre_processing_hashcodes(spiked_16S_OTU, hashcodes, merge_method = "max", output_prefix = "merged_physeq_max")
-summ_count_phyloseq(Spiked_16S_OTU_scaled)
+Spiked_16S_sum_scaled <- Pre_processing_hashcodes(spiked_16S_OTU, hashcodes, merge_method = "sum", output_prefix = "merged_physeq_sum")
+Spiked_16S_max_scaled <- Pre_processing_hashcodes(spiked_16S_OTU, hashcodes, merge_method = "max", output_prefix = "merged_physeq_max")
+summ_count_phyloseq(Spiked_16S_sum_scaled)
 
 
-Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_OTU_scaled)
+Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_sum_scaled)
 
-#- passed_range = "c(0.1, 10) ": threshold of acceptable spiked species %
-#- passed_range = "c(0.1, 35) ": threshold of acceptable spiked species %
+# passed_range = "c(0.1, 10) ": threshold of acceptable spiked species %
+# passed_range = "c(0.1, 35) ": threshold of acceptable spiked species %
+## select either merged_spiked_species or merged_spiked_hashcodes
+# merged_spiked_species = merged_spiked_species 
+# merged_spiked_hashcodes = merged_spiked_hashcodes
 
-Spiked_16S_OTU_scaled <- calculate_spike_percentage_hashcodes(Spiked_16S_OTU_scaled, hashcodes, output_path = NULL, passed_range = c(0.1, 10))
-Spiked_16S_OTU_scaled <- calculate_spike_percentage_hashcodes(Spiked_16S_OTU_scaled, hashcodes, output_path = NULL, passed_range = c(0.1, 35))
-calculate_summary_stats_table(Spiked_16S_OTU_scaled)
+merged_spiked_species <- c("Tetragenococcus_halophilus")
+result <- calculate_spike_percentage(Spiked_16S_OTU_scaled, merged_spiked_species, passed_range = c(0.1, 11))
+calculate_summary_stats_table(result)
 
-merg<-calculate_spike_percentage_species(Spiked_16S_OTU_scaled, spiked_species, identifier_type = "species", output_path = NULL, passed_range = c(0.1, 10))
-merg<-calculate_spike_percentage_species(Spiked_16S_OTU_scaled, spiked_species, identifier_type = "species", output_path = NULL, passed_range = c(0.1, 35))
-calculate_summary_stats_table(merg)
+# Define your merged_spiked_hashcodes
+merged_Tetra <- subset_taxa(Spiked_16S_OTU_scaled, Species == "Tetragenococcus_halophilus")
+merged_spiked_hashcodes <- row.names(tax_table(merged_Tetra))
+result <- calculate_spike_percentage(Spiked_16S_OTU_scaled,  merged_spiked_hashcodes, passed_range = c(0.1, 35))
+calculate_summary_stats_table(result)
+
 
 ```
 
