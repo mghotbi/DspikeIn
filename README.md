@@ -152,18 +152,18 @@ physeq_16S <- readRDS("physeq_16S.rds")
 # Moreover, to proceed with the DspikeIn package, you only need to select one method to specify your spiked species: either by hashcodes or species name.
 
 # 16S rRNA
-spiked_cells <- 1847
+spiked_cells <-1847
 species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp")
-merged_spiked_species <- "Tetragenococcus_halophilus"
-Tetragenococcus_halophilus <- subset_taxa(physeq_16S, Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp")
-hashcodes <- row.names(tax_table(Tetragenococcus_halophilus))
-
-# If you intend to use the hashcodes to identify your spiked species, please skip this line of code:
-# taxa_names(physeq_16S) <- paste0("ASV", seq(ntaxa(physeq_16S)))
+merged_spiked_species<-"Tetragenococcus_halophilus"
+Tetra <- subset_taxa(physeq_16SASV,Species=="Tetragenococcus_halophilus" | Species=="Tetragenococcus_sp")
+hashcodes <- row.names(phyloseq::tax_table(Tetra))
 
 # ITS rDNA
 spiked_cells <- 733
 species_names <- spiked_species <- merged_spiked_species <- "Dekkera_bruxellensis"
+Dekkera <- subset_taxa(physeq_ITSASV, Species=="Dekkera_bruxellensis")
+hashcodes <- row.names(phyloseq::tax_table(Dekkera))
+
 ```
 
 
@@ -179,32 +179,37 @@ This section demonstrates how to use various functions from the package to plot 
 # using the Neighbor-Joining method  based on a Jukes-Cantor distance matrix, and plots the tree with bootstrap values.
 # we compare the Sanger read of Tetragenococcus halophilus with the FASTA sequence of Tetragenococcus halophilus from our phyloseq object.
 
-# Subset the phyloseq object to include only Tetragenococcus species
-Tetragenococcus <- subset_taxa(physeq_16S_ASVs, Species == "Tetragenococcus_halophilus")
-Tetragenococcus <- subset_taxa(Tetragenococcus, !is.na(taxa_names(Tetragenococcus)) & taxa_names(Tetragenococcus) != "")
-tree <- phy_tree(Tetragenococcus)
+# Subset the phyloseq object to include only Tetragenococcus species first
+Tetra <- subset_taxa(Tetra, !is.na(taxa_names(Tetra)) & taxa_names(Tetra) != "")
+tree <- phy_tree(Tetra)
+ref_sequences_Tetra <- refseq(Tetra)
+writeXStringSet(ref_sequences_Tetra, "ref_sequences_Tetra.fasta")
+# postitive control 
+Tetra_control_sequences <- Biostrings::readDNAStringSet("~/Tetra_Ju.fasta")
 
-# Extract DNA sequences from the phyloseq object
-ref_sequences <- refseq(Tetragenococcus)
+# combine the sequences to a FASTA format and add the Sanger fasta of Tetragenococcus positive control
+combined_sequences <- c(ref_sequences_Tetra, Tetra_control_sequences)
+writeXStringSet(combined_sequences, filepath = "~/combined_fasta_file")
+combined_sequences <- Biostrings::readDNAStringSet("~/combined_fasta_file")
 
-# Write the sequences to a FASTA format and add the sanger fasta of Tetragenococcus positve control 
-writeXStringSet(ref_sequences, "tetra.fasta")
+# Plot Neighbor-Joining tree with bootstrap values to compare Tetragenococcus in your dataset with your positive control
+fasta_path <- "~/combined_fasta_file"
+plot_tree_nj(fasta_path, output_file = "neighbor_joining_tree_with_bootstrap.png")
 
-# Now we can run these functions together
+
 # Plot phylogenetic tree
-plot_tree_custom(Tetragenococcus, output_prefix = "p0", width = 18, height = 18, layout = "circular")
+plot_tree_custom(Tetra, output_prefix = "p0", width = 18, height = 18, layout = "circular")
 
 # Plot the tree with glommed OTUs at 0.2 resolution/ or modify it
-plot_glommed_tree(Tetragenococcus, resolution = 0.2, output_prefix = "top", width = 18, height = 18)
+plot_glommed_tree(Tetra, resolution = 0.2, output_prefix = "top", width = 18, height = 18)
 
 # Plot the phylogenetic tree with multiple sequence alignment
-plot_tree_with_alignment(Tetragenococcus, output_prefix = "tree_alignment", width = 15, height = 15)
+plot_tree_with_alignment(Tetra, output_prefix = "tree_alignment", width = 15, height = 15)
 
 # Plot phylogenetic tree with bootstrap values and cophenetic distances
-Bootstrap_phy_tree_with_cophenetic(Tetragenococcus, output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 500)
+Bootstrap_phy_tree_with_cophenetic(Tetra, output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 500)
 
-# Plot Neighbor-Joining tree with bootstrap values
-plot_tree_nj("tetra.fasta", output_file = "neighbor_joining_tree_with_bootstrap.png")
+
 
 ```
 
