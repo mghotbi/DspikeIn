@@ -451,7 +451,7 @@ transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = 
 ### Estimating Scaling Factors After Pre-Processing
 
 To estimate scaling factors, ensure you have the `merged_spiked_species` data, which contains the merged species derived from the spiking process.
-*Note: The metadata in the phyloseq object must contain a column named 'spiked.volume' with the appropriate values.*
+*As we have already merged either hashcodes or spiked species and are aware of the contents of the taxa table, we can proceed from here with merged_spiked_species.*
 
 
 ```r
