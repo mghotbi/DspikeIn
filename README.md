@@ -273,7 +273,7 @@ _The VSEARCH with de novo robust clustering algorithms at a 97% similarity thres
 ## Subsetting and Preprocessing Spiked Data
 
 
-*Subset the part of the data which is spiked. Keep solely spiked samples using the `spiked_volume` column.*
+*Subset the part of the data which is spiked. Keep solely spiked samples using the `spiked.volume` column.*
 
 
 ```r
