@@ -79,6 +79,16 @@ Using our spike-in positive controls and assessing the percentage of retrieved s
 In fact, for ITS we did not need to use copy number correction. However, we recommend conducting a literature review before deciding whether to sum or select the maximum abundance of OTUs/ASVs rooted from spiked-in species and calculating spike-in factors. We believe systematic evaluation before selecting or refuting each method can help prevent miscalculations ([Lofgren et al., 2018](https://doi.org/10.1111/mec.14995)), which can aid in establishing a system-dependent method for copy number correction in ITS markers.
 
 ---
+## Dataset
+
+To access the full dataset, please download it from the following link:
+[Download Full Dataset](https://drive.google.com/file/d/1AXfPRgYC2YDpUxr0p4gWQrrs0CIen8jD/view?usp=drive_link)
+
+## Installation
+
+Instructions for how to install the DspikeIn package.
+
+
 
 
 ```r
