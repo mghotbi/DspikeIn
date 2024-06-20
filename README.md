@@ -148,7 +148,7 @@ physeq_16SASV@sam_data$spiked.volume
 
 ```r
 # Required Information 
-# Please note that the Spike cell numbers, species name, and selected hashcode are customizable and can be tailored to the specific needs of individual studies.
+# Please note that the Spike cell numbers, species name, and selected hashcodes are customizable and can be tailored to the specific needs of individual studies.
 # Moreover, to proceed with the DspikeIn package, you only need to select one method to specify your spiked species: either by hashcodes or species name.
 
 # 16S rRNA
@@ -174,9 +174,9 @@ This section demonstrates how to use various functions from the package to plot 
 
 
 ```r
-# In case there are still several ASVs rooted from the spiked species, you may want to check the phylogenetic distances.
-# We first reads DNA sequences from a FASTA file, to perform multiple sequence alignment and compute a distance matrix using the maximum likelihood method, then we construct a phylogenetic tree
-# using the Neighbor-Joining method  based on a Jukes-Cantor distance matrix, and plots the tree with bootstrap values.
+# In case there are still several ASVs rooting from the spiked species, you may want to check the phylogenetic distances.
+# We first read DNA sequences from a FASTA file, to perform multiple sequence alignment and compute a distance matrix using the maximum likelihood method, then we construct a phylogenetic tree
+# using the Neighbor-Joining method  based on a Jukes-Cantor distance matrix and plot the tree with bootstrap values.
 # we compare the Sanger read of Tetragenococcus halophilus with the FASTA sequence of Tetragenococcus halophilus from our phyloseq object.
 
 # Subset the phyloseq object to include only Tetragenococcus species first
@@ -187,7 +187,7 @@ writeXStringSet(ref_sequences_Tetra, "ref_sequences_Tetra.fasta")
 # postitive control 
 Tetra_control_sequences <- Biostrings::readDNAStringSet("~/Tetra_Ju.fasta")
 
-# combine the sequences to a FASTA format and add the Sanger fasta of Tetragenococcus positive control
+# combine the Tetragenococcus FASTA files (from your dataset and the Sanger fasta of Tetragenococcus, positive control)
 combined_sequences <- c(ref_sequences_Tetra, Tetra_control_sequences)
 writeXStringSet(combined_sequences, filepath = "~/combined_fasta_file")
 combined_sequences <- Biostrings::readDNAStringSet("~/combined_fasta_file")
