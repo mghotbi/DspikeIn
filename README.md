@@ -438,7 +438,7 @@ physeq_16S_adj_scaled_absolute_abundance <- phyloseq(
 ```
 
 
-# Let's check the final conclusion and get the report table of spiked species success or failure.
+# Let's check the conclusion and get the report table of spiked species success or failure.
 
 
 
