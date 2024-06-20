@@ -275,7 +275,7 @@ _The VSEARCH with de novo robust clustering algorithms at a 97% similarity thres
 ```r
 
 # Subset spiked samples (264 samples are spiked)
-spiked_16S_OTU <- subset_samples(physeq_16S_OTU, spiked_volume %in% c("2", "1"))
+spiked_16S_OTU <- subset_samples(physeq_16S_OTU, spiked.volume %in% c("2", "1"))
 spiked_16S_OTU <- tidy_phyloseq(spiked_16S_OTU)
 
 ```
