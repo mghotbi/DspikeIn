@@ -1,7 +1,7 @@
 # DspikeIn
 The importance of converting relative to absolute abundance in the context of microbial ecology: Introducing the user-friendly DspikeIn R package
 
-![How it works](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/Copy%20of%20Untitled%20(2).png)
+![How it works](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/Copy%20of%20Untitled%20(2).png)
 
 
 ---
@@ -194,7 +194,7 @@ Figure 1.
 
 | Neighbor Joining Tree with Bootstrap | Tetra Plot with Bootstrap | Cophenetic tree with Bootstrap|
 |:------------------------------------:|:----------:|:---------:|
-| ![Neighbor Joining Tree](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/JU.png?raw=true) | ![Tetra Plot](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/tetra.png?raw=true) | ![cophenetic](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/Rplot02.png?raw=true) |
+| ![Neighbor Joining Tree](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/JU.png?raw=true) | ![Tetra Plot](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/tetra.png?raw=true) | ![cophenetic](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/Rplot02.png?raw=true) |
 
 
 
@@ -215,7 +215,7 @@ DNAStringSet object of length 5:
 
 
 
-![WhyOTUs](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/ASVOTU.png)
+![WhyOTUs](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/ASVOTU.png)
 
 ---
 
@@ -229,7 +229,7 @@ Retrieved spiked species are correlated with abundance and can therefore vary pe
 
 | ASVs Or OTUs | Acceptable range|
 |:----------:|:---------:|
-| ![ASVs vs OTUs](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/pngof%20desired.png) | ![Acceptable range](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/range.png) |
+| ![ASVs vs OTUs](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/pngof%20desired.png) | ![Acceptable range](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/range.png) |
 
 
 
@@ -390,7 +390,7 @@ transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = 
 
 | Spiked sp Percentage ANOVA | Spiked sp Reads ANOVA | Total Reads ANOVA |
 |:--------------------------:|:---------------------:|:-----------------:|
-| ![Spike Percentage ANOVA](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/plot_Spike.percentage_ANOVA.jpg?raw=true) | ![Spike Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/plot_Spike.reads_ANOVA.png?raw=true) | ![Total Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/plot_Total.reads_ANOVA.jpg?raw=true) |
+| ![Spike Percentage ANOVA](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/plot_Spike.percentage_ANOVA.jpg?raw=true) | ![Spike Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/plot_Spike.reads_ANOVA.png?raw=true) | ![Total Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/plot_Total.reads_ANOVA.jpg?raw=true) |
 
 ---
 
@@ -455,7 +455,7 @@ conclusion(physeq_16S_adj_scaled_perc, spiked_species, identifier_type, output_p
 ```
 
 Here is an example of a success or failure report:
-![Success](https://github.com/mghotbi/DspikeIn/blob/MitraGhotbi/image.png)
+![Success](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/image.png)
 
 
 *Save your file for later. Stay tuned for the rest: transformation and several visualization methods and displaying the importance of converting relative to absolute abundance in the context of microbial ecology.*
