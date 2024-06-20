@@ -382,6 +382,14 @@ result <- calculate_spike_percentage(Spiked_16S_OTU_scaled,  merged_spiked_hashc
 calculate_summary_stats_table(result)
 
 
+
+# If you decide to remove the failed reads and go forward with passed reads, here is what you need to do
+# you can also go forward with the original file and remove the failed reads after converting relative to absolute abundance
+# Filter to get only the samples that passed
+passed_samples <- result$Sample[result$Result == "passed"]
+# Subset the original phyloseq object to keep only the samples that passed
+passed_physeq <- prune_samples(passed_samples, Spiked_16S_ASV_scaled)
+
 ```
 
 ## Data Normalization and Transformation
