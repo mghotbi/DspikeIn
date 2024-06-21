@@ -498,13 +498,16 @@ physeq_16S_adj_scaled_absolute_abundance <- phyloseq(
 
 ```r
 
-# Define the parameters once. Do not repeat if already done.
-species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp")
-identifier_type <- "species"
-output_path <- "spike_success_report.docx"
+# Define the parameters once.
+merged_spiked_species <- c("Tetragenococcus_halophilus")
+max_passed_range <- 35
 
-physeq_16S_adj_scaled_perc <- subset_samples(physeq_ITS_adj_scaled_absolute_abundance, sample_or_blank != "blank")
-conclusion(physeq_16S_adj_scaled_perc, spiked_species, identifier_type, output_path)
+# Subset the phyloseq object to exclude blanks
+physeq_16S_adj_scaled_perc <- subset_samples(Spiked_16S_OTU_scaled, sample.or.blank != "blank")
+
+# Generate the spike success report and summary statistics
+summary_stats <- conclusion(physeq_16S_adj_scaled_perc, merged_spiked_species, max_passed_range)
+print(summary_stats)
 
 ```
 
