@@ -39,7 +39,8 @@ In our study, *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selec
 
 ## Using QIIME2 Plugin for GCN Normalization
 
-To normalize your data by gene copy number (GCN) using the QIIME2 plugin, follow the steps below. For more information, visit the q2-gcn-norm GitHub repository (https://github.com/Jiung-Wen/q2-gcn-norm).
+# To normalize data by gene copy number (GCN) using the QIIME2 plugin, follow the steps below.
+# For more information, visit the q2-gcn-norm GitHub repository (https://github.com/Jiung-Wen/q2-gcn-norm).
 
 ### Command
 
