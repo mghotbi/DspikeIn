@@ -591,13 +591,18 @@ core.microbiome <- readRDS("core.microbiome.rds")
 ```r
 
 # shift to dataframe and plot the abundance of taxa across the factors
-meli<-psmelt(physeq_16S_adj_scaled_absolute_abundance)
-library(dplyr)
-result <- meli %>% 
-  dplyr::filter(Abundance > 500) %>% 
-  dplyr::select(Abundance, factor1, factor2, factor3, Phylum, Genus)
-is_alluvia_form(as.data.frame(meli), axes = 1:6, silent = TRUE)
-alluvial_plot <- alluvial_plot(data = meli,axes = c(Abundance, factor1, factor2, factor3, Phylum, Genus),abundance_threshold = 500,silent=TRUE)
+# Load data
+meli_Abs_WSal <- read.csv("meli_Abs_WSal.csv")
+meli_Rel_WSal<-read.csv("meli_Rel_WSal.csv")
+
+# Generate alluvial plot
+is_alluvia_form(as.data.frame(meli_Abs_WSal), axes = 1:6, silent = TRUE)
+alluvial_plot <- alluvial_plot(data = meli_Abs_WSal, axes = c("Diet", "Host.genus", "Ecoregion.III"), abundance_threshold = 10000, fill_variable = "Phylum", silent = TRUE, abundance_type = "absolute")
+print(alluvial_plot)
+is_alluvia_form(as.data.frame(meli_Rel_WSal), axes = 1:6, silent = TRUE)
+alluvial_plot <- alluvial_plot(data = meli_Rel_WSal, axes = c("Diet", "Host.genus", "Ecoregion.III"), abundance_threshold = 10000, fill_variable = "Phylum", silent = TRUE, abundance_type = "relative")
+print(alluvial_plot)
+
 
 ```
 
