@@ -35,7 +35,7 @@ In our study, *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selec
 - Normalization was performed on the 16S community-weighted mean ribosomal operon copy numbers to correct for potential biases in the representation of *Tetragenococcus halophilus* species in our ASV approach.
 
 
-```markdown
+````r
 
 ## Using QIIME2 Plugin for GCN Normalization
 
