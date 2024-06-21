@@ -81,8 +81,7 @@ In fact, for ITS we did not need to use copy number correction. However, we reco
 ---
 ## Dataset
 
-The full dataset will be available upon your request 
-
+# The full dataset is available upon request. A subset of the dataset is attached for use in this workshop.
 
 
 ```r
