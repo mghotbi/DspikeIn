@@ -89,6 +89,8 @@ In fact, for ITS we did not need to use copy number correction. However, we reco
 # Installation
 #Instructions for how to install the DspikeIn package.
 
+install.packages("devtools")
+devtools::install_github("mghotbi/DspikeIn", ref = "main")
 
 # Optional Package Installation
 # For users convenience, we provide a helper function to install and load several microbial-ecology-relevant packages, some of which are required for running the `DspikeIn` package.
