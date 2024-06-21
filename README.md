@@ -90,7 +90,7 @@ In fact, for ITS we did not need to use copy number correction. However, we reco
 #Instructions for how to install the DspikeIn package.
 
 install.packages("devtools")
-devtools::install_github("mghotbi/DspikeIn", ref = "main")
+devtools::install_github("mghotbi/DspikeIn")
 library(DspikeIn)
 
 # Optional Package Installation
