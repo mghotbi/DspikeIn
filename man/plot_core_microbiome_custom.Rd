@@ -38,7 +38,7 @@ A ggplot2 object representing the core microbiome prevalence heatmap.
 \description{
 This function generates a prevalence heatmap of the core microbiome at a specified taxonomic rank.
 It includes a detection threshold for prevalence, performs glomming, pruning, and proportion transformation,
-and renames taxa with an ASV prefix. The function requires the `phyloseq`, `microbiome`, and `ggplot2` packages.
+and renames taxa with an ASV prefix. The function requires the `phyloseq`, `microbiomeutilities`, and `ggplot2` packages.
 }
 \examples{
 # Example usage:

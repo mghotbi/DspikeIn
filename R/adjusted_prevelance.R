@@ -9,16 +9,7 @@
 #' @param output_file A character string specifying the file path to save the adjusted phyloseq object. Default is "adjusted_prevalence_physeq.rds".
 #' @return A phyloseq object with adjusted prevalence.
 #' @examples
-#' # Adjust prevalence based on the minimum number of reads
 #' spiked_16S_min <- adjusted_prevalence(physeq_16S_adj_scaled, method = "min")
-#' 
-#' # Adjust prevalence based on the mean number of reads
-#' spiked_16S_mean <- adjusted_prevalence(physeq_16S_adj_scaled, method = "mean")
-#' 
-#' # Adjust prevalence based on the median number of reads
-#' spiked_16S_median <- adjusted_prevalence(physeq_16S_adj_scaled, method = "median")
-#' 
-#' # Adjust prevalence based on the maximum number of reads
 #' spiked_16S_max <- adjusted_prevalence(physeq_16S_adj_scaled, method = "max")
 #' @export
 adjusted_prevalence <- function(spiked_16S, method = "min", output_file = "adjusted_prevalence_physeq.rds") {
@@ -75,14 +66,11 @@ adjusted_prevalence <- function(spiked_16S, method = "min", output_file = "adjus
 
 
 # Examples:
-# Adjust prevalence based on the minimum number of reads
-# Define the parameters
+# Define the parameters # method= min, mean, median, or max
 #spiked_species <- c("Dekkera_bruxellensis")
 #identifier_type <- "species"
 #output_path <- "spike_success_report.docx"
 
 # Adjust prevalence based on the desired method
 #spiked_16S_min <- adjusted_prevalence(physeq_16S_adj_scaled, method = "min")
-#spiked_16S_mean <- adjusted_prevalence(physeq_16S_adj_scaled, method = "mean")
-#spiked_16S_median <- adjusted_prevalence(physeq_16S_adj_scaled, method = "median")
 #spiked_16S_max <- adjusted_prevalence(physeq_16S_adj_scaled, method = "max")

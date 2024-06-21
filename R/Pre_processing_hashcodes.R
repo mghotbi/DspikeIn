@@ -11,7 +11,7 @@
 #' @return A phyloseq object with the processed data.
 #' @examples
 #' Tetra <- subset_taxa(physeqASV16, Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp")
-#' hashcodes <- row.names(otu_table(Tetra))
+#' hashcodes <- row.names(phyloseq::otu_table(Tetra))
 #' processed_data_sum <- Pre_processing_hashcodes(physeqASV16, hashcodes, merge_method = "sum", output_prefix = "merged_physeq_sum")
 #' processed_data_max <- Pre_processing_hashcodes(physeqASV16, hashcodes, merge_method = "max", output_prefix = "merged_physeq_max")
 #' summ_count_phyloseq(processed_data_sum)
@@ -24,25 +24,39 @@ Pre_processing_hashcodes <- function(spiked_16S, hashcodes, merge_method = c("su
   if (is.null(spiked_16S)) {
     stop("Error: spiked_16S dataset is NULL.")
   }
-  if (!all(hashcodes %in% taxa_names(spiked_16S))) {
+  if (!all(hashcodes %in% phyloseq::taxa_names(spiked_16S))) {
     stop("Error: One or more hashcodes not found in the dataset.")
   }
   
   if (merge_method == "sum") {
     # Use merge_taxa to merge taxa by summing their abundance
-    spiked_16S_merged <- merge_taxa(spiked_16S, hashcodes)
+    spiked_16S_merged <- phyloseq::merge_taxa(spiked_16S, hashcodes)
   } else if (merge_method == "max") {
-    # Extract the OTU table and find the maximum abundance for each sample
-    otu_tab <- otu_table(spiked_16S)
+    message("Merging taxa using the 'max' method...")
+    
+    # Extract the OTU table and find the hashcode with the maximum abundance for each sample
+    otu_tab <- phyloseq::otu_table(spiked_16S)
     max_abundances <- apply(otu_tab[hashcodes, , drop = FALSE], 2, max)
+    max_hashcode_indices <- apply(otu_tab[hashcodes, , drop = FALSE], 2, which.max)
+    max_hashcodes <- hashcodes[max_hashcode_indices]
     
     # Create a new OTU table with the maximum abundances
-    otu_tab[hashcodes[1], ] <- max_abundances
+    new_otu_tab <- otu_tab[max_hashcodes[1], , drop = FALSE]
+    new_otu_tab[] <- max_abundances
     
     # Retain the taxonomic information for the merged taxon
-    tax_table(spiked_16S)[hashcodes[1], ] <- tax_table(spiked_16S)[hashcodes[1], ]
+    new_tax_tab <- phyloseq::tax_table(spiked_16S)[max_hashcodes[1], , drop = FALSE]
     
-    spiked_16S_merged <- prune_taxa(taxa_names(spiked_16S) %in% hashcodes[1], spiked_16S)
+    # Create a new phyloseq object with the updated OTU and taxonomy tables
+    max_phyloseq <- phyloseq::phyloseq(phyloseq::otu_table(new_otu_tab, taxa_are_rows = TRUE), 
+                                       phyloseq::tax_table(new_tax_tab),
+                                       phyloseq::sample_data(spiked_16S))
+    
+    # Remove the hashcodes from the original phyloseq object
+    spiked_16S_pruned <- phyloseq::prune_taxa(!phyloseq::taxa_names(spiked_16S) %in% hashcodes, spiked_16S)
+    
+    # Merge the pruned phyloseq object with the max abundance phyloseq object
+    spiked_16S_merged <- phyloseq::merge_phyloseq(spiked_16S_pruned, max_phyloseq)
   }
   
   # Save the processed data
@@ -55,16 +69,7 @@ Pre_processing_hashcodes <- function(spiked_16S, hashcodes, merge_method = c("su
 }
 
 # Example usage:
-# Define the hashcodes you want to subset and merge
-#Tetra <- subset_taxa(physeqASV16, Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp")
-#hashcodes <- row.names(otu_table(Tetra))
-
-# Process the data using the sum method
-#processed_data_sum <- Pre_processing_hashcodes(physeqASV16, hashcodes, merge_method = "sum", output_prefix = "merged_physeq_sum")
-
-# Process the data using the max method
-#processed_data_max <- Pre_processing_hashcodes(physeqASV16, hashcodes, merge_method = "max", output_prefix = "merged_physeq_max")
-
-# Verify the results
-#summ_count_phyloseq(processed_data_sum)
-#subset_taxa(processed_data_sum, Genus == "Tetragenococcus")
+# Tetra <- subset_taxa(physeqASV16, Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp")
+# hashcodes <- row.names(phyloseq::otu_table(Tetra))
+# processed_data_sum <- Pre_processing_hashcodes(physeqASV16, hashcodes, merge_method = "sum", output_prefix = "merged_physeq_sum")
+# processed_data_max <- Pre_processing_hashcodes(physeqASV16, hashcodes, merge_method = "max", output_prefix = "merged_physeq_max")

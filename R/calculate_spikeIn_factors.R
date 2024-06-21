@@ -4,6 +4,8 @@
 #' It excludes the spiked species, merges the spiked species into one ASV, calculates the scaling factors,
 #' and saves the results as RDS, CSV, and DOCX files.
 #'
+#' Note: The metadata in the phyloseq object must contain a column named 'spiked.volume' with the appropriate values.
+#'
 #' @param physeq A phyloseq object containing the microbial data.
 #' @param spiked_cells A numeric value specifying the number of spiked cells.
 #' @param merged_spiked_species A character vector of spiked species to merge in the phyloseq object.
@@ -69,22 +71,35 @@ calculate_spikeIn_factors <- function(physeq, spiked_cells, merged_spiked_specie
   
   # Calculate scaling factors for each spiked species
   metadata <- sample_data(physeq)  # Access sample data
-  scaling_factors <- ifelse(spiked_species_reads$Total_Reads != 0, {
-    ifelse(metadata$spiked_volume == 0.5, {
-      spiked_cells / 4 / spiked_species_reads$Total_Reads
-    }, ifelse(metadata$spiked_volume == 1, {
-      spiked_cells / 2 / spiked_species_reads$Total_Reads
-    }, ifelse(metadata$spiked_volume == 2, {
-      spiked_cells / spiked_species_reads$Total_Reads
-    }, ifelse(metadata$spiked_volume == 3, {
-      spiked_cells * 1.5 / spiked_species_reads$Total_Reads
-    }, ifelse(metadata$spiked_volume == 4, {
-      spiked_cells * 2 / spiked_species_reads$Total_Reads
-    }, 0)))))
-  }, 0)
+  metadata <- as.data.frame(metadata)
   
-  # Change zeros in scaling factors to 1
-  scaling_factors[scaling_factors == 0] <- 1
+  # Ensure metadata contains the necessary spiked.volume column
+  if (!"spiked.volume" %in% colnames(metadata)) {
+    stop("metadata does not contain 'spiked.volume' column")
+  }
+  
+  # Ensure spiked.volume has no NA values
+  if (any(is.na(metadata$spiked.volume))) {
+    stop("spiked.volume column contains NA values")
+  }
+  
+  # Calculate scaling factors for each spiked species
+  scaling_factors <- ifelse(spiked_species_reads$Total_Reads != 0, {
+    ifelse(metadata$spiked.volume == 0.5, {
+      spiked_cells / 4 / spiked_species_reads$Total_Reads
+    }, ifelse(metadata$spiked.volume == 1, {
+      spiked_cells / 2 / spiked_species_reads$Total_Reads
+    }, ifelse(metadata$spiked.volume == 2, {
+      spiked_cells / spiked_species_reads$Total_Reads
+    }, ifelse(metadata$spiked.volume == 3, {
+      spiked_cells * 1.5 / spiked_species_reads$Total_Reads
+    }, ifelse(metadata$spiked.volume == 4, {
+      spiked_cells * 2 / spiked_species_reads$Total_Reads
+    }, NA)))))
+  }, NA)
+  
+  # Change NAs in scaling factors to 1
+  scaling_factors[is.na(scaling_factors)] <- 1
   
   # Save the scaling factors as 'spikeIn_factors.csv'
   write.csv(scaling_factors, file.path(output_prefix, "spikeIn_factors.csv"), row.names = FALSE)
@@ -124,13 +139,11 @@ calculate_spikeIn_factors <- function(physeq, spiked_cells, merged_spiked_specie
 }
 
 # Example usage:
-#merged_spiked_species <- c("Tetragenococcus_halophilus")
-#result <- calculate_spikeIn_factors(physeqASV16, 1874, merged_spiked_species)
-
-
-#merged_spiked_species <- "Dekkera_bruxellensis"
-#spiked_cells<- 733
-#result <- calculate_spikeIn_factors(physeq_ITS, 733, merged_spiked_species)
+# merged_spiked_species <- c("Tetragenococcus_halophilus")
+# merged_Tetra <-subset_taxa(Spiked_16S_ASV_scaled, Species=="Tetragenococcus_halophilus")
+# merged_spiked_hashcode<- row.names(tax_table(merged_Tetra)) 
+# result <- calculate_spikeIn_factors(Spiked_16S_ASV_scaled, 1874, merged_spiked_species)
+#result <- calculate_spikeIn_factors(Spiked_16S_ASV_scaled, spiked_cells, merged_spiked_hashcode)
 
 # Access the results
 # scaling_factors <- result$scaling_factors

@@ -30,7 +30,7 @@ information and creates various intermediate and final datasets for further proc
 }
 \examples{
 Tetra <- subset_taxa(physeqASV16, Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp")
-hashcodes <- row.names(otu_table(Tetra))
+hashcodes <- row.names(phyloseq::otu_table(Tetra))
 processed_data_sum <- Pre_processing_hashcodes(physeqASV16, hashcodes, merge_method = "sum", output_prefix = "merged_physeq_sum")
 processed_data_max <- Pre_processing_hashcodes(physeqASV16, hashcodes, merge_method = "max", output_prefix = "merged_physeq_max")
 summ_count_phyloseq(processed_data_sum)

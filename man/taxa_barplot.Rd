@@ -13,7 +13,8 @@ taxa_barplot(
   abundance_type = "relative",
   x_angle = 20,
   fill_variable = target_glom,
-  facet_variable = "Phylum"
+  facet_variable = "Phylum",
+  top_n_taxa = 20
 )
 }
 \arguments{
@@ -36,13 +37,15 @@ This allows the user to provide custom names for the taxonomic levels in the tax
 \item{fill_variable}{A character string specifying the variable to use for fill in stacking taxa. Default is target_glom.}
 
 \item{facet_variable}{A character string specifying the variable to use for faceting. Default is "Phylum".}
+
+\item{top_n_taxa}{A numeric value specifying the number of top taxa to include in the plot. Default is 20.}
 }
 \value{
 A list containing the ggplot2 bar plot object (`barplot`) and the pruned phyloseq object (`taxa_data`) with the top taxa.
 }
 \description{
 This function creates a bar plot of the relative or absolute abundances of taxa at a specified taxonomic rank.
-The top 20 taxa are selected, and the plot can be customized with various options.
+The top taxa are selected, and the plot can be customized with various options.
 The function uses the `tax_glom` function from the `phyloseq` package for taxonomic grouping.
 }
 \examples{

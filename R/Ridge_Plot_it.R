@@ -59,7 +59,7 @@ ridge_plot_it <- function(physeq, taxrank = "Genus", rarefaction_depth = NULL, t
   # Plot
   plot <- ggplot(ps %>% filter(Abundance > 0 & !is.na(get(taxrank))), aes_string(y = taxrank, x = "log10(Abundance)", fill = taxrank)) +
     geom_density_ridges2(scale = 1, alpha = 0.8, show.legend = FALSE) +
-    ggtitle("Distribution of Relative Abundances") +
+    ggtitle("Abundance Distribution") +
     labs(x = "Log10 (Abundance)", y = NULL) +
     theme_minimal() +
     scale_fill_manual(values = MG) +

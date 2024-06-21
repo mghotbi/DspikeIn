@@ -25,7 +25,7 @@ my_custom_theme <- function() {
       axis.ticks = element_line(colour = 'black', size = 0.35),
       legend.title = element_text(size = 12),
       legend.text = element_text(size = 12, color = "black", face = "bold"), 
-      legend.key.size = unit(1, 'cm'),
+      legend.key.size = unit(0.9, 'cm'),
       axis.title.x = element_text(family = "Times New Roman", size = 12, color = "black", face = "bold"), 
       axis.title.y = element_text(family = "Times New Roman", size = 12, color = "black", face = "bold"), 
       axis.text.x = element_text(family = "Times New Roman", size = 12, angle = 0, color = "black", face = "bold"), 

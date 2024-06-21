@@ -5,10 +5,10 @@
 #' @param X A numeric vector of data values.
 #' @param Y A factor or character vector of grouping variables.
 #' @param data A data frame containing the data to plot.
-#' @param x_var A character string specifying the column name for the x variable.
+#' @param x_var A character string specifying the column name for the x variable (categorical/factor).
 #' @param y_vars A character vector specifying the column names for the y variables.
 #' @param methods_var A character string specifying the column name for the grouping variable.
-#' @param MG A character vector specifying the colors for the boxplots. Default is MG.
+#' @param color_palette A character vector specifying the colors for the boxplots. Default is MG.
 #' @param adjustment A character string specifying the method for p-value adjustment. Default is "holm".
 #' @param output_prefix A character string specifying the prefix for the output file names. Default is "plot".
 #' @param width A numeric value specifying the width of the output plot. Default is 15.
@@ -17,7 +17,7 @@
 #' @param main A character string specifying the main title of the plot. Default is NULL.
 #' @param xlab A character string specifying the x-axis label. Default is NULL.
 #' @param ylab A character string specifying the y-axis label. Default is NULL.
-#' @param bcol A character string specifying the box color. Default is "bisque".
+#' @param bcol A character string specifying the box color. Default is "pink".
 #' @param p.adj A character string specifying the method for p-value adjustment. Default is "none".
 #' @param cexy A numeric value specifying the text size for axis labels and titles. Default is 1.5.
 #' @param varwidth A logical value specifying whether the boxes should have variable widths. Default is TRUE.
@@ -27,8 +27,9 @@
 #' @examples
 #' # Example usage for transform_plot:
 #' # y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
-#' # transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", MG = MG, stat_test = "kruskal.test")
-#' # transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", MG = MG, stat_test = "anova")
+#' # x_vars <- "Methods"
+#' # transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
+#' # transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "anova")
 #' #
 #' # Example usage for individual boxplots:
 #' # X <- rnorm(100)
@@ -40,7 +41,7 @@ transform_plot <- function(
     x_var = NULL,
     y_vars = NULL,
     methods_var = NULL,
-    MG = MG,
+    color_palette = MG,
     adjustment = "holm",
     output_prefix = "plot",
     width = 15,
@@ -51,7 +52,7 @@ transform_plot <- function(
     main = NULL,
     xlab = NULL,
     ylab = NULL,
-    bcol = "bisque",
+    bcol = "pink",
     p.adj = "none",
     cexy = 1.5,
     varwidth = TRUE,
@@ -73,19 +74,22 @@ transform_plot <- function(
   library(dplyr)
   library(ggpubr)
   
-  if (!is.null(data) && !is.null(x_var) && !is.null(y_vars) && !is.null(methods_var) && !is.null(MG)) {
+  if (!is.null(data) && !is.null(x_var) && !is.null(y_vars) && !is.null(methods_var)) {
+    # Ensure x_var is a factor
+    data[[x_var]] <- as.factor(data[[x_var]])
+    
     # Suffix for file names based on stat_test
     test_suffix <- ifelse(stat_test == "kruskal.test", "Kruskal", "ANOVA")
     
     # Function to create individual boxplots
     create_boxplot <- function(y_var) {
-      ggplot(data, aes(x = .data[[methods_var]], y = .data[[y_var]], fill = .data[[methods_var]])) +
+      ggplot(data, aes(x = .data[[x_var]], y = .data[[y_var]], fill = .data[[x_var]])) +
         ggplot2::geom_boxplot() +
-        scale_fill_manual(values = MG) +
-        labs(x = "", y = y_var, title = y_var) +
+        scale_fill_manual(values = color_palette) +
+        labs(x = xlab, y = y_var, title = y_var) +
         theme_minimal() +
         theme(
-          axis.text = element_text(size = 20, angle = 20, hjust = 1),
+          axis.text = element_text(size = 20, angle = 90, hjust = 1),
           axis.title = element_text(size = 22),
           plot.title = element_text(size = 24),
           legend.text = element_text(size = 20),
@@ -186,36 +190,17 @@ transform_plot <- function(
 }
 
 # Example y_vars
-#y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
-
+# y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
 # Ensure the columns are numeric
-#methods <- methods %>%
- # dplyr::mutate(
-  #  Total.reads = as.numeric(Total.reads),
-  #  Spike.reads = as.numeric(Spike.reads),
-   # Spike.percentage = as.numeric(Spike.percentage)  )
-
-#print(sapply(methods[, c("Total.reads", "Spike.reads", "Spike.percentage")], class))
-
+# methods <- methods %>%   dplyr::mutate(  Total.reads = as.numeric(Total.reads), Spike.reads = as.numeric(Spike.reads),Spike.percentage = as.numeric(Spike.percentage)  )
 # Remove rows with NA values
-#methods <- methods %>%
-  #dplyr::filter(
-  #  !is.na(Total.reads),
-   # !is.na(Spike.reads),
-   # !is.na(Spike.percentage)  )
+# methods <- methods %>%   dplyr::filter(!is.na(Total.reads),  !is.na(Spike.reads),  !is.na(Spike.percentage)  )
 
 # Scale the specified columns
-#scaled <- methods %>%
-#  dplyr::mutate_at(
- #   c("Total.reads", "Spike.reads", "Spike.percentage"),    ~ scale(.) %>% as.vector  )
+# scaled <- methods %>%   dplyr::mutate_at( c("Total.reads", "Spike.reads", "Spike.percentage"),    ~ scale(.) %>% as.vector  )
 
-# Perform Kruskal-Wallis test
-#transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", colors = MG, stat_test = "kruskal.test")
+# Perform Kruskal-Wallis test with MG color palette
+#transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
 
-# Perform one-way ANOVA
-#transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", colors = MG, stat_test = "anova")
-
-# Perform individual boxplots with Kruskal-Wallis test
-#X <- rnorm(100)
-#Y <- rep(c("A", "B"), each = 50)
-#transform_plot(X = X, Y = Y)
+# Perform one-way ANOVA with MG color palette
+# transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "anova")

@@ -6,17 +6,17 @@
 \usage{
 conclusion(
   physeq,
-  spiked_species,
-  identifier_type = "species",
+  merged_spiked_species,
+  max_passed_range = 11,
   output_path = NULL
 )
 }
 \arguments{
 \item{physeq}{A phyloseq object containing the microbial data.}
 
-\item{spiked_species}{A character vector of spiked species to check in the phyloseq object.}
+\item{merged_spiked_species}{A character vector of spiked species to check in the phyloseq object.}
 
-\item{identifier_type}{A character string specifying the type of identifier to use ("species" or "other"). Default is "species".}
+\item{max_passed_range}{A numeric value specifying the maximum acceptable spike percentage. Default is 11.}
 
 \item{output_path}{A character string specifying the path to save the output files. Default is NULL, which saves the report as "spike_success_report.docx".}
 }
@@ -30,13 +30,13 @@ It uses the `flextable` package to create and format the tables in the DOCX file
 }
 \examples{
 # Define the parameters
-spiked_species <- c("Dekkera_bruxellensis")
-identifier_type <- "species"
+merged_spiked_species <- c("Dekkera_bruxellensis")
+max_passed_range <- 11
 output_path <- "spike_success_report.docx"
 
 # Subset the phyloseq object to exclude blanks
 physeq_ITS_adj_scaled_perc <- subset_samples(physeq_ITS_OTU, sample_or_blank != "blank")
 
 # Generate the spike success report and summary statistics
-conclusion(physeq_ITS_adj_scaled_perc, spiked_species, identifier_type, output_path)
+conclusion(physeq_ITS_adj_scaled_perc, merged_spiked_species, max_passed_range, output_path)
 }

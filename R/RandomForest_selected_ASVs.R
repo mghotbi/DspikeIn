@@ -124,8 +124,5 @@ RandomForest_selected_ASVs <- function(physeq, response_var, minlib = 15000, pru
 }
 
 # Example usage:
-# Ensure you have a phyloseq object `physeq`
-# Use the name of the column in sample_data for response_var
-# rf_physeq <- RandomForest_selected_ASVs(physeqASV16, response_var = "host.species", na_vars = c("Habitat", "ecoregion.III", "host.genus", "animal.type"))
-# o = ridge_plot_it(rf_physeq)
-# o + facet_wrap(~Diet)
+#rf_physeq <- RandomForest_selected_ASVs(physeq,response_var = "host.species",na_vars = c("Habitat", "Ecoregion_III", "Host_genus", "Age"))
+

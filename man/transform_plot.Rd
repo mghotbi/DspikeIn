@@ -9,7 +9,7 @@ transform_plot(
   x_var = NULL,
   y_vars = NULL,
   methods_var = NULL,
-  MG = MG,
+  color_palette = MG,
   adjustment = "holm",
   output_prefix = "plot",
   width = 15,
@@ -20,7 +20,7 @@ transform_plot(
   main = NULL,
   xlab = NULL,
   ylab = NULL,
-  bcol = "bisque",
+  bcol = "pink",
   p.adj = "none",
   cexy = 1.5,
   varwidth = TRUE,
@@ -31,13 +31,13 @@ transform_plot(
 \arguments{
 \item{data}{A data frame containing the data to plot.}
 
-\item{x_var}{A character string specifying the column name for the x variable.}
+\item{x_var}{A character string specifying the column name for the x variable (categorical/factor).}
 
 \item{y_vars}{A character vector specifying the column names for the y variables.}
 
 \item{methods_var}{A character string specifying the column name for the grouping variable.}
 
-\item{MG}{A character vector specifying the colors for the boxplots. Default is MG.}
+\item{color_palette}{A character vector specifying the colors for the boxplots. Default is MG.}
 
 \item{adjustment}{A character string specifying the method for p-value adjustment. Default is "holm".}
 
@@ -59,7 +59,7 @@ transform_plot(
 
 \item{ylab}{A character string specifying the y-axis label. Default is NULL.}
 
-\item{bcol}{A character string specifying the box color. Default is "bisque".}
+\item{bcol}{A character string specifying the box color. Default is "pink".}
 
 \item{p.adj}{A character string specifying the method for p-value adjustment. Default is "none".}
 
@@ -80,8 +80,9 @@ This function generates boxplots for multiple y variables and performs statistic
 \examples{
 # Example usage for transform_plot:
 # y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
-# transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", MG = MG, stat_test = "kruskal.test")
-# transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", MG = MG, stat_test = "anova")
+# x_vars <- "Methods"
+# transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
+# transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "anova")
 #
 # Example usage for individual boxplots:
 # X <- rnorm(100)

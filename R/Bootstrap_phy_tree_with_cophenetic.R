@@ -81,18 +81,5 @@ Bootstrap_phy_tree_with_cophenetic <- function(physeq_object, output_file = "tre
 }
 
 # Example:
-# subsetted Tetragenococcus from phyloseq object
-# Tetragenococcus <- subset_taxa(OTUn16S, Genus == "Tetragenococcus")
-# Plot phylogenetic tree
-# plot_tree_custom(Tetragenococcus, output_prefix = "p0", width = 18, height = 18)
+# Bootstrap_phy_tree_with_cophenetic(physeq_object = Tetragenococcus, output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 1000)
 
-# Plot the tree with glommed OTUs at 0.2 resolution
-# plot_glommed_tree <- function(physeq, resolution, output_prefix = "glommed_tree", width = 18, height = 18) {
-#   # Perform tree glomming
-#   physeq_glommed <- speedyseq::tree_glom(physeq, resolution = resolution)
-
-#   # Plot the glommed tree
-#   plot_tree_custom(physeq_glommed, output_prefix = output_prefix, width = width, height = height)
-# }
-# Plot phylogenetic tree with bootstrap values and cophenetic distances
-# Bootstrap_phy_tree_with_cophenetic(Tetragenococcus, output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 500)

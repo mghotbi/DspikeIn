@@ -28,6 +28,9 @@ This function calculates the scaling factors for specified spiked species in a p
 It excludes the spiked species, merges the spiked species into one ASV, calculates the scaling factors,
 and saves the results as RDS, CSV, and DOCX files.
 }
+\details{
+Note: The metadata in the phyloseq object must contain a column named 'spiked.volume' with the appropriate values.
+}
 \examples{
 # Example usage:
 # Define the spiked species

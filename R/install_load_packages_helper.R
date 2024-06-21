@@ -10,7 +10,7 @@
 #' @export
 install_load_packages_helper <- function() {
   reqpkg <- c(
-    "edgeR", "microbiome", "matrixStats", "e1071", "vcd", "qpdf",
+    "edgeR", "microbiome","microbiomeutilities", "matrixStats", "e1071", "vcd", "qpdf",
     "optparse", "phyloseq", "caret", "DESeq2", "foreach", "magrittr",
     "doParallel", "viridis", "plyr", "reshape2", "ggplot2", "grid",
     "vegan", "scales", "cluster", "ape", "dplyr", "ggridges", "speedyseq",

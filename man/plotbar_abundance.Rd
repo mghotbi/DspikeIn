@@ -13,7 +13,7 @@ plotbar_abundance(
   return = FALSE,
   x_size = 12,
   y_size = 12,
-  legend_key_size = 1.5,
+  legend_key_size = 1,
   legend_text_size = 12,
   legend_nrow = 20,
   relativize = TRUE,

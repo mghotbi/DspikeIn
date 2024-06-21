@@ -2,37 +2,46 @@
 % Please edit documentation in R/alluvial_plot.R
 \name{alluvial_plot}
 \alias{alluvial_plot}
-\title{Create an Alluvial Plot}
+\title{Generate an Alluvial Plot}
 \usage{
 alluvial_plot(
   data,
-  axes = c("Host_genus", "Ecoregion_III", "Diet"),
+  axes,
   abundance_threshold = 10000,
   fill_variable = "Phylum",
-  silent = TRUE
+  silent = TRUE,
+  abundance_type = "absolute",
+  total_reads = NULL
 )
 }
 \arguments{
-\item{data}{A dataframe containing the data to be plotted.}
+\item{data}{A data frame containing the microbial data, including abundance and categorical variables.}
 
-\item{axes}{A character vector specifying the columns of the data to be used as axes in the alluvial plot. Default is c("Host_genus", "Ecoregion_III", "Diet").}
+\item{axes}{A character vector specifying the axes (columns) to include in the alluvial plot.}
 
-\item{abundance_threshold}{A numeric value specifying the minimum abundance threshold for samples to be included in the plot. Default is 10000.}
+\item{abundance_threshold}{A numeric value specifying the minimum abundance threshold for including samples. Default is 10000.}
 
-\item{fill_variable}{A character string specifying the variable used for filling the alluvia. Default is "Phylum".}
+\item{fill_variable}{A character string specifying the variable to use for fill in the alluvial plot. Default is "Phylum".}
 
-\item{silent}{A logical value indicating whether to suppress warnings and messages. Default is TRUE.}
+\item{silent}{A logical indicating whether to suppress messages from `is_alluvia_form`. Default is TRUE.}
+
+\item{abundance_type}{A character string specifying whether to plot "relative" or "absolute" abundance. Default is "absolute".}
+
+\item{total_reads}{A numeric value specifying the total number of reads for the sample when using relative abundance. Default is NULL.}
 }
 \value{
-A ggplot object representing the alluvial plot.
+A ggplot2 object representing the alluvial plot.
 }
 \description{
-This function generates an alluvial plot from the given dataset, illustrating the abundance
-across specified factors. Samples with abundance below the given threshold are filtered out.
+This function creates an alluvial plot to visualize the abundance of taxa across multiple categorical axes.
+It filters out samples with abundance below the specified threshold and generates the plot using `ggplot2`.
 }
 \examples{
-# `meli` is a preprocessed dataframe as described in the example
-alluvial_plot <- alluvial_plot(data = meli, axes = c("Abundance", "Diet", "Host_genus", "Ecoregion_III"), abundance_threshold = 20000, silent = TRUE)
-# Display the plot
+# Example with provided data format
+meli_Abs_WSal <- read.csv("path/to/meli_Abs_WSal.csv")
+
+# Generate alluvial plot
+is_alluvia_form(as.data.frame(meli_Abs_WSal), axes = 1:6, silent = TRUE)
+alluvial_plot <- alluvial_plot(data = meli_Abs_WSal, axes = c("Diet", "Host.genus", "Ecoregion.III"), abundance_threshold = 10000, fill_variable = "Phylum", silent = TRUE, abundance_type = "absolute")
 print(alluvial_plot)
 }

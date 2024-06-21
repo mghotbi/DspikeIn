@@ -1,16 +1,17 @@
 #' Convert Relative ASV Counts to Absolute Counts
 #'
 #' This function converts the relative ASV counts in a phyloseq object to absolute counts by multiplying 
-#' the ASV counts by provided scaling factors. The resulting absolute counts are saved as a CSV file.
+#' the ASV counts by provided scaling factors. The resulting absolute counts are saved as a CSV file and 
+#' also returned as a data frame.
 #'
 #' @param physeq A phyloseq object containing the microbial data.
 #' @param scaling_factors A numeric vector of scaling factors to convert relative counts to absolute counts.
 #' @param output_dir A character string specifying the directory to save the output file. Default is NULL, which uses the current working directory.
-#' @return NULL. The function saves the absolute counts as a CSV file and prints a message indicating the save location.
+#' @return A data frame containing the absolute counts.
 #' @examples
 #' # Example usage:
 #' # Assume `spiked_16S` is a phyloseq object and `scaling_factors` is a numeric vector of scaling factors.
-#' # convert_to_absolute_counts(spiked_16S, scaling_factors)
+#' # absolute_counts <- convert_to_absolute_counts(spiked_16S, scaling_factors)
 #' @export
 convert_to_absolute_counts <- function(physeq, scaling_factors, output_dir = NULL) {
   # Load necessary library
@@ -36,10 +37,11 @@ convert_to_absolute_counts <- function(physeq, scaling_factors, output_dir = NUL
   # Save the absolute counts as a CSV file
   write.csv(physeq_count, file = output_file, row.names = TRUE)
   cat("Absolute count data saved to:", output_file, "\n")
+  
+  # Return the absolute counts as a data frame
+  return(as.data.frame(physeq_count))
 }
 
 # Example:
 # scaling_factors <- result$scaling_factors
-# convert_to_absolute_counts(physeqASV16, scaling_factors)
-
-
+# absolute_counts <- convert_to_absolute_counts(physeqASV16, scaling_factors)
