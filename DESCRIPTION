@@ -1,0 +1,63 @@
+Package: DspikeIn
+Type: Package
+Title: DspikeIn quantifies absolute abundance, enhancing the evaluation of microbe-microbe dynamics, which is crucial for advancing microbial ecology.
+Version: 0.0.0.9000
+Author: Mitra Ghotbi
+Maintainer: Mitra Ghotbi <mitra.ghotbi@gmail.com>
+Description: DspikeIn quantifies absolute abundance, enhancing the evaluation of microbe-microbe dynamics, which is crucial for advancing microbial ecology.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports:
+    phyloseq,
+    microbiome,
+    microbiomeutilities,
+    dplyr,
+    speedyseq,
+    ape,
+    ggplot2,
+    ggalluvial,
+    phangorn,
+    msa,
+    data.table,
+    matrixStats,
+    DESeq2,  
+    caret,
+    ggridges,
+    agricolae,
+    flextable,
+    RColorBrewer,
+    ShortRead,
+    Biostrings, 
+    DECIPHER,
+    randomForest,
+    ggtree,
+    ggpubr,
+    methods
+Suggests:
+    e1071,
+    vcd,
+    qpdf,
+    optparse,
+    foreach,
+    magrittr,
+    doParallel,
+    viridis,
+    plyr,
+    reshape2,
+    grid,
+    vegan,
+    scales,
+    cluster,
+    microbiomeutilities,
+    intergraph,
+    decontam,
+    ggtext,
+    devtools,
+    dada2,  
+    agridat,
+    rstatix,
+    reshape,
+    gridExtra,
+    descr
+RoxygenNote: 7.3.1.9000
