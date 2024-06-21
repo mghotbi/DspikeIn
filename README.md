@@ -566,7 +566,7 @@ ridgeP_after <- ridge_plot_it(Salamander_absolute_NospikeSp, taxrank = "Family",
 
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
-| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/ridge%20abs.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/ridge%20rel.png) |
+| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/ridge%20abs1.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/ridge%20rel2.png) |
 
 
 ```r
