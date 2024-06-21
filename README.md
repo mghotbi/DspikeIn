@@ -525,17 +525,19 @@ physeq_16S_adj_scaled_absolute_abundance <- tidy_phyloseq(physeq_16S_adj_scaled_
 saveRDS(physeq_16S_adj_scaled_absolute_abundance, "physeq_16S_adj_scaled_absolute_abundance.rds")
 
 
-# subset salamander variable from both relative and absolute abundance
-Salamander_relative <- subset_samples(spiked_16S, animal.type=="Salamander")
-Salamander_absolute <- subset_samples(physeq_16S_adj_scaled_absolute_abundance, animal.type=="Salamander")
-
+# subset salamander variable from both relative and absolute abundance and remove spiked speices 
 # taxa barplot 
-bp <- taxa_barplot(Salamander_relative, target_glom = "Genus", normalize = TRUE, treatment_variable = "host.genus", abundance_type = "relative", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet")
-print(bp$barplot)
 
-bp <- taxa_barplot(Salamander_absolute, target_glom = "Genus", normalize = FALSE, treatment_variable = "host.genus", abundance_type = "absolute", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet")
-print(bp$barplot)
+bp_ab <- taxa_barplot(Salamander_absolute_NospikeSp, target_glom = "Genus", treatment_variable = "Host.genus", abundance_type = "absolute", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20)
+print(bp_ab$barplot)
 
+bp_rel <- taxa_barplot(Salamander_relative_NospikeSp, target_glom = "Genus", treatment_variable = "Host.genus", abundance_type = "relative", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20)
+print(bp_rel$barplot)
+
+```
+
+
+```r
 
 # simple barplot of taxonomy abundance
 plot_relative <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", group = "Env_broad_scale.x", top = 10, x_axes_font = 10, y_axes_font = 10, legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = TRUE, output_prefix = "relativized_abundance_plot")
