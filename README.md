@@ -543,26 +543,43 @@ print(bp_rel$barplot)
 
 
 
+
 ```r
 
 # simple barplot of taxonomy abundance
-plot_relative <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", group = "Env_broad_scale.x", top = 10, x_axes_font = 10, y_axes_font = 10, legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = TRUE, output_prefix = "relativized_abundance_plot")
-print(plot_relative)
+# Plot relativized abundance
+plot <- plotbar_abundance(Salamander_relative_NospikeSp, level = "Family", group = "Env.broad.scale.x", top = 10, x_size = 10, y_size = 10, legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = TRUE, output_prefix = "relativized_abundance_plot")
+print(plot)
 
-plot_absolute <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", group = "Env_broad_scale.x", top = 10, x_axes_font = 10, y_axes_font = 10, legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = FALSE, output_prefix = "non_relativized_abundance_plot")
+# Plot non-relativized (absolute) abundance
+plot_absolute <- plotbar_abundance(Salamander_absolute_NospikeSp, level = "Family", group = "Env.broad.scale.x", top = 10, x_size = 10, y_size = 10, legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = FALSE, output_prefix = "non_relativized_abundance_plot")
 print(plot_absolute)
 
 
 # Check abundance distribution via Ridge Plots before and after converting to absolute abundance
-ridgeP_before <- ridge_plot_it(spiked_16S, taxrank = "Family", top_n = 10)
-ridgeP_after <- ridge_plot_it(physeq_16S_adj_scaled_absolute_abundance, taxrank = "Family", top_n = 10)
+ridgeP_before <- ridge_plot_it(Salamander_relative_NospikeSp, taxrank = "Family", top_n = 10)
+ridgeP_after <- ridge_plot_it(Salamander_absolute_NospikeSp, taxrank = "Family", top_n = 10)
 
+
+```
+
+
+| Absolute Abundance | Relative Abundance |
+|:----------:|:---------:|
+| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/ridge%20abs.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/ridge%20rel.png) |
+
+
+```r
 
 # core_microbiome
-plot_core_microbiome_custom(physeq_16S_adj_scaled_absolute_abundance,taxrank = "Phylum")+my_custom_theme()
-# core.microbiome is automatically saved in your working directory
+custom_detections <- 10^seq(log10(3e-1), log10(0.5), length = 5)
+PCM_rel <- plot_core_microbiome_custom(Salamander_relative_NospikeSp, detections = custom_detections, taxrank = "Family", output_core_rds = "core_microbiome.rds", output_core_csv = "core_microbiome.csv")
+
+PCM_Abs <- plot_core_microbiome_custom(Salamander_absolute_NospikeSp, detections = custom_detections, taxrank = "Family", output_core_rds = "core_microbiome.rds", output_core_csv = "core_microbiome.csv")
+
+# core.microbiome is automatically saved in your working directory so yoou can go ahead and barplot it
 core.microbiome <- readRDS("core.microbiome.rds")
-taxa_barplot(core.microbiome, target_rank = "Genus", normalize = TRUE, treatment_variable = "animal_type")
+
 
 
 # shift to dataframe and plot the abundance of taxa across the factors
@@ -574,6 +591,15 @@ result <- meli %>%
 is_alluvia_form(as.data.frame(meli), axes = 1:6, silent = TRUE)
 alluvial_plot <- alluvial_plot(data = meli,axes = c(Abundance, factor1, factor2, factor3, Phylum, Genus),abundance_threshold = 500,silent=TRUE)
 
+```
+
+
+| Absolute Abundance | Relative Abundance |
+|:----------:|:---------:|
+| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/Sal.abs.pnnn.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/sal.rel.pmnb.png) |
+
+
+```r
 
 # selecting the most important ASVs/OTUs through RandomForest classification
 #Salamander_absolute= subset of our phyloseq object
