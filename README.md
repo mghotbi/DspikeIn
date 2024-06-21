@@ -83,6 +83,8 @@ In fact, for ITS we did not need to use copy number correction. However, we reco
 
 *The full dataset is available upon request. A subset of the dataset is attached for use in this workshop.*
 
+To test the DspikeIn package, you can download the dataset using the following link: [Download Dataset](https://drive.google.com/file/d/1Ohac-RnrXWSuBAMfqxVzrxCE3Sq98LJK/view?usp=sharing).
+
 
 ```r
 
