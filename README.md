@@ -116,11 +116,14 @@ print_sentence("¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯")
 
 # We are going to work with a subset of the dataset for both ASVs and OTUs approaches to accelerate this workshop.
 
-Salamander_relative <-readRDS("Salamander_relative_16S.rds")
-Salamander_absolute <-readRDS("Salamander_absolute_16S.rds")
+Salamander_relative_16S_ASV <-readRDS("Salamander_relative_16S_ASV.rds")
+Salamander_relative_ITS_ASV <-readRDS("Salamander_relative_ITS_ASV.rds")
 
-physeq_16S_ASV <- tidy_phyloseq(Salamander_relative)
-physeq_16S_OTU <- tidy_phyloseq(Salamander_relative)
+Salamander_relative_16S_OTU <-readRDS("Salamander_relative_16S_OTU.rds")
+Salamander_relative_ITS_OTU <-readRDS("Salamander_relative_ITS_OTU.rds")
+
+
+physeq_16S_ASV <- tidy_phyloseq(Salamander_relative_16S_ASV)
 
 # Ensure your metadata contains spiked volumes:
 physeq_16S_ASV@sam_data$spiked.volume
