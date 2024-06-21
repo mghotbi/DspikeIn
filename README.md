@@ -1,7 +1,7 @@
 # DspikeIn
 The importance of converting relative to absolute abundance in the context of microbial ecology: Introducing the user-friendly DspikeIn R package
 
-![How it works](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/Copy%20of%20Untitled%20(2).png)
+![How it works](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/Copy%20of%20Untitled%20(2).png)
 
 
 ---
@@ -207,7 +207,7 @@ Figure 1.
 
 | Neighbor Joining Tree with Bootstrap | Tetra Plot with Bootstrap | Cophenetic tree with Bootstrap|
 |:------------------------------------:|:----------:|:---------:|
-| ![Neighbor Joining Tree](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/JU.png?raw=true) | ![Tetra Plot](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/tetra.png?raw=true) | ![cophenetic](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/Rplot02.png?raw=true) |
+| ![Neighbor Joining Tree](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/JU.png?raw=true) | ![Tetra Plot](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/tetra.png?raw=true) | ![cophenetic](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/Rplot02.png?raw=true) |
 
 
 
@@ -228,7 +228,7 @@ DNAStringSet object of length 5:
 
 
 
-![WhyOTUs](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/ASVOTU.png)
+![WhyOTUs](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/ASVOTU.png)
 
 ---
 
@@ -242,7 +242,7 @@ Retrieved spiked species are correlated with abundance and can therefore vary pe
 
 | ASVs Or OTUs | Acceptable range|
 |:----------:|:---------:|
-| ![ASVs vs OTUs](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/pngof%20desired.png) | ![Acceptable range](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/range.png) |
+| ![ASVs vs OTUs](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/pngof%20desired.png) | ![Acceptable range](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/range.png) |
 
 
 
@@ -427,7 +427,7 @@ transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = 
 
 | Spiked sp Percentage ANOVA | Spiked sp Reads ANOVA | Total Reads ANOVA |
 |:--------------------------:|:---------------------:|:-----------------:|
-| ![Spike Percentage ANOVA](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/plot_Spike.percentage_ANOVA.jpg?raw=true) | ![Spike Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/plot_Spike.reads_ANOVA.png?raw=true) | ![Total Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/plot_Total.reads_ANOVA.jpg?raw=true) |
+| ![Spike Percentage ANOVA](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/plot_Spike.percentage_ANOVA.jpg?raw=true) | ![Spike Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/plot_Spike.reads_ANOVA.png?raw=true) | ![Total Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/plot_Total.reads_ANOVA.jpg?raw=true) |
 
 ---
 
@@ -494,10 +494,11 @@ physeq_16S_adj_scaled_perc <- subset_samples(Spiked_16S_OTU_scaled, sample.or.bl
 summary_stats <- conclusion(physeq_16S_adj_scaled_perc, merged_spiked_species, max_passed_range)
 print(summary_stats)
 
+
 ```
 
 Here is an example of a success or failure report:
-![Success](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/image.png)
+![Success](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/image.png)
 
 
 *Save your file for later. Stay tuned for the rest: transformation and several visualization methods and displaying the importance of converting relative to absolute abundance in the context of microbial ecology.*
@@ -524,7 +525,7 @@ print(bp_rel$barplot)
 
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
-| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/Sal.abs.pnnn.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/sal.rel.pmnb.png) |
+| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/Sal.abs.pnnn.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/sal.rel.pmnb.png) |
 
 
 
@@ -551,7 +552,7 @@ ridgeP_after <- ridge_plot_it(Salamander_absolute_NospikeSp, taxrank = "Family",
 
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
-| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/ridge%20abs1.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/ridge%20rel2.png) |
+| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/ridge%20abs1.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/ridge%20rel2.png) |
 
 
 ```r
@@ -570,7 +571,7 @@ core.microbiome <- readRDS("core.microbiome.rds")
 
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
-| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/Abs.coree.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/core.rel.png) |
+| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/Abs.coree.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/core.rel.png) |
 
 
 ```r
@@ -594,7 +595,7 @@ print(alluvial_plot)
 
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
-| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/abs.eq0.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/eq%20rel3.png) |
+| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/abs.eq0.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/eq%20rel3.png) |
 
 
 ```r
