@@ -115,33 +115,16 @@ getwd()
 print_sentence("¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯")
 
 
-# Briefly:
-otu <- read.csv("otu.csv", header = TRUE, sep = ",", row.names = 1)
-tax <- read.csv("tax.csv", header = TRUE, sep = ",", row.names = 1)
-meta <- read.csv("metadata.csv", header = TRUE, sep = ",")
+# We are going to work with a subset of the dataset for both ASVs and OTUs approaches to accelerate this workshop.
 
-# Convert data to appropriate formats
-meta <- as.data.frame(meta)
-taxmat <- as.matrix(tax)
-otumat <- as.matrix(otu)
-colnames(taxmat) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
-OTU <- otu_table(otumat, taxa_are_rows = TRUE)
-TAX <- phyloseq::tax_table(taxmat)
+Salamander_relative_NospikeSp <-readRDS("Salamander_relative_NospikeSp.rds")
+Salamander_absolute_NospikeSp <-readRDS("Salamander_absolute_NospikeSp.rds")
 
-row.names(meta) <- sample_names(OTU)
-metadata <- sample_data(meta)
-physeq <- phyloseq(OTU, TAX, metadata)
-MyTree <- read.tree("tree.nwk")
-reference_seqs <- readDNAStringSet(file = "dna-sequences.fasta", format = "fasta")
-physeq_16SASV <- merge_phyloseq(physeq, reference_seqs, MyTree)
-physeq_16SASV <- subset_taxa(physeq_16SASV, apply(tax_table(physeq_16SASV), 1, function(x) all(x != "" & !is.na(x))))
-physeq_16SASV <- tidy_phyloseq(physeq_16SASV)
-
-saveRDS(physeq_16SASV, file = "physeq_16SASV.rds")
-physeq_16SASV <- readRDS("physeq_16SASV.rds")
+Salamander_relative_NospikeSp <- tidy_phyloseq(Salamander_relative_NospikeSp)
+Salamander_absolute_NospikeSp <- tidy_phyloseq(Salamander_absolute_NospikeSp)
 
 # Ensure your metadata contains spiked volumes:
-physeq_16SASV@sam_data$spiked.volume
+Salamander_relative_NospikeSp@sam_data$spiked.volume
 
 
 ```
