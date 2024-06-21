@@ -117,14 +117,14 @@ print_sentence("¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯")
 
 # We are going to work with a subset of the dataset for both ASVs and OTUs approaches to accelerate this workshop.
 
-Salamander_relative_NospikeSp <-readRDS("Salamander_relative_NospikeSp.rds")
-Salamander_absolute_NospikeSp <-readRDS("Salamander_absolute_NospikeSp.rds")
+Salamander_relative <-readRDS("Salamander_relative_16S.rds")
+Salamander_absolute <-readRDS("Salamander_absolute_16S.rds")
 
-Salamander_relative_NospikeSp <- tidy_phyloseq(Salamander_relative_NospikeSp)
-Salamander_absolute_NospikeSp <- tidy_phyloseq(Salamander_absolute_NospikeSp)
+physeq_16S_ASV <- tidy_phyloseq(Salamander_relative)
+physeq_16S_OTU <- tidy_phyloseq(Salamander_relative)
 
 # Ensure your metadata contains spiked volumes:
-Salamander_relative_NospikeSp@sam_data$spiked.volume
+physeq_16S_ASV@sam_data$spiked.volume
 
 
 ```
@@ -508,9 +508,9 @@ physeq_16S_adj_scaled_absolute_abundance <- tidy_phyloseq(physeq_16S_adj_scaled_
 saveRDS(physeq_16S_adj_scaled_absolute_abundance, "physeq_16S_adj_scaled_absolute_abundance.rds")
 
 
-# subset salamander variable from both relative and absolute abundance and remove spiked speices 
-# taxa barplot 
+# A subset of the dataset for both relative and absolute abundance of spiked species was filtered
 
+# taxa barplot 
 bp_ab <- taxa_barplot(Salamander_absolute_NospikeSp, target_glom = "Genus", treatment_variable = "Host.genus", abundance_type = "absolute", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20)
 print(bp_ab$barplot)
 
@@ -598,7 +598,7 @@ print(alluvial_plot)
 ```r
 
 # selecting the most important ASVs/OTUs through RandomForest classification
-#Salamander_absolute= subset of our phyloseq object
+# Salamander_absolute= subset of our phyloseq object
 rf_physeq <- RandomForest_selected_ASVs(Salamander_absolute, response_var = "Host_Species", na_vars = c("Habitat","Diet", "Ecoregion_III", "Host_genus", "Animal_type"))
 RP=ridge_plot_it(rf_physeq)
 RP+facet_wrap(~Diet)
@@ -607,10 +607,8 @@ RP+facet_wrap(~Diet)
 #detect common ASVs/OTUs
 # The input is the list of phyloseq objects
 results <- detect_common_asvs_taxa(list(rf_physeq, FTspiked_16S , core.microbiome), 
-                                   output_common_asvs_csv = "common_asvs.csv", 
-                                   output_common_asvs_rds = "common_asvs.rds", 
-                                   output_common_taxa_csv = "common_taxa.csv", 
-                                   output_common_taxa_rds = "common_taxa.rds")
+                                    output_common_asvs_rds = "common_asvs.rds", 
+                                    output_common_taxa_rds = "common_taxa.rds")
 
 common_asvs_phyloseq <- results$common_asvs_phyloseq
 common_taxa_phyloseq <- results$common_taxa_phyloseq
