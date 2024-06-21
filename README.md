@@ -580,7 +580,15 @@ PCM_Abs <- plot_core_microbiome_custom(Salamander_absolute_NospikeSp, detections
 # core.microbiome is automatically saved in your working directory so yoou can go ahead and barplot it
 core.microbiome <- readRDS("core.microbiome.rds")
 
+```
 
+
+| Absolute Abundance | Relative Abundance |
+|:----------:|:---------:|
+| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/Abs.coree.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/core.rel.png) |
+
+
+```r
 
 # shift to dataframe and plot the abundance of taxa across the factors
 meli<-psmelt(physeq_16S_adj_scaled_absolute_abundance)
