@@ -592,8 +592,8 @@ core.microbiome <- readRDS("core.microbiome.rds")
 
 # shift to dataframe and plot the abundance of taxa across the factors
 # Load data
-meli_Abs_WSal <- read.csv("meli_Abs_WSal.csv")
-meli_Rel_WSal<-read.csv("meli_Rel_WSal.csv")
+meli_Abs_WSal <- readRDS("meli_Abs_WSal.rds")
+meli_Rel_WSal <- readRDS("meli_Rel_WSal.rds")
 
 # Generate alluvial plot
 is_alluvia_form(as.data.frame(meli_Abs_WSal), axes = 1:6, silent = TRUE)
@@ -609,7 +609,7 @@ print(alluvial_plot)
 
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
-| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/Sal.abs.pnnn.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/sal.rel.pmnb.png) |
+| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/abs.eq0.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/eq%20rel3.png) |
 
 
 ```r
