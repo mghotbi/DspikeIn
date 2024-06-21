@@ -537,6 +537,12 @@ print(bp_rel$barplot)
 ```
 
 
+| Absolute Abundance | Relative Abundance |
+|:----------:|:---------:|
+| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/Sal.abs.pnnn.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/WalkerLab/sal.rel.pmnb.png) |
+
+
+
 ```r
 
 # simple barplot of taxonomy abundance
