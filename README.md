@@ -149,7 +149,7 @@ hashcodes <- row.names(phyloseq::tax_table(Tetra))
 
 # ITS rDNA
 spiked_cells <- 733
-species_names <- spiked_species <- merged_spiked_species <- "Dekkera_bruxellensis"
+species_name <- spiked_species<-merged_spiked_species<-"Dekkera_bruxellensis"
 Dekkera <- subset_taxa(physeq_ITSASV, Species=="Dekkera_bruxellensis")
 hashcodes <- row.names(phyloseq::tax_table(Dekkera))
 
