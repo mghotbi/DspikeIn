@@ -90,7 +90,7 @@ To test the DspikeIn package, you can download the dataset using the following l
 
 
 
-## If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:
+*If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:*
 
 ## Step 1: Install Required Packages
 
