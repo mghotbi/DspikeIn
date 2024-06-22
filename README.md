@@ -477,7 +477,7 @@ transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = 
 ```
 
 
-```
+
 
 
 | Spiked sp Percentage ANOVA | Spiked sp Reads ANOVA | Total Reads ANOVA |
