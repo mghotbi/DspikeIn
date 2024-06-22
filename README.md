@@ -440,9 +440,10 @@ Getting help from [Yerk et al., 2024](https://doi.org/10.1186/s40168-023-01747-z
 
 You can repeat the experiment by transforming the data, calculating spike percentage using `calculate_spike_percentage()`, then checking for the homogeneity of variances using `Bartlett_test()` and ensuring the data is normally distributed using `Shapiro_Wilk_test()`. Finally, plot the results using `transform_plot()`.
 
+
 ```r
 
-methods<-readRDS("methods.rds")
+methods <- readRDS("methods.rds")
 methods$Total.reads <- as.numeric(gsub(",", "", methods$Total.reads))
 methods$Spike.reads <- as.numeric(gsub(",", "", methods$Spike.reads))
 
@@ -458,19 +459,21 @@ Bartlett_test(methods, "Methods")
 Shapiro_Wilk_test(methods, "Methods")
 Shapiro_Wilk_test(methods, "Result")
 
-# y_vars are numerical variables of your interest to be analysed
+# y_vars are numerical variables of your interest to be analyzed
 y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
 # x_var is a categorical variable
 x_var <- "Methods"
-# the color_pallet is MG here
+# the color_palette is MG here
 
-# scale data
-scaled <- methods %>% mutate_at(c("Total.reads", "Spike.reads", "Spike.percentage" ), ~(scale(.) %>% as.vector))
+# Scale data
+scaled <- methods %>% mutate_at(c("Total.reads", "Spike.reads", "Spike.percentage"), ~(scale(.) %>% as.vector))
 
 # Perform Kruskal-Wallis test
 transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "anova")
 # Perform one-way ANOVA
 transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
+
+```
 
 
 ```
