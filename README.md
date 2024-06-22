@@ -342,7 +342,6 @@ spiked_16S_min <- adjusted_prevalence(spiked_16S_OTU, method = "min")
 
 If you are using OTUs and have only one OTU rooted from the spiked species, you can skip this preprocessing step. Follow the steps below to estimate the success of spike-in, particularly check if you have any samples with under or over-spikes.If the spiked species appear in several ASVs, check their phylogenetic distances and compare them to the reference sequences of your positive control. If the spiked species of interest has gene copy number variations and you prefer not to sum their abundances, use the `max` option instead of `sum` to combine these ASVs under a single taxon, simplifying data processing.
 
-```
 
 ```r
 # Modify the threshold of acceptable spiked species % as needed. 
