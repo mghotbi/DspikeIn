@@ -89,14 +89,44 @@ In fact, for ITS we did not need to use copy number correction. However, we reco
 To test the DspikeIn package, you can download the dataset using the following link: [Download Dataset](https://drive.google.com/file/d/1Ohac-RnrXWSuBAMfqxVzrxCE3Sq98LJK/view?usp=sharing).
 
 
+
+If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:
+
+### Step 1: Install Required Packages
+
+To install the required packages, use the following script:
+
+```r
+
+# Please install devtools first
+
+install.packages("devtools")
+
+# Source the helper function from our GitHub repository
+devtools::source_url("https://raw.githubusercontent.com/mghotbi/DspikeIn/MGhotbi/install_required_packages.R")
+
+# Run this function to install all required packages
+install_required_packages()
+
+
+```
+
+
 ```r
 
 # Installation
 #Instructions for how to install the DspikeIn package.
 
+# Using devtools
 install.packages("devtools")
 devtools::install_github("mghotbi/DspikeIn")
 library(DspikeIn)
+
+# Or using remotes
+install.packages("remotes")
+remotes::install_github("mghotbi/DspikeIn")
+library(DspikeIn)
+
 
 # Optional Package Installation
 # For users convenience, we provide a helper function to install and load several microbial-ecology-relevant packages, some of which are required for running the `DspikeIn` package.
