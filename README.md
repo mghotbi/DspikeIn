@@ -136,13 +136,26 @@ install_load_packages_helper()
 ```
 
 
+## Acknowledgements
+
+DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phyloseq) package and incorporates modified functions from several other packages, including:
+
+- [**dplyr**](https://github.com/tidyverse/dplyr)
+- [**ggtree**](https://github.com/YuLab-SMU/ggtree.git)
+- [**flextable**](https://github.com/davidgohel/flextable.git)
+- [**DESeq2**](https://github.com/thelovelab/DESeq2)
+- [**microbiomeutilities**](https://github.com/microsud/microbiomeutilities)
+- [**DECIPHER**](https://github.com/azizilab/decipher.git)
+- [**speedyseq**](https://github.com/mikemc/speedyseq.git)
+
+
 
 ```r
 # Make a new directory and set it as your working directory
 create_directory("DspikeIn_16S_OTU", set_working_dir = TRUE)
 getwd()
 
-# Please note that these functions have been primarily built using several wonderful packages, including phyloseq (https://github.com/joey711/phyloseq) and tidyverse/dplyr (https://github.com/tidyverse/dplyr).
+
 # Therefore, please start by creating a phyloseq object and follow the instructions.
 # To create your phyloseq object, please refer to the phyloseq tutorial (https://joey711.github.io/phyloseq).
 # The phyloseq object needs to include OTU/ASV, Taxa, phylogenetic tree, DNA reference, 
