@@ -344,6 +344,7 @@ If you are using OTUs and have only one OTU rooted from the spiked species, you 
 
 
 ```r
+
 # Modify the threshold of acceptable spiked species % as needed. 
 # For detailed guidance on acceptable thresholds (passed_range), 
 # please refer to the instructions in our upcoming paper.
@@ -430,7 +431,7 @@ passed_physeq <- prune_samples(
 ```
 
 
-```
+
 
 ## Data Normalization and Transformation
 *Experiment Repetition*
