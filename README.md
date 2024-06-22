@@ -90,16 +90,15 @@ To test the DspikeIn package, you can download the dataset using the following l
 
 
 
-If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:
+## If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:
 
-### Step 1: Install Required Packages
+## Step 1: Install Required Packages
 
 To install the required packages, use the following script:
 
 ```r
 
 # Please install devtools first
-
 install.packages("devtools")
 
 # Source the helper function from our GitHub repository
@@ -110,6 +109,7 @@ install_required_packages()
 
 
 ```
+## Step 2: Install DspikeIn Package
 
 
 ```r
