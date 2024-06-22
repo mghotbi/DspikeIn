@@ -1,7 +1,7 @@
 # DspikeIn
 The importance of converting relative to absolute abundance in the context of microbial ecology: Introducing the user-friendly DspikeIn R package
 
-![Dspike in brief](https://github.com/mghotbi/DspikeIn/assets/29090547/0740674c-543a-4f87-be7f-10733ae94694)
+![DspikeIn](https://github.com/mghotbi/DspikeIn/assets/29090547/f827aed9-2f99-42a1-adff-4b85124f8e94)
 
 ---
 
@@ -89,14 +89,44 @@ In fact, for ITS we did not need to use copy number correction. However, we reco
 To test the DspikeIn package, you can download the dataset using the following link: [Download Dataset](https://drive.google.com/file/d/1Ohac-RnrXWSuBAMfqxVzrxCE3Sq98LJK/view?usp=sharing).
 
 
+
+## If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:
+
+## Step 1: Install Required Packages
+
+To install the required packages, use the following script:
+
+```r
+
+# Please install devtools first
+install.packages("devtools")
+
+# Source the helper function from our GitHub repository
+devtools::source_url("https://raw.githubusercontent.com/mghotbi/DspikeIn/MGhotbi/install_required_packages.R")
+
+# Run this function to install all required packages
+install_required_packages()
+
+
+```
+## Step 2: Install DspikeIn Package
+
+
 ```r
 
 # Installation
 #Instructions for how to install the DspikeIn package.
 
+# Using devtools
 install.packages("devtools")
 devtools::install_github("mghotbi/DspikeIn")
 library(DspikeIn)
+
+# Or using remotes
+install.packages("remotes")
+remotes::install_github("mghotbi/DspikeIn")
+library(DspikeIn)
+
 
 # Optional Package Installation
 # For users convenience, we provide a helper function to install and load several microbial-ecology-relevant packages, some of which are required for running the `DspikeIn` package.
@@ -106,13 +136,26 @@ install_load_packages_helper()
 ```
 
 
+## Acknowledgements
+
+DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phyloseq) package and incorporates modified functions from several other packages, including:
+
+- [**dplyr**](https://github.com/tidyverse/dplyr)
+- [**ggtree**](https://github.com/YuLab-SMU/ggtree.git)
+- [**flextable**](https://github.com/davidgohel/flextable.git)
+- [**DESeq2**](https://github.com/thelovelab/DESeq2)
+- [**microbiomeutilities**](https://github.com/microsud/microbiomeutilities)
+- [**DECIPHER**](https://github.com/azizilab/decipher.git)
+- [**speedyseq**](https://github.com/mikemc/speedyseq.git)
+
+
 
 ```r
 # Make a new directory and set it as your working directory
 create_directory("DspikeIn_16S_OTU", set_working_dir = TRUE)
 getwd()
 
-# Please note that these functions have been primarily built using several wonderful packages, including phyloseq (https://github.com/joey711/phyloseq) and tidyverse/dplyr (https://github.com/tidyverse/dplyr).
+
 # Therefore, please start by creating a phyloseq object and follow the instructions.
 # To create your phyloseq object, please refer to the phyloseq tutorial (https://joey711.github.io/phyloseq).
 # The phyloseq object needs to include OTU/ASV, Taxa, phylogenetic tree, DNA reference, 
@@ -342,53 +385,96 @@ spiked_16S_min <- adjusted_prevalence(spiked_16S_OTU, method = "min")
 
 If you are using OTUs and have only one OTU rooted from the spiked species, you can skip this preprocessing step. Follow the steps below to estimate the success of spike-in, particularly check if you have any samples with under or over-spikes.If the spiked species appear in several ASVs, check their phylogenetic distances and compare them to the reference sequences of your positive control. If the spiked species of interest has gene copy number variations and you prefer not to sum their abundances, use the `max` option instead of `sum` to combine these ASVs under a single taxon, simplifying data processing.
 
-```
 
+```r
 
-# Modify the threshold of acceptable spiked species % as needed. For detailed guidance on acceptable thresholds (passed_range), please refer to the instructions in our upcoming paper.
+# Modify the threshold of acceptable spiked species % as needed. 
+# For detailed guidance on acceptable thresholds (passed_range), 
+# please refer to the instructions in our upcoming paper.
 
-# Merg the spiked species
-# merge_method = "max": Selects the maximum abundance among ASVs of the spiked species, ensuring the most abundant ASV is retained.
-# merge_method = "sum": Sums the abundances of ASVs of the spiked species, providing a cumulative total.
-
+# Merge the spiked species
+# merge_method = "max": Selects the maximum abundance among ASVs of the spiked species, 
+# ensuring the most abundant ASV is retained.
+# merge_method = "sum": Sums the abundances of ASVs of the spiked species, 
+# providing a cumulative total.
 
 species_name <- "Tetragenococcus_halophilus"
-Spiked_16S_sum_scaled <- Pre_processing_species(spiked_16S_OTU, species_name, merge_method = "sum", output_file = "merged_physeq_sum.rds")
-Spiked_16S_max_scaled <- Pre_processing_species(spiked_16S_OTU, species_name, merge_method = "max", output_file = "merged_physeq_max.rds")
 
-Spiked_16S_sum_scaled <- Pre_processing_hashcodes(spiked_16S_OTU, hashcodes, merge_method = "sum", output_prefix = "merged_physeq_sum")
-Spiked_16S_max_scaled <- Pre_processing_hashcodes(spiked_16S_OTU, hashcodes, merge_method = "max", output_prefix = "merged_physeq_max")
+# Merge using "sum" method
+Spiked_16S_sum_scaled <- Pre_processing_species(
+  spiked_16S_OTU, 
+  species_name, 
+  merge_method = "sum", 
+  output_file = "merged_physeq_sum.rds")
+
+# Merge using "max" method
+Spiked_16S_max_scaled <- Pre_processing_species(
+  spiked_16S_OTU, 
+  species_name, 
+  merge_method = "max", 
+  output_file = "merged_physeq_max.rds")
+
+# Merge hashcodes using "sum" method
+Spiked_16S_sum_scaled <- Pre_processing_hashcodes(
+  spiked_16S_OTU, 
+  hashcodes, 
+  merge_method = "sum", 
+  output_prefix = "merged_physeq_sum")
+
+# Merge hashcodes using "max" method
+Spiked_16S_max_scaled <- Pre_processing_hashcodes(
+  spiked_16S_OTU, 
+  hashcodes, 
+  merge_method = "max", 
+  output_prefix = "merged_physeq_max")
+
+# Summarize count
 summ_count_phyloseq(Spiked_16S_sum_scaled)
 
-
+# Tidy phyloseq object
 Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_sum_scaled)
-# Now calculate the spiked species retrieval percentage. Customize the passed_range and merged_spiked_species/merged_spiked_hashcodes based on your preferences.
-# passed_range = "c(0.1, 10) ": threshold of acceptable spiked species %
-# passed_range = "c(0.1, 35) ": threshold of acceptable spiked species %
-## select either merged_spiked_species or merged_spiked_hashcodes
-# merged_spiked_species = merged_spiked_species 
-# merged_spiked_hashcodes = merged_spiked_hashcodes
+
+# Now calculate the spiked species retrieval percentage.
+# Customize the passed_range and merged_spiked_species/merged_spiked_hashcodes based on your preferences.
+# passed_range = "c(0.1, 10)": threshold of acceptable spiked species %
+# passed_range = "c(0.1, 35)": threshold of acceptable spiked species %
+# Select either merged_spiked_species or merged_spiked_hashcodes
 
 merged_spiked_species <- c("Tetragenococcus_halophilus")
-result <- calculate_spike_percentage(Spiked_16S_OTU_scaled, merged_spiked_species, passed_range = c(0.1, 11))
+result <- calculate_spike_percentage(
+  Spiked_16S_OTU_scaled, 
+  merged_spiked_species, 
+  passed_range = c(0.1, 11))
 calculate_summary_stats_table(result)
 
 # Define your merged_spiked_hashcodes
-merged_Tetra <- subset_taxa(Spiked_16S_OTU_scaled, Species == "Tetragenococcus_halophilus")
+merged_Tetra <- subset_taxa(
+  Spiked_16S_OTU_scaled, 
+  Species == "Tetragenococcus_halophilus")
+
 merged_spiked_hashcodes <- row.names(tax_table(merged_Tetra))
-result <- calculate_spike_percentage(Spiked_16S_OTU_scaled,  merged_spiked_hashcodes, passed_range = c(0.1, 35))
+result <- calculate_spike_percentage(
+  Spiked_16S_OTU_scaled,  
+  merged_spiked_hashcodes, 
+  passed_range = c(0.1, 35))
 calculate_summary_stats_table(result)
 
-
-
 # If you decide to remove the failed reads and go forward with passed reads, here is what you need to do
-# you can also go forward with the original file and remove the failed reads after converting relative to absolute abundance
+# You can also go forward with the original file and remove the failed reads 
+# after converting relative to absolute abundance
+
 # Filter to get only the samples that passed
 passed_samples <- result$Sample[result$Result == "passed"]
+
 # Subset the original phyloseq object to keep only the samples that passed
-passed_physeq <- prune_samples(passed_samples, Spiked_16S_ASV_scaled)
+passed_physeq <- prune_samples(
+  passed_samples, 
+  Spiked_16S_ASV_scaled)
 
 ```
+
+
+
 
 ## Data Normalization and Transformation
 *Experiment Repetition*
@@ -398,9 +484,10 @@ Getting help from [Yerk et al., 2024](https://doi.org/10.1186/s40168-023-01747-z
 
 You can repeat the experiment by transforming the data, calculating spike percentage using `calculate_spike_percentage()`, then checking for the homogeneity of variances using `Bartlett_test()` and ensuring the data is normally distributed using `Shapiro_Wilk_test()`. Finally, plot the results using `transform_plot()`.
 
+
 ```r
 
-methods<-readRDS("methods.rds")
+methods <- readRDS("methods.rds")
 methods$Total.reads <- as.numeric(gsub(",", "", methods$Total.reads))
 methods$Spike.reads <- as.numeric(gsub(",", "", methods$Spike.reads))
 
@@ -416,22 +503,24 @@ Bartlett_test(methods, "Methods")
 Shapiro_Wilk_test(methods, "Methods")
 Shapiro_Wilk_test(methods, "Result")
 
-# y_vars are numerical variables of your interest to be analysed
+# y_vars are numerical variables of your interest to be analyzed
 y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
 # x_var is a categorical variable
 x_var <- "Methods"
-# the color_pallet is MG here
+# the color_palette is MG here
 
-# scale data
-scaled <- methods %>% mutate_at(c("Total.reads", "Spike.reads", "Spike.percentage" ), ~(scale(.) %>% as.vector))
+# Scale data
+scaled <- methods %>% mutate_at(c("Total.reads", "Spike.reads", "Spike.percentage"), ~(scale(.) %>% as.vector))
 
 # Perform Kruskal-Wallis test
 transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "anova")
 # Perform one-way ANOVA
 transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
 
-
 ```
+
+
+
 
 
 | Spiked sp Percentage ANOVA | Spiked sp Reads ANOVA | Total Reads ANOVA |
