@@ -344,49 +344,92 @@ If you are using OTUs and have only one OTU rooted from the spiked species, you 
 
 ```
 
+```r
+# Modify the threshold of acceptable spiked species % as needed. 
+# For detailed guidance on acceptable thresholds (passed_range), 
+# please refer to the instructions in our upcoming paper.
 
-# Modify the threshold of acceptable spiked species % as needed. For detailed guidance on acceptable thresholds (passed_range), please refer to the instructions in our upcoming paper.
-
-# Merg the spiked species
-# merge_method = "max": Selects the maximum abundance among ASVs of the spiked species, ensuring the most abundant ASV is retained.
-# merge_method = "sum": Sums the abundances of ASVs of the spiked species, providing a cumulative total.
-
+# Merge the spiked species
+# merge_method = "max": Selects the maximum abundance among ASVs of the spiked species, 
+# ensuring the most abundant ASV is retained.
+# merge_method = "sum": Sums the abundances of ASVs of the spiked species, 
+# providing a cumulative total.
 
 species_name <- "Tetragenococcus_halophilus"
-Spiked_16S_sum_scaled <- Pre_processing_species(spiked_16S_OTU, species_name, merge_method = "sum", output_file = "merged_physeq_sum.rds")
-Spiked_16S_max_scaled <- Pre_processing_species(spiked_16S_OTU, species_name, merge_method = "max", output_file = "merged_physeq_max.rds")
 
-Spiked_16S_sum_scaled <- Pre_processing_hashcodes(spiked_16S_OTU, hashcodes, merge_method = "sum", output_prefix = "merged_physeq_sum")
-Spiked_16S_max_scaled <- Pre_processing_hashcodes(spiked_16S_OTU, hashcodes, merge_method = "max", output_prefix = "merged_physeq_max")
+# Merge using "sum" method
+Spiked_16S_sum_scaled <- Pre_processing_species(
+  spiked_16S_OTU, 
+  species_name, 
+  merge_method = "sum", 
+  output_file = "merged_physeq_sum.rds")
+
+# Merge using "max" method
+Spiked_16S_max_scaled <- Pre_processing_species(
+  spiked_16S_OTU, 
+  species_name, 
+  merge_method = "max", 
+  output_file = "merged_physeq_max.rds")
+
+# Merge hashcodes using "sum" method
+Spiked_16S_sum_scaled <- Pre_processing_hashcodes(
+  spiked_16S_OTU, 
+  hashcodes, 
+  merge_method = "sum", 
+  output_prefix = "merged_physeq_sum")
+
+# Merge hashcodes using "max" method
+Spiked_16S_max_scaled <- Pre_processing_hashcodes(
+  spiked_16S_OTU, 
+  hashcodes, 
+  merge_method = "max", 
+  output_prefix = "merged_physeq_max")
+
+# Summarize count
 summ_count_phyloseq(Spiked_16S_sum_scaled)
 
-
+# Tidy phyloseq object
 Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_sum_scaled)
-# Now calculate the spiked species retrieval percentage. Customize the passed_range and merged_spiked_species/merged_spiked_hashcodes based on your preferences.
-# passed_range = "c(0.1, 10) ": threshold of acceptable spiked species %
-# passed_range = "c(0.1, 35) ": threshold of acceptable spiked species %
-## select either merged_spiked_species or merged_spiked_hashcodes
-# merged_spiked_species = merged_spiked_species 
-# merged_spiked_hashcodes = merged_spiked_hashcodes
+
+# Now calculate the spiked species retrieval percentage.
+# Customize the passed_range and merged_spiked_species/merged_spiked_hashcodes based on your preferences.
+# passed_range = "c(0.1, 10)": threshold of acceptable spiked species %
+# passed_range = "c(0.1, 35)": threshold of acceptable spiked species %
+# Select either merged_spiked_species or merged_spiked_hashcodes
 
 merged_spiked_species <- c("Tetragenococcus_halophilus")
-result <- calculate_spike_percentage(Spiked_16S_OTU_scaled, merged_spiked_species, passed_range = c(0.1, 11))
+result <- calculate_spike_percentage(
+  Spiked_16S_OTU_scaled, 
+  merged_spiked_species, 
+  passed_range = c(0.1, 11))
 calculate_summary_stats_table(result)
 
 # Define your merged_spiked_hashcodes
-merged_Tetra <- subset_taxa(Spiked_16S_OTU_scaled, Species == "Tetragenococcus_halophilus")
+merged_Tetra <- subset_taxa(
+  Spiked_16S_OTU_scaled, 
+  Species == "Tetragenococcus_halophilus")
+
 merged_spiked_hashcodes <- row.names(tax_table(merged_Tetra))
-result <- calculate_spike_percentage(Spiked_16S_OTU_scaled,  merged_spiked_hashcodes, passed_range = c(0.1, 35))
+result <- calculate_spike_percentage(
+  Spiked_16S_OTU_scaled,  
+  merged_spiked_hashcodes, 
+  passed_range = c(0.1, 35))
 calculate_summary_stats_table(result)
 
-
-
 # If you decide to remove the failed reads and go forward with passed reads, here is what you need to do
-# you can also go forward with the original file and remove the failed reads after converting relative to absolute abundance
+# You can also go forward with the original file and remove the failed reads 
+# after converting relative to absolute abundance
+
 # Filter to get only the samples that passed
 passed_samples <- result$Sample[result$Result == "passed"]
+
 # Subset the original phyloseq object to keep only the samples that passed
-passed_physeq <- prune_samples(passed_samples, Spiked_16S_ASV_scaled)
+passed_physeq <- prune_samples(
+  passed_samples, 
+  Spiked_16S_ASV_scaled)
+
+```
+
 
 ```
 
