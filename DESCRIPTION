@@ -5,7 +5,9 @@ Version: 0.0.0.9000
 Author: Mitra Ghotbi
 Maintainer: Mitra Ghotbi <mitra.ghotbi@gmail.com>
 Description: DspikeIn quantifies absolute abundance, enhancing the evaluation of microbe-microbe dynamics, which is crucial for advancing microbial ecology.
-License: GPL-3
+URL: https://github.com/mitraghotbi/DspikeIn
+BugReports: https://github.com/mitraghotbi/DspikeIn/issues
+License: AGPL-3 + file LICENSE_AGPL-3 | CC BY 4.0 + file LICENSE_CC_BY_4.0
 Encoding: UTF-8
 LazyData: true
 Imports:
