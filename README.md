@@ -236,7 +236,8 @@ DNAStringSet object of length 5:
 
 
 
-![WhyOTUs](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/ASVOTU.png)
+![WhyOTUvsASV](https://github.com/mghotbi/DspikeIn/assets/29090547/10d82aea-9aa5-476e-a421-e0e6ddb89841)
+
 
 ---
 
@@ -250,7 +251,7 @@ Retrieved spiked species are correlated with abundance and can therefore vary pe
 
 | ASVs Or OTUs | Acceptable range|
 |:----------:|:---------:|
-| ![ASVs vs OTUs](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/pngof%20desired.png) | ![Acceptable range](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/range.png) |
+| ![Desired range of spiked sp](https://github.com/mghotbi/DspikeIn/assets/29090547/2f949616-6493-4445-8f1e-7ac9c9dd844f) | ![Acceptable range](https://github.com/mghotbi/DspikeIn/assets/29090547/8674f3de-ba24-4857-9cd7-d1b6dc15c669) |
 
 
 
@@ -435,7 +436,7 @@ transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = 
 
 | Spiked sp Percentage ANOVA | Spiked sp Reads ANOVA | Total Reads ANOVA |
 |:--------------------------:|:---------------------:|:-----------------:|
-| ![Spike Percentage ANOVA](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/plot_Spike.percentage_ANOVA.jpg?raw=true) | ![Spike Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/plot_Spike.reads_ANOVA.png?raw=true) | ![Total Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/plot_Total.reads_ANOVA.jpg?raw=true) |
+| ![plot_Spike percentage_ANOVA](https://github.com/mghotbi/DspikeIn/assets/29090547/94b4da0b-4dd9-4af9-b897-4207ec2cef46) | ![plot_Spike reads_ANOVA](https://github.com/mghotbi/DspikeIn/assets/29090547/92be2eb3-68c4-4bde-87a9-31821e62c558) | ![plot_Total reads_ANOVA](https://github.com/mghotbi/DspikeIn/assets/29090547/43f7a692-cb15-42c0-b116-f1397619f32d) |
 
 ---
 
@@ -506,10 +507,10 @@ print(summary_stats)
 ```
 
 Here is an example of a success or failure report:
-![Success](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/image.png)
+![success report](https://github.com/mghotbi/DspikeIn/assets/29090547/017cfa65-8b75-4625-8d49-6e4a67146193)
 
 
-*Save your file for later. Stay tuned for the rest: transformation and several visualization methods and displaying the importance of converting relative to absolute abundance in the context of microbial ecology.*
+*Save your file for later. Please stay tuned for the rest: Comparisons and several visualization methods to show how important it is to convert relative to absolute abundance in the context of microbial ecology.*
 
 
 ```r
@@ -533,7 +534,7 @@ print(bp_rel$barplot)
 
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
-| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/Sal.abs.pnnn.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/sal.rel.pmnb.png) |
+| ![Rel AbsSal taxa barplot](https://github.com/mghotbi/DspikeIn/assets/29090547/643fca2a-6087-49f1-b3ee-5759d2fcb36f) | ![Rel abun Sal taxa barplot](https://github.com/mghotbi/DspikeIn/assets/29090547/2040830e-1ce1-46c9-8dfe-3c18f77a85bf) |
 
 
 
@@ -560,7 +561,7 @@ ridgeP_after <- ridge_plot_it(Salamander_absolute_NospikeSp, taxrank = "Family",
 
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
-| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/ridge%20abs1.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/ridge%20rel2.png) |
+| ![Abs  ridge](https://github.com/mghotbi/DspikeIn/assets/29090547/7b50556d-77d7-4aa0-b2b0-f461c67c65a7) | ![Rel  ridge](https://github.com/mghotbi/DspikeIn/assets/29090547/5b5a85ea-1f10-4082-a108-7c9019bd84d8) |
 
 
 ```r
@@ -579,7 +580,7 @@ core.microbiome <- readRDS("core.microbiome.rds")
 
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
-| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/Abs.coree.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/core.rel.png) |
+| ![Abs core](https://github.com/mghotbi/DspikeIn/assets/29090547/9f32f799-4421-4842-a4cf-a1eee1a768e1) | ![Rel core](https://github.com/mghotbi/DspikeIn/assets/29090547/5fb4055a-33f5-48ec-bb0c-a9a9ab446429) |
 
 
 ```r
@@ -603,7 +604,7 @@ print(alluvial_plot)
 
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
-| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/abs.eq0.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/eq%20rel3.png) |
+| ![Abs Alluv](https://github.com/mghotbi/DspikeIn/assets/29090547/2f187727-db7b-41a2-82be-73162423ce25) | ![Rel Alluv](https://github.com/mghotbi/DspikeIn/assets/29090547/bc6ed255-97d3-4e24-ad22-12890b747e79) |
 
 
 ```r
