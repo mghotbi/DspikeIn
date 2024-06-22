@@ -1,6 +1,6 @@
-#' Install required packages for YourPackageName
+#' Install and load required packages for YourPackageName
 #'
-#' This function installs the packages required by YourPackageName.
+#' This function installs and loads the packages required by YourPackageName.
 #'
 
 install_required_packages <- function() {
@@ -63,5 +63,8 @@ install_required_packages <- function() {
     }
   }
   
-  message("All required packages are installed.")
+  # Load all packages
+  lapply(c(cran_packages, bioc_packages, gsub(".*/", "", github_packages)), library, character.only = TRUE)
+  
+  message("All required packages are installed and loaded.")
 }
