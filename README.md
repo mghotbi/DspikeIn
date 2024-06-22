@@ -625,6 +625,6 @@ results <- detect_common_asvs_taxa(list(rf_physeq, FTspiked_16S , core.microbiom
 common_asvs_phyloseq <- results$common_asvs_phyloseq
 common_taxa_phyloseq <- results$common_taxa_phyloseq
 
-plot_asvs_abundance(common_asvs_phyloseq, response_var = "host.species", x_var = "ecoregion.III", rank_var = "Phylum")
+plotbar_abundance(common_taxa_phyloseq, level = "Family", group = "Env.broad.scale", top = 10, return = TRUE)
 
 ```
