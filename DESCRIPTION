@@ -5,6 +5,7 @@ Version: 0.0.0.9000
 Author: Mitra Ghotbi
 Maintainer: Mitra Ghotbi <mitra.ghotbi@gmail.com>
 Description: DspikeIn quantifies absolute abundance, enhancing the evaluation of microbe-microbe dynamics, which is crucial for advancing microbial ecology.
+Acknowledgements: DspikeIn builds on the excellent phyloseq package and benefits from modified functions from other wonderful packages, including: dplyr, ggtree, flextable, DESeq2, microbiomeutilities, DECIPHER, and speedyseq.
 URL: https://github.com/mitraghotbi/DspikeIn
 BugReports: https://github.com/mitraghotbi/DspikeIn/issues
 License: AGPL-3 + file LICENSE_AGPL-3
