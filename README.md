@@ -135,10 +135,9 @@ install_load_packages_helper()
 
 ```
 
-
 ## Acknowledgements
 
-DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phyloseq) package and benefits from modified functions from other wonderful packages, including: [**dplyr**](https://github.com/tidyverse/dplyr), [**ggtree**](https://github.com/YuLab-SMU/ggtree.git), [**flextable**](https://github.com/davidgohel/flextable.git), [**DESeq2**](https://github.com/thelovelab/DESeq2), [**microbiomeutilities**](https://github.com/microsud/microbiomeutilities), [**DECIPHER**](https://github.com/azizilab/decipher.git), and [**speedyseq**](https://github.com/mikemc/speedyseq.git).
+DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phyloseq) package.
 
 ---
 
