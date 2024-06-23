@@ -135,7 +135,7 @@ install_load_packages_helper()
 
 ```
 
-## Acknowledgements
+## Acknowledgement
 
 DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phyloseq) package.
 
