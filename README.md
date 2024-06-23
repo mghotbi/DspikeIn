@@ -90,7 +90,7 @@ To test the DspikeIn package, you can download the dataset using the following l
 
 
 
-## If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:
+*If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:*
 
 ## Step 1: Install Required Packages
 
@@ -138,15 +138,10 @@ install_load_packages_helper()
 
 ## Acknowledgements
 
-DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phyloseq) package and incorporates modified functions from several other packages, including:
+DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phyloseq) package and benefits from modified functions from other wonderful packages, including: [**dplyr**](https://github.com/tidyverse/dplyr), [**ggtree**](https://github.com/YuLab-SMU/ggtree.git), [**flextable**](https://github.com/davidgohel/flextable.git), [**DESeq2**](https://github.com/thelovelab/DESeq2), [**microbiomeutilities**](https://github.com/microsud/microbiomeutilities), [**DECIPHER**](https://github.com/azizilab/decipher.git), and [**speedyseq**](https://github.com/mikemc/speedyseq.git).
 
-- [**dplyr**](https://github.com/tidyverse/dplyr)
-- [**ggtree**](https://github.com/YuLab-SMU/ggtree.git)
-- [**flextable**](https://github.com/davidgohel/flextable.git)
-- [**DESeq2**](https://github.com/thelovelab/DESeq2)
-- [**microbiomeutilities**](https://github.com/microsud/microbiomeutilities)
-- [**DECIPHER**](https://github.com/azizilab/decipher.git)
-- [**speedyseq**](https://github.com/mikemc/speedyseq.git)
+---
+
 
 
 
@@ -192,6 +187,7 @@ physeq_16S_ASV@sam_data$spiked.volume
 # Moreover, to proceed with the DspikeIn package, you only need to select one method to specify your spiked species: either by hashcodes or species name.
 
 # 16S rRNA
+presence of 'spiked.volume' column in metadata
 spiked_cells <-1847
 species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp")
 merged_spiked_species<-"Tetragenococcus_halophilus"
@@ -199,6 +195,7 @@ Tetra <- subset_taxa(physeq_16SASV,Species=="Tetragenococcus_halophilus" | Speci
 hashcodes <- row.names(phyloseq::tax_table(Tetra))
 
 # ITS rDNA
+presence of 'spiked.volume' column in metadata
 spiked_cells <- 733
 species_name <- spiked_species<-merged_spiked_species<-"Dekkera_bruxellensis"
 Dekkera <- subset_taxa(physeq_ITSASV, Species=="Dekkera_bruxellensis")
