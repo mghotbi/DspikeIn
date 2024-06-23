@@ -1,6 +1,6 @@
-#' Install and load required packages for YourPackageName
+#' Install and load required packages for DspikeIn
 #'
-#' This function installs and loads the packages required by YourPackageName.
+#' This function installs and loads the packages required by DspikeIn.
 #'
 
 install_required_packages <- function() {
@@ -14,21 +14,16 @@ install_required_packages <- function() {
     "data.table",
     "matrixStats",
     "ggridges",
-    "agricolae",
     "flextable",
     "RColorBrewer",
     "randomForest",
     "ggtree",
-    "ggpubr",
-    "methods",
-    "tidyverse"
+    "ggpubr"
   )
   
   bioc_packages <- c(
     "phyloseq",
     "microbiome",
-    "microbiomeutilities",
-    "speedyseq",
     "DESeq2",  
     "ShortRead",
     "Biostrings", 
@@ -36,7 +31,8 @@ install_required_packages <- function() {
   )
   
   github_packages <- c(
-    "microbiome/microbiome",
+    "mikemc/speedyseq",
+    "microsud/microbiomeutilities",
     "vmikk/metagMisc"
   )
   
