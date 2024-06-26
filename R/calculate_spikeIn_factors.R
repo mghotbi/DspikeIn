@@ -120,7 +120,7 @@ calculate_spikeIn_factors <- function(physeq, spiked_cells, merged_spiked_specie
   
   # Set default output directory if none provided
   if (is.null(output_path)) {
-    output_path <- "spikeIn_factors_summary.docx"
+    output_path <- file.path(output_prefix, "spikeIn_factors_summary.docx")
   }
   
   # Save the flextable as a Word document
@@ -140,11 +140,7 @@ calculate_spikeIn_factors <- function(physeq, spiked_cells, merged_spiked_specie
 
 # Example usage:
 # merged_spiked_species <- c("Tetragenococcus_halophilus")
-# merged_Tetra <-subset_taxa(Spiked_16S_ASV_scaled, Species=="Tetragenococcus_halophilus")
-# merged_spiked_hashcode<- row.names(tax_table(merged_Tetra)) 
 # result <- calculate_spikeIn_factors(Spiked_16S_ASV_scaled, 1874, merged_spiked_species)
-#result <- calculate_spikeIn_factors(Spiked_16S_ASV_scaled, spiked_cells, merged_spiked_hashcode)
-
 # Access the results
 # scaling_factors <- result$scaling_factors
 # physeq_no_spiked <- result$physeq_no_spiked
