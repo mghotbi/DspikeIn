@@ -8,7 +8,7 @@ calculate_spike_percentage(
   physeq,
   merged_spiked_species = NULL,
   merged_spiked_hashcodes = NULL,
-  output_path = NULL,
+  output_path = "merged_data.docx",
   passed_range = c(0.1, 11)
 )
 }
@@ -19,7 +19,7 @@ calculate_spike_percentage(
 
 \item{merged_spiked_hashcodes}{A character vector of spiked hashcodes to check in the phyloseq object. Default is NULL.}
 
-\item{output_path}{A character string specifying the path to save the output files. Default is NULL, which saves the report as "merged_data.docx".}
+\item{output_path}{A character string specifying the path to save the output files. Default is "merged_data.docx".}
 
 \item{passed_range}{A numeric vector of length 2 specifying the range of percentages to categorize results as "passed". Default is c(0.1, 11).}
 }
@@ -32,12 +32,16 @@ It merges the spiked taxa into one ASV, calculates the percentage of reads, cate
 and saves the results as a DOCX and CSV file.
 }
 \examples{
-# Example usage:
+library(phyloseq)
+# Load example data
+data(GlobalPatterns)
+physeq <- GlobalPatterns
+
 # Define the spiked species
 merged_spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
-calculate_spike_percentage(physeq, merged_spiked_species = merged_spiked_species)
+calculate_spike_percentage(physeq, merged_spiked_species = merged_spiked_species, passed_range = c(0.1, 10))
 
 # Define the spiked hashcodes
 merged_spiked_hashcodes <- c("hashcode1", "hashcode2")
-calculate_spike_percentage(physeq, merged_spiked_hashcodes = merged_spiked_hashcodes)
+calculate_spike_percentage(physeq, merged_spiked_hashcodes = merged_spiked_hashcodes, passed_range = c(0.1, 10))
 }
