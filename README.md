@@ -21,7 +21,7 @@ In our study, *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selec
 ### DNA Extraction
 
 - DNA was extracted using the Qiagen DNeasy Powersoil Pro Kit.
-- These DNA isolations served as standards to determine the appropriate spike-in volume of cells to represent 0.1-10% of a sample, as detailed in [Roa et al., 2021](https://www.nature.com/articles/s41586-021-03241-8).
+- These DNA isolations served as standards to determine the appropriate spike-in volume of cells to represent 0.1-10% of a sample, as detailed in [Rao et al., 2021](https://www.nature.com/articles/s41586-021-03241-8).
 
 ---
 
