@@ -7,20 +7,24 @@
 #' @param physeq A phyloseq object containing the microbial data.
 #' @param merged_spiked_species A character vector of spiked species to check in the phyloseq object. Default is NULL.
 #' @param merged_spiked_hashcodes A character vector of spiked hashcodes to check in the phyloseq object. Default is NULL.
-#' @param output_path A character string specifying the path to save the output files. Default is NULL, which saves the report as "merged_data.docx".
+#' @param output_path A character string specifying the path to save the output files. Default is "merged_data.docx".
 #' @param passed_range A numeric vector of length 2 specifying the range of percentages to categorize results as "passed". Default is c(0.1, 11).
 #' @return A data frame containing the percentage of spiked taxa reads and the pass/fail results.
 #' @examples
-#' # Example usage:
+#' library(phyloseq)
+#' # Load example data
+#' data(GlobalPatterns)
+#' physeq <- GlobalPatterns
+#'
 #' # Define the spiked species
 #' merged_spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
-#' calculate_spike_percentage(physeq, merged_spiked_species = merged_spiked_species)
+#' calculate_spike_percentage(physeq, merged_spiked_species = merged_spiked_species, passed_range = c(0.1, 10))
 #'
 #' # Define the spiked hashcodes
 #' merged_spiked_hashcodes <- c("hashcode1", "hashcode2")
-#' calculate_spike_percentage(physeq, merged_spiked_hashcodes = merged_spiked_hashcodes)
+#' calculate_spike_percentage(physeq, merged_spiked_hashcodes = merged_spiked_hashcodes, passed_range = c(0.1, 10))
 #' @export
-calculate_spike_percentage <- function(physeq, merged_spiked_species = NULL, merged_spiked_hashcodes = NULL, output_path = NULL, passed_range = c(0.1, 11)) {
+calculate_spike_percentage <- function(physeq, merged_spiked_species = NULL, merged_spiked_hashcodes = NULL, output_path = "merged_data.docx", passed_range = c(0.1, 11)) {
   # Load necessary libraries
   if (!requireNamespace("phyloseq", quietly = TRUE)) {
     stop("Package 'phyloseq' is required but not installed.")
@@ -100,8 +104,14 @@ calculate_spike_percentage <- function(physeq, merged_spiked_species = NULL, mer
 
 # Example usage:
 # Define the spiked species
-# merged_spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
-# calculate_spike_percentage(physeq, merged_spiked_species = merged_spiked_species, passed_range = c(0.1, 10))
+#merged_spiked_species <- c("Tetragenococcus_halophilus")
+#calculate_spike_percentage(physeq, merged_spiked_species = merged_spiked_species, passed_range = c(0.1, 10))
+
 # Define the spiked hashcodes
-# merged_spiked_hashcodes <- c("hashcode1", "hashcode2")
-# calculate_spike_percentage(physeq, merged_spiked_hashcodes = merged_spiked_hashcodes, passed_range = c(0.1, 10))
+#merged_spiked_hashcodes <- c("hashcode1", "hashcode2")
+#calculate_spike_percentage(physeq, merged_spiked_hashcodes = merged_spiked_hashcodes, passed_range = c(0.1, 10))
+
+#merged_spiked_species<-"Dekkera_bruxellensis"
+#result <- calculate_spike_percentage( spiked_ITS_OTU_scaled,"Dekkera_bruxellensis",  passed_range = c(0.1, 35))
+#calculate_summary_stats_table(result)
+#result$Percentage

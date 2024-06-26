@@ -11,6 +11,7 @@ BugReports: https://github.com/mitraghotbi/DspikeIn/issues
 License: AGPL-3 + file LICENSE_AGPL-3
 Encoding: UTF-8
 LazyData: true
+Depends: R (>= 3.5.0)
 Imports:
     phyloseq,
     microbiome,
@@ -25,7 +26,6 @@ Imports:
     data.table,
     matrixStats,
     DESeq2,  
-    caret,
     ggridges,
     agricolae,
     flextable,
@@ -35,10 +35,11 @@ Imports:
     DECIPHER,
     randomForest,
     ggtree,
-    ggpubr,
-    methods
+    ggpubr
 Suggests:
+    methods,
     e1071,
+    caret,
     vcd,
     qpdf,
     optparse,
