@@ -580,7 +580,6 @@ spiked_16S_min <- adjusted_prevalence(ps, method = "min")
 
 ```
 
-## Data Normalization and Transformation
 *Experiment Repetition*
 
 Getting help from [Yerk et al., 2024](https://doi.org/10.1186/s40168-023-01747-z), We evaluated the need for compositionally aware data transformations, including centered log-ratio (CLR), and additive log-ratio (alr) transformation, DESeq2 variance stabilizing transformation (`run_vst_analysis`), subsampling with a reduced factor for count data (`random_subsample_WithReductionFactor`), proportion adjustment (`proportion.adj`), and prevalence adjustment (`adjusted_prevalence`). Additionally, we considered compositionally naïve data transformations, such as raw data and relative abundance-based transformations (`relativized_filtered_taxa`), and compared the results. The only noticeable variation in the percentage of retrieved spiked species was related to VST. Although this variation was not significant.
