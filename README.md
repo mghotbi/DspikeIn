@@ -458,63 +458,6 @@ passed_physeq <- prune_samples(
 ```
 
 
-
-
-## Data Normalization and Transformation
-*Experiment Repetition*
-
-Getting help from [Yerk et al., 2024](https://doi.org/10.1186/s40168-023-01747-z), we checked if we needed to normalize our data before/after calculating our spiked species to account for spiked volume variations and library preparation. We evaluated the need for compositionally aware data transformations, including centered log-ratio (CLR) transformation, DESeq2 variance stabilizing transformation (`run_vst_analysis`), subsampling with a reduced factor for count data (`random_subsample_WithReductionFactor`), proportion adjustment (`proportion.adj`), and prevalence adjustment (`adjusted_prevalence`). Additionally, we considered compositionally naïve data transformations, such as raw data and relative abundance-based transformations (`relativized_filtered_taxa`), before calculating spike-in scaling factors. The only noticeable variation in the percentage of retrieved spiked species was related to VST. Although this variation was not significant, we decided to continue with the raw data.
-
-
-You can repeat the experiment by transforming the data, calculating spike percentage using `calculate_spike_percentage()`, then checking for the homogeneity of variances using `Bartlett_test()` and ensuring the data is normally distributed using `Shapiro_Wilk_test()`. Finally, plot the results using `transform_plot()`.
-
-
-```r
-
-methods <- readRDS("methods.rds")
-methods$Total.reads <- as.numeric(gsub(",", "", methods$Total.reads))
-methods$Spike.reads <- as.numeric(gsub(",", "", methods$Spike.reads))
-
-# Ensure grouping variable is a factor
-methods$Methods <- as.factor(methods$Methods)
-methods$Result <- as.factor(methods$Result)
-
-# Perform Bartlett test/homogeneity of variances
-Bartlett_test(methods, "Result")
-Bartlett_test(methods, "Methods")
-
-# Check if data is normally distributed
-Shapiro_Wilk_test(methods, "Methods")
-Shapiro_Wilk_test(methods, "Result")
-
-# y_vars are numerical variables of your interest to be analyzed
-y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
-# x_var is a categorical variable
-x_var <- "Methods"
-# the color_palette is MG here
-
-# Scale data
-scaled <- methods %>% mutate_at(c("Total.reads", "Spike.reads", "Spike.percentage"), ~(scale(.) %>% as.vector))
-
-# Perform Kruskal-Wallis test
-transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "anova")
-# Perform one-way ANOVA
-transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
-
-```
-
-
-
-
-
-| Spiked sp Percentage ANOVA | Spiked sp Reads ANOVA | Total Reads ANOVA |
-|:--------------------------:|:---------------------:|:-----------------:|
-| ![plot_Spike percentage_ANOVA](https://github.com/mghotbi/DspikeIn/assets/29090547/94b4da0b-4dd9-4af9-b897-4207ec2cef46) | ![plot_Spike reads_ANOVA](https://github.com/mghotbi/DspikeIn/assets/29090547/92be2eb3-68c4-4bde-87a9-31821e62c558) | ![plot_Total reads_ANOVA](https://github.com/mghotbi/DspikeIn/assets/29090547/43f7a692-cb15-42c0-b116-f1397619f32d) |
-
----
-
-
-
 ### Estimating Scaling Factors After Pre-Processing
 
 To estimate scaling factors, ensure you have the `merged_spiked_species` data, which contains the merged species derived from the spiking process.
@@ -584,8 +527,6 @@ Here is an example of a success or failure report:
 
 
 
-## Normalization and bias correction
-
 ```r
 #Save your file for later. Please stay tuned for the rest: Comparisons and several visualization methods to show how important it is to convert relative to absolute abundance in the context of microbial ecology.
 
@@ -593,6 +534,11 @@ taxa_names(physeq_16S_adj_scaled_absolute_abundance) <- paste0("ASV", seq(ntaxa(
 physeq_16S_adj_scaled_absolute_abundance <- tidy_phyloseq(physeq_16S_adj_scaled_absolute_abundance)
 saveRDS(physeq_16S_adj_scaled_absolute_abundance, "physeq_16S_adj_scaled_absolute_abundance.rds")
 
+```
+## Normalization and bias correction
+
+
+```r
 
 library(phyloseq)
 library(compositions)  
@@ -634,6 +580,58 @@ spiked_16S_min <- adjusted_prevalence(ps, method = "min")
 
 ```
 
+## Data Normalization and Transformation
+*Experiment Repetition*
+
+Getting help from [Yerk et al., 2024](https://doi.org/10.1186/s40168-023-01747-z), We evaluated the need for compositionally aware data transformations, including centered log-ratio (CLR), and additive log-ratio (alr) transformation, DESeq2 variance stabilizing transformation (`run_vst_analysis`), subsampling with a reduced factor for count data (`random_subsample_WithReductionFactor`), proportion adjustment (`proportion.adj`), and prevalence adjustment (`adjusted_prevalence`). Additionally, we considered compositionally naïve data transformations, such as raw data and relative abundance-based transformations (`relativized_filtered_taxa`), and compared the results. The only noticeable variation in the percentage of retrieved spiked species was related to VST. Although this variation was not significant.
+
+
+You can repeat the experiment by transforming the data, calculating spike percentage using `calculate_spike_percentage()`, then checking for the homogeneity of variances using `Bartlett_test()` and ensuring the data is normally distributed using `Shapiro_Wilk_test()`. Finally, plot the results using `transform_plot()`.
+
+
+```r
+
+methods <- readRDS("methods.rds")
+methods$Total.reads <- as.numeric(gsub(",", "", methods$Total.reads))
+methods$Spike.reads <- as.numeric(gsub(",", "", methods$Spike.reads))
+
+# Ensure grouping variable is a factor
+methods$Methods <- as.factor(methods$Methods)
+methods$Result <- as.factor(methods$Result)
+
+# Perform Bartlett test/homogeneity of variances
+Bartlett_test(methods, "Result")
+Bartlett_test(methods, "Methods")
+
+# Check if data is normally distributed
+Shapiro_Wilk_test(methods, "Methods")
+Shapiro_Wilk_test(methods, "Result")
+
+# y_vars are numerical variables of your interest to be analyzed
+y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
+# x_var is a categorical variable
+x_var <- "Methods"
+# the color_palette is MG here
+
+# Scale data
+scaled <- methods %>% mutate_at(c("Total.reads", "Spike.reads", "Spike.percentage"), ~(scale(.) %>% as.vector))
+
+# Perform Kruskal-Wallis test
+transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "anova")
+# Perform one-way ANOVA
+transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
+
+```
+
+
+
+
+
+| Spiked sp Percentage ANOVA | Spiked sp Reads ANOVA | Total Reads ANOVA |
+|:--------------------------:|:---------------------:|:-----------------:|
+| ![plot_Spike percentage_ANOVA](https://github.com/mghotbi/DspikeIn/assets/29090547/94b4da0b-4dd9-4af9-b897-4207ec2cef46) | ![plot_Spike reads_ANOVA](https://github.com/mghotbi/DspikeIn/assets/29090547/92be2eb3-68c4-4bde-87a9-31821e62c558) | ![plot_Total reads_ANOVA](https://github.com/mghotbi/DspikeIn/assets/29090547/43f7a692-cb15-42c0-b116-f1397619f32d) |
+
+---
 
 ```r
 
