@@ -64,7 +64,6 @@ ridge_plot_it <- function(physeq, taxrank = "Genus", rarefaction_depth = NULL, t
   return(plot)
 }
 
-
 # Example usage:
 # ridgeP <- ridge_plot_it(spiked_16S, taxrank = "Family", top_n = 10)
 # print(ridgeP) + my_custom_theme()
