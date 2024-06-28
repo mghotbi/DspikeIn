@@ -347,9 +347,8 @@ calculate_summary_stats_table(initial_stat_sampleWise)
 ```
 
 
-### Data Transformation
-
 *Check if transformation is required for spike volume variation.*
+
 
 ```r
 
