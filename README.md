@@ -632,7 +632,7 @@ transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = 
 
 ---
 
-## Differential abundance 
+## Visualization and Differential abundance 
 
 
 ```r
