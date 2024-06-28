@@ -554,13 +554,14 @@ ps_normalized_relabundance <- normalize_phyloseq(ps, method = 'relabundance')
 ps_normalized_Z <- normalize_phyloseq(ps, method = 'Z')
 
 # Customized transformations
-library(DESeq2)
 # Proportion adjustment
 ps<-physeq_16S_adj_scaled_absolute_abundance
 normalized_16S <- proportion_adj(ps, output_file = "proportion_adjusted_physeq.rds")
 summ_count_phyloseq(normalized_16S)
 
 # DESeq2 variance stabilizing transformation (VST)
+library(DESeq2)
+
 transformed_16S <- run_vst_analysis(ps)
 summ_count_phyloseq(transformed_16S)
 
