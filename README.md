@@ -631,6 +631,7 @@ transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = 
 | ![plot_Spike percentage_ANOVA](https://github.com/mghotbi/DspikeIn/assets/29090547/94b4da0b-4dd9-4af9-b897-4207ec2cef46) | ![plot_Spike reads_ANOVA](https://github.com/mghotbi/DspikeIn/assets/29090547/92be2eb3-68c4-4bde-87a9-31821e62c558) | ![plot_Total reads_ANOVA](https://github.com/mghotbi/DspikeIn/assets/29090547/43f7a692-cb15-42c0-b116-f1397619f32d) |
 
 ---
+## Differential abundance 
 
 ```r
 
