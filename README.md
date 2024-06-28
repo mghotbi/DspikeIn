@@ -341,7 +341,7 @@ calculate_summary_stats_table(initial_stat_sampleWise)
 
 ### Data Transformation
 
-*Check if the transformations is required.*
+*Check if transformation is required.*
 
 ```r
 
