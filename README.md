@@ -160,6 +160,7 @@ print_sentence("¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯")
 
 
 # We are going to work with a subset of the dataset for both ASVs and OTUs approaches to accelerate this workshop.
+library(phyloseq)
 
 Salamander_relative_16S_ASV <-readRDS("Salamander_relative_16S_ASV.rds")
 Salamander_relative_ITS_ASV <-readRDS("Salamander_relative_ITS_ASV.rds")
@@ -212,8 +213,15 @@ This section demonstrates how to use various functions from the package to plot 
 ```r
 # In case there are still several ASVs rooting from the spiked species, you may want to check the phylogenetic distances.
 # We first read DNA sequences from a FASTA file, to perform multiple sequence alignment and compute a distance matrix using the maximum likelihood method, then we construct a phylogenetic tree
-# using the Neighbor-Joining method  based on a Jukes-Cantor distance matrix and plot the tree with bootstrap values.
+# Use the Neighbor-Joining method  based on a Jukes-Cantor distance matrix and plot the tree with bootstrap values.
 # we compare the Sanger read of Tetragenococcus halophilus with the FASTA sequence of Tetragenococcus halophilus from our phyloseq object.
+# Load required libraries
+  library(Biostrings)
+  library(msa)
+  library(phangorn)
+  library(ape)
+  library(speedyseq)
+  library(ggtree)
 
 # Subset the phyloseq object to include only Tetragenococcus species first
 Tetra <- subset_taxa(Tetra, !is.na(taxa_names(Tetra)) & taxa_names(Tetra) != "")
