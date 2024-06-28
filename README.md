@@ -160,7 +160,6 @@ print_sentence("¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯")
 
 
 # We are going to work with a subset of the dataset for both ASVs and OTUs approaches to accelerate this workshop.
-library(phyloseq)
 
 Salamander_relative_16S_ASV <-readRDS("Salamander_relative_16S_ASV.rds")
 Salamander_relative_ITS_ASV <-readRDS("Salamander_relative_ITS_ASV.rds")
@@ -186,6 +185,7 @@ physeq_16S_ASV@sam_data$spiked.volume
 # Please note that the Spike cell numbers, species name, and selected hashcodes are customizable and can be tailored to the specific needs of individual studies.
 # Moreover, to proceed with the DspikeIn package, you only need to select one method to specify your spiked species: either by hashcodes or species name.
 
+library(phyloseq)
 # 16S rRNA
 presence of 'spiked.volume' column in metadata
 spiked_cells <-1847
@@ -349,7 +349,7 @@ calculate_summary_stats_table(initial_stat_sampleWise)
 
 ### Data Transformation
 
-*Check if transformation is required.*
+*Check if transformation is required for spike volume variation.*
 
 ```r
 
@@ -360,26 +360,6 @@ summ_count_phyloseq(readAdj16S)
 # Random subsampling with reduction factor
 red16S <- random_subsample_WithReductionFactor(spiked_16S_OTU, reduction_factor = 3)
 summ_count_phyloseq(red16S)
-
-# Proportion adjustment
-normalized_16S <- proportion_adj(spiked_16S_OTU, output_file = "proportion_adjusted_physeq.rds")
-summ_count_phyloseq(normalized_16S)
-
-# DESeq2 variance stabilizing transformation (VST)
-transformed_16S <- run_vst_analysis(spiked_16S_OTU)
-summ_count_phyloseq(transformed_16S)
-
-# Relativize and filter taxa based on selected thresholds
-FTspiked_16S <- relativized_filtered_taxa(
-  spiked_16S_OTU,
-  threshold_percentage = 0.0001,
-  threshold_mean_abundance = 0.0001,
-  threshold_count = 5,
-  threshold_relative_abundance = 0.0001)
-summ_count_phyloseq(FTspiked_16S)
-
-# Adjust prevalence based on the minimum reads
-spiked_16S_min <- adjusted_prevalence(spiked_16S_OTU, method = "min")
 
 
 ```
@@ -603,7 +583,56 @@ Here is an example of a success or failure report:
 ![success report](https://github.com/mghotbi/DspikeIn/assets/29090547/017cfa65-8b75-4625-8d49-6e4a67146193)
 
 
-*Save your file for later. Please stay tuned for the rest: Comparisons and several visualization methods to show how important it is to convert relative to absolute abundance in the context of microbial ecology.*
+
+## Normalization and bias correction
+
+```r
+#Save your file for later. Please stay tuned for the rest: Comparisons and several visualization methods to show how important it is to convert relative to absolute abundance in the context of microbial ecology.
+
+taxa_names(physeq_16S_adj_scaled_absolute_abundance) <- paste0("ASV", seq(ntaxa(physeq_16S_adj_scaled_absolute_abundance)))
+physeq_16S_adj_scaled_absolute_abundance <- tidy_phyloseq(physeq_16S_adj_scaled_absolute_abundance)
+saveRDS(physeq_16S_adj_scaled_absolute_abundance, "physeq_16S_adj_scaled_absolute_abundance.rds")
+
+
+library(phyloseq)
+library(compositions)  
+library(vegan)         
+library(microbiome)
+
+ps<-physeq_16S_adj_scaled_absolute_abundance
+ps_normalized_clr <- normalize_phyloseq(ps, method = 'clr')
+ps_normalized_alr <- normalize_phyloseq(ps, method = 'alr')
+ps_normalized_hellinger <- normalize_phyloseq(ps, method = 'hellinger')
+ps_normalized_log10 <- normalize_phyloseq(ps, method = 'log10')
+ps_normalized_logp1 <- normalize_phyloseq(ps, method = 'logp1')
+ps_normalized_relabundance <- normalize_phyloseq(ps, method = 'relabundance')
+ps_normalized_Z <- normalize_phyloseq(ps, method = 'Z')
+
+# Customized transformations
+library(DESeq2)
+# Proportion adjustment
+ps<-physeq_16S_adj_scaled_absolute_abundance
+normalized_16S <- proportion_adj(ps, output_file = "proportion_adjusted_physeq.rds")
+summ_count_phyloseq(normalized_16S)
+
+# DESeq2 variance stabilizing transformation (VST)
+transformed_16S <- run_vst_analysis(ps)
+summ_count_phyloseq(transformed_16S)
+
+# Relativize and filter taxa based on selected thresholds
+FTspiked_16S <- relativized_filtered_taxa(
+  ps,
+  threshold_percentage = 0.0001,
+  threshold_mean_abundance = 0.0001,
+  threshold_count = 5,
+  threshold_relative_abundance = 0.0001)
+summ_count_phyloseq(FTspiked_16S)
+
+# Adjust prevalence based on the minimum reads
+spiked_16S_min <- adjusted_prevalence(ps, method = "min")
+
+
+```
 
 
 ```r
