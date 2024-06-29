@@ -356,7 +356,7 @@ calculate_summary_stats_table(initial_stat_sampleWise)
 readAdj16S <- adjust_abundance_one_third(spiked_16S_OTU, factor = 3)
 summ_count_phyloseq(readAdj16S)
 
-# Random subsampling with reduction factor
+# Random subsampling with reduction factor foe count and taxa
 red16S <- random_subsample_WithReductionFactor(spiked_16S_OTU, reduction_factor = 3)
 summ_count_phyloseq(red16S)
 
