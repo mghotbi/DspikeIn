@@ -14,15 +14,18 @@ convert_to_absolute_counts(physeq, scaling_factors, output_dir = NULL)
 \item{output_dir}{A character string specifying the directory to save the output file. Default is NULL, which uses the current working directory.}
 }
 \value{
-A data frame containing the absolute counts.
+A list containing the data frame of absolute counts and the modified phyloseq object.
 }
 \description{
 This function converts the relative ASV counts in a phyloseq object to absolute counts by multiplying 
 the ASV counts by provided scaling factors. The resulting absolute counts are saved as a CSV file and 
-also returned as a data frame.
+also returned as a list containing both the data frame of absolute counts and the modified phyloseq object. 
+Taxa with NA or empty values in the taxonomic table are removed.
 }
 \examples{
 # Example usage:
 # Assume `spiked_16S` is a phyloseq object and `scaling_factors` is a numeric vector of scaling factors.
-# absolute_counts <- convert_to_absolute_counts(spiked_16S, scaling_factors)
+# absolute <- convert_to_absolute_counts(spiked_16S, scaling_factors)
+# absolute_counts <- absolute$absolute_counts
+# physeq_obj <- absolute$physeq_obj
 }

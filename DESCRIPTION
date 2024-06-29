@@ -1,19 +1,24 @@
 Package: DspikeIn
 Type: Package
-Title: DspikeIn quantifies absolute abundance, enhancing the evaluation of microbe-microbe dynamics, which is crucial for advancing microbial ecology.
+Title: DspikeIn quantifies absolute abundance, enhancing the evaluation of microbial dynamics, which is crucial for advancing microbial ecology.
 Version: 0.0.0.9000
 Author: Mitra Ghotbi
 Maintainer: Mitra Ghotbi <mitra.ghotbi@gmail.com>
-Description: DspikeIn quantifies absolute abundance, enhancing the evaluation of microbe-microbe dynamics, which is crucial for advancing microbial ecology.
+Description: DspikeIn quantifies absolute abundance, enhancing the evaluation of microbial dynamics, which is crucial for advancing microbial ecology.
 Acknowledgements: DspikeIn builds on the excellent phyloseq package and benefits from modified functions from other wonderful packages, including: dplyr, ggtree, flextable, DESeq2, microbiomeutilities, DECIPHER, and speedyseq.
 URL: https://github.com/mitraghotbi/DspikeIn
 BugReports: https://github.com/mitraghotbi/DspikeIn/issues
-License: AGPL-3 + file LICENSE_AGPL-3
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.5.0)
+Depends: 
+    R (>= 3.5.0)
 Imports:
     phyloseq,
+    edgeR,
+    vegan,
+    compositions,
+    microbiomeMarker,
     microbiome,
     microbiomeutilities,
     dplyr,
@@ -50,7 +55,6 @@ Suggests:
     plyr,
     reshape2,
     grid,
-    vegan,
     scales,
     cluster,
     intergraph,
