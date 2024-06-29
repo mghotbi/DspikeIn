@@ -486,17 +486,15 @@ spiked_species_reads <- result$spiked_species_reads
 
 # Convert relative counts data to absolute counts
 physeq_16S_adj_scaled_AbsoluteCount <- convert_to_absolute_counts(Spiked_16S_OTU_scaled, scaling_factors)
+absolute <- convert_to_absolute_counts(Spiked_16S_OTU_scaled, scaling_factors)
+absolute_counts <- physeq_16S_adj_scaled_AbsoluteCount$absolute_counts
+physeq_absolute_abundance_16S_OTU <- physeq_16S_adj_scaled_AbsoluteCount$physeq_obj
+
 
 # summary statistics 
-post_eval_summary <- calculate_summary_stats_table(physeq_16S_adj_scaled_AbsoluteCount)
+post_eval_summary <- calculate_summary_stats_table(absolute_counts)
 print(post_eval_summary)
 
-# Create a new phyloseq obj with absolute counts
-physeq_16S_adj_scaled_absolute_abundance <- phyloseq(
-  otu_table = round(otu_table(Spiked_16S_OTU_scaled) * scaling_factors), 
-  taxa_table = tax_table(Spiked_16S_OTU_scaled),
-  phy_tree = phy_tree(Spiked_16S_OTU_scaled),
-  sample_data = sample_data(Spiked_16S_OTU_scaled))
 
 ```
 
@@ -527,11 +525,12 @@ Here is an example of a success or failure report:
 
 
 ```r
+
 #Save your file for later. Please stay tuned for the rest: Comparisons and several visualization methods to show how important it is to convert relative to absolute abundance in the context of microbial ecology.
 
-taxa_names(physeq_16S_adj_scaled_absolute_abundance) <- paste0("ASV", seq(ntaxa(physeq_16S_adj_scaled_absolute_abundance)))
-physeq_16S_adj_scaled_absolute_abundance <- tidy_phyloseq(physeq_16S_adj_scaled_absolute_abundance)
-saveRDS(physeq_16S_adj_scaled_absolute_abundance, "physeq_16S_adj_scaled_absolute_abundance.rds")
+taxa_names(physeq_absolute_abundance_16S_OTU) <- paste0("ASV", seq(ntaxa(physeq_absolute_abundance_16S_OTU)))
+physeq_absolute_abundance_16S_OTU <- tidy_phyloseq(physeq_absolute_abundance_16S_OTU)
+saveRDS(physeq_absolute_abundance_16S_OTU, "physeq_absolute_abundance_16S_OTU.rds")
 
 ```
 ## Normalization and bias correction
@@ -544,38 +543,47 @@ library(compositions)
 library(vegan)         
 library(microbiome)
 
-ps<-physeq_16S_adj_scaled_absolute_abundance
-ps_normalized_clr <- normalize_phyloseq(ps, method = 'clr')
-ps_normalized_alr <- normalize_phyloseq(ps, method = 'alr')
-ps_normalized_hellinger <- normalize_phyloseq(ps, method = 'hellinger')
-ps_normalized_log10 <- normalize_phyloseq(ps, method = 'log10')
-ps_normalized_logp1 <- normalize_phyloseq(ps, method = 'logp1')
-ps_normalized_relabundance <- normalize_phyloseq(ps, method = 'relabundance')
-ps_normalized_Z <- normalize_phyloseq(ps, method = 'Z')
-
-# Customized transformations
-# Proportion adjustment
-ps<-physeq_16S_adj_scaled_absolute_abundance
-normalized_16S <- proportion_adj(ps, output_file = "proportion_adjusted_physeq.rds")
-summ_count_phyloseq(normalized_16S)
+physeq <- physeq_absolute_abundance_16S_OTU
+#Rarefaction 
+physeq_rarefy <- normalize_phyloseq_rarefy(physeq, feature_category = "zero", min_counts = 1000)
+#Total Sum Scaling (TSS)
+physeq_tss <- normalize_phyloseq_tss(physeq, feature_category = "zero", min_counts = 1000)
+#Trimmed Mean of M-values (TMM)
+physeq_tmm <- normalize_phyloseq_tmm(physeq, feature_category = "zero", min_counts = 100)
+#Relative Log Expression (RLE)
+physeq_rle <- normalize_phyloseq_rle(physeq, feature_category = "iqlr", min_counts = 1000)
+#Cumulative Sum Scaling (CSS)
+physeq_css <- normalize_phyloseq_css(physeq, feature_category = "zero", min_counts = 1000)
+# Centered Log-Ratio (CLR)
+physeq_clr <- normalize_phyloseq_clr(physeq, feature_category = "zero", min_counts = 1000)
+#Counts Per Million (CPM)
+physeq_cpm <- normalize_phyloseq_cpm(physeq, feature_category = "iqlr", min_counts = 1000)
 
 # DESeq2 variance stabilizing transformation (VST)
 library(DESeq2)
+#design_formula=~ treatment
+physeq_vst <- normalize_phyloseq_vst(physeq, design_formula = design_formula, feature_category = "iqlr", min_counts = 1000, pseudocount = 1)
+summ_count_phyloseq(physeq_vst)
 
-transformed_16S <- run_vst_analysis(ps)
-summ_count_phyloseq(transformed_16S)
+
+# Customized filtering and transformations
+# Proportion adjustment
+physeq<-physeq_absolute_abundance_16S_OTU
+normalized_physeq <- proportion_adj(physeq, output_file = "proportion_adjusted_physeq.rds")
+summ_count_phyloseq(normalized_16S)
+
 
 # Relativize and filter taxa based on selected thresholds
-FTspiked_16S <- relativized_filtered_taxa(
-  ps,
+FT_physeq <- relativized_filtered_taxa(
+  physeq,
   threshold_percentage = 0.0001,
   threshold_mean_abundance = 0.0001,
   threshold_count = 5,
   threshold_relative_abundance = 0.0001)
-summ_count_phyloseq(FTspiked_16S)
+summ_count_phyloseq(FT_physeq)
 
 # Adjust prevalence based on the minimum reads
-spiked_16S_min <- adjusted_prevalence(ps, method = "min")
+physeq_min <- adjusted_prevalence(physeq, method = "min")
 
 
 ```
@@ -707,7 +715,7 @@ core.microbiome <- readRDS("core.microbiome.rds")
 
 ```r
 
-# shift to dataframe and plot the abundance of taxa across the factors
+# shift to dataframe and plot the abundance of taxa across the factor of your interest
 # Load data
 meli_Abs_WSal <- readRDS("meli_Abs_WSal.rds")
 meli_Rel_WSal <- readRDS("meli_Rel_WSal.rds")
