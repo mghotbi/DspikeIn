@@ -1,8 +1,7 @@
 # DspikeIn
 The importance of converting relative to absolute abundance in the context of microbial ecology: Introducing the user-friendly DspikeIn R package
 
-![How it works](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/Copy%20of%20Untitled%20(2).png)
-
+![DspikeIn](https://github.com/mghotbi/DspikeIn/assets/29090547/f827aed9-2f99-42a1-adff-4b85124f8e94)
 
 ---
 
@@ -22,7 +21,7 @@ In our study, *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selec
 ### DNA Extraction
 
 - DNA was extracted using the Qiagen DNeasy Powersoil Pro Kit.
-- These DNA isolations served as standards to determine the appropriate spike-in volume of cells to represent 0.1-10% of a sample, as detailed in [Roa et al., 2021](https://www.nature.com/articles/s41586-021-03241-8).
+- These DNA isolations served as standards to determine the appropriate spike-in volume of cells to represent 0.1-10% of a sample, as detailed in [Rao et al., 2021](https://www.nature.com/articles/s41586-021-03241-8).
 
 ---
 
@@ -39,17 +38,21 @@ In our study, *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selec
 
 ## Using QIIME2 Plugin for GCN Normalization
 
-To normalize your data by gene copy number (GCN) using the QIIME2 plugin, follow the steps below.
-For more information, visit the q2-gcn-norm GitHub repository (https://github.com/Jiung-Wen/q2-gcn-norm).
+# To normalize data by gene copy number (GCN) using the QIIME2 plugin, follow the steps below.
+# For more information, visit the q2-gcn-norm GitHub repository (https://github.com/Jiung-Wen/q2-gcn-norm).
 
 ### Command
+
 Run the following command to perform GCN normalization:
 
 qiime gcn-norm copy-num-normalize \
   --i-table table-dada2.qza \
   --i-taxonomy taxonomy.qza \
   --o-gcn-norm-table table-normalized.qza
+
 ```
+
+---
 
 
 ### DspikeIn Package
@@ -81,7 +84,32 @@ In fact, for ITS we did not need to use copy number correction. However, we reco
 ---
 ## Dataset
 
-*The full dataset is available upon request. A subset of the dataset is attached for use in this workshop.*
+*The full dataset will be available upon request. A subset of the dataset is attached for use in this workshop.*
+
+To test the DspikeIn package, you can download the dataset using the following link: [Download Dataset](https://drive.google.com/file/d/1Ohac-RnrXWSuBAMfqxVzrxCE3Sq98LJK/view?usp=sharing).
+
+
+
+*If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:*
+
+## Step 1: Install Required Packages
+
+To install the required packages, use the following script:
+
+```r
+
+# Please install devtools first
+install.packages("devtools")
+
+# Source the helper function from our GitHub repository
+devtools::source_url("https://raw.githubusercontent.com/mghotbi/DspikeIn/MGhotbi/install_required_packages.R")
+
+# Run this function to install all required packages
+install_required_packages()
+
+
+```
+## Step 2: Install DspikeIn Package
 
 
 ```r
@@ -89,13 +117,30 @@ In fact, for ITS we did not need to use copy number correction. However, we reco
 # Installation
 #Instructions for how to install the DspikeIn package.
 
+# Using devtools
+install.packages("devtools")
+devtools::install_github("mghotbi/DspikeIn")
+library(DspikeIn)
 
-# Optional Package Installation
+# Or using remotes
+install.packages("remotes")
+remotes::install_github("mghotbi/DspikeIn")
+library(DspikeIn)
+
+
+## Optional Package Installation
 # For users convenience, we provide a helper function to install and load several microbial-ecology-relevant packages, some of which are required for running the `DspikeIn` package.
 # You can use the `install_load_packages_helper()` function to easily install and load these packages.
 install_load_packages_helper()
 
 ```
+
+## Acknowledgement
+
+DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phyloseq) package.
+
+---
+
 
 
 
@@ -104,7 +149,7 @@ install_load_packages_helper()
 create_directory("DspikeIn_16S_OTU", set_working_dir = TRUE)
 getwd()
 
-# Please note that these functions have been primarily built using several wonderful packages, including phyloseq (https://github.com/joey711/phyloseq) and tidyverse/dplyr (https://github.com/tidyverse/dplyr).
+
 # Therefore, please start by creating a phyloseq object and follow the instructions.
 # To create your phyloseq object, please refer to the phyloseq tutorial (https://joey711.github.io/phyloseq).
 # The phyloseq object needs to include OTU/ASV, Taxa, phylogenetic tree, DNA reference, 
@@ -140,7 +185,9 @@ physeq_16S_ASV@sam_data$spiked.volume
 # Please note that the Spike cell numbers, species name, and selected hashcodes are customizable and can be tailored to the specific needs of individual studies.
 # Moreover, to proceed with the DspikeIn package, you only need to select one method to specify your spiked species: either by hashcodes or species name.
 
+library(phyloseq)
 # 16S rRNA
+presence of 'spiked.volume' column in metadata
 spiked_cells <-1847
 species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp")
 merged_spiked_species<-"Tetragenococcus_halophilus"
@@ -148,6 +195,7 @@ Tetra <- subset_taxa(physeq_16SASV,Species=="Tetragenococcus_halophilus" | Speci
 hashcodes <- row.names(phyloseq::tax_table(Tetra))
 
 # ITS rDNA
+presence of 'spiked.volume' column in metadata
 spiked_cells <- 733
 species_name <- spiked_species<-merged_spiked_species<-"Dekkera_bruxellensis"
 Dekkera <- subset_taxa(physeq_ITSASV, Species=="Dekkera_bruxellensis")
@@ -165,8 +213,15 @@ This section demonstrates how to use various functions from the package to plot 
 ```r
 # In case there are still several ASVs rooting from the spiked species, you may want to check the phylogenetic distances.
 # We first read DNA sequences from a FASTA file, to perform multiple sequence alignment and compute a distance matrix using the maximum likelihood method, then we construct a phylogenetic tree
-# using the Neighbor-Joining method  based on a Jukes-Cantor distance matrix and plot the tree with bootstrap values.
+# Use the Neighbor-Joining method  based on a Jukes-Cantor distance matrix and plot the tree with bootstrap values.
 # we compare the Sanger read of Tetragenococcus halophilus with the FASTA sequence of Tetragenococcus halophilus from our phyloseq object.
+# Load required libraries
+  library(Biostrings)
+  library(msa)
+  library(phangorn)
+  library(ape)
+  library(speedyseq)
+  library(ggtree)
 
 # Subset the phyloseq object to include only Tetragenococcus species first
 Tetra <- subset_taxa(Tetra, !is.na(taxa_names(Tetra)) & taxa_names(Tetra) != "")
@@ -207,7 +262,7 @@ Figure 1.
 
 | Neighbor Joining Tree with Bootstrap | Tetra Plot with Bootstrap | Cophenetic tree with Bootstrap|
 |:------------------------------------:|:----------:|:---------:|
-| ![Neighbor Joining Tree](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/JU.png?raw=true) | ![Tetra Plot](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/tetra.png?raw=true) | ![cophenetic](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/Rplot02.png?raw=true) |
+| ![Neighbor Joining Tree with Bootstrap](https://github.com/mghotbi/DspikeIn/assets/29090547/175c8554-261f-45ab-8ec8-b22d09eb9ee4) | ![Tetra Plot with Bootstrap](https://github.com/mghotbi/DspikeIn/assets/29090547/78b5d8bb-3391-433d-af77-e40c8d27b055) | ![Cophenetic tree with Bootstrap](https://github.com/mghotbi/DspikeIn/assets/29090547/2a4bc232-e834-4212-9119-8561eddebed1) |
 
 
 
@@ -228,7 +283,8 @@ DNAStringSet object of length 5:
 
 
 
-![WhyOTUs](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/ASVOTU.png)
+![WhyOTUvsASV](https://github.com/mghotbi/DspikeIn/assets/29090547/10d82aea-9aa5-476e-a421-e0e6ddb89841)
+
 
 ---
 
@@ -242,7 +298,7 @@ Retrieved spiked species are correlated with abundance and can therefore vary pe
 
 | ASVs Or OTUs | Acceptable range|
 |:----------:|:---------:|
-| ![ASVs vs OTUs](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/pngof%20desired.png) | ![Acceptable range](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/range.png) |
+| ![Desired range of spiked sp](https://github.com/mghotbi/DspikeIn/assets/29090547/2f949616-6493-4445-8f1e-7ac9c9dd844f) | ![Acceptable range](https://github.com/mghotbi/DspikeIn/assets/29090547/8674f3de-ba24-4857-9cd7-d1b6dc15c669) |
 
 
 
@@ -291,9 +347,8 @@ calculate_summary_stats_table(initial_stat_sampleWise)
 ```
 
 
-### Data Transformation
+*Check if transformation is required for spike volume variation.*
 
-*Check if the transformations is required.*
 
 ```r
 
@@ -301,29 +356,9 @@ calculate_summary_stats_table(initial_stat_sampleWise)
 readAdj16S <- adjust_abundance_one_third(spiked_16S_OTU, factor = 3)
 summ_count_phyloseq(readAdj16S)
 
-# Random subsampling with reduction factor
+# Random subsampling with reduction factor foe count and taxa
 red16S <- random_subsample_WithReductionFactor(spiked_16S_OTU, reduction_factor = 3)
 summ_count_phyloseq(red16S)
-
-# Proportion adjustment
-normalized_16S <- proportion_adj(spiked_16S_OTU, output_file = "proportion_adjusted_physeq.rds")
-summ_count_phyloseq(normalized_16S)
-
-# DESeq2 variance stabilizing transformation (VST)
-transformed_16S <- run_vst_analysis(spiked_16S_OTU)
-summ_count_phyloseq(transformed_16S)
-
-# Relativize and filter taxa based on selected thresholds
-FTspiked_16S <- relativized_filtered_taxa(
-  spiked_16S_OTU,
-  threshold_percentage = 0.0001,
-  threshold_mean_abundance = 0.0001,
-  threshold_count = 5,
-  threshold_relative_abundance = 0.0001)
-summ_count_phyloseq(FTspiked_16S)
-
-# Adjust prevalence based on the minimum reads
-spiked_16S_min <- adjusted_prevalence(spiked_16S_OTU, method = "min")
 
 
 ```
@@ -333,104 +368,93 @@ spiked_16S_min <- adjusted_prevalence(spiked_16S_OTU, method = "min")
 
 If you are using OTUs and have only one OTU rooted from the spiked species, you can skip this preprocessing step. Follow the steps below to estimate the success of spike-in, particularly check if you have any samples with under or over-spikes.If the spiked species appear in several ASVs, check their phylogenetic distances and compare them to the reference sequences of your positive control. If the spiked species of interest has gene copy number variations and you prefer not to sum their abundances, use the `max` option instead of `sum` to combine these ASVs under a single taxon, simplifying data processing.
 
-```
-
-
-# Modify the threshold of acceptable spiked species % as needed. For detailed guidance on acceptable thresholds (passed_range), please refer to the instructions in our upcoming paper.
-
-# Merg the spiked species
-# merge_method = "max": Selects the maximum abundance among ASVs of the spiked species, ensuring the most abundant ASV is retained.
-# merge_method = "sum": Sums the abundances of ASVs of the spiked species, providing a cumulative total.
-
-
-species_name <- "Tetragenococcus_halophilus"
-Spiked_16S_sum_scaled <- Pre_processing_species(spiked_16S_OTU, species_name, merge_method = "sum", output_file = "merged_physeq_sum.rds")
-Spiked_16S_max_scaled <- Pre_processing_species(spiked_16S_OTU, species_name, merge_method = "max", output_file = "merged_physeq_max.rds")
-
-Spiked_16S_sum_scaled <- Pre_processing_hashcodes(spiked_16S_OTU, hashcodes, merge_method = "sum", output_prefix = "merged_physeq_sum")
-Spiked_16S_max_scaled <- Pre_processing_hashcodes(spiked_16S_OTU, hashcodes, merge_method = "max", output_prefix = "merged_physeq_max")
-summ_count_phyloseq(Spiked_16S_sum_scaled)
-
-
-Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_sum_scaled)
-# Now calculate the spiked species retrieval percentage. Customize the passed_range and merged_spiked_species/merged_spiked_hashcodes based on your preferences.
-# passed_range = "c(0.1, 10) ": threshold of acceptable spiked species %
-# passed_range = "c(0.1, 35) ": threshold of acceptable spiked species %
-## select either merged_spiked_species or merged_spiked_hashcodes
-# merged_spiked_species = merged_spiked_species 
-# merged_spiked_hashcodes = merged_spiked_hashcodes
-
-merged_spiked_species <- c("Tetragenococcus_halophilus")
-result <- calculate_spike_percentage(Spiked_16S_OTU_scaled, merged_spiked_species, passed_range = c(0.1, 11))
-calculate_summary_stats_table(result)
-
-# Define your merged_spiked_hashcodes
-merged_Tetra <- subset_taxa(Spiked_16S_OTU_scaled, Species == "Tetragenococcus_halophilus")
-merged_spiked_hashcodes <- row.names(tax_table(merged_Tetra))
-result <- calculate_spike_percentage(Spiked_16S_OTU_scaled,  merged_spiked_hashcodes, passed_range = c(0.1, 35))
-calculate_summary_stats_table(result)
-
-
-
-# If you decide to remove the failed reads and go forward with passed reads, here is what you need to do
-# you can also go forward with the original file and remove the failed reads after converting relative to absolute abundance
-# Filter to get only the samples that passed
-passed_samples <- result$Sample[result$Result == "passed"]
-# Subset the original phyloseq object to keep only the samples that passed
-passed_physeq <- prune_samples(passed_samples, Spiked_16S_ASV_scaled)
-
-```
-
-## Data Normalization and Transformation
-*Experiment Repetition*
-
-Getting help from [Yerk et al., 2024](https://doi.org/10.1186/s40168-023-01747-z), we checked if we needed to normalize our data before/after calculating our spiked species to account for spiked volume variations and library preparation. We evaluated the need for compositionally aware data transformations, including centered log-ratio (CLR) transformation, DESeq2 variance stabilizing transformation (`run_vst_analysis`), subsampling with a reduced factor for count data (`random_subsample_WithReductionFactor`), proportion adjustment (`proportion.adj`), and prevalence adjustment (`adjusted_prevalence`). Additionally, we considered compositionally naïve data transformations, such as raw data and relative abundance-based transformations (`relativized_filtered_taxa`), before calculating spike-in scaling factors. The only significant variation in the percentage of retrieved spiked species was relevant to VST, so we continued with raw data.
-
-
-You can repeat the experiment by transforming the data, calculating spike percentage using `calculate_spike_percentage()`, then checking for the homogeneity of variances using `Bartlett_test()` and ensuring the data is normally distributed using `Shapiro_Wilk_test()`. Finally, plot the results using `transform_plot()`.
 
 ```r
 
-methods<-readRDS("methods.rds")
-methods$Total.reads <- as.numeric(gsub(",", "", methods$Total.reads))
-methods$Spike.reads <- as.numeric(gsub(",", "", methods$Spike.reads))
+# Modify the threshold of acceptable spiked species % as needed. 
+# For detailed guidance on acceptable thresholds (passed_range), 
+# please refer to the instructions in our upcoming paper.
 
-# Ensure grouping variable is a factor
-methods$Methods <- as.factor(methods$Methods)
-methods$Result <- as.factor(methods$Result)
+# Merge the spiked species
+# merge_method = "max": Selects the maximum abundance among ASVs of the spiked species, 
+# ensuring the most abundant ASV is retained.
+# merge_method = "sum": Sums the abundances of ASVs of the spiked species, 
+# providing a cumulative total.
 
-# Perform Bartlett test/homogeneity of variances
-Bartlett_test(methods, "Result")
-Bartlett_test(methods, "Methods")
+species_name <- "Tetragenococcus_halophilus"
 
-# Check if data is normally distributed
-Shapiro_Wilk_test(methods, "Methods")
-Shapiro_Wilk_test(methods, "Result")
+# Merge using "sum" method
+Spiked_16S_sum_scaled <- Pre_processing_species(
+  spiked_16S_OTU, 
+  species_name, 
+  merge_method = "sum", 
+  output_file = "merged_physeq_sum.rds")
 
-# y_vars are numerical variables of your interest to be analysed
-y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
-# x_var is a categorical variable
-x_var <- "Methods"
-# the color_pallet is MG here
+# Merge using "max" method
+Spiked_16S_max_scaled <- Pre_processing_species(
+  spiked_16S_OTU, 
+  species_name, 
+  merge_method = "max", 
+  output_file = "merged_physeq_max.rds")
 
-# scale data
-scaled <- methods %>% mutate_at(c("Total.reads", "Spike.reads", "Spike.percentage" ), ~(scale(.) %>% as.vector))
+# Merge hashcodes using "sum" method
+Spiked_16S_sum_scaled <- Pre_processing_hashcodes(
+  spiked_16S_OTU, 
+  hashcodes, 
+  merge_method = "sum", 
+  output_prefix = "merged_physeq_sum")
 
-# Perform Kruskal-Wallis test
-transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "anova")
-# Perform one-way ANOVA
-transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
+# Merge hashcodes using "max" method
+Spiked_16S_max_scaled <- Pre_processing_hashcodes(
+  spiked_16S_OTU, 
+  hashcodes, 
+  merge_method = "max", 
+  output_prefix = "merged_physeq_max")
 
+# Summarize count
+summ_count_phyloseq(Spiked_16S_sum_scaled)
+
+# Tidy phyloseq object
+Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_sum_scaled)
+
+# Now calculate the spiked species retrieval percentage.
+# Customize the passed_range and merged_spiked_species/merged_spiked_hashcodes based on your preferences.
+# passed_range = "c(0.1, 10)": threshold of acceptable spiked species %
+# passed_range = "c(0.1, 35)": threshold of acceptable spiked species %
+# Select either merged_spiked_species or merged_spiked_hashcodes
+
+merged_spiked_species <- c("Tetragenococcus_halophilus")
+result <- calculate_spike_percentage(
+  Spiked_16S_OTU_scaled, 
+  merged_spiked_species, 
+  passed_range = c(0.1, 11))
+calculate_summary_stats_table(result)
+
+# Define your merged_spiked_hashcodes
+merged_Tetra <- subset_taxa(
+  Spiked_16S_OTU_scaled, 
+  Species == "Tetragenococcus_halophilus")
+
+merged_spiked_hashcodes <- row.names(tax_table(merged_Tetra))
+result <- calculate_spike_percentage(
+  Spiked_16S_OTU_scaled,  
+  merged_spiked_hashcodes, 
+  passed_range = c(0.1, 35))
+calculate_summary_stats_table(result)
+
+# If you decide to remove the failed reads and go forward with passed reads, here is what you need to do
+# You can also go forward with the original file and remove the failed reads 
+# after converting relative to absolute abundance
+
+# Filter to get only the samples that passed
+passed_samples <- result$Sample[result$Result == "passed"]
+
+# Subset the original phyloseq object to keep only the samples that passed
+passed_physeq <- prune_samples(
+  passed_samples, 
+  Spiked_16S_ASV_scaled)
 
 ```
-
-
-| Spiked sp Percentage ANOVA | Spiked sp Reads ANOVA | Total Reads ANOVA |
-|:--------------------------:|:---------------------:|:-----------------:|
-| ![Spike Percentage ANOVA](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/plot_Spike.percentage_ANOVA.jpg?raw=true) | ![Spike Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/plot_Spike.reads_ANOVA.png?raw=true) | ![Total Reads ANOVA](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/plot_Total.reads_ANOVA.jpg?raw=true) |
-
----
-
 
 
 ### Estimating Scaling Factors After Pre-Processing
@@ -462,17 +486,15 @@ spiked_species_reads <- result$spiked_species_reads
 
 # Convert relative counts data to absolute counts
 physeq_16S_adj_scaled_AbsoluteCount <- convert_to_absolute_counts(Spiked_16S_OTU_scaled, scaling_factors)
+absolute <- convert_to_absolute_counts(Spiked_16S_OTU_scaled, scaling_factors)
+absolute_counts <- physeq_16S_adj_scaled_AbsoluteCount$absolute_counts
+physeq_absolute_abundance_16S_OTU <- physeq_16S_adj_scaled_AbsoluteCount$physeq_obj
+
 
 # summary statistics 
-post_eval_summary <- calculate_summary_stats_table(physeq_16S_adj_scaled_AbsoluteCount)
+post_eval_summary <- calculate_summary_stats_table(absolute_counts)
 print(post_eval_summary)
 
-# Create a new phyloseq obj with absolute counts
-physeq_16S_adj_scaled_absolute_abundance <- phyloseq(
-  otu_table = round(otu_table(Spiked_16S_OTU_scaled) * scaling_factors), 
-  taxa_table = tax_table(Spiked_16S_OTU_scaled),
-  phy_tree = phy_tree(Spiked_16S_OTU_scaled),
-  sample_data = sample_data(Spiked_16S_OTU_scaled))
 
 ```
 
@@ -498,10 +520,127 @@ print(summary_stats)
 ```
 
 Here is an example of a success or failure report:
-![Success](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/image.png)
+![success report](https://github.com/mghotbi/DspikeIn/assets/29090547/017cfa65-8b75-4625-8d49-6e4a67146193)
 
 
-*Save your file for later. Stay tuned for the rest: transformation and several visualization methods and displaying the importance of converting relative to absolute abundance in the context of microbial ecology.*
+
+```r
+
+#Save your file for later. Please stay tuned for the rest: Comparisons and several visualization methods to show how important it is to convert relative to absolute abundance in the context of microbial ecology.
+
+taxa_names(physeq_absolute_abundance_16S_OTU) <- paste0("ASV", seq(ntaxa(physeq_absolute_abundance_16S_OTU)))
+physeq_absolute_abundance_16S_OTU <- tidy_phyloseq(physeq_absolute_abundance_16S_OTU)
+saveRDS(physeq_absolute_abundance_16S_OTU, "physeq_absolute_abundance_16S_OTU.rds")
+
+```
+## Normalization and bias correction
+
+
+```r
+
+library(phyloseq)
+library(compositions)  
+library(vegan)         
+library(microbiome)
+
+physeq <- physeq_absolute_abundance_16S_OTU
+#Rarefaction 
+physeq_rarefy <- normalize_phyloseq_rarefy(physeq, feature_category = "zero", min_counts = 1000)
+#Total Sum Scaling (TSS)
+physeq_tss <- normalize_phyloseq_tss(physeq, feature_category = "zero", min_counts = 1000)
+#Trimmed Mean of M-values (TMM)
+physeq_tmm <- normalize_phyloseq_tmm(physeq, feature_category = "zero", min_counts = 100)
+#Relative Log Expression (RLE)
+physeq_rle <- normalize_phyloseq_rle(physeq, feature_category = "iqlr", min_counts = 1000)
+#Cumulative Sum Scaling (CSS)
+physeq_css <- normalize_phyloseq_css(physeq, feature_category = "zero", min_counts = 1000)
+# Centered Log-Ratio (CLR)
+physeq_clr <- normalize_phyloseq_clr(physeq, feature_category = "zero", min_counts = 1000)
+#Counts Per Million (CPM)
+physeq_cpm <- normalize_phyloseq_cpm(physeq, feature_category = "iqlr", min_counts = 1000)
+
+# DESeq2 variance stabilizing transformation (VST)
+library(DESeq2)
+#design_formula=~ treatment
+physeq_vst <- normalize_phyloseq_vst(physeq, design_formula = design_formula, feature_category = "iqlr", min_counts = 1000, pseudocount = 1)
+summ_count_phyloseq(physeq_vst)
+
+
+# Customized filtering and transformations
+# Proportion adjustment
+physeq<-physeq_absolute_abundance_16S_OTU
+normalized_physeq <- proportion_adj(physeq, output_file = "proportion_adjusted_physeq.rds")
+summ_count_phyloseq(normalized_16S)
+
+
+# Relativize and filter taxa based on selected thresholds
+FT_physeq <- relativized_filtered_taxa(
+  physeq,
+  threshold_percentage = 0.0001,
+  threshold_mean_abundance = 0.0001,
+  threshold_count = 5,
+  threshold_relative_abundance = 0.0001)
+summ_count_phyloseq(FT_physeq)
+
+# Adjust prevalence based on the minimum reads
+physeq_min <- adjusted_prevalence(physeq, method = "min")
+
+
+```
+
+*Experiment Repetition*
+
+Getting help from [Yerk et al., 2024](https://doi.org/10.1186/s40168-023-01747-z), We evaluated the need for compositionally aware data transformations, including centered log-ratio (CLR), and additive log-ratio (alr) transformation, DESeq2 variance stabilizing transformation (`run_vst_analysis`), subsampling with a reduced factor for count data (`random_subsample_WithReductionFactor`), proportion adjustment (`proportion.adj`), and prevalence adjustment (`adjusted_prevalence`). Additionally, we considered compositionally naïve data transformations, such as raw data and relative abundance-based transformations (`relativized_filtered_taxa`), and compared the results. The only noticeable variation in the percentage of retrieved spiked species was related to VST. However, this variation was not significant for spiked sp reterival%.
+
+
+You can repeat the experiment by transforming the data, calculating spike percentage using `calculate_spike_percentage()`, then checking for the homogeneity of variances using `Bartlett_test()` and ensuring the data is normally distributed using `Shapiro_Wilk_test()`. Finally, plot the results using `transform_plot()`.
+
+
+```r
+
+methods <- readRDS("methods.rds")
+methods$Total.reads <- as.numeric(gsub(",", "", methods$Total.reads))
+methods$Spike.reads <- as.numeric(gsub(",", "", methods$Spike.reads))
+
+# Ensure grouping variable is a factor
+methods$Methods <- as.factor(methods$Methods)
+methods$Result <- as.factor(methods$Result)
+
+# Perform Bartlett test/homogeneity of variances
+Bartlett_test(methods, "Result")
+Bartlett_test(methods, "Methods")
+
+# Check if data is normally distributed
+Shapiro_Wilk_test(methods, "Methods")
+Shapiro_Wilk_test(methods, "Result")
+
+# y_vars are numerical variables of your interest to be analyzed
+y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
+# x_var is a categorical variable
+x_var <- "Methods"
+# the color_palette is MG here
+
+# Scale data
+scaled <- methods %>% mutate_at(c("Total.reads", "Spike.reads", "Spike.percentage"), ~(scale(.) %>% as.vector))
+
+# Perform Kruskal-Wallis test
+transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "anova")
+# Perform one-way ANOVA
+transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
+
+```
+
+
+
+
+
+| Spiked sp Percentage ANOVA | Spiked sp Reads ANOVA | Total Reads ANOVA |
+|:--------------------------:|:---------------------:|:-----------------:|
+| ![plot_Spike percentage_ANOVA](https://github.com/mghotbi/DspikeIn/assets/29090547/94b4da0b-4dd9-4af9-b897-4207ec2cef46) | ![plot_Spike reads_ANOVA](https://github.com/mghotbi/DspikeIn/assets/29090547/92be2eb3-68c4-4bde-87a9-31821e62c558) | ![plot_Total reads_ANOVA](https://github.com/mghotbi/DspikeIn/assets/29090547/43f7a692-cb15-42c0-b116-f1397619f32d) |
+
+---
+
+## Visualization and Differential abundance 
 
 
 ```r
@@ -525,7 +664,7 @@ print(bp_rel$barplot)
 
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
-| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/Sal.abs.pnnn.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/sal.rel.pmnb.png) |
+| ![Rel AbsSal taxa barplot](https://github.com/mghotbi/DspikeIn/assets/29090547/643fca2a-6087-49f1-b3ee-5759d2fcb36f) | ![Rel abun Sal taxa barplot](https://github.com/mghotbi/DspikeIn/assets/29090547/2040830e-1ce1-46c9-8dfe-3c18f77a85bf) |
 
 
 
@@ -552,7 +691,7 @@ ridgeP_after <- ridge_plot_it(Salamander_absolute_NospikeSp, taxrank = "Family",
 
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
-| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/ridge%20abs1.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/ridge%20rel2.png) |
+| ![Abs  ridge](https://github.com/mghotbi/DspikeIn/assets/29090547/7b50556d-77d7-4aa0-b2b0-f461c67c65a7) | ![Rel  ridge](https://github.com/mghotbi/DspikeIn/assets/29090547/5b5a85ea-1f10-4082-a108-7c9019bd84d8) |
 
 
 ```r
@@ -571,12 +710,12 @@ core.microbiome <- readRDS("core.microbiome.rds")
 
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
-| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/Abs.coree.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/core.rel.png) |
+| ![Abs core](https://github.com/mghotbi/DspikeIn/assets/29090547/9f32f799-4421-4842-a4cf-a1eee1a768e1) | ![Rel core](https://github.com/mghotbi/DspikeIn/assets/29090547/5fb4055a-33f5-48ec-bb0c-a9a9ab446429) |
 
 
 ```r
 
-# shift to dataframe and plot the abundance of taxa across the factors
+# shift to dataframe and plot the abundance of taxa across the factor of your interest
 # Load data
 meli_Abs_WSal <- readRDS("meli_Abs_WSal.rds")
 meli_Rel_WSal <- readRDS("meli_Rel_WSal.rds")
@@ -595,7 +734,7 @@ print(alluvial_plot)
 
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
-| ![Absolute Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/abs.eq0.png) | ![Relative Abundance](https://github.com/mghotbi/DspikeIn/blob/MGhotbi/eq%20rel3.png) |
+| ![Abs Alluv](https://github.com/mghotbi/DspikeIn/assets/29090547/2f187727-db7b-41a2-82be-73162423ce25) | ![Rel Alluv](https://github.com/mghotbi/DspikeIn/assets/29090547/bc6ed255-97d3-4e24-ad22-12890b747e79) |
 
 
 ```r
@@ -616,6 +755,6 @@ results <- detect_common_asvs_taxa(list(rf_physeq, FTspiked_16S , core.microbiom
 common_asvs_phyloseq <- results$common_asvs_phyloseq
 common_taxa_phyloseq <- results$common_taxa_phyloseq
 
-plot_asvs_abundance(common_asvs_phyloseq, response_var = "host.species", x_var = "ecoregion.III", rank_var = "Phylum")
+plotbar_abundance(common_taxa_phyloseq, level = "Family", group = "Env.broad.scale", top = 10, return = TRUE)
 
 ```
