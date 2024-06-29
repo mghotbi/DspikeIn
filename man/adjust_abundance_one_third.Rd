@@ -4,18 +4,14 @@
 \alias{adjust_abundance_one_third}
 \title{Adjust Abundance by One-Third}
 \usage{
-adjust_abundance_one_third(
-  physeq,
-  factor = 3,
-  output_file = "physeq_adj_scaled.rds"
-)
+adjust_abundance_one_third(physeq, factor = 3, output_file = NULL)
 }
 \arguments{
 \item{physeq}{A phyloseq object containing the microbiome data.}
 
 \item{factor}{A numeric value specifying the factor by which to divide the abundance data. Default is 3.}
 
-\item{output_file}{A character string specifying the output file name for the adjusted phyloseq object. Default is "physeq_adj_scaled.rds".}
+\item{output_file}{A character string specifying the output file name for the adjusted phyloseq object. Default is NULL.}
 }
 \value{
 A phyloseq object with the adjusted abundance data.
