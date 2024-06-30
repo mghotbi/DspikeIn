@@ -19,15 +19,21 @@
 #' @return A ggplot object if return is FALSE, otherwise a data frame with summarized data.
 #' @examples
 #' # Plot relativized abundance or select relativize = FALSE to plot absolute abundance
-#' plot <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", group = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10, legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = TRUE, output_prefix = "relativized_abundance_plot")
+#' plot <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", 
+#' group = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10, legend_key_size = 2, legend_text_size = 14,
+#' legend_nrow = 10, relativize = TRUE, output_prefix = "relativized_abundance_plot")
 #' print(plot)
 #'
 #' # Plot non-relativized (absolute) abundance
-#' plot_absolute <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", group = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10, legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = FALSE, output_prefix = "non_relativized_abundance_plot")
+#' plot_absolute <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, 
+#' level = "Family", group = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10, 
+#' legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = FALSE, 
+#' output_prefix = "non_relativized_abundance_plot")
 #' print(plot_absolute)
 #'
 #' # Return summarized data
-#' data <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", group = "Env_broad_scale.x", top = 10, return = TRUE)
+#' data <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", 
+#' group = "Env_broad_scale.x", top = 10, return = TRUE)
 #' @export
 plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NULL, top = 20, return = FALSE, x_size = 12, y_size = 12, legend_key_size = 1, legend_text_size = 12, legend_nrow = 20, relativize = TRUE, output_prefix = NULL) {
   # Load necessary libraries
@@ -114,12 +120,18 @@ plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NUL
 
 # Example usage:
 # Plot relativized abundance
-# plot <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", group = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10, legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = TRUE, output_prefix = "relativized_abundance_plot")
+# plot <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, 
+#level = "Family", group = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10,
+#legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = TRUE, 
+#output_prefix = "relativized_abundance_plot")
 # print(plot)
 
 # Plot non-relativized (absolute) abundance
-# plot_absolute <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", group = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10, legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = FALSE, output_prefix = "non_relativized_abundance_plot")
+# plot_absolute <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, 
+#level = "Family", group = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10,
+#legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = FALSE, output_prefix = "non_relativized_abundance_plot")
 # print(plot_absolute)
 
 # Return summarized data
-# data <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", group = "Env_broad_scale.x", top = 10, return = TRUE)
+# data <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, 
+#level = "Family", group = "Env_broad_scale.x", top = 10, return = TRUE)

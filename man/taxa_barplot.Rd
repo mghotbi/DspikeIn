@@ -50,10 +50,12 @@ The function uses the `tax_glom` function from the `phyloseq` package for taxono
 }
 \examples{
 # Generate a taxa barplot for the Genus rank with relative abundance
-bp <- taxa_barplot(physeqASV16, target_glom = "Genus", normalize = TRUE, treatment_variable = "animal.type", abundance_type = "relative")
+bp <- taxa_barplot(physeqASV16, target_glom = "Genus", normalize = TRUE, 
+treatment_variable = "animal.type", abundance_type = "relative")
 print(bp$barplot)
 
 # Generate a taxa barplot for the Genus rank with absolute abundance
-bp <- taxa_barplot(physeqASV16, target_glom = "Genus", normalize = FALSE, treatment_variable = "animal.type", abundance_type = "absolute")
+bp <- taxa_barplot(physeqASV16, target_glom = "Genus", normalize = FALSE, 
+treatment_variable = "animal.type", abundance_type = "absolute")
 print(bp$barplot)
 }

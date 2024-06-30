@@ -51,7 +51,7 @@ ridge_plot_it <- function(physeq, taxrank = "Genus", rarefaction_depth = NULL, t
   ps <- ps %>% dplyr::filter(!!rlang::sym(taxrank) %in% top_taxa)
   
   # Plot
-  plot <- ggplot2::ggplot(ps %>% dplyr::filter(Abundance > 0 & !is.na(!!rlang::sym(taxrank))), 
+  plot <- ggplot2::ggplot(ps %>% dplyr::filter(Abundance > 0 & !is.na(!!rlang::sym(taxrank))),
                           ggplot2::aes(y = !!rlang::sym(taxrank), x = log10(Abundance), fill = !!rlang::sym(taxrank))) +
     ggridges::geom_density_ridges2(scale = 1, alpha = 0.8, show.legend = FALSE) +
     ggplot2::ggtitle("Abundance Distribution") +

@@ -9,7 +9,8 @@
 #' @return NULL. The function saves the plot to the specified output file.
 #' @examples
 #' # Bootstrap and plot a phylogenetic tree
-#' Bootstrap_phy_tree_with_cophenetic(physeq_object = Tetragenococcus, output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 500)
+#' Bootstrap_phy_tree_with_cophenetic(physeq_object = Tetragenococcus, 
+#' output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 500)
 #' @export
 Bootstrap_phy_tree_with_cophenetic <- function(physeq_object, output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 100) {
   # Load necessary libraries
@@ -81,5 +82,6 @@ Bootstrap_phy_tree_with_cophenetic <- function(physeq_object, output_file = "tre
 }
 
 # Example:
-# Bootstrap_phy_tree_with_cophenetic(physeq_object = Tetragenococcus, output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 1000)
+# Bootstrap_phy_tree_with_cophenetic(physeq_object = Tetragenococcus, 
+#output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 1000)
 

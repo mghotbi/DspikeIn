@@ -81,8 +81,10 @@ This function generates boxplots for multiple y variables and performs statistic
 # Example usage for transform_plot:
 # y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
 # x_vars <- "Methods"
-# transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
-# transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "anova")
+# transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars,
+# methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
+# transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars,
+# methods_var = "Methods", color_palette = MG, stat_test = "anova")
 #
 # Example usage for individual boxplots:
 # X <- rnorm(100)

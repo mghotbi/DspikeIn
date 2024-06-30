@@ -15,7 +15,8 @@
 #' @examples
 #' # Ensure you have a phyloseq object `physeq`
 #' # Use the name of the column in sample_data for response_var
-#' rf_physeq <- RandomForest_selected_ASVs(physeq, response_var = "host.species", na_vars = c("Habitat", "Ecoregion_III", "Host_genus", "Animal_type"))
+#' rf_physeq <- RandomForest_selected_ASVs(physeq, response_var = "host.species", 
+#' na_vars = c("Habitat", "Ecoregion_III", "Host_genus", "Animal_type"))
 #' @export
 RandomForest_selected_ASVs <- function(physeq, response_var, minlib = 15000, prunescale = 0.0001, ntree = 100, n_top_predictors = 20, output_csv = "randomforest_results.csv", na_vars = NULL) {
   
@@ -124,5 +125,6 @@ RandomForest_selected_ASVs <- function(physeq, response_var, minlib = 15000, pru
 }
 
 # Example usage:
-#rf_physeq <- RandomForest_selected_ASVs(physeq,response_var = "host.species",na_vars = c("Habitat", "Ecoregion_III", "Host_genus", "Age"))
+#rf_physeq <- RandomForest_selected_ASVs(physeq,response_var = "host.species",
+#na_vars = c("Habitat", "Ecoregion_III", "Host_genus", "Age"))
 

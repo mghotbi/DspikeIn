@@ -7,7 +7,8 @@
 #' @examples
 #' # Example usage:
 #' # Define a sentence
-#' sentence <- " ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯ ¯\\_(ツ)_/¯ ¯\\_(ツ)_/¯ ¯\\_(ツ)_/¯ ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯ "
+#' sentence <- " ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯ 
+#' # ¯\\_(ツ)_/¯ ¯\\_(ツ)_/¯ ¯\\_(ツ)_/¯ ¯\\_(ツ)_/¯ ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯ "
 #'
 #' # Print the sentence multiple times
 #' print_sentence(sentence)
@@ -20,7 +21,8 @@ print_sentence <- function(sentence) {
 
 # Example usage:
 # Define a sentence
-#sentence <- " ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯ ¯\\_(ツ)_/¯ ¯\\_(ツ)_/¯ ¯\\_(ツ)_/¯ ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯ "
+#sentence <- " ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  
+#¯\\_(ツ)_/¯ ¯\\_(ツ)_/¯ ¯\\_(ツ)_/¯ ¯\\_(ツ)_/¯ ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯ "
 
 # Print the sentence multiple times
 #print_sentence(sentence)

@@ -12,8 +12,10 @@
 #' @examples
 #' Tetra <- subset_taxa(physeqASV16, Genus == "Tetragenococcus")
 #' species_name <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp")
-#' merged_physeq_sum <- Pre_processing_species(Tetrasum, species_name, merge_method = "sum", output_file = "merged_physeq_sum.rds")
-#' merged_physeq_max <- Pre_processing_species(Tetrasum, species_name, merge_method = "max", output_file = "merged_physeq_max.rds")
+#' merged_physeq_sum <- Pre_processing_species(Tetrasum, species_name, 
+#' merge_method = "sum", output_file = "merged_physeq_sum.rds")
+#' merged_physeq_max <- Pre_processing_species(Tetrasum, species_name, 
+#' merge_method = "max", output_file = "merged_physeq_max.rds")
 #' 
 #' # Verify the results
 #' summ_count_phyloseq(merged_physeq_sum)
@@ -106,5 +108,7 @@ Pre_processing_species <- function(physeq, species_name, merge_method = c("sum",
 }
 
 # Example:
-#merged_physeq_sum <- Pre_processing_species(  Tetrasum, species_name, merge_method = "sum", output_file = "merged_physeq_sum.rds")
-#merged_physeq_max <- Pre_processing_species(  Tetrasum, species_name, merge_method = "max", output_file = "merged_physeq_max.rds")
+# merged_physeq_sum <- Pre_processing_species(  Tetrasum, species_name, 
+# merge_method = "sum",output_file = "merged_physeq_sum.rds")
+# merged_physeq_max <- Pre_processing_species(  Tetrasum, species_name, 
+# merge_method = "max", output_file = "merged_physeq_max.rds")

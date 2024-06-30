@@ -10,7 +10,9 @@
 #' @return A phyloseq object containing only the taxa that meet the specified thresholds.
 #' @examples
 #' # Example usage with custom thresholds
-#' # FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, threshold_mean_abundance = 0.0005, threshold_count = 5, threshold_relative_abundance = 0.01)
+#' # FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, 
+#' # threshold_mean_abundance = 0.0005,
+#' # threshold_count = 5, threshold_relative_abundance = 0.01)
 #' @export
 relativized_filtered_taxa <- function(physeq, 
                                       threshold_percentage = 0.5, 
@@ -31,4 +33,5 @@ relativized_filtered_taxa <- function(physeq,
 }
 
 # Example usage with custom thresholds
-# FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, threshold_mean_abundance = 0.0005, threshold_count = 5, threshold_relative_abundance = 0.01)
+# FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, 
+#threshold_mean_abundance = 0.0005,threshold_count = 5, threshold_relative_abundance = 0.01)
