@@ -1,39 +1,40 @@
-#' Install and load required packages for DspikeIn
-#'
-#' This function installs and loads the packages required by DspikeIn.
-#'
+# Function to install and load required packages
+install_and_load <- function(packages) {
+  for (package in packages) {
+    if (!requireNamespace(package, quietly = TRUE)) {
+      if (package %in% c("phyloseq", "DESeq2", "edgeR", "PoissonSeq", "preprocessCore", "sva", "EDASeq", "RUVSeq", "Biobase", "BiocGenerics", "vegan", "chemometrics", "ShortRead", "Biostrings", "DECIPHER", "microbiome")) {
+        BiocManager::install(package)
+      } else {
+        install.packages(package)
+      }
+    }
+    library(package, character.only = TRUE)
+  }
+}
 
+# Specific installation for PoissonSeq from source if needed
+if (!requireNamespace("PoissonSeq", quietly = TRUE)) {
+  install.packages("https://cran.r-project.org/src/contrib/PoissonSeq_1.1.2.tar.gz", repos = NULL, type = "source")
+}
+
+# List of required packages
+required_packages <- c(
+  "phyloseq", "DESeq2", "edgeR", "PoissonSeq", "preprocessCore", "sva", "EDASeq", "RUVSeq", "Biobase", "BiocGenerics", "vegan", "chemometrics", "ShortRead", "Biostrings", "DECIPHER", "microbiome",
+  "dplyr", "ape", "ggplot2", "ggalluvial", "phangorn", "msa", "data.table", "matrixStats", "ggridges", "flextable", "RColorBrewer", "randomForest", "ggtree", "ggpubr"
+)
+
+# Install and load required packages for DspikeIn
 install_required_packages <- function() {
   cran_packages <- c(
-    "dplyr",
-    "ape",
-    "ggplot2",
-    "ggalluvial",
-    "phangorn",
-    "msa",
-    "data.table",
-    "matrixStats",
-    "ggridges",
-    "flextable",
-    "RColorBrewer",
-    "randomForest",
-    "ggtree",
-    "ggpubr"
+    "dplyr", "ape", "ggplot2", "ggalluvial", "phangorn", "msa", "data.table", "matrixStats", "ggridges", "flextable", "RColorBrewer", "randomForest", "ggtree", "ggpubr"
   )
   
   bioc_packages <- c(
-    "phyloseq",
-    "microbiome",
-    "DESeq2",  
-    "ShortRead",
-    "Biostrings", 
-    "DECIPHER"
+    "phyloseq", "microbiome", "DESeq2", "ShortRead", "Biostrings", "DECIPHER", "edgeR", "PoissonSeq", "preprocessCore", "sva", "EDASeq", "RUVSeq", "Biobase", "BiocGenerics", "vegan", "chemometrics"
   )
   
   github_packages <- c(
-    "mikemc/speedyseq",
-    "microsud/microbiomeutilities",
-    "vmikk/metagMisc"
+    "mikemc/speedyseq", "microsud/microbiomeutilities", "vmikk/metagMisc"
   )
   
   installed <- installed.packages()
@@ -64,3 +65,6 @@ install_required_packages <- function() {
   
   message("All required packages are installed and loaded.")
 }
+
+# Run the function to install and load all packages
+install_required_packages()
