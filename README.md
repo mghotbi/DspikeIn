@@ -537,33 +537,13 @@ saveRDS(physeq_absolute_abundance_16S_OTU, "physeq_absolute_abundance_16S_OTU.rd
 
 
 ```r
+# Bolstad, B.M., Irizarry, R.A., Åstrand, M. and Speed, T.P., 2003. A comparison of normalization methods for high density oligonucleotide array data based on variance and bias. Bioinformatics, 19(2), pp.185-193.
 
 library(phyloseq)
 library(compositions)  
 library(vegan)         
 library(microbiome)
 
-physeq <- physeq_absolute_abundance_16S_OTU
-#Rarefaction 
-physeq_rarefy <- normalize_phyloseq_rarefy(physeq, feature_category = "zero", min_counts = 1000)
-#Total Sum Scaling (TSS)
-physeq_tss <- normalize_phyloseq_tss(physeq, feature_category = "zero", min_counts = 1000)
-#Trimmed Mean of M-values (TMM)
-physeq_tmm <- normalize_phyloseq_tmm(physeq, feature_category = "zero", min_counts = 100)
-#Relative Log Expression (RLE)
-physeq_rle <- normalize_phyloseq_rle(physeq, feature_category = "iqlr", min_counts = 1000)
-#Cumulative Sum Scaling (CSS)
-physeq_css <- normalize_phyloseq_css(physeq, feature_category = "zero", min_counts = 1000)
-# Centered Log-Ratio (CLR)
-physeq_clr <- normalize_phyloseq_clr(physeq, feature_category = "zero", min_counts = 1000)
-#Counts Per Million (CPM)
-physeq_cpm <- normalize_phyloseq_cpm(physeq, feature_category = "iqlr", min_counts = 1000)
-
-# DESeq2 variance stabilizing transformation (VST)
-library(DESeq2)
-#design_formula=~ treatment
-physeq_vst <- normalize_phyloseq_vst(physeq, design_formula = design_formula, feature_category = "iqlr", min_counts = 1000, pseudocount = 1)
-summ_count_phyloseq(physeq_vst)
 
 
 # Customized filtering and transformations
