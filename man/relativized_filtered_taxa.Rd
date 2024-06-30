@@ -31,5 +31,7 @@ This function filters taxa from a phyloseq object based on custom thresholds for
 }
 \examples{
 # Example usage with custom thresholds
-# FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, threshold_mean_abundance = 0.0005, threshold_count = 5, threshold_relative_abundance = 0.01)
+# FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, 
+# threshold_mean_abundance = 0.0005,
+# threshold_count = 5, threshold_relative_abundance = 0.01)
 }

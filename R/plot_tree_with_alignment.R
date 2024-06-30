@@ -17,7 +17,7 @@ plot_tree_with_alignment <- function(physeq, output_prefix = "physeq_tree_alignm
     stop("Input 'physeq' must be a valid phyloseq object.")
   }
   
-  # Ensure the phy_tree is correctly extracted
+  # phy_tree is correctly extracted
   tree <- phy_tree(physeq)
   
   # if tree has branch lengths
@@ -61,4 +61,4 @@ plot_tree_with_alignment <- function(physeq, output_prefix = "physeq_tree_alignm
 }
 
 # Plot the phylogenetic tree with multiple sequence alignment
-#plot_tree_with_alignment(Tetragenococcus, output_prefix = "tree_alignment", width = 15, height = 15)
+# plot_tree_with_alignment(Tetragenococcus, output_prefix = "tree_alignment", width = 15, height = 15)

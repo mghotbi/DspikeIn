@@ -26,5 +26,6 @@ It performs multiple sequence alignment, computes bootstrap values, and plots th
 }
 \examples{
 # Bootstrap and plot a phylogenetic tree
-Bootstrap_phy_tree_with_cophenetic(physeq_object = Tetragenococcus, output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 500)
+Bootstrap_phy_tree_with_cophenetic(physeq_object = Tetragenococcus, 
+output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 500)
 }

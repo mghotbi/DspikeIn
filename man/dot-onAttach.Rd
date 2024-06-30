@@ -6,6 +6,12 @@
 \usage{
 .onAttach(libname, pkgname)
 }
-\description{
-Startup message for DspikeIn package
+\arguments{
+\item{libname}{The library name.}
+
+\item{pkgname}{The package name.}
 }
+\description{
+This function displays a startup message when the DspikeIn package is loaded.
+}
+\keyword{internal}

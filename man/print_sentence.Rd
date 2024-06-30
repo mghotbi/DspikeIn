@@ -18,7 +18,8 @@ This function prints a specified sentence multiple times (default is 10 times).
 \examples{
 # Example usage:
 # Define a sentence
-sentence <- " ¯\\\\_(ツ)_/¯  ¯\\\\_(ツ)_/¯  ¯\\\\_(ツ)_/¯  ¯\\\\_(ツ)_/¯  ¯\\\\_(ツ)_/¯ ¯\\\\_(ツ)_/¯ ¯\\\\_(ツ)_/¯ ¯\\\\_(ツ)_/¯ ¯\\\\_(ツ)_/¯  ¯\\\\_(ツ)_/¯ "
+sentence <- " ¯\\\\_(ツ)_/¯  ¯\\\\_(ツ)_/¯  ¯\\\\_(ツ)_/¯  ¯\\\\_(ツ)_/¯ 
+# ¯\\\\_(ツ)_/¯ ¯\\\\_(ツ)_/¯ ¯\\\\_(ツ)_/¯ ¯\\\\_(ツ)_/¯ ¯\\\\_(ツ)_/¯  ¯\\\\_(ツ)_/¯ "
 
 # Print the sentence multiple times
 print_sentence(sentence)

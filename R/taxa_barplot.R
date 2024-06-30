@@ -19,11 +19,13 @@
 #' @return A list containing the ggplot2 bar plot object (`barplot`) and the pruned phyloseq object (`taxa_data`) with the top taxa.
 #' @examples
 #' # Generate a taxa barplot for the Genus rank with relative abundance
-#' bp <- taxa_barplot(physeqASV16, target_glom = "Genus", normalize = TRUE, treatment_variable = "animal.type", abundance_type = "relative")
+#' bp <- taxa_barplot(physeqASV16, target_glom = "Genus", normalize = TRUE, 
+#' treatment_variable = "animal.type", abundance_type = "relative")
 #' print(bp$barplot)
 #'
 #' # Generate a taxa barplot for the Genus rank with absolute abundance
-#' bp <- taxa_barplot(physeqASV16, target_glom = "Genus", normalize = FALSE, treatment_variable = "animal.type", abundance_type = "absolute")
+#' bp <- taxa_barplot(physeqASV16, target_glom = "Genus", normalize = FALSE, 
+#' treatment_variable = "animal.type", abundance_type = "absolute")
 #' print(bp$barplot)
 #' @export
 taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL, normalize = TRUE, treatment_variable = "Treatment", abundance_type = "relative", x_angle = 20, fill_variable = target_glom, facet_variable = "Phylum", top_n_taxa = 20) {
@@ -82,9 +84,13 @@ taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL,
 
 # Example usage:
 # Generate a taxa barplot for the Genus rank with absolute abundance
-#bp_ab <- taxa_barplot(Salamander_absolute_NospikeSp, target_glom = "Genus", treatment_variable = "Host.genus", abundance_type = "absolute", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20)
+#bp_ab <- taxa_barplot(Salamander_absolute_NospikeSp, target_glom = "Genus",
+#treatment_variable = "Host.genus", abundance_type = "absolute", x_angle = 90, 
+#fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20)
 #print(bp_ab$barplot)
 
 # Generate a taxa barplot for the Genus rank with relative abundance
-#bp_rel <- taxa_barplot(Salamander_relative_NospikeSp, target_glom = "Genus", treatment_variable = "Host.genus", abundance_type = "relative", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20)
+#bp_rel <- taxa_barplot(Salamander_relative_NospikeSp, target_glom = "Genus", 
+#treatment_variable = "Host.genus", abundance_type = "relative", x_angle = 90, 
+#fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20)
 #print(bp_rel$barplot)

@@ -42,5 +42,6 @@ The selected ASVs are saved to a CSV file.
 \examples{
 # Ensure you have a phyloseq object `physeq`
 # Use the name of the column in sample_data for response_var
-rf_physeq <- RandomForest_selected_ASVs(physeq, response_var = "host.species", na_vars = c("Habitat", "Ecoregion_III", "Host_genus", "Animal_type"))
+rf_physeq <- RandomForest_selected_ASVs(physeq, response_var = "host.species", 
+na_vars = c("Habitat", "Ecoregion_III", "Host_genus", "Animal_type"))
 }

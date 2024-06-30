@@ -15,7 +15,15 @@ Depends:
     R (>= 3.5.0)
 Imports:
     phyloseq,
+    DESeq2,
     edgeR,
+    PoissonSeq,
+    preprocessCore,
+    sva,
+    EDASeq,
+    RUVSeq,
+    Biobase,
+    BiocGenerics,
     vegan,
     compositions,
     microbiomeMarker,
@@ -30,7 +38,6 @@ Imports:
     msa,
     data.table,
     matrixStats,
-    DESeq2,  
     ggridges,
     agricolae,
     flextable,
