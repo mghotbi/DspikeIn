@@ -539,10 +539,27 @@ saveRDS(physeq_absolute_abundance_16S_OTU, "physeq_absolute_abundance_16S_OTU.rd
 ```r
 # Bolstad, B.M., Irizarry, R.A., Åstrand, M. and Speed, T.P., 2003. A comparison of normalization methods for high density oligonucleotide array data based on variance and bias. Bioinformatics, 19(2), pp.185-193.
 
+# Install and load required packages
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install(c("edgeR", "PoissonSeq", "preprocessCore", "sva", "RUVSeq", "zebrafishRNASeq"))
+
+# Load required libraries
 library(phyloseq)
-library(compositions)  
-library(vegan)         
-library(microbiome)
+library(DESeq2)
+library(edgeR)
+library(PoissonSeq)
+library(preprocessCore)
+library(sva)
+library(RUVSeq)
+library(zebrafishRNASeq)
+library(Biobase)
+library(BiocGenerics)
+library(vegan)
+library(chemometrics)
+
+
 
 
 
