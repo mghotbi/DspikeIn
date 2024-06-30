@@ -537,33 +537,120 @@ saveRDS(physeq_absolute_abundance_16S_OTU, "physeq_absolute_abundance_16S_OTU.rd
 
 
 ```r
+# Bolstad, B.M., Irizarry, R.A., Åstrand, M. and Speed, T.P., 2003. A comparison of normalization methods for high density oligonucleotide array data based on variance and bias. Bioinformatics, 19(2), pp.185-193.
+#Gagnon-Bartsch, J.A. and Speed, T.P., 2012. Using control genes to correct for unwanted variation in microarray data. Biostatistics, 13(3), pp.539-552.
+#Risso, D., Ngai, J., Speed, T.P. and Dudoit, S., 2014. Normalization of RNA-seq data using factor analysis of control genes or samples. Nature biotechnology, 32(9), pp.896-902.
+#Gagnon-Bartsch, J.A., Jacob, L. and Speed, T.P., 2013. Removing unwanted variation from high dimensional data with negative controls. Berkeley: Tech Reports from Dep Stat Univ California, pp.1-112.
 
+# Install and load required packages
+install.packages("https://cran.r-project.org/src/contrib/PoissonSeq_1.1.2.tar.gz", repos = NULL, type = "source")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install(c("phyloseq", "DESeq2", "edgeR", "PoissonSeq", "preprocessCore", "sva", "EDASeq"))
+
+# Load required libraries
+library(RUVSeq)
 library(phyloseq)
-library(compositions)  
-library(vegan)         
-library(microbiome)
-
-physeq <- physeq_absolute_abundance_16S_OTU
-#Rarefaction 
-physeq_rarefy <- normalize_phyloseq_rarefy(physeq, feature_category = "zero", min_counts = 1000)
-#Total Sum Scaling (TSS)
-physeq_tss <- normalize_phyloseq_tss(physeq, feature_category = "zero", min_counts = 1000)
-#Trimmed Mean of M-values (TMM)
-physeq_tmm <- normalize_phyloseq_tmm(physeq, feature_category = "zero", min_counts = 100)
-#Relative Log Expression (RLE)
-physeq_rle <- normalize_phyloseq_rle(physeq, feature_category = "iqlr", min_counts = 1000)
-#Cumulative Sum Scaling (CSS)
-physeq_css <- normalize_phyloseq_css(physeq, feature_category = "zero", min_counts = 1000)
-# Centered Log-Ratio (CLR)
-physeq_clr <- normalize_phyloseq_clr(physeq, feature_category = "zero", min_counts = 1000)
-#Counts Per Million (CPM)
-physeq_cpm <- normalize_phyloseq_cpm(physeq, feature_category = "iqlr", min_counts = 1000)
-
-# DESeq2 variance stabilizing transformation (VST)
 library(DESeq2)
-#design_formula=~ treatment
-physeq_vst <- normalize_phyloseq_vst(physeq, design_formula = design_formula, feature_category = "iqlr", min_counts = 1000, pseudocount = 1)
-summ_count_phyloseq(physeq_vst)
+library(edgeR)
+library(PoissonSeq)
+library(preprocessCore)
+library(sva)
+library(EDASeq)
+library(Biobase)
+library(BiocGenerics)
+library(vegan)
+library(chemometrics)
+
+
+# Example usage for each normalization method
+#ps is a phyloseq object
+ps = subset_samples(physeq_absolute_abundance_16S_OTU, !is.na(Animal.type))
+
+#  TC normalization
+result_TC <- normalization_set(ps, method = "TC", groups = sample_data(ps)$Animal.type)
+normalized_ps_TC <- result_TC$dat.normed
+scaling_factors_TC <- result_TC$scaling.factor
+
+# UQ normalization
+result_UQ <- normalization_set(ps, method = "UQ", groups = sample_data(ps)$Animal.type)
+normalized_ps_UQ <- result_UQ$dat.normed
+scaling_factors_UQ <- result_UQ$scaling.factor
+
+# Median normalization
+result_med <- normalization_set(ps, method = "med", groups = sample_data(ps)$Animal.type)
+normalized_ps_med <- result_med$dat.normed
+scaling_factors_med <- result_med$scaling.factor
+
+# DESeq normalization
+result_DESeq <- normalization_set(ps, method = "DESeq", groups = sample_data(ps)$Animal.type)
+normalized_ps_DESeq <- result_DESeq$dat.normed
+scaling_factors_DESeq <- result_DESeq$scaling.factor
+
+# PoissonSeq normalization
+result_PoissonSeq <- normalization_set(ps, method = "PoissonSeq")
+normalized_ps_PoissonSeq <- result_PoissonSeq$dat.normed
+scaling_factors_PoissonSeq <- result_PoissonSeq$scaling.factor
+
+# Quantile normalization
+result_QN <- normalization_set(ps, method = "QN")
+normalized_ps_QN <- result_QN$dat.normed
+scaling_factors_QN <- result_QN$scaling.factor
+
+# SVA normalization
+result_SVA <- normalization_set(ps, method = "SVA", groups = sample_data(ps)$Animal.type)
+normalized_ps_SVA <- result_SVA$dat.normed
+scaling_factors_SVA <- result_SVA$scaling.factor
+
+# RUVg normalization
+result_RUVg <- normalization_set(ps, method = "RUVg", groups = sample_data(ps)$Animal.type)
+normalized_ps_RUVg <- result_RUVg$dat.normed
+scaling_factors_RUVg <- result_RUVg$scaling.factor
+
+# RUVs normalization
+result_RUVs <- normalization_set(ps, method = "RUVs", groups = sample_data(ps)$Animal.type)
+normalized_ps_RUVs <- result_RUVs$dat.normed
+scaling_factors_RUVs <- result_RUVs$scaling.factor
+ot<-normalized_ps_RUVs@otu_table
+write.csv(ot,"ot.csv")
+# RUVr normalization
+result_RUVr <- normalization_set(ps, method = "RUVr", groups = sample_data(ps)$Animal.type)
+normalized_ps_RUVr <- result_RUVr$dat.normed
+scaling_factors_RUVr <- result_RUVr$scaling.factor
+
+# TMM normalization
+result_TMM <- normalization_set(ps, method = "TMM", groups = sample_data(ps)$Animal.type)
+normalized_ps_TMM <- result_TMM$dat.normed
+scaling_factors_TMM <- result_TMM$scaling.factor
+
+# CLR normalization
+result_clr <- normalization_set(ps, method = "clr")
+normalized_ps_clr <- result_clr$dat.normed
+scaling_factors_clr <- result_clr$scaling.factor
+
+# Rarefying
+result_rar <- normalization_set(ps, method = "rar")
+normalized_ps_rar <- result_rar$dat.normed
+scaling_factors_rar <- result_rar$scaling.factor
+
+# CSS normalization
+result_css <- normalization_set(ps, method = "css")
+normalized_ps_css <- result_css$dat.normed
+scaling_factors_css <- result_css$scaling.factor
+
+# TSS normalization
+result_tss <- normalization_set(ps, method = "tss")
+normalized_ps_tss <- result_tss$dat.normed
+scaling_factors_tss <- result_tss$scaling.factor
+
+# RLE normalization
+result_rle <- normalization_set(ps, method = "rle")
+normalized_ps_rle <- result_rle$dat.normed
+scaling_factors_rle <- result_rle$scaling.factor
+
+# Save the scaling factors
+write.csv(scaling_factors_DESeq, file = "scaling_factors_DESeq.csv", row.names = FALSE)
 
 
 # Customized filtering and transformations
