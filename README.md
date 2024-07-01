@@ -564,7 +564,7 @@ library(vegan)
 library(chemometrics)
 
 
-# Example usage for each normalization method
+# **counts without spikeIn sp
 #ps is a phyloseq object
 ps = subset_samples(physeq_absolute_abundance_16S_OTU, !is.na(Animal.type))
 
