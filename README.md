@@ -533,14 +533,14 @@ physeq_absolute_abundance_16S_OTU <- tidy_phyloseq(physeq_absolute_abundance_16S
 saveRDS(physeq_absolute_abundance_16S_OTU, "physeq_absolute_abundance_16S_OTU.rds")
 
 ```
-## Normalization and bias correction
+# Normalization and bias correction 
 
 
 ```r
-# Bolstad, B.M., Irizarry, R.A., Åstrand, M. and Speed, T.P., 2003. A comparison of normalization methods for high density oligonucleotide array data based on variance and bias. Bioinformatics, 19(2), pp.185-193.
-#Gagnon-Bartsch, J.A. and Speed, T.P., 2012. Using control genes to correct for unwanted variation in microarray data. Biostatistics, 13(3), pp.539-552.
-#Risso, D., Ngai, J., Speed, T.P. and Dudoit, S., 2014. Normalization of RNA-seq data using factor analysis of control genes or samples. Nature biotechnology, 32(9), pp.896-902.
-#Gagnon-Bartsch, J.A., Jacob, L. and Speed, T.P., 2013. Removing unwanted variation from high dimensional data with negative controls. Berkeley: Tech Reports from Dep Stat Univ California, pp.1-112.
+# Bolstad, B.M., Irizarry, R.A., Åstrand, M. and Speed, T.P., 2003. A comparison of normalization methods for high-density oligonucleotide array data based on variance and bias. Bioinformatics, 19(2), pp.185-193.
+# Gagnon-Bartsch, J.A. and Speed, T.P., 2012. Using control genes to correct for unwanted variation in microarray data. Biostatistics, 13(3), pp.539-552.
+# Risso, D., Ngai, J., Speed, T.P. and Dudoit, S., 2014. Normalization of RNA-seq data using factor analysis of control genes or samples. Nature biotechnology, 32(9), pp.896-902.
+# Gagnon-Bartsch, J.A., Jacob, L. and Speed, T.P., 2013. Removing unwanted variation from high dimensional data with negative controls. Berkeley: Tech Reports from Dep Stat Univ California, pp.1-112.
 
 # Install and load required packages
 install.packages("https://cran.r-project.org/src/contrib/PoissonSeq_1.1.2.tar.gz", repos = NULL, type = "source")
@@ -564,8 +564,8 @@ library(vegan)
 library(chemometrics)
 
 
-# **counts without spikeIn sp
-#ps is a phyloseq object
+
+#ps is a phyloseq object without spiked species counts
 ps = subset_samples(physeq_absolute_abundance_16S_OTU, !is.na(Animal.type))
 
 #  TC normalization
@@ -624,7 +624,7 @@ result_TMM <- normalization_set(ps, method = "TMM", groups = sample_data(ps)$Ani
 normalized_ps_TMM <- result_TMM$dat.normed
 scaling_factors_TMM <- result_TMM$scaling.factor
 
-# CLR normalization
+# Data transformation 
 result_clr <- normalization_set(ps, method = "clr")
 normalized_ps_clr <- result_clr$dat.normed
 scaling_factors_clr <- result_clr$scaling.factor
