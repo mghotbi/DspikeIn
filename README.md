@@ -566,6 +566,8 @@ library(chemometrics)
 
 
 #ps is a phyloseq object without spiked species counts
+#One can calculate the scaling factor using any normalization method in the absence of spiked species counts, and then determine the spiked scaling factor. Crossing both #scaling factors with relative abundance helps quantify absolute abundance while correcting for bias
+
 ps = subset_samples(physeq_absolute_abundance_16S_OTU, !is.na(Animal.type))
 
 #  TC normalization
@@ -612,8 +614,7 @@ scaling_factors_RUVg <- result_RUVg$scaling.factor
 result_RUVs <- normalization_set(ps, method = "RUVs", groups = sample_data(ps)$Animal.type)
 normalized_ps_RUVs <- result_RUVs$dat.normed
 scaling_factors_RUVs <- result_RUVs$scaling.factor
-ot<-normalized_ps_RUVs@otu_table
-write.csv(ot,"ot.csv")
+
 # RUVr normalization
 result_RUVr <- normalization_set(ps, method = "RUVr", groups = sample_data(ps)$Animal.type)
 normalized_ps_RUVr <- result_RUVr$dat.normed
