@@ -4,10 +4,10 @@
 \alias{norm.SVA}
 \title{Surrogate Variable Analysis for Sequencing Data (SVA)}
 \usage{
-norm.SVA(raw, groups)
+norm.SVA(ps, groups)
 }
 \arguments{
-\item{raw}{A matrix of raw counts.}
+\item{ps}{A phyloseq object.}
 
 \item{groups}{A vector of group labels.}
 }
@@ -15,7 +15,7 @@ norm.SVA(raw, groups)
 A list containing the normalized data and adjustment factor.
 }
 \description{
-Identifies and removes unwanted variation in sequencing data.
+Surrogate Variable Analysis for Sequencing Data (SVA)
 }
 \references{
 SVA package.

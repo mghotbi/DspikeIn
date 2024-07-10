@@ -4,10 +4,10 @@
 \alias{norm.DESeq}
 \title{DESeq Normalization}
 \usage{
-norm.DESeq(raw, groups)
+norm.DESeq(ps, groups)
 }
 \arguments{
-\item{raw}{A matrix of raw counts.}
+\item{ps}{A phyloseq object.}
 
 \item{groups}{A vector of group labels.}
 }
@@ -15,7 +15,7 @@ norm.DESeq(raw, groups)
 A list containing the normalized data and scaling factor.
 }
 \description{
-Normalizes counts based on the assumption that most genes are not differentially expressed.
+DESeq Normalization
 }
 \references{
 DESeq2 package.

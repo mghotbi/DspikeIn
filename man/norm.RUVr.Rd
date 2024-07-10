@@ -4,10 +4,10 @@
 \alias{norm.RUVr}
 \title{Remove Unwanted Variation Using Residuals (RUVr)}
 \usage{
-norm.RUVr(raw, groups)
+norm.RUVr(ps, groups)
 }
 \arguments{
-\item{raw}{A matrix of raw counts.}
+\item{ps}{A phyloseq object.}
 
 \item{groups}{A vector of group labels.}
 }
@@ -15,7 +15,7 @@ norm.RUVr(raw, groups)
 A list containing the normalized data and adjustment factor.
 }
 \description{
-Uses residuals to remove unwanted variation.
+Remove Unwanted Variation Using Residuals (RUVr)
 }
 \references{
 Gagnon-Bartsch, Jacob, and Speed 2013; Risso et al. 2014; Gagnon-Bartsch and Speed 2012.

@@ -4,18 +4,18 @@
 \alias{norm.RUVg}
 \title{Remove Unwanted Variation Using Control Genes (RUVg)}
 \usage{
-norm.RUVg(raw, groups)
+norm.RUVg(ps, groups)
 }
 \arguments{
-\item{raw}{A matrix of raw counts.}
+\item{ps}{A phyloseq object.}
 
-\item{groups}{A vector of group labels.}
+\item{groups}{The name of the sample variable in the sample data that indicates group labels.}
 }
 \value{
 A list containing the normalized data and adjustment factor.
 }
 \description{
-Uses control genes to remove unwanted variation.
+Remove Unwanted Variation Using Control Genes (RUVg)
 }
 \references{
 Gagnon-Bartsch, Jacob, and Speed 2013; Risso et al. 2014; Gagnon-Bartsch and Speed 2012.

@@ -4,18 +4,22 @@
 \alias{norm.css}
 \title{CSS Normalization (Cumulative Sum Scaling)}
 \usage{
-norm.css(ps, feature_category = c("all", "iqlr", "zero", "lvha"))
+norm.css(
+  ps,
+  feature_category = c("all_features", "interquartile_range", "non_zero_counts",
+    "specified_features")
+)
 }
 \arguments{
 \item{ps}{A phyloseq object.}
 
-\item{feature_category}{A character string specifying the feature category ("all", "iqlr", "zero", "lvha").}
+\item{feature_category}{A character string specifying the feature category ("all_features", "interquartile_range", "non_zero_counts", "specified_features").}
 }
 \value{
-A phyloseq object with CSS normalized counts.
+A list containing the normalized data and scaling factor.
 }
 \description{
-Assumes equivalent count distributions for low abundant genes across samples up to a threshold. Scales the invariant segment of each sample’s count distribution.
+CSS Normalization (Cumulative Sum Scaling)
 }
 \references{
 Paulson et al., 2013.

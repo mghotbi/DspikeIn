@@ -2,18 +2,18 @@
 % Please edit documentation in R/normalization_set.R
 \name{set_nf}
 \alias{set_nf}
-\title{Set normalization factors}
+\title{Set normalization factors in the sample data of the phyloseq object.}
 \usage{
-set_nf(object, nf)
+set_nf(ps, scaling.factor)
 }
 \arguments{
-\item{object}{A phyloseq or otu_table object.}
+\item{ps}{A phyloseq object.}
 
-\item{nf}{A vector of normalization factors.}
+\item{scaling.factor}{A vector of normalization factors.}
 }
 \value{
-The object with normalization factors set.
+A phyloseq object with updated sample data.
 }
 \description{
-Set normalization factors
+Set normalization factors in the sample data of the phyloseq object.
 }

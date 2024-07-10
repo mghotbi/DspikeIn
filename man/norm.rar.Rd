@@ -4,18 +4,22 @@
 \alias{norm.rar}
 \title{Rarefying}
 \usage{
-norm.rar(ps, feature_category = c("all", "iqlr", "zero", "lvha"))
+norm.rar(
+  ps,
+  feature_category = c("all_features", "interquartile_range", "non_zero_counts",
+    "specified_features")
+)
 }
 \arguments{
 \item{ps}{A phyloseq object.}
 
-\item{feature_category}{A character string specifying the feature category ("all", "iqlr", "zero", "lvha").}
+\item{feature_category}{A character string specifying the feature category ("all_features", "interquartile_range", "non_zero_counts", "specified_features").}
 }
 \value{
 A list containing the normalized data and scaling factor.
 }
 \description{
-Randomly removes reads from different samples until they all have the same predefined number of reads, ensuring equal library size.
+Rarefying
 }
 \references{
 McMurdie and Holmes, 2014.

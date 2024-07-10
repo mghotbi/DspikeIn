@@ -4,10 +4,10 @@
 \alias{norm.med}
 \title{Median Normalization}
 \usage{
-norm.med(raw, groups)
+norm.med(ps, groups)
 }
 \arguments{
-\item{raw}{A matrix of raw counts.}
+\item{ps}{A phyloseq object.}
 
 \item{groups}{A vector of group labels.}
 }
@@ -15,5 +15,5 @@ norm.med(raw, groups)
 A list containing the normalized data and scaling factor.
 }
 \description{
-Normalizes data based on the median count.
+Median Normalization
 }
