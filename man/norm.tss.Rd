@@ -4,16 +4,16 @@
 \alias{norm.tss}
 \title{TSS Normalization (Total Sum Scaling)}
 \usage{
-norm.tss(object)
+norm.tss(ps)
 }
 \arguments{
-\item{object}{A phyloseq object.}
+\item{ps}{A phyloseq object.}
 }
 \value{
-A phyloseq object with TSS normalized counts.
+A list containing the normalized phyloseq object and scaling factor.
 }
 \description{
-Converts the feature table into relative abundance by dividing the total reads of each sample.
+TSS Normalization (Total Sum Scaling)
 }
 \references{
 Bolstad et al., 2003.

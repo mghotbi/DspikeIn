@@ -5,7 +5,7 @@
 \title{RLE Normalization (Relative Log Expression)}
 \usage{
 norm.rle(
-  object,
+  ps,
   locfunc = stats::median,
   type = c("poscounts", "ratio"),
   geo_means = NULL,
@@ -13,7 +13,7 @@ norm.rle(
 )
 }
 \arguments{
-\item{object}{A phyloseq or otu_table object.}
+\item{ps}{A phyloseq object.}
 
 \item{locfunc}{A function to compute the location statistic (default is median).}
 
@@ -24,10 +24,10 @@ norm.rle(
 \item{control_genes}{A vector of control genes.}
 }
 \value{
-A phyloseq or otu_table object with normalization factors.
+A list containing the normalized data and scaling factor.
 }
 \description{
-Assumes most features are not differential and uses relative abundances to calculate the normalization factor.
+RLE Normalization (Relative Log Expression)
 }
 \references{
 Anders and Huber, 2010.

@@ -4,10 +4,10 @@
 \alias{norm.RUVs}
 \title{Remove Unwanted Variation Using Replicate Samples (RUVs)}
 \usage{
-norm.RUVs(raw, groups)
+norm.RUVs(ps, groups)
 }
 \arguments{
-\item{raw}{A matrix of raw counts.}
+\item{ps}{A phyloseq object.}
 
 \item{groups}{A vector of group labels.}
 }
@@ -15,7 +15,7 @@ norm.RUVs(raw, groups)
 A list containing the normalized data and adjustment factor.
 }
 \description{
-Uses replicate samples to remove unwanted variation.
+Remove Unwanted Variation Using Replicate Samples (RUVs)
 }
 \references{
 Gagnon-Bartsch, Jacob, and Speed 2013; Risso et al. 2014; Gagnon-Bartsch and Speed 2012.

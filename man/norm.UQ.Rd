@@ -4,10 +4,10 @@
 \alias{norm.UQ}
 \title{UQ Normalization (Upper Quartile)}
 \usage{
-norm.UQ(raw, groups)
+norm.UQ(ps, groups)
 }
 \arguments{
-\item{raw}{A matrix of raw counts.}
+\item{ps}{A phyloseq object.}
 
 \item{groups}{A vector of group labels.}
 }
@@ -15,5 +15,5 @@ norm.UQ(raw, groups)
 A list containing the normalized data and scaling factor.
 }
 \description{
-Normalizes data based on the upper quartile of the counts.
+UQ Normalization (Upper Quartile)
 }

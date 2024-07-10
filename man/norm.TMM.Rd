@@ -4,18 +4,18 @@
 \alias{norm.TMM}
 \title{TMM Normalization (Trimmed Mean of M component)}
 \usage{
-norm.TMM(raw, groups)
+norm.TMM(ps, groups)
 }
 \arguments{
-\item{raw}{A matrix of raw counts.}
+\item{ps}{A phyloseq object.}
 
-\item{groups}{A vector of group labels.}
+\item{groups}{A string specifying the grouping variable in sample data.}
 }
 \value{
-A list containing the normalized data and scaling factor.
+A phyloseq object with normalized data.
 }
 \description{
-A scaling normalization method used for RNA-seq count data to account for compositional differences between libraries.
+TMM Normalization (Trimmed Mean of M component)
 }
 \references{
 Robinson and Oshlack, 2010.

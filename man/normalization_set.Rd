@@ -2,20 +2,25 @@
 % Please edit documentation in R/normalization_set.R
 \name{normalization_set}
 \alias{normalization_set}
-\title{Normalization set function}
+\title{Apply the selected normalization method to the phyloseq object.}
 \usage{
 normalization_set(ps, method, groups = NULL)
 }
 \arguments{
 \item{ps}{A phyloseq object.}
 
-\item{method}{A character string specifying the normalization method ("TC", "UQ", "med", "DESeq", "PoissonSeq", "QN", "SVA", "RUVg", "RUVs", "RUVr", "TMM", "clr", "rar", "css", "tss", "rle").}
+\item{method}{A character string specifying the normalization method ("TC", "UQ", "med", "DESeq", "Poisson", "QN", "SVA", "RUVg", "RUVs", "RUVr", "TMM", "clr", "rar", "css", "tss", "rle").}
 
-\item{groups}{A vector of group labels.}
+\item{groups}{A column name of group labels from sample data.}
 }
 \value{
 A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
 Apply the selected normalization method to the phyloseq object.
+}
+\examples{
+result_TMM <- normalization_set(physeq_16SASV, method = "TMM", groups = "Animal.type")
+normalized_ps_TMM <- result_TMM$dat.normed
+scaling_factors_TMM <- result_TMM$scaling.factor
 }
