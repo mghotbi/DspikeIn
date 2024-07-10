@@ -17,7 +17,6 @@ Imports:
     phyloseq,
     DESeq2,
     edgeR,
-    PoissonSeq,
     preprocessCore,
     sva,
     EDASeq,
