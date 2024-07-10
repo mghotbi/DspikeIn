@@ -543,32 +543,25 @@ saveRDS(physeq_absolute_abundance_16S_OTU, "physeq_absolute_abundance_16S_OTU.rd
 # Gagnon-Bartsch, J.A., Jacob, L. and Speed, T.P., 2013. Removing unwanted variation from high dimensional data with negative controls. Berkeley: Tech Reports from Dep Stat Univ California, pp.1-112.
 
 # Install and load required packages
-install.packages("https://cran.r-project.org/src/contrib/PoissonSeq_1.1.2.tar.gz", repos = NULL, type = "source")
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-
-BiocManager::install(c("phyloseq", "DESeq2", "edgeR", "PoissonSeq", "preprocessCore", "sva", "EDASeq"))
+BiocManager::install(c("phyloseq", "DESeq2", "edgeR", "preprocessCore", "sva", "EDASeq"))
 
 # Load required libraries
-library(RUVSeq)
 library(phyloseq)
 library(DESeq2)
 library(edgeR)
-library(PoissonSeq)
 library(preprocessCore)
 library(sva)
 library(EDASeq)
 library(Biobase)
 library(BiocGenerics)
 library(vegan)
-library(chemometrics)
-
 
 
 #ps is a phyloseq object without spiked species counts
 #One can calculate the scaling factor using any normalization method in the absence of spiked species counts, and then determine the spiked scaling factor. Crossing both #scaling factors with relative abundance helps quantify absolute abundance while correcting for bias
 
-ps = subset_samples(physeq_absolute_abundance_16S_OTU, !is.na(Animal.type))
+ps <- remove_zero_negative_count_samples(physeq_absolute_abundance_16S_OTU)
+ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
 
 #  TC normalization
 result_TC <- normalization_set(ps, method = "TC", groups = sample_data(ps)$Animal.type)
