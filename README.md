@@ -542,9 +542,6 @@ saveRDS(physeq_absolute_abundance_16S_OTU, "physeq_absolute_abundance_16S_OTU.rd
 # Risso, D., Ngai, J., Speed, T.P. and Dudoit, S., 2014. Normalization of RNA-seq data using factor analysis of control genes or samples. Nature biotechnology, 32(9), pp.896-902.
 # Gagnon-Bartsch, J.A., Jacob, L. and Speed, T.P., 2013. Removing unwanted variation from high dimensional data with negative controls. Berkeley: Tech Reports from Dep Stat Univ California, pp.1-112.
 
-# Install and load required packages
-BiocManager::install(c("phyloseq", "DESeq2", "edgeR", "preprocessCore", "sva", "EDASeq"))
-
 # Load required libraries
 library(phyloseq)
 library(DESeq2)
