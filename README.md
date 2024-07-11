@@ -567,6 +567,7 @@ ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
 result_TC <- normalization_set(ps, method = "TC", groups = sample_data(ps)$Animal.type)
 normalized_ps_TC <- result_TC$dat.normed
 scaling_factors_TC <- result_TC$scaling.factor
+summ_count_phyloseq(result_TC$dat.normed)
 
 # UQ normalization
 result_UQ <- normalization_set(ps, method = "UQ", groups = sample_data(ps)$Animal.type)
