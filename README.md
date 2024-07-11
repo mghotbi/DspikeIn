@@ -563,86 +563,82 @@ library(vegan)
 ps <- remove_zero_negative_count_samples(physeq_absolute_abundance_16S_OTU)
 ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
 
+# Available Normalization Methods:
+# 
+# Description: Normalizes the data by dividing by the total counts per sample.
+# Function: norm.TC(ps, groups)
+# Upper Quartile (UQ) Normalization
+# 
+# Description: Normalizes data based on the upper quartile of the counts.
+# Function: norm.UQ(ps, groups)
+# Median (med) Normalization
+# 
+# Description: Normalizes data based on the median count.
+# Function: norm.med(ps, groups)
+# DESeq Normalization
+# 
+# Description: Normalizes counts based on the assumption that most genes are not differentially expressed.
+# Function: norm.DESeq(ps, groups)
+# Poisson Normalization
+# 
+# Description: Uses a Poisson distribution to normalize the counts.
+# Function: norm.Poisson(ps, groups)
+# Quantile Normalization (QN)
+# 
+# Description: Applies quantile normalization to the OTU table.
+# Function: norm.QN(ps)
+# Surrogate Variable Analysis (SVA)
+# 
+# Description: Identifies and removes unwanted variation in sequencing data.
+# Function: norm.SVA(ps, groups)
+# Remove Unwanted Variation Using Control Genes (RUVg)
+# 
+# Description: Uses control genes to remove unwanted variation.
+# Function: norm.RUVg(ps, groups)
+# Remove Unwanted Variation Using Replicate Samples (RUVs)
+# 
+# Description: Uses replicate samples to remove unwanted variation.
+# Function: norm.RUVs(ps, groups)
+# Remove Unwanted Variation Using Residuals (RUVr)
+# 
+# Description: Uses residuals to remove unwanted variation.
+# Function: norm.RUVr(ps, groups)
+# Trimmed Mean of M-values (TMM) Normalization
+# 
+# Description: A scaling normalization method to account for compositional differences between libraries.
+# Function: norm.TMM(ps, groups)
+# Centered Log-Ratio (CLR) Normalization
+# 
+# Description: Computes log-ratios relative to the geometric mean of all features.
+# Function: norm.clr(ps)
+# Rarefying (rar)
+# 
+# Description: Randomly removes reads from different samples until they all have the same predefined number of reads.
+# Function: norm.rar(ps)
+# Cumulative Sum Scaling (CSS) Normalization
+# 
+# Description: Scales the invariant segment of each sample’s count distribution.
+# Function: norm.css(ps)
+# Total Sum Scaling (TSS) Normalization
+# 
+# Description: Converts the feature table into relative abundance by dividing the total reads of each sample.
+# Function: norm.tss(ps)
+# Relative Log Expression (RLE) Normalization
+# 
+# Description: Assumes most features are not differential and uses relative abundances to calculate the normalization factor.
+# Function: norm.rle(ps)
+      
 #  TC normalization
 result_TC <- normalization_set(ps, method = "TC", groups = sample_data(ps)$Animal.type)
 normalized_ps_TC <- result_TC$dat.normed
 scaling_factors_TC <- result_TC$scaling.factor
 summ_count_phyloseq(result_TC$dat.normed)
 
-# UQ normalization
-result_UQ <- normalization_set(ps, method = "UQ", groups = sample_data(ps)$Animal.type)
-normalized_ps_UQ <- result_UQ$dat.normed
-scaling_factors_UQ <- result_UQ$scaling.factor
-
-# Median normalization
-result_med <- normalization_set(ps, method = "med", groups = sample_data(ps)$Animal.type)
-normalized_ps_med <- result_med$dat.normed
-scaling_factors_med <- result_med$scaling.factor
-
-# DESeq normalization
-result_DESeq <- normalization_set(ps, method = "DESeq", groups = sample_data(ps)$Animal.type)
-normalized_ps_DESeq <- result_DESeq$dat.normed
-scaling_factors_DESeq <- result_DESeq$scaling.factor
-
-# PoissonSeq normalization
-result_PoissonSeq <- normalization_set(ps, method = "PoissonSeq")
-normalized_ps_PoissonSeq <- result_PoissonSeq$dat.normed
-scaling_factors_PoissonSeq <- result_PoissonSeq$scaling.factor
-
-# Quantile normalization
-result_QN <- normalization_set(ps, method = "QN")
-normalized_ps_QN <- result_QN$dat.normed
-scaling_factors_QN <- result_QN$scaling.factor
-
-# SVA normalization
-result_SVA <- normalization_set(ps, method = "SVA", groups = sample_data(ps)$Animal.type)
-normalized_ps_SVA <- result_SVA$dat.normed
-scaling_factors_SVA <- result_SVA$scaling.factor
 
 # RUVg normalization
 result_RUVg <- normalization_set(ps, method = "RUVg", groups = sample_data(ps)$Animal.type)
 normalized_ps_RUVg <- result_RUVg$dat.normed
 scaling_factors_RUVg <- result_RUVg$scaling.factor
-
-# RUVs normalization
-result_RUVs <- normalization_set(ps, method = "RUVs", groups = sample_data(ps)$Animal.type)
-normalized_ps_RUVs <- result_RUVs$dat.normed
-scaling_factors_RUVs <- result_RUVs$scaling.factor
-
-# RUVr normalization
-result_RUVr <- normalization_set(ps, method = "RUVr", groups = sample_data(ps)$Animal.type)
-normalized_ps_RUVr <- result_RUVr$dat.normed
-scaling_factors_RUVr <- result_RUVr$scaling.factor
-
-# TMM normalization
-result_TMM <- normalization_set(ps, method = "TMM", groups = sample_data(ps)$Animal.type)
-normalized_ps_TMM <- result_TMM$dat.normed
-scaling_factors_TMM <- result_TMM$scaling.factor
-
-# Data transformation 
-result_clr <- normalization_set(ps, method = "clr")
-normalized_ps_clr <- result_clr$dat.normed
-scaling_factors_clr <- result_clr$scaling.factor
-
-# Rarefying
-result_rar <- normalization_set(ps, method = "rar")
-normalized_ps_rar <- result_rar$dat.normed
-scaling_factors_rar <- result_rar$scaling.factor
-
-# CSS normalization
-result_css <- normalization_set(ps, method = "css")
-normalized_ps_css <- result_css$dat.normed
-scaling_factors_css <- result_css$scaling.factor
-
-# TSS normalization
-result_tss <- normalization_set(ps, method = "tss")
-normalized_ps_tss <- result_tss$dat.normed
-scaling_factors_tss <- result_tss$scaling.factor
-
-# RLE normalization
-result_rle <- normalization_set(ps, method = "rle")
-normalized_ps_rle <- result_rle$dat.normed
-scaling_factors_rle <- result_rle$scaling.factor
 
 # Save the scaling factors
 write.csv(scaling_factors_DESeq, file = "scaling_factors_DESeq.csv", row.names = FALSE)
