@@ -129,7 +129,8 @@ plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NUL
 # Plot non-relativized (absolute) abundance
 # plot_absolute <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, 
 #level = "Family", group = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10,
-#legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = FALSE, output_prefix = "non_relativized_abundance_plot")
+#legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = FALSE,
+#output_prefix = "non_relativized_abundance_plot")
 # print(plot_absolute)
 
 # Return summarized data
