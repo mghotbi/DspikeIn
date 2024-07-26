@@ -557,16 +557,20 @@ library(vegan)
 ps <- remove_zero_negative_count_samples(physeq_absolute_abundance_16S_OTU)
 ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
 
-# Available Normalization Methods:
-# group_var <- "Animal.ecomode"  # Replace with your actual grouping variable
+# Normalization Methods:
+# group_var <- "Animal.ecomode"  
 # result_DESeq <- normalization_set(ps, method = "DESeq", groups = group_var)
 # result_TMM <- normalization_set(ps, method = "TMM", groups = group_var)
 # result_CLR <- normalization_set(ps, method = "clr")
 # result_SVA <- normalization_set(ps, method = "SVA", groups = group_var)
 # result_RUVg <- normalization_set(ps, method = "RUVg", groups = group_var)
+# result_RUVr <- normalization_set(ps, method = "RUVr", groups = group_var)
+# result_RUVs <- normalization_set(ps, method = "RUVs", groups = group_var)
 # result_UQ <- normalization_set(ps, method = "UQ", groups = group_var)
 # result_med <- normalization_set(ps, method = "med", groups = group_var)
-# result_css <- normalization_set(ps, method = "css")
+# result_rle <- normalization_set(ps, method = "rle")
+# result_css <- normalization_set(ps, method = "CSS")
+# result_tss <- normalization_set(ps, method = "tss")
 # result_rar <- normalization_set(ps, method = "rar")
 
 # Customized filtering and transformations
