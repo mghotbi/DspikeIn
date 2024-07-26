@@ -558,85 +558,16 @@ ps <- remove_zero_negative_count_samples(physeq_absolute_abundance_16S_OTU)
 ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
 
 # Available Normalization Methods:
-# 
-# Description: Normalizes the data by dividing by the total counts per sample.
-# Function: norm.TC(ps, groups)
-# Upper Quartile (UQ) Normalization
-# 
-# Description: Normalizes data based on the upper quartile of the counts.
-# Function: norm.UQ(ps, groups)
-# Median (med) Normalization
-# 
-# Description: Normalizes data based on the median count.
-# Function: norm.med(ps, groups)
-# DESeq Normalization
-# 
-# Description: Normalizes counts based on the assumption that most genes are not differentially expressed.
-# Function: norm.DESeq(ps, groups)
-# Poisson Normalization
-# 
-# Description: Uses a Poisson distribution to normalize the counts.
-# Function: norm.Poisson(ps, groups)
-# Quantile Normalization (QN)
-# 
-# Description: Applies quantile normalization to the OTU table.
-# Function: norm.QN(ps)
-# Surrogate Variable Analysis (SVA)
-# 
-# Description: Identifies and removes unwanted variation in sequencing data.
-# Function: norm.SVA(ps, groups)
-# Remove Unwanted Variation Using Control Genes (RUVg)
-# 
-# Description: Uses control genes to remove unwanted variation.
-# Function: norm.RUVg(ps, groups)
-# Remove Unwanted Variation Using Replicate Samples (RUVs)
-# 
-# Description: Uses replicate samples to remove unwanted variation.
-# Function: norm.RUVs(ps, groups)
-# Remove Unwanted Variation Using Residuals (RUVr)
-# 
-# Description: Uses residuals to remove unwanted variation.
-# Function: norm.RUVr(ps, groups)
-# Trimmed Mean of M-values (TMM) Normalization
-# 
-# Description: A scaling normalization method to account for compositional differences between libraries.
-# Function: norm.TMM(ps, groups)
-# Centered Log-Ratio (CLR) Normalization
-# 
-# Description: Computes log-ratios relative to the geometric mean of all features.
-# Function: norm.clr(ps)
-# Rarefying (rar)
-# 
-# Description: Randomly removes reads from different samples until they all have the same predefined number of reads.
-# Function: norm.rar(ps)
-# Cumulative Sum Scaling (CSS) Normalization
-# 
-# Description: Scales the invariant segment of each sample’s count distribution.
-# Function: norm.css(ps)
-# Total Sum Scaling (TSS) Normalization
-# 
-# Description: Converts the feature table into relative abundance by dividing the total reads of each sample.
-# Function: norm.tss(ps)
-# Relative Log Expression (RLE) Normalization
-# 
-# Description: Assumes most features are not differential and uses relative abundances to calculate the normalization factor.
-# Function: norm.rle(ps)
-      
-#  TC normalization
-result_TC <- normalization_set(ps, method = "TC", groups = sample_data(ps)$Animal.type)
-normalized_ps_TC <- result_TC$dat.normed
-scaling_factors_TC <- result_TC$scaling.factor
-summ_count_phyloseq(result_TC$dat.normed)
-
-
-# RUVg normalization
-result_RUVg <- normalization_set(ps, method = "RUVg", groups = sample_data(ps)$Animal.type)
-normalized_ps_RUVg <- result_RUVg$dat.normed
-scaling_factors_RUVg <- result_RUVg$scaling.factor
-
-# Save the scaling factors
-write.csv(scaling_factors_DESeq, file = "scaling_factors_DESeq.csv", row.names = FALSE)
-
+# group_var <- "Animal.ecomode"  # Replace with your actual grouping variable
+# result_DESeq <- normalization_set(ps, method = "DESeq", groups = group_var)
+# result_TMM <- normalization_set(ps, method = "TMM", groups = group_var)
+# result_CLR <- normalization_set(ps, method = "clr")
+# result_SVA <- normalization_set(ps, method = "SVA", groups = group_var)
+# result_RUVg <- normalization_set(ps, method = "RUVg", groups = group_var)
+# result_UQ <- normalization_set(ps, method = "UQ", groups = group_var)
+# result_med <- normalization_set(ps, method = "med", groups = group_var)
+# result_css <- normalization_set(ps, method = "css")
+# result_rar <- normalization_set(ps, method = "rar")
 
 # Customized filtering and transformations
 # Proportion adjustment
