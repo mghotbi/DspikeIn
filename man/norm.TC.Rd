@@ -9,10 +9,10 @@ norm.TC(ps, groups)
 \arguments{
 \item{ps}{A phyloseq object.}
 
-\item{groups}{A vector of group labels.}
+\item{groups}{A string specifying the grouping variable in sample data.}
 }
 \value{
-A list containing the normalized data and scaling factor.
+A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
 TC Normalization (Total Count Scaling)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/normalization_set.R
 \name{set_nf}
 \alias{set_nf}
-\title{Set normalization factors in the sample data of the phyloseq object.}
+\title{Set Normalization Factors in the Sample Data of the Phyloseq Object}
 \usage{
 set_nf(ps, scaling.factor)
 }
@@ -15,5 +15,5 @@ set_nf(ps, scaling.factor)
 A phyloseq object with updated sample data.
 }
 \description{
-Set normalization factors in the sample data of the phyloseq object.
+Set Normalization Factors in the Sample Data of the Phyloseq Object
 }

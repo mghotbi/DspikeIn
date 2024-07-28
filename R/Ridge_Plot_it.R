@@ -57,9 +57,8 @@ ridge_plot_it <- function(physeq, taxrank = "Genus", rarefaction_depth = NULL, t
     ggplot2::ggtitle("Abundance Distribution") +
     ggplot2::labs(x = "Log10 (Abundance)", y = NULL) +
     ggplot2::theme_minimal() +
-    ggplot2::scale_fill_manual(values = MG) +
-    ggplot2::theme(axis.text.y = ggplot2::element_text(face = "italic")) +
-    my_custom_theme()
+    ggplot2::scale_fill_manual(values = MG()) +
+    ggplot2::theme(axis.text.y = ggplot2::element_text(face = "italic"))
   
   return(plot)
 }

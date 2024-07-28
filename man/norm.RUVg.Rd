@@ -12,7 +12,7 @@ norm.RUVg(ps, groups)
 \item{groups}{The name of the sample variable in the sample data that indicates group labels.}
 }
 \value{
-A list containing the normalized data and adjustment factor.
+A list containing the normalized phyloseq object and adjustment factors.
 }
 \description{
 Remove Unwanted Variation Using Control Genes (RUVg)

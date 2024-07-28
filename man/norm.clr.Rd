@@ -16,7 +16,7 @@ norm.clr(
 \item{feature_category}{A character string specifying the feature category ("all_features", "interquartile_range", "non_zero_counts", "specified_features").}
 }
 \value{
-A list containing the normalized data and scaling factor.
+A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
 CLR Normalization (Centered Log-Ratio Transformation)

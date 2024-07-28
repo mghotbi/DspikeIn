@@ -10,7 +10,7 @@ norm.tss(ps)
 \item{ps}{A phyloseq object.}
 }
 \value{
-A list containing the normalized phyloseq object and scaling factor.
+A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
 TSS Normalization (Total Sum Scaling)

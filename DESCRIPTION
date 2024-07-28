@@ -1,76 +1,31 @@
 Package: DspikeIn
 Type: Package
-Title: DspikeIn quantifies absolute abundance, enhancing the evaluation of microbial dynamics, which is crucial for advancing microbial ecology.
+Title: DspikeIn quantifies absolute abundance, enhancing the evaluation
+        of microbial dynamics, which is crucial for advancing microbial
+        ecology.
 Version: 0.0.0.9000
 Author: Mitra Ghotbi
 Maintainer: Mitra Ghotbi <mitra.ghotbi@gmail.com>
 Description: DspikeIn quantifies absolute abundance, enhancing the evaluation of microbial dynamics, which is crucial for advancing microbial ecology.
-Acknowledgements: DspikeIn builds on the excellent phyloseq package and benefits from modified functions from other wonderful packages, including: dplyr, ggtree, flextable, DESeq2, microbiomeutilities, DECIPHER, and speedyseq.
+Acknowledgements: DspikeIn builds on the excellent phyloseq package and
+        benefits from modified functions from other wonderful packages,
+        including: dplyr, ggtree, flextable, DESeq2,
+        microbiomeutilities, DECIPHER, and speedyseq.
 URL: https://github.com/mitraghotbi/DspikeIn
 BugReports: https://github.com/mitraghotbi/DspikeIn/issues
 License: GPL-3
 Encoding: UTF-8
-LazyData: true
-Depends: 
-    R (>= 3.5.0)
-Imports:
-    phyloseq,
-    DESeq2,
-    edgeR,
-    preprocessCore,
-    sva,
-    EDASeq,
-    RUVSeq,
-    Biobase,
-    BiocGenerics,
-    vegan,
-    compositions,
-    microbiomeMarker,
-    microbiome,
-    microbiomeutilities,
-    dplyr,
-    speedyseq,
-    ape,
-    ggplot2,
-    ggalluvial,
-    phangorn,
-    msa,
-    data.table,
-    matrixStats,
-    ggridges,
-    agricolae,
-    flextable,
-    RColorBrewer,
-    ShortRead,
-    Biostrings, 
-    DECIPHER,
-    randomForest,
-    ggtree,
-    ggpubr
-Suggests:
-    methods,
-    e1071,
-    caret,
-    vcd,
-    qpdf,
-    optparse,
-    foreach,
-    magrittr,
-    doParallel,
-    viridis,
-    plyr,
-    reshape2,
-    grid,
-    scales,
-    cluster,
-    intergraph,
-    decontam,
-    ggtext,
-    devtools,
-    dada2,  
-    agridat,
-    rstatix,
-    reshape,
-    gridExtra,
-    descr
+Depends: R (>= 3.5.0)
+Imports: phyloseq, DESeq2, edgeR, preprocessCore, sva, EDASeq, RUVSeq,
+        Biobase, BiocGenerics, vegan, compositions, microbiomeMarker,
+        microbiome, microbiomeutilities, dplyr, speedyseq, ape,
+        ggplot2, ggalluvial, phangorn, msa, data.table, matrixStats,
+        ggridges, agricolae, flextable, RColorBrewer, ShortRead,
+        Biostrings, DECIPHER, randomForest, ggtree, ggpubr
+Suggests: methods, e1071, caret, vcd, qpdf, optparse, foreach,
+        magrittr, doParallel, viridis, plyr, reshape2, grid, scales,
+        cluster, intergraph, decontam, ggtext, devtools, dada2,
+        agridat, rstatix, reshape, gridExtra, descr
 RoxygenNote: 7.3.1.9000
+NeedsCompilation: no
+Packaged: 2024-07-28 21:21:56 UTC; mghotbi
