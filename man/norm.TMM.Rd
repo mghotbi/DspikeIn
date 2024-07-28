@@ -12,7 +12,7 @@ norm.TMM(ps, groups)
 \item{groups}{A string specifying the grouping variable in sample data.}
 }
 \value{
-A phyloseq object with normalized data.
+A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
 TMM Normalization (Trimmed Mean of M component)

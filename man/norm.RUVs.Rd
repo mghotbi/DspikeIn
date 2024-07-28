@@ -12,7 +12,7 @@ norm.RUVs(ps, groups)
 \item{groups}{A vector of group labels.}
 }
 \value{
-A list containing the normalized data and adjustment factor.
+A list containing the normalized phyloseq object and adjustment factors.
 }
 \description{
 Remove Unwanted Variation Using Replicate Samples (RUVs)
