@@ -155,9 +155,7 @@ getwd()
 # The phyloseq object needs to include OTU/ASV, Taxa, phylogenetic tree, DNA reference, 
 # and metadata containing spiked species volume, starting from 0 (no spike species added) to 4 (4 μl of spike cell added).
 
-# Note: DspikeIn requires 'spiked.volume'; any other format is not readable.
-print_sentence("¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯")
-
+# Note: DspikeIn requires 'spiked.volume'; any other format is not readable."¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯"
 
 # We are going to work with a subset of the dataset for both ASVs and OTUs
 # approaches to accelerate this workshop.
