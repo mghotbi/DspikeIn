@@ -2,7 +2,7 @@
 % Please edit documentation in R/normalization_set.R
 \name{normalization_set}
 \alias{normalization_set}
-\title{Apply the selected normalization method to the phyloseq object.}
+\title{Apply the Selected Normalization Method to the Phyloseq Object}
 \usage{
 normalization_set(ps, method, groups = NULL)
 }
@@ -17,7 +17,7 @@ normalization_set(ps, method, groups = NULL)
 A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
-Apply the selected normalization method to the phyloseq object.
+Apply the Selected Normalization Method to the Phyloseq Object
 }
 \examples{
 result_TMM <- normalization_set(physeq_16SASV, method = "TMM", groups = "Animal.type")

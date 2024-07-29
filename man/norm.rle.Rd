@@ -24,7 +24,7 @@ norm.rle(
 \item{control_genes}{A vector of control genes.}
 }
 \value{
-A list containing the normalized data and scaling factor.
+A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
 RLE Normalization (Relative Log Expression)

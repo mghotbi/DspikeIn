@@ -12,7 +12,7 @@ norm.QN(ps, filter = FALSE)
 \item{filter}{Logical, whether to filter low counts.}
 }
 \value{
-A list containing the normalized phyloseq object and scaling factor.
+A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
 Quantile Normalization (QN) for phyloseq object using base R

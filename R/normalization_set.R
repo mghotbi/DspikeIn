@@ -1,4 +1,11 @@
-# Load required packages
+# For Differential Abundance Analysis: Consider DESeq, TMM, or CSS normalization, as these methods are designed to handle compositional biases and library size differences.
+# For Compositional Data: CLR normalization is a good choice, as it transforms the data to account for its compositional nature.
+# For Simplicity and Ease of Use: TC, UQ, or Median normalization are quick and straightforward but may not be as robust.
+# For Handling Batch Effects: SVA or RUV methods are effective.
+
+#' Install and Load Required Packages
+#'
+#' @param packages A character vector of package names to install and load.
 install_and_load <- function(packages) {
   for (package in packages) {
     if (!requireNamespace(package, quietly = TRUE)) {
@@ -15,13 +22,21 @@ install_and_load <- function(packages) {
 required_packages <- c("phyloseq", "DESeq2", "edgeR", "sva", "EDASeq", "RUVSeq", "BiocManager", "BiocGenerics")
 install_and_load(required_packages)
 
-# Helper function for geometric mean
+#' Calculate Geometric Mean
+#'
+#' @param x A numeric vector.
+#' @param na.rm Logical, should missing values (NAs) be removed?
+#' @return Geometric mean of x.
 gm_mean <- function(x, na.rm = TRUE) {
   exp(sum(log(x[x > 0 & !is.na(x)]), na.rm = na.rm) / length(x))
 }
 
-# Remove samples with zero, negative counts, or NA values and add pseudocount
-remove_zero_negative_count_samples <- function(ps, pseudocount = 1) {
+#' Remove Samples with Zero, Negative Counts, or NA Values and Add Pseudocount
+#'
+#' @param ps A phyloseq object.
+#' @param pseudocount A numeric value to add to avoid zero counts.
+#' @return A phyloseq object with filtered and adjusted OTU table.
+remove_zero_negative_count_samples <- function(ps, pseudocount = 1e-6) {
   otu <- as(otu_table(ps), "matrix")
   
   # Remove samples with zero, negative counts, or NA values
@@ -53,7 +68,10 @@ remove_zero_negative_count_samples <- function(ps, pseudocount = 1) {
   return(ps)
 }
 
-# Convert categorical columns to factors in sample data
+#' Convert Categorical Columns to Factors in Sample Data
+#'
+#' @param ps A phyloseq object.
+#' @return A phyloseq object with updated sample data.
 convert_categorical_to_factors <- function(ps) {
   sample_data_df <- as(sample_data(ps), "data.frame")
   for (col in colnames(sample_data_df)) {
@@ -65,7 +83,10 @@ convert_categorical_to_factors <- function(ps) {
   return(ps)
 }
 
-# Define the custom create_list function
+#' Create a List from a Phyloseq Object
+#'
+#' @param physeq A phyloseq object.
+#' @return A list containing the DGE list and updated phyloseq object.
 create_list <- function(physeq) {
   if (!inherits(physeq, "phyloseq")) {
     stop("Input must be a phyloseq object.")
@@ -90,7 +111,7 @@ create_list <- function(physeq) {
   return(list(dge_list = dge_base, phyloseq_obj = updated_physeq))
 }
 
-#' Apply the selected normalization method to the phyloseq object.
+#' Apply the Selected Normalization Method to the Phyloseq Object
 #'
 #' @param ps A phyloseq object.
 #' @param method A character string specifying the normalization method ("TC", "UQ", "med", "DESeq", "Poisson", "QN", "SVA", "RUVg", "RUVs", "RUVr", "TMM", "clr", "rar", "css", "tss", "rle").
@@ -140,7 +161,7 @@ normalization_set <- function(ps, method, groups = NULL) {
   return(list(dat.normed = dat.normed, scaling.factor = scaling.factor))
 }
 
-#' Set normalization factors in the sample data of the phyloseq object.
+#' Set Normalization Factors in the Sample Data of the Phyloseq Object
 #'
 #' @param ps A phyloseq object.
 #' @param scaling.factor A vector of normalization factors.
@@ -161,6 +182,20 @@ set_nf <- function(ps, scaling.factor) {
   return(ps)
 }
 
+#' Process Data with Feature Category
+#'
+#' @param ps A phyloseq object.
+#' @param feature_category A character string specifying the feature category ("all_features", "interquartile_range", "non_zero_counts", "specified_features").
+#' @return A processed phyloseq object.
+process_data_with_feature_category <- function(ps, feature_category = c("all_features", "interquartile_range", "non_zero_counts", "specified_features")) {
+  feature_category <- match.arg(feature_category)
+  if (feature_category == "all_features") {
+    return(ps)
+  }
+  # Additional filtering criteria can be added here based on the selected feature category.
+  stop("Feature category processing not implemented.")
+}
+
 #' Poisson Normalization and Differential Abundance Function
 #'
 #' @param ps A phyloseq object or matrix of raw counts.
@@ -168,19 +203,13 @@ set_nf <- function(ps, scaling.factor) {
 #' @param pseudocount A numeric value added to avoid division by zero.
 #' @return A list containing the normalized data, scaling factor, and differential abundance results.
 #' @export
-norm.Poisson <- function(ps, group_var = NULL, pseudocount = 1) {
+norm.Poisson <- function(ps, group_var = NULL, pseudocount = 1e-6) {
   ps <- remove_zero_negative_count_samples(ps)
   
   prepare_data <- function(ps, group_var) {
     if (inherits(ps, "phyloseq")) {
       raw_otu <- as(otu_table(ps), "matrix")
       sample_data_df <- as(sample_data(ps), "data.frame")
-      
-      # Debugging information
-      print("Group Variable:")
-      print(group_var)
-      print("Sample Data Columns:")
-      print(colnames(sample_data_df))
       
       if (!is.null(group_var)) {
         if (!is.character(group_var) || length(group_var) != 1 || !group_var %in% colnames(sample_data_df)) {
@@ -237,7 +266,7 @@ norm.Poisson <- function(ps, group_var = NULL, pseudocount = 1) {
 #'
 #' @param ps A phyloseq object.
 #' @param groups A string specifying the grouping variable in sample data.
-#' @return A phyloseq object with normalized data.
+#' @return A list containing the normalized phyloseq object and scaling factors.
 #' @references Robinson and Oshlack, 2010.
 #' @export
 norm.TMM <- function(ps, groups) {
@@ -303,15 +332,14 @@ norm.TMM <- function(ps, groups) {
   otu_table(ps) <- otu_table_norm
   sample_data(ps)$norm.factors <- scaling.factor
   
-  return(ps)
+  return(list(dat.normed = ps, scaling.factor = scaling.factor))
 }
-
 
 #' TC Normalization (Total Count Scaling)
 #'
 #' @param ps A phyloseq object.
-#' @param groups A vector of group labels.
-#' @return A list containing the normalized data and scaling factor.
+#' @param groups A string specifying the grouping variable in sample data.
+#' @return A list containing the normalized phyloseq object and scaling factors.
 #' @export
 norm.TC <- function(ps, groups) {
   ps <- create_list(ps)$phyloseq_obj
@@ -326,8 +354,8 @@ norm.TC <- function(ps, groups) {
 #' UQ Normalization (Upper Quartile)
 #'
 #' @param ps A phyloseq object.
-#' @param groups A vector of group labels.
-#' @return A list containing the normalized data and scaling factor.
+#' @param groups A string specifying the grouping variable in sample data.
+#' @return A list containing the normalized phyloseq object and scaling factors.
 #' @export
 norm.UQ <- function(ps, groups) {
   # Create a custom list
@@ -356,8 +384,8 @@ norm.UQ <- function(ps, groups) {
 #' Median Normalization
 #'
 #' @param ps A phyloseq object.
-#' @param groups A vector of group labels.
-#' @return A list containing the normalized data and scaling factor.
+#' @param groups A string specifying the grouping variable in sample data.
+#' @return A list containing the normalized phyloseq object and scaling factors.
 #' @export
 norm.med <- function(ps, groups) {
   ps <- create_list(ps)$phyloseq_obj
@@ -373,8 +401,8 @@ norm.med <- function(ps, groups) {
 #' DESeq Normalization
 #'
 #' @param ps A phyloseq object.
-#' @param groups A vector of group labels.
-#' @return A list containing the normalized data and scaling factor.
+#' @param groups A string specifying the grouping variable in sample data.
+#' @return A list containing the normalized phyloseq object and scaling factors.
 #' @references DESeq2 package.
 #' @export
 norm.DESeq <- function(ps, groups) {
@@ -412,7 +440,7 @@ norm.DESeq <- function(ps, groups) {
 #'
 #' @param ps A phyloseq object.
 #' @param filter Logical, whether to filter low counts.
-#' @return A list containing the normalized phyloseq object and scaling factor.
+#' @return A list containing the normalized phyloseq object and scaling factors.
 #' @export
 norm.QN <- function(ps, filter = FALSE) {
   otu <- as(otu_table(ps), "matrix")
@@ -439,7 +467,7 @@ norm.QN <- function(ps, filter = FALSE) {
   rownames(normalized) <- taxa_names_original
   otu_table(ps) <- otu_table(normalized, taxa_are_rows = TRUE)
   
-  # for QN we dont need scaling factors
+  # for QN we don't need scaling factors
   scaling.factor <- NULL
   
   return(list(dat.normed = ps, scaling.factor = scaling.factor))
@@ -448,8 +476,8 @@ norm.QN <- function(ps, filter = FALSE) {
 #' Surrogate Variable Analysis for Sequencing Data (SVA)
 #'
 #' @param ps A phyloseq object.
-#' @param groups A vector of group labels.
-#' @return A list containing the normalized data and adjustment factor.
+#' @param groups A string specifying the grouping variable in sample data.
+#' @return A list containing the normalized phyloseq object and adjustment factors.
 #' @references SVA package.
 #' @export
 norm.SVA <- function(ps, groups) {
@@ -547,7 +575,7 @@ norm.SVA <- function(ps, groups) {
 #'
 #' @param ps A phyloseq object.
 #' @param groups The name of the sample variable in the sample data that indicates group labels.
-#' @return A list containing the normalized data and adjustment factor.
+#' @return A list containing the normalized phyloseq object and adjustment factors.
 #' @references Gagnon-Bartsch, Jacob, and Speed 2013; Risso et al. 2014; Gagnon-Bartsch and Speed 2012.
 #' @export
 norm.RUVg <- function(ps, groups) {
@@ -639,49 +667,34 @@ norm.RUVg <- function(ps, groups) {
 #'
 #' @param ps A phyloseq object.
 #' @param groups A vector of group labels.
-#' @return A list containing the normalized data and adjustment factor.
+#' @return A list containing the normalized phyloseq object and adjustment factors.
 #' @references Gagnon-Bartsch, Jacob, and Speed 2013; Risso et al. 2014; Gagnon-Bartsch and Speed 2012.
 #' @export
 norm.RUVs <- function(ps, groups) {
+  print("Starting norm.RUVr function")
+  
   raw <- as(otu_table(ps), "matrix")
+  print("OTU table dimensions:")
+  print(dim(raw))
+  
   filter <- apply(raw, 1, function(x) length(x[x > 5]) >= 2)
   dat.ruv <- raw[filter, ]
+  print("Filtered OTU table dimensions:")
+  print(dim(dat.ruv))
+  
   genes <- rownames(dat.ruv)
   condition <- sample_data(ps)[[groups]]
+  print("Condition vector length:")
+  print(length(condition))
+  
   set <- newSeqExpressionSet(as.matrix(dat.ruv), phenoData = AnnotatedDataFrame(data.frame(condition, row.names = colnames(dat.ruv))))
+  print("SeqExpressionSet dimensions:")
+  print(dim(counts(set)))
+  
   design <- model.matrix(~ condition, data = pData(set))
-  y <- DGEList(counts = as.matrix(counts(set)), group = condition)
-  y <- calcNormFactors(y, method = "upperquartile")
-  y <- estimateGLMCommonDisp(y, design)
-  y <- estimateGLMTagwiseDisp(y, design)
-  fit <- glmFit(y, design)
-  lrt <- glmLRT(fit, coef = 2)
-  top <- topTags(lrt, n = nrow(set))$table
-  spikes <- rownames(set)[which(!(rownames(set) %in% rownames(top)[1:(0.15*nrow(raw))]))]
-  differences <- makeGroups(condition)
-  controls <- rownames(dat.ruv)
-  t <- RUVs(set, controls, k = 1, differences)
-  dat.normed <- normCounts(t)
-  otu_table(ps) <- otu_table(dat.normed, taxa_are_rows = TRUE)
-  ps <- set_nf(ps, t$W)
-  return(list(dat.normed = ps, adjust.factor = t$W))
-}
-
-#' Remove Unwanted Variation Using Residuals (RUVr)
-#'
-#' @param ps A phyloseq object.
-#' @param groups A vector of group labels.
-#' @return A list containing the normalized data and adjustment factor.
-#' @references Gagnon-Bartsch, Jacob, and Speed 2013; Risso et al. 2014; Gagnon-Bartsch and Speed 2012.
-#' @export
-norm.RUVr <- function(ps, groups) {
-  raw <- as(otu_table(ps), "matrix")
-  filter <- apply(raw, 1, function(x) length(x[x > 5]) >= 2)
-  dat.ruv <- raw[filter, ]
-  genes <- rownames(dat.ruv)
-  condition <- sample_data(ps)[[groups]]
-  set <- newSeqExpressionSet(as.matrix(dat.ruv), phenoData = AnnotatedDataFrame(data.frame(condition, row.names = colnames(dat.ruv))))
-  design <- model.matrix(~ condition, data = pData(set))
+  print("Design matrix:")
+  print(design)
+  
   y <- DGEList(counts = as.matrix(counts(set)), group = condition)
   y <- calcNormFactors(y, method = "upperquartile")
   y <- estimateGLMCommonDisp(y, design)
@@ -692,8 +705,11 @@ norm.RUVr <- function(ps, groups) {
   controls <- rownames(dat.ruv)
   t <- RUVr(setUQ, controls, k = 1, res)
   dat.normed <- normCounts(t)
+  
   otu_table(ps) <- otu_table(dat.normed, taxa_are_rows = TRUE)
   ps <- set_nf(ps, t$W)
+  
+  print("Completed norm.RUVr function")
   return(list(dat.normed = ps, adjust.factor = t$W))
 }
 
@@ -701,7 +717,7 @@ norm.RUVr <- function(ps, groups) {
 #'
 #' @param ps A phyloseq object.
 #' @param feature_category A character string specifying the feature category ("all_features", "interquartile_range", "non_zero_counts", "specified_features").
-#' @return A list containing the normalized data and scaling factor.
+#' @return A list containing the normalized phyloseq object and scaling factors.
 #' @references Aitchison, 1986.
 #' @export
 norm.clr <- function(ps, feature_category = c("all_features", "interquartile_range", "non_zero_counts", "specified_features")) {
@@ -719,8 +735,8 @@ norm.clr <- function(ps, feature_category = c("all_features", "interquartile_ran
 #' Rarefying
 #'
 #' @param ps A phyloseq object.
-#' @param feature_category A character string specifying the feature category ("all_features", "interquartile_range", "non_zero_counts", "specified_features").
-#' @return A list containing the normalized data and scaling factor.
+#' @param feature_category A character string specifying the feature category ("all_features", "interquartile_range", "non_zero_counts", "specified_features")).
+#' @return A list containing the normalized phyloseq object and scaling factors.
 #' @references McMurdie and Holmes, 2014.
 #' @export
 norm.rar <- function(ps, feature_category = c("all_features", "interquartile_range", "non_zero_counts", "specified_features")) {
@@ -738,7 +754,7 @@ norm.rar <- function(ps, feature_category = c("all_features", "interquartile_ran
 #' TSS Normalization (Total Sum Scaling)
 #'
 #' @param ps A phyloseq object.
-#' @return A list containing the normalized phyloseq object and scaling factor.
+#' @return A list containing the normalized phyloseq object and scaling factors.
 #' @references Bolstad et al., 2003.
 #' @export
 norm.tss <- function(ps) {
@@ -757,7 +773,7 @@ norm.tss <- function(ps) {
 #'
 #' @param ps A phyloseq object.
 #' @param feature_category A character string specifying the feature category ("all_features", "interquartile_range", "non_zero_counts", "specified_features").
-#' @return A list containing the normalized data and scaling factor.
+#' @return A list containing the normalized phyloseq object and scaling factors.
 #' @references Paulson et al., 2013.
 #' @export
 norm.css <- function(ps, feature_category = c("all_features", "interquartile_range", "non_zero_counts", "specified_features")) {
@@ -770,7 +786,7 @@ norm.css <- function(ps, feature_category = c("all_features", "interquartile_ran
   
   cat("Initial OTU table dimensions: ", dim(otu_table(ps)), "\n")
   raw <- as(otu_table(ps), "matrix")
-  raw <- raw + 1  # Add pseudocount
+  raw <- raw + 1e-6  # Add pseudocount
   dat.DGE <- DGEList(counts = raw)
   dat.DGE <- calcNormFactors(dat.DGE, method = "TMM")
   scaling.factor <- dat.DGE$samples$norm.factors
@@ -790,7 +806,7 @@ norm.css <- function(ps, feature_category = c("all_features", "interquartile_ran
 #' @param type A character string specifying the type of normalization ("poscounts" or "ratio").
 #' @param geo_means A vector of geometric means for each feature.
 #' @param control_genes A vector of control genes.
-#' @return A list containing the normalized data and scaling factor.
+#' @return A list containing the normalized phyloseq object and scaling factors.
 #' @references Anders and Huber, 2010.
 #' @export
 norm.rle <- function(ps, locfunc = stats::median, type = c("poscounts", "ratio"), geo_means = NULL, control_genes = NULL) {
@@ -826,6 +842,7 @@ norm.rle <- function(ps, locfunc = stats::median, type = c("poscounts", "ratio")
   ps <- set_nf(ps, nf)
   return(list(dat.normed = ps, scaling.factor = nf))
 }
+
 
 # # Example usage for TC normalization
 # # Assuming ps is your phyloseq object and sample_data(ps)$Animal.type contains your group labels

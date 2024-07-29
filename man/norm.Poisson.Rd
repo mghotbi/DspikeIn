@@ -4,7 +4,7 @@
 \alias{norm.Poisson}
 \title{Poisson Normalization and Differential Abundance Function}
 \usage{
-norm.Poisson(ps, group_var = NULL, pseudocount = 1)
+norm.Poisson(ps, group_var = NULL, pseudocount = 1e-06)
 }
 \arguments{
 \item{ps}{A phyloseq object or matrix of raw counts.}

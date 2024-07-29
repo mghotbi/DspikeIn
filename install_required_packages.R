@@ -13,11 +13,11 @@ install_and_load <- function(packages) {
 
 install_required_packages <- function() {
   cran_packages <- c(
-    "dplyr", "ape", "ggplot2", "ggalluvial", "phangorn", "msa", "data.table", "matrixStats", "ggridges", "flextable", "RColorBrewer", "randomForest", "ggtree", "ggpubr"
+    "dplyr", "ape", "ggplot2", "ggalluvial", "phangorn",  "data.table", "matrixStats", "ggridges", "flextable", "RColorBrewer", "randomForest", "ggtree", "ggpubr"
   )
   
   bioc_packages <- c(
-    "phyloseq", "microbiome", "DESeq2", "ShortRead", "Biostrings", "DECIPHER", "edgeR", "preprocessCore", "sva", "EDASeq", "RUVSeq", "Biobase", "BiocGenerics", "vegan", "chemometrics"
+    "phyloseq", "microbiome", "DESeq2", "ShortRead", "Biostrings","msa", "DECIPHER", "edgeR", "preprocessCore", "sva", "EDASeq", "RUVSeq", "Biobase", "BiocGenerics", "vegan", "chemometrics"
   )
   
   github_packages <- c(
