@@ -159,14 +159,11 @@ getwd()
 print_sentence("¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯")
 
 
-# We are going to work with a subset of the dataset for both ASVs and OTUs approaches to accelerate this workshop.
+# We are going to work with a subset of the dataset for both ASVs and OTUs
+# approaches to accelerate this workshop.
 
 Salamander_relative_16S_ASV <-readRDS("Salamander_relative_16S_ASV.rds")
 Salamander_relative_ITS_ASV <-readRDS("Salamander_relative_ITS_ASV.rds")
-
-Salamander_relative_16S_OTU <-readRDS("Salamander_relative_16S_OTU.rds")
-Salamander_relative_ITS_OTU <-readRDS("Salamander_relative_ITS_OTU.rds")
-
 
 physeq_16S_ASV <- tidy_phyloseq(Salamander_relative_16S_ASV)
 
@@ -533,125 +530,48 @@ physeq_absolute_abundance_16S_OTU <- tidy_phyloseq(physeq_absolute_abundance_16S
 saveRDS(physeq_absolute_abundance_16S_OTU, "physeq_absolute_abundance_16S_OTU.rds")
 
 ```
-## Normalization and bias correction
+# Normalization and bias correction 
 
 
 ```r
-# Bolstad, B.M., Irizarry, R.A., Åstrand, M. and Speed, T.P., 2003. A comparison of normalization methods for high density oligonucleotide array data based on variance and bias. Bioinformatics, 19(2), pp.185-193.
-#Gagnon-Bartsch, J.A. and Speed, T.P., 2012. Using control genes to correct for unwanted variation in microarray data. Biostatistics, 13(3), pp.539-552.
-#Risso, D., Ngai, J., Speed, T.P. and Dudoit, S., 2014. Normalization of RNA-seq data using factor analysis of control genes or samples. Nature biotechnology, 32(9), pp.896-902.
-#Gagnon-Bartsch, J.A., Jacob, L. and Speed, T.P., 2013. Removing unwanted variation from high dimensional data with negative controls. Berkeley: Tech Reports from Dep Stat Univ California, pp.1-112.
-
-# Install and load required packages
-install.packages("https://cran.r-project.org/src/contrib/PoissonSeq_1.1.2.tar.gz", repos = NULL, type = "source")
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-
-BiocManager::install(c("phyloseq", "DESeq2", "edgeR", "PoissonSeq", "preprocessCore", "sva", "EDASeq"))
+# Bolstad, B.M., Irizarry, R.A., Åstrand, M. and Speed, T.P., 2003. A comparison of normalization methods for high-density oligonucleotide array data based on variance and bias. Bioinformatics, 19(2), pp.185-193.
+# Gagnon-Bartsch, J.A. and Speed, T.P., 2012. Using control genes to correct for unwanted variation in microarray data. Biostatistics, 13(3), pp.539-552.
+# Risso, D., Ngai, J., Speed, T.P. and Dudoit, S., 2014. Normalization of RNA-seq data using factor analysis of control genes or samples. Nature biotechnology, 32(9), pp.896-902.
+# Gagnon-Bartsch, J.A., Jacob, L. and Speed, T.P., 2013. Removing unwanted variation from high dimensional data with negative controls. Berkeley: Tech Reports from Dep Stat Univ California, pp.1-112.
 
 # Load required libraries
-library(RUVSeq)
 library(phyloseq)
 library(DESeq2)
 library(edgeR)
-library(PoissonSeq)
 library(preprocessCore)
 library(sva)
 library(EDASeq)
 library(Biobase)
 library(BiocGenerics)
 library(vegan)
-library(chemometrics)
 
 
-# Example usage for each normalization method
-#ps is a phyloseq object
-ps = subset_samples(physeq_absolute_abundance_16S_OTU, !is.na(Animal.type))
+#ps is a phyloseq object without spiked species counts
+#One can calculate the scaling factor using any normalization method in the absence of spiked species counts, and then determine the spiked scaling factor. Crossing both #scaling factors with relative abundance helps quantify absolute abundance while correcting for bias
 
-#  TC normalization
-result_TC <- normalization_set(ps, method = "TC", groups = sample_data(ps)$Animal.type)
-normalized_ps_TC <- result_TC$dat.normed
-scaling_factors_TC <- result_TC$scaling.factor
+ps <- remove_zero_negative_count_samples(physeq_absolute_abundance_16S_OTU)
+ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
 
-# UQ normalization
-result_UQ <- normalization_set(ps, method = "UQ", groups = sample_data(ps)$Animal.type)
-normalized_ps_UQ <- result_UQ$dat.normed
-scaling_factors_UQ <- result_UQ$scaling.factor
-
-# Median normalization
-result_med <- normalization_set(ps, method = "med", groups = sample_data(ps)$Animal.type)
-normalized_ps_med <- result_med$dat.normed
-scaling_factors_med <- result_med$scaling.factor
-
-# DESeq normalization
-result_DESeq <- normalization_set(ps, method = "DESeq", groups = sample_data(ps)$Animal.type)
-normalized_ps_DESeq <- result_DESeq$dat.normed
-scaling_factors_DESeq <- result_DESeq$scaling.factor
-
-# PoissonSeq normalization
-result_PoissonSeq <- normalization_set(ps, method = "PoissonSeq")
-normalized_ps_PoissonSeq <- result_PoissonSeq$dat.normed
-scaling_factors_PoissonSeq <- result_PoissonSeq$scaling.factor
-
-# Quantile normalization
-result_QN <- normalization_set(ps, method = "QN")
-normalized_ps_QN <- result_QN$dat.normed
-scaling_factors_QN <- result_QN$scaling.factor
-
-# SVA normalization
-result_SVA <- normalization_set(ps, method = "SVA", groups = sample_data(ps)$Animal.type)
-normalized_ps_SVA <- result_SVA$dat.normed
-scaling_factors_SVA <- result_SVA$scaling.factor
-
-# RUVg normalization
-result_RUVg <- normalization_set(ps, method = "RUVg", groups = sample_data(ps)$Animal.type)
-normalized_ps_RUVg <- result_RUVg$dat.normed
-scaling_factors_RUVg <- result_RUVg$scaling.factor
-
-# RUVs normalization
-result_RUVs <- normalization_set(ps, method = "RUVs", groups = sample_data(ps)$Animal.type)
-normalized_ps_RUVs <- result_RUVs$dat.normed
-scaling_factors_RUVs <- result_RUVs$scaling.factor
-ot<-normalized_ps_RUVs@otu_table
-write.csv(ot,"ot.csv")
-# RUVr normalization
-result_RUVr <- normalization_set(ps, method = "RUVr", groups = sample_data(ps)$Animal.type)
-normalized_ps_RUVr <- result_RUVr$dat.normed
-scaling_factors_RUVr <- result_RUVr$scaling.factor
-
-# TMM normalization
-result_TMM <- normalization_set(ps, method = "TMM", groups = sample_data(ps)$Animal.type)
-normalized_ps_TMM <- result_TMM$dat.normed
-scaling_factors_TMM <- result_TMM$scaling.factor
-
-# CLR normalization
-result_clr <- normalization_set(ps, method = "clr")
-normalized_ps_clr <- result_clr$dat.normed
-scaling_factors_clr <- result_clr$scaling.factor
-
-# Rarefying
-result_rar <- normalization_set(ps, method = "rar")
-normalized_ps_rar <- result_rar$dat.normed
-scaling_factors_rar <- result_rar$scaling.factor
-
-# CSS normalization
-result_css <- normalization_set(ps, method = "css")
-normalized_ps_css <- result_css$dat.normed
-scaling_factors_css <- result_css$scaling.factor
-
-# TSS normalization
-result_tss <- normalization_set(ps, method = "tss")
-normalized_ps_tss <- result_tss$dat.normed
-scaling_factors_tss <- result_tss$scaling.factor
-
-# RLE normalization
-result_rle <- normalization_set(ps, method = "rle")
-normalized_ps_rle <- result_rle$dat.normed
-scaling_factors_rle <- result_rle$scaling.factor
-
-# Save the scaling factors
-write.csv(scaling_factors_DESeq, file = "scaling_factors_DESeq.csv", row.names = FALSE)
-
+# Normalization Methods:
+# group_var <- "Animal.ecomode"  
+# result_DESeq <- normalization_set(ps, method = "DESeq", groups = group_var)
+# result_TMM <- normalization_set(ps, method = "TMM", groups = group_var)
+# result_CLR <- normalization_set(ps, method = "clr")
+# result_SVA <- normalization_set(ps, method = "SVA", groups = group_var)
+# result_RUVg <- normalization_set(ps, method = "RUVg", groups = group_var)
+# result_RUVr <- normalization_set(ps, method = "RUVr", groups = group_var)
+# result_RUVs <- normalization_set(ps, method = "RUVs", groups = group_var)
+# result_UQ <- normalization_set(ps, method = "UQ", groups = group_var)
+# result_med <- normalization_set(ps, method = "med", groups = group_var)
+# result_rle <- normalization_set(ps, method = "rle")
+# result_css <- normalization_set(ps, method = "CSS")
+# result_tss <- normalization_set(ps, method = "tss")
+# result_rar <- normalization_set(ps, method = "rar")
 
 # Customized filtering and transformations
 # Proportion adjustment
