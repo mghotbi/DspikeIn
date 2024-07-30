@@ -177,7 +177,7 @@ physeq_16S_ASV@sam_data$spiked.volume
 
 library(phyloseq)
 # 16S rRNA
-presence of 'spiked.volume' column in metadata
+# presence of 'spiked.volume' column in metadata
 spiked_cells <-1847
 species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp")
 merged_spiked_species<-"Tetragenococcus_halophilus"
@@ -185,7 +185,7 @@ Tetra <- subset_taxa(physeq_16SASV,Species=="Tetragenococcus_halophilus" | Speci
 hashcodes <- row.names(phyloseq::tax_table(Tetra))
 
 # ITS rDNA
-presence of 'spiked.volume' column in metadata
+# presence of 'spiked.volume' column in metadata
 spiked_cells <- 733
 species_name <- spiked_species<-merged_spiked_species<-"Dekkera_bruxellensis"
 Dekkera <- subset_taxa(physeq_ITSASV, Species=="Dekkera_bruxellensis")
