@@ -128,11 +128,6 @@ remotes::install_github("mghotbi/DspikeIn")
 library(DspikeIn)
 
 
-## Optional Package Installation
-# For users convenience, we provide a helper function to install and load several microbial-ecology-relevant packages, some of which are required for running the `DspikeIn` package.
-# You can use the `install_load_packages_helper()` function to easily install and load these packages.
-install_load_packages_helper()
-
 ```
 
 ## Acknowledgement
