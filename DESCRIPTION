@@ -22,10 +22,34 @@ Imports: phyloseq, DESeq2, edgeR, preprocessCore, sva, EDASeq, RUVSeq,
         ggplot2, ggalluvial, phangorn, msa, data.table, matrixStats,
         ggridges, agricolae, flextable, RColorBrewer, ShortRead,
         Biostrings, DECIPHER, randomForest, ggtree, ggpubr
-Suggests: methods, e1071, caret, vcd, qpdf, optparse, foreach,
-        magrittr, doParallel, viridis, plyr, reshape2, grid, scales,
-        cluster, intergraph, decontam, ggtext, devtools, dada2,
-        agridat, rstatix, reshape, gridExtra, descr
+Suggests: 
+    methods,
+    e1071,
+    caret,
+    vcd,
+    qpdf,
+    optparse,
+    foreach,
+    magrittr,
+    doParallel,
+    viridis,
+    plyr,
+    reshape2,
+    grid,
+    scales,
+    cluster,
+    intergraph,
+    decontam,
+    ggtext,
+    devtools,
+    dada2,
+    agridat,
+    rstatix,
+    reshape,
+    gridExtra,
+    descr,
+    testthat (>= 3.0.0)
 RoxygenNote: 7.3.1.9000
 NeedsCompilation: no
 Packaged: 2024-07-28 21:21:56 UTC; mghotbi
+Config/testthat/edition: 3
