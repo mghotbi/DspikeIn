@@ -35,7 +35,7 @@
 #' data <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", 
 #' group = "Env_broad_scale.x", top = 10, return = TRUE)
 #' @export
-plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NULL, top = 20, return = FALSE, x_size = 12, y_size = 12, legend_key_size = 1, legend_text_size = 12, legend_nrow = 20, relativize = TRUE, output_prefix = NULL) {
+plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NULL, top = 20, return = FALSE, x_size = 12, y_size = 12, legend_key_size = 1.5, legend_text_size = 12, legend_nrow = 20, relativize = TRUE, output_prefix = NULL) {
   # Load necessary libraries
   library(phyloseq)
   library(dplyr)
@@ -50,7 +50,7 @@ plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NUL
   # Generate colors if not provided
   if (is.null(color)) {
     len <- length(unique(pm[, level]))
-    color <- rainbow(len)
+    color <- MG()[1:len]  # Use the MG color palette function
   }
   
   # Determine grouping variable
@@ -121,18 +121,18 @@ plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NUL
 # Example usage:
 # Plot relativized abundance
 # plot <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, 
-#level = "Family", group = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10,
-#legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = TRUE, 
-#output_prefix = "relativized_abundance_plot")
+# level = "Family", group = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10,
+# legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = TRUE, 
+# output_prefix = "relativized_abundance_plot")
 # print(plot)
 
 # Plot non-relativized (absolute) abundance
 # plot_absolute <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, 
-#level = "Family", group = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10,
-#legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = FALSE,
-#output_prefix = "non_relativized_abundance_plot")
+# level = "Family", group = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10,
+# legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = FALSE,
+# output_prefix = "non_relativized_abundance_plot")
 # print(plot_absolute)
 
 # Return summarized data
 # data <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, 
-#level = "Family", group = "Env_broad_scale.x", top = 10, return = TRUE)
+# level = "Family", group = "Env_broad_scale.x", top = 10, return = TRUE)
