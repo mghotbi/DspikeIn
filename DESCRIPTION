@@ -1,33 +1,17 @@
 Package: DspikeIn
 Type: Package
-<<<<<<< HEAD
 Title: Quantifying Absolute Abundance for Enhanced Evaluation of Microbial Dynamics
 Version: 0.0.0.9000
 Author: Mitra Ghotbi
 Maintainer: Mitra Ghotbi <mitra.ghotbi@gmail.com>
-Description: DspikeIn quantifies absolute abundance, enhancing the evaluation of microbial dynamics, which is crucial for advancing microbial ecology. The package builds on the excellent phyloseq package and benefits from modified functions from other packages, including dplyr, ggtree, flextable, DESeq2, microbiomeutilities, DECIPHER, and speedyseq.
-Acknowledgements: This package builds on the excellent phyloseq package and benefits from modified functions from other wonderful packages, including dplyr, ggtree, flextable, DESeq2, microbiomeutilities, DECIPHER, and speedyseq.
-=======
-Title: DspikeIn quantifies absolute abundance, enhancing the evaluation
-        of microbial dynamics, which is crucial for advancing microbial
-        ecology.
-Version: 0.0.0.9000
-Author: Mitra Ghotbi
-Maintainer: Mitra Ghotbi <mitra.ghotbi@gmail.com>
-Description: DspikeIn quantifies absolute abundance, enhancing the evaluation of microbial dynamics, which is crucial for advancing microbial ecology.
-Acknowledgements: DspikeIn builds on the excellent phyloseq package and
-        benefits from modified functions from other wonderful packages,
-        including: dplyr, ggtree, flextable, DESeq2,
-        microbiomeutilities, DECIPHER, and speedyseq.
->>>>>>> 9c89fa128aa50dce648041926482a4901ad3019b
+Description: DspikeIn quantifies absolute abundance, enhancing the evaluation of microbial dynamics, which is crucial for advancing microbial ecology. The package builds on the excellent phyloseq package and benefits from modified functions from other wonderful packages, including dplyr,ggplot2, edgeR, ggtree, flextable, DESeq2, microbiomeutilities, DECIPHER, and speedyseq.
+Acknowledgements: DspikeIn builds on the excellent phyloseq package and benefits from modified functions from other wonderful packages, including dplyr, ggtree, flextable, DESeq2,edgeR, microbiomeutilities, DECIPHER, and speedyseq.
 URL: https://github.com/mitraghotbi/DspikeIn
 BugReports: https://github.com/mitraghotbi/DspikeIn/issues
 License: GPL-3
 Encoding: UTF-8
-<<<<<<< HEAD
 LazyData: true
-Depends: 
-    R (>= 3.5.0)
+Depends: R (>= 3.5.0)
 Imports:
     phyloseq,
     DESeq2,
@@ -64,16 +48,6 @@ Suggests:
     matrixStats,
     preprocessCore,
     Biobase,
-=======
-Depends: R (>= 3.5.0)
-Imports: phyloseq, DESeq2, edgeR, preprocessCore, sva, EDASeq, RUVSeq,
-        Biobase, BiocGenerics, vegan, compositions, microbiomeMarker,
-        microbiome, microbiomeutilities, dplyr, speedyseq, ape,
-        ggplot2, ggalluvial, phangorn, msa, data.table, matrixStats,
-        ggridges, agricolae, flextable, RColorBrewer, ShortRead,
-        Biostrings, DECIPHER, randomForest, ggtree, ggpubr
-Suggests: 
->>>>>>> 9c89fa128aa50dce648041926482a4901ad3019b
     methods,
     e1071,
     caret,

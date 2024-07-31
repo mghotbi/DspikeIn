@@ -32,6 +32,7 @@ averaged scaling factors. Different spiked cell counts can be provided for each 
 # Example usage:
 # Assume `physeq` is a phyloseq object and `spiked_species_list` is a list of character vectors.
 # spiked_species_list <- list(c("Species1"), c("Species2"), c("Species3"), c("Species4"))
-# spiked_cells_list <- c(1000, 1500, 2000, 2500)
-# average_scaling_factors <- calculate_average_scaling_factors(physeq, spiked_species_list, spiked_cells_list, "sum")
+# spiked_cells_list <- c(1000, 1500, 2000, 2500) or c(2000, 2000, 2000, 2000)
+# average_scaling_factors <- calculate_list_average_scaling_factors(physeq, spiked_species_list,
+# spiked_cells_list, "sum")
 }
