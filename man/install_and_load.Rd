@@ -3,7 +3,11 @@
 %   R/normalization_set.R
 \name{install_and_load}
 \alias{install_and_load}
+<<<<<<< HEAD
 \title{This function installs and loads required packages.}
+=======
+\title{Install and Load Required Packages}
+>>>>>>> MGhotbi
 \usage{
 install_and_load(packages)
 
@@ -14,8 +18,11 @@ install_and_load(packages)
 }
 \description{
 This function installs and loads required packages.
+<<<<<<< HEAD
 
 Install and Load Required Packages
+=======
+>>>>>>> MGhotbi
 }
 \examples{
 required_packages <- c("phyloseq", "DESeq2", "edgeR", "sva", "EDASeq", "RUVSeq", "BiocManager", "BiocGenerics", "ANCOMBC", "ggplot2", "dplyr", "DT")

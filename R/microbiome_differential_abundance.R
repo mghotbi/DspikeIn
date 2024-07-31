@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+# Load required packages
+#' Install and Load Required Packages
+#'
+>>>>>>> MGhotbi
 #' This function installs and loads required packages.
 #'
 #' @param packages A vector of package names to be installed and loaded.

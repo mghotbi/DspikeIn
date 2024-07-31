@@ -13,12 +13,19 @@ install_and_load <- function(packages) {
 
 install_required_packages <- function() {
   cran_packages <- c(
+<<<<<<< HEAD
     "dplyr", "ape", "ggplot2", "ggalluvial", "phangorn",  "data.table", "matrixStats", "ggridges", "flextable", "RColorBrewer", "randomForest", "ggtree", "ggpubr"
   )
   
   bioc_packages <- c(
     "phyloseq", "microbiome", "DESeq2", "ShortRead", "Biostrings","msa", "DECIPHER", "edgeR", "preprocessCore", "sva", "EDASeq", "RUVSeq", "Biobase", "BiocGenerics", "vegan", "chemometrics"
   )
+=======
+    "dplyr", "ape", "ggplot2", "ggalluvial", "phangorn", "data.table", "matrixStats", "ggridges", "flextable", "RColorBrewer", "randomForest", "ggtree", "ggpubr","agricolae")
+  
+  bioc_packages <- c(
+    "phyloseq", "microbiome", "DESeq2", "ANCOMBC","ShortRead","msa", "Biostrings", "DECIPHER", "edgeR", "preprocessCore", "sva", "EDASeq", "RUVSeq", "Biobase", "BiocGenerics", "vegan" )
+>>>>>>> MGhotbi
   
   github_packages <- c(
     "mikemc/speedyseq", "microsud/microbiomeutilities", "vmikk/metagMisc"
