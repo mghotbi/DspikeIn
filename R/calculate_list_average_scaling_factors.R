@@ -49,8 +49,12 @@ calculate_list_average_scaling_factors <- function(physeq, spiked_species_list, 
 #   c("Methylobacterium_phyllostachyos"),
 #   c("Methylorubrum_salsuginis"),
 #   c("Bosea_massiliensis"),
+<<<<<<< HEAD
 #   c("Bacillus_decolorationis")
 # )
+=======
+#   c("Bacillus_decolorationis"))
+>>>>>>> 9c89fa128aa50dce648041926482a4901ad3019b
 # 
 # # Example usage;
 # # # Define the corresponding number of spiked cells for each spiked species 

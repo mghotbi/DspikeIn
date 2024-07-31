@@ -117,5 +117,5 @@ plot_core_microbiome_custom <- function(physeq = NULL,
 
 # Example usage:
 # Specify a different detection threshold
-#custom_detections <- 10^seq(log10(3e-1), log10(0.5), length = 5)
-#PCM <- plot_core_microbiome_custom(physeq_16S_adj_scaled_Absolute_ASV, detections = custom_detections, taxrank = "Family", output_core_rds = "core_microbiome.rds", output_core_csv = "core_microbiome.csv")
+# custom_detections <- 10^seq(log10(3e-1), log10(0.5), length = 5)
+# PCM <- plot_core_microbiome_custom(ps, detections = custom_detections, taxrank = "Family", output_core_rds = "core_microbiome.rds", output_core_csv = "core_microbiome.csv")

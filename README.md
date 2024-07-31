@@ -128,11 +128,6 @@ remotes::install_github("mghotbi/DspikeIn")
 library(DspikeIn)
 
 
-## Optional Package Installation
-# For users convenience, we provide a helper function to install and load several microbial-ecology-relevant packages, some of which are required for running the `DspikeIn` package.
-# You can use the `install_load_packages_helper()` function to easily install and load these packages.
-install_load_packages_helper()
-
 ```
 
 ## Acknowledgement
@@ -155,18 +150,13 @@ getwd()
 # The phyloseq object needs to include OTU/ASV, Taxa, phylogenetic tree, DNA reference, 
 # and metadata containing spiked species volume, starting from 0 (no spike species added) to 4 (4 μl of spike cell added).
 
-# Note: DspikeIn requires 'spiked.volume'; any other format is not readable.
-print_sentence("¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯")
+# Note: DspikeIn requires 'spiked.volume'; any other format is not readable."¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯"
 
-
-# We are going to work with a subset of the dataset for both ASVs and OTUs approaches to accelerate this workshop.
+# We are going to work with a subset of the dataset for both ASVs and OTUs
+# approaches to accelerate this workshop.
 
 Salamander_relative_16S_ASV <-readRDS("Salamander_relative_16S_ASV.rds")
 Salamander_relative_ITS_ASV <-readRDS("Salamander_relative_ITS_ASV.rds")
-
-Salamander_relative_16S_OTU <-readRDS("Salamander_relative_16S_OTU.rds")
-Salamander_relative_ITS_OTU <-readRDS("Salamander_relative_ITS_OTU.rds")
-
 
 physeq_16S_ASV <- tidy_phyloseq(Salamander_relative_16S_ASV)
 
@@ -187,7 +177,7 @@ physeq_16S_ASV@sam_data$spiked.volume
 
 library(phyloseq)
 # 16S rRNA
-presence of 'spiked.volume' column in metadata
+# presence of 'spiked.volume' column in metadata
 spiked_cells <-1847
 species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp")
 merged_spiked_species<-"Tetragenococcus_halophilus"
@@ -195,7 +185,7 @@ Tetra <- subset_taxa(physeq_16SASV,Species=="Tetragenococcus_halophilus" | Speci
 hashcodes <- row.names(phyloseq::tax_table(Tetra))
 
 # ITS rDNA
-presence of 'spiked.volume' column in metadata
+# presence of 'spiked.volume' column in metadata
 spiked_cells <- 733
 species_name <- spiked_species<-merged_spiked_species<-"Dekkera_bruxellensis"
 Dekkera <- subset_taxa(physeq_ITSASV, Species=="Dekkera_bruxellensis")
@@ -560,86 +550,21 @@ library(vegan)
 ps <- remove_zero_negative_count_samples(physeq_absolute_abundance_16S_OTU)
 ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
 
-# Available Normalization Methods:
-# 
-# Description: Normalizes the data by dividing by the total counts per sample.
-# Function: norm.TC(ps, groups)
-# Upper Quartile (UQ) Normalization
-# 
-# Description: Normalizes data based on the upper quartile of the counts.
-# Function: norm.UQ(ps, groups)
-# Median (med) Normalization
-# 
-# Description: Normalizes data based on the median count.
-# Function: norm.med(ps, groups)
-# DESeq Normalization
-# 
-# Description: Normalizes counts based on the assumption that most genes are not differentially expressed.
-# Function: norm.DESeq(ps, groups)
-# Poisson Normalization
-# 
-# Description: Uses a Poisson distribution to normalize the counts.
-# Function: norm.Poisson(ps, groups)
-# Quantile Normalization (QN)
-# 
-# Description: Applies quantile normalization to the OTU table.
-# Function: norm.QN(ps)
-# Surrogate Variable Analysis (SVA)
-# 
-# Description: Identifies and removes unwanted variation in sequencing data.
-# Function: norm.SVA(ps, groups)
-# Remove Unwanted Variation Using Control Genes (RUVg)
-# 
-# Description: Uses control genes to remove unwanted variation.
-# Function: norm.RUVg(ps, groups)
-# Remove Unwanted Variation Using Replicate Samples (RUVs)
-# 
-# Description: Uses replicate samples to remove unwanted variation.
-# Function: norm.RUVs(ps, groups)
-# Remove Unwanted Variation Using Residuals (RUVr)
-# 
-# Description: Uses residuals to remove unwanted variation.
-# Function: norm.RUVr(ps, groups)
-# Trimmed Mean of M-values (TMM) Normalization
-# 
-# Description: A scaling normalization method to account for compositional differences between libraries.
-# Function: norm.TMM(ps, groups)
-# Centered Log-Ratio (CLR) Normalization
-# 
-# Description: Computes log-ratios relative to the geometric mean of all features.
-# Function: norm.clr(ps)
-# Rarefying (rar)
-# 
-# Description: Randomly removes reads from different samples until they all have the same predefined number of reads.
-# Function: norm.rar(ps)
-# Cumulative Sum Scaling (CSS) Normalization
-# 
-# Description: Scales the invariant segment of each sample’s count distribution.
-# Function: norm.css(ps)
-# Total Sum Scaling (TSS) Normalization
-# 
-# Description: Converts the feature table into relative abundance by dividing the total reads of each sample.
-# Function: norm.tss(ps)
-# Relative Log Expression (RLE) Normalization
-# 
-# Description: Assumes most features are not differential and uses relative abundances to calculate the normalization factor.
-# Function: norm.rle(ps)
-      
-#  TC normalization
-result_TC <- normalization_set(ps, method = "TC", groups = sample_data(ps)$Animal.type)
-normalized_ps_TC <- result_TC$dat.normed
-scaling_factors_TC <- result_TC$scaling.factor
-summ_count_phyloseq(result_TC$dat.normed)
-
-
-# RUVg normalization
-result_RUVg <- normalization_set(ps, method = "RUVg", groups = sample_data(ps)$Animal.type)
-normalized_ps_RUVg <- result_RUVg$dat.normed
-scaling_factors_RUVg <- result_RUVg$scaling.factor
-
-# Save the scaling factors
-write.csv(scaling_factors_DESeq, file = "scaling_factors_DESeq.csv", row.names = FALSE)
-
+# Normalization Methods:
+# group_var <- "Animal.ecomode"  
+# result_DESeq <- normalization_set(ps, method = "DESeq", groups = group_var)
+# result_TMM <- normalization_set(ps, method = "TMM", groups = group_var)
+# result_CLR <- normalization_set(ps, method = "clr")
+# result_SVA <- normalization_set(ps, method = "SVA", groups = group_var)
+# result_RUVg <- normalization_set(ps, method = "RUVg", groups = group_var)
+# result_RUVr <- normalization_set(ps, method = "RUVr", groups = group_var)
+# result_RUVs <- normalization_set(ps, method = "RUVs", groups = group_var)
+# result_UQ <- normalization_set(ps, method = "UQ", groups = group_var)
+# result_med <- normalization_set(ps, method = "med", groups = group_var)
+# result_rle <- normalization_set(ps, method = "rle")
+# result_css <- normalization_set(ps, method = "CSS")
+# result_tss <- normalization_set(ps, method = "tss")
+# result_rar <- normalization_set(ps, method = "rar")
 
 # Customized filtering and transformations
 # Proportion adjustment

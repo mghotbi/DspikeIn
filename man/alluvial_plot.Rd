@@ -37,11 +37,30 @@ This function creates an alluvial plot to visualize the abundance of taxa across
 It filters out samples with abundance below the specified threshold and generates the plot using `ggplot2`.
 }
 \examples{
-# Example with provided data format
-meli_Abs_WSal <- read.csv("path/to/meli_Abs_WSal.csv")
+# Load necessary libraries
+library(phyloseq)
+library(ggplot2)
+library(dplyr)
+library(ggalluvial)
 
-# Generate alluvial plot
-is_alluvia_form(as.data.frame(meli_Abs_WSal), axes = 1:6, silent = TRUE)
-alluvial_plot <- alluvial_plot(data = meli_Abs_WSal, axes = c("Diet", "Host.genus", "Ecoregion.III"), abundance_threshold = 10000, fill_variable = "Phylum", silent = TRUE, abundance_type = "absolute")
-print(alluvial_plot)
+# Assuming 'ps' is your phyloseq object
+ps <- ... # Your phyloseq object
+
+# Melt the phyloseq object into a long-format data frame
+pps <- psmelt(ps)
+
+# Define total reads for relative abundance calculation
+total_reads <- sum(pps$Abundance)  # Calculate total reads from the data
+
+# Generate alluvial plot for absolute abundance
+alluvial_plot_abs <- alluvial_plot(data = pps, axes = c("Animal.ecomode", "Host.species", "Result"), 
+                                   abundance_threshold = 10000, fill_variable = "Phylum", 
+                                   silent = TRUE, abundance_type = "absolute")
+print(alluvial_plot_abs)
+
+# Generate alluvial plot for relative abundance
+alluvial_plot_rel <- alluvial_plot(data = pps, axes = c("Animal.ecomode", "Host.species", "Result"), 
+                                   abundance_threshold = 10000, fill_variable = "Phylum", 
+                                   silent = TRUE, abundance_type = "relative", total_reads = total_reads)
+print(alluvial_plot_rel)
 }
