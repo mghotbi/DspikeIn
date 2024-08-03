@@ -715,18 +715,19 @@ core.microbiome <- readRDS("core.microbiome.rds")
 
 ```r
 
-# shift to dataframe and plot the abundance of taxa across the factor of your interest
-# Load data
-meli_Abs_WSal <- readRDS("meli_Abs_WSal.rds")
-meli_Rel_WSal <- readRDS("meli_Rel_WSal.rds")
-
+# shift to long-format data frame and plot the abundance of taxa across the factor of your interest
 # Generate alluvial plot
-is_alluvia_form(as.data.frame(meli_Abs_WSal), axes = 1:6, silent = TRUE)
-alluvial_plot <- alluvial_plot(data = meli_Abs_WSal, axes = c("Diet", "Host.genus", "Ecoregion.III"), abundance_threshold = 10000, fill_variable = "Phylum", silent = TRUE, abundance_type = "absolute")
-print(alluvial_plot)
-is_alluvia_form(as.data.frame(meli_Rel_WSal), axes = 1:6, silent = TRUE)
-alluvial_plot <- alluvial_plot(data = meli_Rel_WSal, axes = c("Diet", "Host.genus", "Ecoregion.III"), abundance_threshold = 10000, fill_variable = "Phylum", silent = TRUE, abundance_type = "relative")
-print(alluvial_plot)
+ps_Salamander_absolute_NospikeSp <- psmelt(Salamander_absolute_NospikeSp)
+
+# Define total reads for relative abundance calculation
+total_reads <- sum(ps_Salamander_absolute_NospikeSp$Abundance)  # Calculate total reads from the data
+# Generate alluvial plot for absolute abundance
+alluvial_plot_abs <- alluvial_plot(data = ps_Salamander_absolute_NospikeSp,
+                                   axes = c("Host.genus", "Ecoregion.III"),
+                                   abundance_threshold = 1000, fill_variable = "Family",
+                                   silent = TRUE, abundance_type = "absolute",
+                                   top_taxa = 10, facet_vars = c("Diet"))
+
 
 
 ```
