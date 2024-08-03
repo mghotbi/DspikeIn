@@ -720,7 +720,7 @@ core.microbiome <- readRDS("core.microbiome.rds")
 ps_Salamander_absolute_NospikeSp <- psmelt(Salamander_absolute_NospikeSp)
 
 # Define total reads for relative abundance calculation
-total_reads <- sum(ps_Salamander_absolute_NospikeSp$Abundance)  # Calculate total reads from the data
+total_reads <- sum(ps_Salamander_absolute_NospikeSp$Abundance)  
 # Generate alluvial plot for absolute abundance
 alluvial_plot_abs <- alluvial_plot(data = ps_Salamander_absolute_NospikeSp,
                                    axes = c("Host.genus", "Ecoregion.III"),
