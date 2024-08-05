@@ -2,7 +2,7 @@
 % Please edit documentation in R/alluvial_plot.R
 \name{alluvial_plot}
 \alias{alluvial_plot}
-\title{Generate an Alluvial Plot}
+\title{Generate an Alluvial Plot after converting phyloseq object to the long-format dataframe}
 \usage{
 alluvial_plot(
   data,
@@ -11,7 +11,11 @@ alluvial_plot(
   fill_variable = "Phylum",
   silent = TRUE,
   abundance_type = "absolute",
-  total_reads = NULL
+  total_reads = NULL,
+  top_taxa = NULL,
+  facet_vars = NULL,
+  text_size = 4,
+  legend_ncol = 1
 )
 }
 \arguments{
@@ -28,12 +32,20 @@ alluvial_plot(
 \item{abundance_type}{A character string specifying whether to plot "relative" or "absolute" abundance. Default is "absolute".}
 
 \item{total_reads}{A numeric value specifying the total number of reads for the sample when using relative abundance. Default is NULL.}
+
+\item{top_taxa}{An integer specifying the number of top taxa to display. Default is NULL, which means all taxa will be displayed.}
+
+\item{facet_vars}{A character vector specifying the variables for faceting. Default is NULL.}
+
+\item{text_size}{A numeric value specifying the size of the text inside the plot. Default is 4.}
+
+\item{legend_ncol}{An integer specifying the number of columns for the legend. Default is 1.}
 }
 \value{
 A ggplot2 object representing the alluvial plot.
 }
 \description{
-This function creates an alluvial plot to visualize the abundance of taxa across multiple categorical axes.
+This function creates an alluvial plot to visualize the abundance of common taxa across multiple categorical axes/which reveals factors impact on abundance of taxa.
 It filters out samples with abundance below the specified threshold and generates the plot using `ggplot2`.
 }
 \examples{
@@ -44,7 +56,7 @@ library(dplyr)
 library(ggalluvial)
 
 # Assuming 'ps' is your phyloseq object
-ps <- ... # Your phyloseq object
+ps <- phyloseq object
 
 # Melt the phyloseq object into a long-format data frame
 pps <- psmelt(ps)
@@ -55,12 +67,14 @@ total_reads <- sum(pps$Abundance)  # Calculate total reads from the data
 # Generate alluvial plot for absolute abundance
 alluvial_plot_abs <- alluvial_plot(data = pps, axes = c("Animal.ecomode", "Host.species", "Result"), 
                                    abundance_threshold = 10000, fill_variable = "Phylum", 
-                                   silent = TRUE, abundance_type = "absolute")
+                                   silent = TRUE, abundance_type = "absolute", top_taxa = 10,
+                                   text_size = 4, legend_ncol = 1)
 print(alluvial_plot_abs)
 
 # Generate alluvial plot for relative abundance
 alluvial_plot_rel <- alluvial_plot(data = pps, axes = c("Animal.ecomode", "Host.species", "Result"), 
                                    abundance_threshold = 10000, fill_variable = "Phylum", 
-                                   silent = TRUE, abundance_type = "relative", total_reads = total_reads)
+                                   silent = TRUE, abundance_type = "relative", 
+                                   total_reads = total_reads, top_taxa = 10, text_size = 4, legend_ncol = 1)
 print(alluvial_plot_rel)
 }

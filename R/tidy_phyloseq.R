@@ -25,31 +25,37 @@ tidy_phyloseq <- function(my_phyloseq) {
   
   # Fix taxa names by removing any characters followed by '__' and any spaces after '__'
   for (col in colnames(phyloseq::tax_table(my_phyloseq))) {
-    phyloseq::tax_table(my_phyloseq)[, col] <- gsub("[a-z]__\\s*", "", phyloseq::tax_table(my_phyloseq)[, col]) 
+    phyloseq::tax_table(my_phyloseq)[, col] <- gsub("[a-z]__\\s*", "", phyloseq::tax_table(my_phyloseq)[, col])
   }
   
   # Set taxonomic ranks
-  colnames(phyloseq::tax_table(my_phyloseq)) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+  tax_table(my_phyloseq) <- tax_table(my_phyloseq)[, c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
   
-  # Fix taxa names
-  for (col in colnames(phyloseq::tax_table(my_phyloseq))) {
-    # Trim leading and trailing whitespace from taxa names
-    phyloseq::tax_table(my_phyloseq)[, col] <- trimws(phyloseq::tax_table(my_phyloseq)[, col])
+  # Trim leading and trailing whitespace from taxa names
+  for (col in colnames(tax_table(my_phyloseq))) {
+    tax_table(my_phyloseq)[, col] <- trimws(tax_table(my_phyloseq)[, col])
   }
   
   # Replace NA in Phylum with "Unidentified"
-  phyloseq::tax_table(my_phyloseq)[is.na(phyloseq::tax_table(my_phyloseq)[, "Phylum"]), "Phylum"] <- "Unidentified"
+  tax_table(my_phyloseq)[is.na(tax_table(my_phyloseq)[, "Phylum"]), "Phylum"] <- "Unidentified"
   
   # Remove taxa with zero counts
-  if (phyloseq::ntaxa(my_phyloseq) > 0) {
-    my_phyloseq <- phyloseq::prune_taxa(taxa_sums(my_phyloseq) > 0, my_phyloseq)
+  my_phyloseq <- prune_taxa(taxa_sums(my_phyloseq) > 0, my_phyloseq)
+  
+  # Check if "Class" and "Family" columns exist before attempting to subset taxa
+  if ("Class" %in% colnames(tax_table(my_phyloseq))) {
+    # Remove taxa classified as "Chloroplast" at the Class level
+    my_phyloseq <- subset_taxa(my_phyloseq, Class != "Chloroplast")
+  } else {
+    warning("The taxonomic rank 'Class' is not present in the tax_table. Skipping removal of 'Chloroplast'.")
   }
   
-  # Remove taxa classified as "Chloroplast" at the Class level
-  my_phyloseq <- phyloseq::subset_taxa(my_phyloseq, Class != "Chloroplast")
-  
-  # Remove taxa classified as "Mitochondria" at the Family level
-  my_phyloseq <- phyloseq::subset_taxa(my_phyloseq, Family != "Mitochondria")
+  if ("Family" %in% colnames(tax_table(my_phyloseq))) {
+    # Remove taxa classified as "Mitochondria" at the Family level
+    my_phyloseq <- subset_taxa(my_phyloseq, Family != "Mitochondria")
+  } else {
+    warning("The taxonomic rank 'Family' is not present in the tax_table. Skipping removal of 'Mitochondria'.")
+  }
   
   return(my_phyloseq)
 }

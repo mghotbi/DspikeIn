@@ -9,6 +9,7 @@ plotbar_abundance(
   level = "Genus",
   color = NULL,
   group = NULL,
+  x_axis_var = NULL,
   top = 20,
   return = FALSE,
   x_size = 12,
@@ -17,7 +18,9 @@ plotbar_abundance(
   legend_text_size = 12,
   legend_nrow = 20,
   relativize = TRUE,
-  output_prefix = NULL
+  output_prefix = NULL,
+  facet_var = NULL,
+  scales = "fixed"
 )
 }
 \arguments{
@@ -27,7 +30,9 @@ plotbar_abundance(
 
 \item{color}{A character vector specifying colors to use for the different taxa. Default is NULL.}
 
-\item{group}{A character string specifying the grouping variable. Default is NULL.}
+\item{group}{A character vector specifying the grouping variables. Default is NULL.}
+
+\item{x_axis_var}{A character vector specifying the variable(s) to be shown on the x-axis. Default is NULL.}
 
 \item{top}{An integer specifying the number of top taxa to display. Default is 20.}
 
@@ -46,29 +51,37 @@ plotbar_abundance(
 \item{relativize}{A logical indicating whether to relativize the data. Default is TRUE.}
 
 \item{output_prefix}{A character string specifying the prefix for the output file names. Default is NULL.}
+
+\item{facet_var}{A character vector specifying the faceting variables. Default is NULL.}
+
+\item{scales}{A character string specifying scales in facet. Options are "fixed", "free", "free_x", "free_y". Default is "fixed".}
 }
 \value{
 A ggplot object if return is FALSE, otherwise a data frame with summarized data.
 }
 \description{
 This function generates bar plots for phyloseq data at a specified taxonomic level,
-with options to customize the appearance, relativize the data, and save the plots.
+with options to customize the appearance/size/legend, relativize the data or plot absolute abundance, facet the plots, and save the plots.
 }
 \examples{
 # Plot relativized abundance or select relativize = FALSE to plot absolute abundance
 plot <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", 
-group = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10, legend_key_size = 2, legend_text_size = 14,
-legend_nrow = 10, relativize = TRUE, output_prefix = "relativized_abundance_plot")
+group = c("Diet", "Host.species","Ecoregion.III"), x_axis_var = "Diet", 
+top = 10, x_size = 10, y_size = 10, legend_key_size = 2, legend_text_size = 14,
+legend_nrow = 10, relativize = TRUE, output_prefix = "relativized_abundance_plot", 
+facet_var = "Ecoregion.III", scales = "free_x")
 print(plot)
 
 # Plot non-relativized (absolute) abundance
 plot_absolute <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, 
-level = "Family", group = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10, 
+level = "Family", group = c("Diet", "Host.species","Ecoregion.III"), 
+x_axis_var = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10, 
 legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = FALSE, 
-output_prefix = "non_relativized_abundance_plot")
+output_prefix = "non_relativized_abundance_plot", facet_var = "Ecoregion.III", scales = "free_x")
 print(plot_absolute)
 
 # Return summarized data
 data <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", 
-group = "Env_broad_scale.x", top = 10, return = TRUE)
+group = c("Diet", "Host.species","Ecoregion.III"), 
+x_axis_var = "Ecoregion.III", top = 10, return = TRUE)
 }
