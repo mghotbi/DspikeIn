@@ -13,8 +13,9 @@
 #' # Example usage:
 #' # Assume `physeq` is a phyloseq object and `spiked_species_list` is a list of character vectors.
 #' # spiked_species_list <- list(c("Species1"), c("Species2"), c("Species3"), c("Species4"))
-#' # spiked_cells_list <- c(1000, 1500, 2000, 2500)
-#' # average_scaling_factors <- calculate_average_scaling_factors(physeq, spiked_species_list, spiked_cells_list, "sum")
+#' # spiked_cells_list <- c(1000, 1500, 2000, 2500) or c(2000, 2000, 2000, 2000)
+#' # average_scaling_factors <- calculate_list_average_scaling_factors(physeq, spiked_species_list,
+#' # spiked_cells_list, "sum")
 #' @export
 calculate_list_average_scaling_factors <- function(physeq, spiked_species_list, spiked_cells_list, merge_method = c("sum", "max")) {
   merge_method <- match.arg(merge_method)
@@ -34,7 +35,7 @@ calculate_list_average_scaling_factors <- function(physeq, spiked_species_list, 
     
     # Calculate scaling factors for the processed phyloseq object
     result <- calculate_spikeIn_factors(processed_physeq, spiked_cells_list[i], spiked_species_list[[i]])
-    scaling_factors_list[[length(scaling_factors_list) + 1]] <- result$scaling_factors
+    scaling_factors_list[[i]] <- result$scaling_factors
   }
   
   # Calculate the average of the scaling factors
@@ -43,28 +44,23 @@ calculate_list_average_scaling_factors <- function(physeq, spiked_species_list, 
   return(average_scaling_factors)
 }
 
-# Example usage:
-# Define the spiked species list for four different spiked species
+# # Example usage:
+# # Define the spiked species list for four different spiked species
+# ps<-spiked_16S_ASV
 # spiked_species_list <- list(
 #   c("Methylobacterium_phyllostachyos"),
 #   c("Methylorubrum_salsuginis"),
 #   c("Bosea_massiliensis"),
-<<<<<<< HEAD
-#   c("Bacillus_decolorationis"))
-=======
 #   c("Bacillus_decolorationis")
 # )
->>>>>>> MGhotbi
-# 
-# # Example usage;
-# # # Define the corresponding number of spiked cells for each spiked species 
+# #Define the corresponding number of spiked cells for each spiked species
 # spiked_cells_list <- c(20000, 20000, 20000, 20000)
 # 
-# # Calculate the average scaling factors with ASV merging using the "sum" method
-# average_scaling_factors <- calculate_list_average_scaling_factors(ps, spiked_species_list, spiked_cells_list, "sum")
+# #Calculate the average scaling factors with ASV merging using the "sum" method
+# average_scaling_factors <- calculate_list_average_scaling_factors(ps, spiked_species_list, 
+# spiked_cells_list, "sum")
 # 
-# # Convert the relative counts to absolute counts
+# #Convert the relative counts to absolute counts
 # absolute <- convert_to_absolute_counts(ps, average_scaling_factors)
 # absolute_counts <- absolute$absolute_counts
 # physeq_absolute_abundance <- absolute$physeq_obj
-
