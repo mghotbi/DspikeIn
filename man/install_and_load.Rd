@@ -3,11 +3,8 @@
 %   R/normalization_set.R
 \name{install_and_load}
 \alias{install_and_load}
-\title{Install and Load Required Packages
-This function installs and loads required packages.}
+\title{Install and Load Required Packages}
 \usage{
-install_and_load(packages)
-
 install_and_load(packages)
 }
 \arguments{
@@ -15,9 +12,8 @@ install_and_load(packages)
 }
 \description{
 Install and Load Required Packages
-This function installs and loads required packages.
 
-Install and Load Required Packages
+This function installs and loads required packages.
 }
 \examples{
 required_packages <- c("phyloseq", "DESeq2", "edgeR", "sva", "EDASeq", "RUVSeq", "BiocManager", "BiocGenerics", "ANCOMBC", "ggplot2", "dplyr", "DT")
