@@ -24,14 +24,16 @@ my_custom_theme <- function() {
       axis.line.y = element_line(colour = 'black', size = 0.6),
       axis.ticks = element_line(colour = 'black', size = 0.35),
       legend.title = element_text(size = 12),
-      legend.text = element_text(size = 12, color = "black", face = "bold"), 
-      legend.key.size = unit(0.9, 'cm'),
+      legend.text = element_text(size = 11, color = "black", face = "plain"), 
+      legend.key.size = unit(0.7, 'cm'),
       axis.title.x = element_text(family = "Times New Roman", size = 12, color = "black", face = "bold"), 
       axis.title.y = element_text(family = "Times New Roman", size = 12, color = "black", face = "bold"), 
       axis.text.x = element_text(family = "Times New Roman", size = 12, angle = 0, color = "black", face = "bold"), 
       axis.text.y = element_text(family = "Times New Roman", size = 12, color = "black", face = "bold"),
       plot.title = element_text(color = "black", size = 12, face = "bold"),
-      plot.subtitle = element_text(size = 11)
+      plot.subtitle = element_text(size = 11),
+      strip.background = element_rect(fill = "gray98", color = NA),  # Set facet background color
+      strip.text = element_text(size = 13, face = "bold")  # Increase facet text size
     )
 }
 

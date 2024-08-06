@@ -5,7 +5,7 @@
 #'
 #' @param physeq A phyloseq object containing the microbiome data.
 #' @param level A character string specifying the taxonomic level to plot (e.g., "Genus", "Family").
-#' @param color A character vector specifying colors to use for the different taxa. Default is NULL.
+#' @param color A character vector specifying colors to use for the different taxa. Default is NULL, which will use the MG color palette.
 #' @param group A character vector specifying the grouping variables. Default is NULL.
 #' @param x_axis_var A character vector specifying the variable(s) to be shown on the x-axis. Default is NULL.
 #' @param top An integer specifying the number of top taxa to display. Default is 20.
@@ -68,7 +68,7 @@ plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NUL
   # Generate colors if not provided
   if (is.null(color)) {
     len <- length(unique(pm[[level]]))
-    color <- MG()[1:len]  # Use the MG color palette function
+    color <- MG[1:len]  # Use the MG color palette
   }
   
   # Remove rows with NA values in the specified variables
@@ -100,7 +100,7 @@ plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NUL
     scale_fill_manual(values = color, name = gsub("tax_", "", level)) +  # Rename legend title
     theme_minimal() +
     theme(
-      axis.text.x = element_text(angle = 90, size = x_size, vjust = 0.5, hjust = 1),
+      axis.text.x = element_text(angle = 25, size = x_size, vjust = 0.5, hjust = 1),
       axis.text.y = element_text(size = y_size),
       legend.key.size = unit(legend_key_size, "cm"),  # Adjust unit here to "cm"
       legend.text = element_text(size = legend_text_size, face = "italic"),
@@ -173,3 +173,49 @@ plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NUL
 #                               output_prefix = "relativized_abundance_plot",
 #                               facet_var = c("Ecoregion.III"), scales = "free_x")
 # print(plot_rel)
+
+# For customizing the color pallet
+
+# # Define your custom color palette
+# custom_color_palette <- c(
+#   "Lachnospiraceae" = "#FFFF33", "Tannerellaceae" = "#FF7F00", "Erysipelotrichaceae" = "#E41A1C", 
+#   "Fusobacteriaceae" = "firebrick4", "Erwiniaceae" = "#2e4057", "Akkermansiaceae" = "#984EA3", 
+#   "Streptococcaceae" = "#377EB8", "Simkaniaceae" = "olivedrab3", "Flavobacteriaceae" = "#4DAF4A", 
+#   "Leptospiraceae" = "#336633", "Legionellaceae" = "grey80", "Helicobacteraceae" = "#BB650B", 
+#   "Campylobacteraceae" = "gold", "Eugregarinorida" = "#559999", "Marinifilaceae" = "#7570b3", 
+#   "Rikenellaceae" = "#E78AC3", "Chromobacteriaceae" = "#A6D854", "Paenibacillaceae" = "#66a61e", 
+#   "Clostridiaceae" = "#e6ab02", "Oscillospirales" = "#a6761d", "Erysipelatoclostridiaceae" = "#663300", 
+#   "Bacteroidaceae" = "#66C2A5", "Xanthomonadaceae" = "#0e669b", "Ruminococcaceae" = "#00798c", 
+#   "Ilumatobacteraceae" = "dodgerblue4", "Dermabacteraceae" = "steelblue2", "Desulfovibrionaceae" = "#00AFBB", 
+#   "Rhodocyclaceae" = "#E7B800", "[Eubacterium]_coprostanoligenes_group" = "#FC4E07", "Dermatophilaceae" = "lightskyblue4", 
+#   "Coriobacteriales_Incertae_Sedis" = "green", "Fusibacteraceae" = "red", "Dysgonomonadaceae" = "#FFF000", 
+#   "Eggerthellaceae" = "#0099CC", "Anaerovoracaceae" = "#FF9933", "Neisseriaceae" = "#CC9900", 
+#   "Acidaminococcaceae" = "chartreuse1", "Aquaspirillaceae" = "#FF3399", "Micromonosporaceae" = "#00FFFF", 
+#   "Propionibacteriaceae" = "#0000CC"
+# )
+# 
+# 
+# wild.rel.16S<-subset_taxa(wild.rel.16S,Genus!="Tetragenococcus")
+# wild.rel.16S.Plethodon<-subset_samples(wild.rel.16S, Host.genus=="Plethodon")
+# saveRDS(wild.rel.16S.Plethodon,"wild.rel.16S.Plethodon.rds")
+# saveRDS(wild.abs.16S.Plethodon,"wild.abs.16S.Plethodon.rds")
+# 
+# # Call the function with your custom color palette
+# plot <- plotbar_abundance(
+#   physeq = wild.rel.16S.Plethodon, 
+#   level = "Family", 
+#   color = custom_color_palette, 
+#   group = c("Diet", "Host.species", "Ecoregion.III"), 
+#   x_axis_var = "Host.species", 
+#   top = 20, 
+#   x_size = 10, 
+#   y_size = 10, 
+#   legend_key_size = 1, 
+#   legend_text_size = 11, 
+#   legend_nrow = 20, 
+#   relativize = T, 
+#   output_prefix = "rel.abundance_plot", 
+#   facet_var = "Ecoregion.III", 
+#   scales = "free_x"
+# )
+# print(plot)+my_custom_theme()+ggtitle("species of Plethodon across ecoregions")

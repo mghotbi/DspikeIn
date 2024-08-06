@@ -28,7 +28,7 @@ plotbar_abundance(
 
 \item{level}{A character string specifying the taxonomic level to plot (e.g., "Genus", "Family").}
 
-\item{color}{A character vector specifying colors to use for the different taxa. Default is NULL.}
+\item{color}{A character vector specifying colors to use for the different taxa. Default is NULL, which will use the MG color palette.}
 
 \item{group}{A character vector specifying the grouping variables. Default is NULL.}
 

@@ -15,7 +15,9 @@ alluvial_plot(
   top_taxa = NULL,
   facet_vars = NULL,
   text_size = 4,
-  legend_ncol = 1
+  legend_ncol = 1,
+  custom_colors = NULL,
+  color_mapping = NULL
 )
 }
 \arguments{
@@ -23,7 +25,7 @@ alluvial_plot(
 
 \item{axes}{A character vector specifying the axes (columns) to include in the alluvial plot.}
 
-\item{abundance_threshold}{A numeric value specifying the minimum abundance threshold for including samples. Default is 10000.}
+\item{abundance_threshold}{A numeric value specifying the minimum abundance threshold for including samples. Default is 10000 for absolute abundance and a relative threshold value for relative abundance (e.g., 0.001 for 0.1%).}
 
 \item{fill_variable}{A character string specifying the variable to use for fill in the alluvial plot. Default is "Phylum".}
 
@@ -40,12 +42,16 @@ alluvial_plot(
 \item{text_size}{A numeric value specifying the size of the text inside the plot. Default is 4.}
 
 \item{legend_ncol}{An integer specifying the number of columns for the legend. Default is 1.}
+
+\item{custom_colors}{A character vector specifying custom colors to use for fill in the alluvial plot. Default is NULL, which will use the predefined MG colors.}
+
+\item{color_mapping}{A named character vector specifying colors for specific taxa. Default is NULL.}
 }
 \value{
 A ggplot2 object representing the alluvial plot.
 }
 \description{
-This function creates an alluvial plot to visualize the abundance of common taxa across multiple categorical axes/which reveals factors impact on abundance of taxa.
+This function creates an alluvial plot to visualize the abundance of common taxa across multiple categorical axes, revealing factors that impact the abundance of taxa.
 It filters out samples with abundance below the specified threshold and generates the plot using `ggplot2`.
 }
 \examples{
@@ -55,8 +61,7 @@ library(ggplot2)
 library(dplyr)
 library(ggalluvial)
 
-# Assuming 'ps' is your phyloseq object
-ps <- phyloseq object
+# 'ps' phyloseq object
 
 # Melt the phyloseq object into a long-format data frame
 pps <- psmelt(ps)
@@ -73,7 +78,7 @@ print(alluvial_plot_abs)
 
 # Generate alluvial plot for relative abundance
 alluvial_plot_rel <- alluvial_plot(data = pps, axes = c("Animal.ecomode", "Host.species", "Result"), 
-                                   abundance_threshold = 10000, fill_variable = "Phylum", 
+                                   abundance_threshold = 0.001, fill_variable = "Phylum", 
                                    silent = TRUE, abundance_type = "relative", 
                                    total_reads = total_reads, top_taxa = 10, text_size = 4, legend_ncol = 1)
 print(alluvial_plot_rel)
