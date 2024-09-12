@@ -67,19 +67,6 @@ We provide a step-by-step walkthrough of each procedure within the **DspikeIn** 
 
 For more detailed methodology and results, please refer to our soon-to-be-published paper.
 
----
-
-
-
-Similar to the debate on the application of OTUs vs. ASVs, which has many contrasting views on their benefits and drawbacks ([Callahan et al., 2017](https://doi.org/10.1038/ismej.2017.119); [Schloss et al., 2021](https://doi.org/10.1128/msphere.00191-21)), there are positive ([Schirrmeister et al., 2012](https://doi.org/10.1186/1471-2180-12-177); [Stoddard et al., 2015](https://doi.org/10.1093/nar/gku1201)) and opposing ([Louca et al., 2018](https://doi.org/10.1038/s43705-023-00266-0); [Gao and Wu et al., 2023](https://doi.org/10.1038/s43705-023-00266-0)) opinions on gene copy number correction for the 16S rRNA marker. Meanwhile, several novelties and modifications have been added to copy number correction to improve accuracy ([Perisin et al., 2016](https://doi.org/10.1038/ismej.2015.161); [Gao and Wu, 2023](https://doi.org/10.1038/s43705-023-00266-0)).
-
-
-
-Using our spike-in positive controls and assessing the percentage of retrieved spiked species, we were able to compare the results at each step before selecting a pathway. The copy number correction was performed to correct potential biases in the representation of *Tetragenococcus halophilus* species in our ASV approach. We utilized `q2-gcn-norm` based on the rrnDB database (version 5.7) to normalize for 16S rRNA gene marker copy numbers ([qiime2 plugin; gcn-norm](https://github.com/Jiung-Wen/q2-gcn-norm)). Due to the variability in rDNA gene copy numbers, straightforward translation of rDNA read counts into the abundance of individual organisms is precluded ([Lavrinienko et al., 2021](https://doi.org/10.1016/j.tim.2020.05.019)).
-
-
-
-In fact, for ITS we did not need to use copy number correction. However, we recommend conducting a literature review before deciding whether to sum or select the maximum abundance of OTUs/ASVs rooted from spiked-in species and calculating spike-in factors. We believe systematic evaluation before selecting or refuting each method can help prevent miscalculations ([Lofgren et al., 2018](https://doi.org/10.1111/mec.14995)), which can aid in establishing a system-dependent method for copy number correction in ITS markers.
 
 ---
 ## Dataset
@@ -270,10 +257,6 @@ DNAStringSet object of length 5:
 [5]   292 -------------------TACGTAGGTGGCAAGCGTTGTCCGGATTTATTGGGCGTAAAGCGAGCGC...CTGGACTGTAACTGACGCTGAGGCTCGAAAGCGTGGGGAGCAAACAGG-------------------- 0350f990080b4757a...
 
 ```
-
-
-
-![WhyOTUvsASV](https://github.com/mghotbi/DspikeIn/assets/29090547/10d82aea-9aa5-476e-a421-e0e6ddb89841)
 
 
 ---
@@ -536,9 +519,17 @@ saveRDS(physeq_absolute_abundance_16S_OTU, "physeq_absolute_abundance_16S_OTU.rd
 library(phyloseq)
 library(DESeq2)
 library(edgeR)
+<<<<<<< HEAD
 library(EDASeq)
 library(Biobase)
 library(BiocGenerics)
+=======
+library(preprocessCore)
+library(EDASeq)
+library(Biobase)
+library(BiocGenerics)
+
+>>>>>>> d3573d72c7f8fed85dc12e8d7a5631ae0c9f9ee7
 
 
 #ps is a phyloseq object without spiked species counts
@@ -549,11 +540,17 @@ ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
 
 # Normalization Methods:
 # group_var <- "Animal.ecomode"  
-# result_DESeq <- normalization_set(ps, method = "DESeq", groups = group_var)
-# result_TMM <- normalization_set(ps, method = "TMM", groups = group_var)
+# result_DESeq <- normalization_set(ps, method = "DESeq", groups = "group_var")
+# result_TMM <- normalization_set(ps, method = "TMM", groups = "group_var")
 # result_CLR <- normalization_set(ps, method = "clr")
+<<<<<<< HEAD
 # result_UQ <- normalization_set(ps, method = "UQ", groups = group_var)
 # result_med <- normalization_set(ps, method = "med", groups = group_var)
+=======
+# result_Poisson <- normalization_set(ps, method = "Poisson", groups = "group_var")
+# result_UQ <- normalization_set(ps, method = "UQ", groups = "group_var")
+# result_med <- normalization_set(ps, method = "med", groups = "group_var")
+>>>>>>> d3573d72c7f8fed85dc12e8d7a5631ae0c9f9ee7
 # result_rle <- normalization_set(ps, method = "rle")
 # result_css <- normalization_set(ps, method = "CSS")
 # result_tss <- normalization_set(ps, method = "tss")
