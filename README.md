@@ -92,6 +92,7 @@ install.packages(c("stats", "dplyr", "ggplot2", "ggtree", "flextable", "randomFo
 # Load CRAN packages
 lapply(c("stats", "dplyr", "ggplot2", "ggtree", "flextable", "randomForest", "ggridges", "ggalluvial", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"), library, character.only = TRUE)
 
+
 ```
 
 #### Bioconductor Packages
@@ -125,9 +126,11 @@ remotes::install_github("microsud/microbiomeutilities")
 library(speedyseq)
 library(microbiomeutilities)
 
+
 ```
 
 ## Step 2: Install DspikeIn Package
+
 
 
 ```r
@@ -147,14 +150,12 @@ library(DspikeIn)
 
 ```
 
-```
 
 ## Acknowledgement
 
 DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phyloseq) package.
 
 ---
-
 
 
 
