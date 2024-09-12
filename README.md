@@ -57,7 +57,7 @@ qiime gcn-norm copy-num-normalize \
 
 ### DspikeIn Package
 The **DspikeIn** package was developed to facilitate:
-- Verifying the phylogenetic distances of ASVs/OTUs rooted from spiked species.
+- Verifying the phylogenetic distances of ASVs/OTUs resulting from spiked species.
 - Preprocessing data.
 - Calculating the spike-in scaling factor.
 - Converting relative abundance to absolute abundance.
