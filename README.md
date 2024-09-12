@@ -85,12 +85,6 @@ To install the required packages, use the following script:
 
 ```r
 
-Before installing DspikeIn, please ensure that the following R packages are installed and loaded:
-
----
-
-### Prerequisites
-
 #### CRAN Packages
 Install and load these packages from CRAN:
 
