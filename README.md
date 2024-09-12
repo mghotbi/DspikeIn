@@ -552,18 +552,7 @@ saveRDS(physeq_absolute_abundance_16S_OTU, "physeq_absolute_abundance_16S_OTU.rd
 library(phyloseq)
 library(DESeq2)
 library(edgeR)
-<<<<<<< HEAD
-library(EDASeq)
-library(Biobase)
 library(BiocGenerics)
-=======
-library(preprocessCore)
-library(EDASeq)
-library(Biobase)
-library(BiocGenerics)
-
->>>>>>> d3573d72c7f8fed85dc12e8d7a5631ae0c9f9ee7
-
 
 #ps is a phyloseq object without spiked species counts
 #One can calculate the scaling factor using any normalization method in the absence of spiked species counts, and then determine the spiked scaling factor. Crossing both #scaling factors with relative abundance helps quantify absolute abundance while correcting for bias
@@ -576,14 +565,11 @@ ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
 # result_DESeq <- normalization_set(ps, method = "DESeq", groups = "group_var")
 # result_TMM <- normalization_set(ps, method = "TMM", groups = "group_var")
 # result_CLR <- normalization_set(ps, method = "clr")
-<<<<<<< HEAD
 # result_UQ <- normalization_set(ps, method = "UQ", groups = group_var)
 # result_med <- normalization_set(ps, method = "med", groups = group_var)
-=======
 # result_Poisson <- normalization_set(ps, method = "Poisson", groups = "group_var")
 # result_UQ <- normalization_set(ps, method = "UQ", groups = "group_var")
 # result_med <- normalization_set(ps, method = "med", groups = "group_var")
->>>>>>> d3573d72c7f8fed85dc12e8d7a5631ae0c9f9ee7
 # result_rle <- normalization_set(ps, method = "rle")
 # result_css <- normalization_set(ps, method = "CSS")
 # result_tss <- normalization_set(ps, method = "tss")
