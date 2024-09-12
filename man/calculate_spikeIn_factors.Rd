@@ -37,7 +37,7 @@ Note: The metadata in the phyloseq object must contain a column named 'spiked.vo
 merged_spiked_species <- c("Tetragenococcus_halophilus")
 
 # Calculate scaling factors and generate the report
-result <- calculate_spikeIn_factors(spiked_16S, 1874, merged_spiked_species)
+result <- calculate_spikeIn_factors(merged_physeq_sum, 1874, merged_spiked_species)
 
 # Access the results
 scaling_factors <- result$scaling_factors

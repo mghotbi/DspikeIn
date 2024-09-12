@@ -9,7 +9,7 @@ normalization_set(ps, method, groups = NULL)
 \arguments{
 \item{ps}{A phyloseq object.}
 
-\item{method}{A character string specifying the normalization method ("TC", "UQ", "med", "DESeq", "Poisson", "QN", "SVA", "RUVg", "RUVs", "RUVr", "TMM", "clr", "rar", "css", "tss", "rle").}
+\item{method}{A character string specifying the normalization method ("TC", "UQ", "med", "DESeq", "Poisson", "QN", "TMM", "clr", "rar", "css", "tss", "rle").}
 
 \item{groups}{A column name of group labels from sample data.}
 }
@@ -18,9 +18,4 @@ A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
 Apply the Selected Normalization Method to the Phyloseq Object
-}
-\examples{
-result_TMM <- normalization_set(physeq_16SASV, method = "TMM", groups = "Animal.type")
-normalized_ps_TMM <- result_TMM$dat.normed
-scaling_factors_TMM <- result_TMM$scaling.factor
 }

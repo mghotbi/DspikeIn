@@ -8,6 +8,7 @@
 #' @param threshold_count A numeric value specifying the minimum count of a taxon in a sample to be considered present. Default is 10.
 #' @param threshold_relative_abundance A numeric value specifying the minimum relative abundance of a taxon to be retained. Default is NULL.
 #' @return A phyloseq object containing only the taxa that meet the specified thresholds.
+#' @importFrom phyloseq nsamples sample_sums filter_taxa
 #' @examples
 #' # Example usage with custom thresholds
 #' # FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, 
@@ -19,19 +20,31 @@ relativized_filtered_taxa <- function(physeq,
                                       threshold_mean_abundance = 0.001, 
                                       threshold_count = 10,
                                       threshold_relative_abundance = NULL) {
-  
-  nsamples <- nsamples(physeq)
-  sample_sum <- sample_sums(physeq)
-  
-  filter_function <- function(x) {
-    (sum(x > threshold_count) > nsamples * threshold_percentage) | 
-      ((sum(x > threshold_count) > (nsamples * 0.1)) & (mean(x / sample_sum) > threshold_mean_abundance) & (max(x / sample_sum) > threshold_relative_abundance))
-  }
-  
-  two_way_filtered <- filter_taxa(physeq, filter_function, prune = TRUE)
-  return(two_way_filtered)
+  suppressMessages({
+    # Check if phyloseq is available
+    if (!requireNamespace("phyloseq", quietly = TRUE)) {
+      stop("Package 'phyloseq' is required but not installed.")
+    }
+    
+    # Get the number of samples and sample sums
+    nsamples <- phyloseq::nsamples(physeq)
+    sample_sum <- phyloseq::sample_sums(physeq)
+    
+    # Custom filter function
+    filter_function <- function(x) {
+      (sum(x > threshold_count) > nsamples * threshold_percentage) | 
+        ((sum(x > threshold_count) > (nsamples * 0.1)) & 
+           (mean(x / sample_sum) > threshold_mean_abundance) & 
+           (max(x / sample_sum) > threshold_relative_abundance))
+    }
+    
+    # Apply the filter to the phyloseq object
+    two_way_filtered <- phyloseq::filter_taxa(physeq, filter_function, prune = TRUE)
+    
+    return(two_way_filtered)
+  })
 }
 
 # Example usage with custom thresholds
-# FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, 
-#threshold_mean_abundance = 0.0005,threshold_count = 5, threshold_relative_abundance = 0.01)
+# FT <- relativized_filtered_taxa(physeq_16SASV, threshold_percentage = 0.6,
+# threshold_mean_abundance = 0.0005, threshold_count = 5, threshold_relative_abundance = 0.01)

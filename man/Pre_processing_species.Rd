@@ -29,14 +29,14 @@ based on a specified method (sum or max). It retains the Genus and Species
 information for the merged taxa.
 }
 \examples{
-Tetra <- subset_taxa(physeqASV16, Genus == "Tetragenococcus")
+Tetragenococcus <- phyloseq::subset_taxa(physeq_ASV16, Genus == "Tetragenococcus")
 species_name <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp")
-merged_physeq_sum <- Pre_processing_species(Tetrasum, species_name, 
+merged_physeq_sum <- Pre_processing_species(physeq_ASV16, species_name, 
 merge_method = "sum", output_file = "merged_physeq_sum.rds")
 merged_physeq_max <- Pre_processing_species(Tetrasum, species_name, 
 merge_method = "max", output_file = "merged_physeq_max.rds")
 
 # Verify the results
 summ_count_phyloseq(merged_physeq_sum)
-Tetra_check <- subset_taxa(merged_physeq_sum, Genus == "Tetragenococcus")
+Tetra_check <- phyloseq::subset_taxa(merged_physeq_sum, Genus == "Tetragenococcus")
 }

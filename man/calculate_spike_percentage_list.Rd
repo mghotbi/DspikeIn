@@ -2,50 +2,45 @@
 % Please edit documentation in R/calculate_spike_percentage_list.R
 \name{calculate_spike_percentage_list}
 \alias{calculate_spike_percentage_list}
-\title{Calculate Spike Percentage for list of Specified Taxa in a Phyloseq Object}
+\title{Calculate Spike Percentage for List of Specified Taxa in a Phyloseq Object}
 \usage{
 calculate_spike_percentage_list(
   physeq,
   merged_spiked_species = NULL,
-  merged_spiked_hashcodes = NULL,
   output_path = "merged_data.docx",
   passed_range = c(0.1, 11)
 )
 }
 \arguments{
-\item{physeq}{A phyloseq object containing the microbial data.}
+\item{physeq}{A \code{phyloseq} object containing microbial data.}
 
-\item{merged_spiked_species}{A character vector of spiked species list to check in the phyloseq object. Default is NULL.}
+\item{merged_spiked_species}{A character vector or list of spiked species to check in the phyloseq object. Default is \code{NULL}.}
 
-\item{merged_spiked_hashcodes}{A character vector of spiked hashcodes list to check in the phyloseq object. Default is NULL.}
+\item{output_path}{A character string specifying the path to save the output files. Default is \code{"merged_data.docx"}.}
 
-\item{output_path}{A character string specifying the path to save the output files. Default is "merged_data.docx".}
-
-\item{passed_range}{A numeric vector of length 2 specifying the range of percentages to categorize results as "passed". Default is c(0.1, 11).}
+\item{passed_range}{A numeric vector of length 2 specifying the range of percentages to categorize results as "passed". Default is \code{c(0.1, 11)}.}
 }
 \value{
 A data frame containing the percentage of spiked taxa reads and the pass/fail results.
 }
 \description{
-This function calculates the percentage of reads from specified spiked species or hashcodes in a phyloseq object.
+This function calculates the percentage of reads from specified spiked species in a \code{phyloseq} object.
 It merges the spiked taxa into one ASV, calculates the percentage of reads, categorizes the results as passed or failed,
 and saves the results as a DOCX and CSV file.
 }
 \examples{
-library(phyloseq)
-# Load example data
-physeq <- ps
-
-# Define the spiked species list
+\dontrun{
+# Example usage:
 spiked_species_list <- list(
-  c("Methylobacterium_phyllostachyos"),
-  c("Methylorubrum_salsuginis"),
-  c("Bosea_massiliensis"),
-  c("Bacillus_decolorationis")
+  c("Pseudomonas aeruginosa"),
+  c("Escherichia coli"),
+  c("Clostridium difficile")
 )
 
-# Use the spiked species list in the function
-merged_spiked_species <- spiked_species_list
-calculate_spike_percentage_list(ps, merged_spiked_species = merged_spiked_species, 
-passed_range = c(0.1, 10))
+# Create a mock phyloseq object (assuming merged_physeq_sum already exists in your environment)
+result <- calculate_spike_percentage_list(merged_physeq_sum, merged_spiked_species = spiked_species_list, passed_range = c(0.1, 10))
+
+# Print the results
+print(result)
+}
 }

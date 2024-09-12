@@ -28,35 +28,24 @@
 #' legend_nrow = 10, relativize = TRUE, output_prefix = "relativized_abundance_plot", 
 #' facet_var = "Ecoregion.III", scales = "free_x")
 #' print(plot)
-#'
-#' # Plot non-relativized (absolute) abundance
-#' plot_absolute <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, 
-#' level = "Family", group = c("Diet", "Host.species","Ecoregion.III"), 
-#' x_axis_var = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10, 
-#' legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = FALSE, 
-#' output_prefix = "non_relativized_abundance_plot", facet_var = "Ecoregion.III", scales = "free_x")
-#' print(plot_absolute)
-#'
-#' # Return summarized data
-#' data <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", 
-#' group = c("Diet", "Host.species","Ecoregion.III"), 
-#' x_axis_var = "Ecoregion.III", top = 10, return = TRUE)
+#' 
+#' @importFrom phyloseq psmelt tax_table subset_taxa sample_data otu_table taxa_are_rows
+#' @importFrom dplyr group_by summarise arrange pull across
+#' @importFrom ggplot2 ggplot aes_string geom_bar scale_y_continuous ylab xlab scale_fill_manual theme_minimal theme element_text element_line element_blank unit guides guide_legend facet_wrap facet_grid aes
+#' @importFrom scales percent_format comma
+#' @importFrom stats complete.cases as.formula
+#' @importFrom utils head
 #' @export
 plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NULL, x_axis_var = NULL, top = 20, return = FALSE, x_size = 12, y_size = 12, legend_key_size = 1.5, legend_text_size = 12, legend_nrow = 20, relativize = TRUE, output_prefix = NULL, facet_var = NULL, scales = "fixed") {
-  # Load necessary libraries
-  library(phyloseq)
-  library(dplyr)
-  library(ggplot2)
-  
   # Filter out taxa with missing or empty values before melting
-  physeq <- subset_taxa(physeq, apply(tax_table(physeq), 1, function(x) all(x != "" & !is.na(x))))
+  physeq <- phyloseq::subset_taxa(physeq, apply(phyloseq::tax_table(physeq), 1, function(x) all(x != "" & !is.na(x))))
   
   # Melt the phyloseq object into a long-format data frame
-  pm <- psmelt(physeq)
+  pm <- phyloseq::psmelt(physeq)
   
   # Fix column name conflicts by renaming the taxonomic column if it conflicts with sample data
-  tax_levels <- tax_table(physeq)@.Data
-  sample_vars <- sample_data(physeq)@names
+  tax_levels <- phyloseq::tax_table(physeq)@.Data
+  sample_vars <- phyloseq::sample_data(physeq)@names
   conflicting_names <- intersect(colnames(tax_levels), sample_vars)
   if (length(conflicting_names) > 0) {
     for (name in conflicting_names) {
@@ -73,50 +62,48 @@ plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NUL
   
   # Remove rows with NA values in the specified variables
   variables_to_check <- c(group, x_axis_var, facet_var, level)
-  pm <- pm[complete.cases(pm[, variables_to_check]), ]
+  pm <- pm[stats::complete.cases(pm[, variables_to_check]), ]
   
   # Summarize abundance by group and taxonomic level
-  gv <- pm %>%
-    group_by(across(all_of(c(group, level)))) %>%
-    summarise(summary = sum(Abundance), .groups = 'drop')
+  gv <- dplyr::group_by(pm, dplyr::across(all_of(c(group, level)))) %>%
+    dplyr::summarise(summary = sum(Abundance), .groups = 'drop')
   gv <- as.data.frame(gv)
   
   # Select top taxa
-  gvy <- pm %>%
-    group_by(across(all_of(level))) %>%
-    summarise(summary = sum(Abundance), .groups = 'drop')
+  gvy <- dplyr::group_by(pm, dplyr::across(all_of(level))) %>%
+    dplyr::summarise(summary = sum(Abundance), .groups = 'drop')
   gvy <- gvy[order(gvy$summary, decreasing = TRUE), ]
-  sel <- gvy %>% head(top) %>% pull(level)
+  sel <- utils::head(gvy, top) %>% dplyr::pull(level)
   
   # Filter summarized data to include only top taxa
   gv <- gv[gv[[level]] %in% sel, ]
   
   # Create the plot
-  p <- ggplot(gv, aes(x = !!sym(x_axis_var[1]), y = summary, fill = !!sym(level))) +
-    geom_bar(stat = "identity", position = if (relativize) "fill" else "stack") +
-    scale_y_continuous(labels = if (relativize) scales::percent_format() else scales::comma, expand = c(0, 0.01)) +
-    ylab(if (relativize) "Percentage" else "Abundance") +
-    xlab("") +
-    scale_fill_manual(values = color, name = gsub("tax_", "", level)) +  # Rename legend title
-    theme_minimal() +
-    theme(
-      axis.text.x = element_text(angle = 25, size = x_size, vjust = 0.5, hjust = 1),
-      axis.text.y = element_text(size = y_size),
-      legend.key.size = unit(legend_key_size, "cm"),  # Adjust unit here to "cm"
-      legend.text = element_text(size = legend_text_size, face = "italic"),
-      axis.line = element_line(),  # Ensure the axes lines are present
-      panel.grid = element_blank(),  # Remove grid lines
-      panel.border = element_blank(),  # Remove panel border
-      axis.ticks.x = element_blank()
+  p <- ggplot2::ggplot(gv, ggplot2::aes_string(x = x_axis_var[1], y = "summary", fill = level)) +
+    ggplot2::geom_bar(stat = "identity", position = if (relativize) "fill" else "stack") +
+    ggplot2::scale_y_continuous(labels = if (relativize) scales::percent_format() else scales::comma, expand = c(0, 0.01)) +
+    ggplot2::ylab(if (relativize) "Percentage" else "Abundance") +
+    ggplot2::xlab("") +
+    ggplot2::scale_fill_manual(values = color, name = gsub("tax_", "", level)) +  # Rename legend title
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(angle = 25, size = x_size, vjust = 0.5, hjust = 1),
+      axis.text.y = ggplot2::element_text(size = y_size),
+      legend.key.size = ggplot2::unit(legend_key_size, "cm"),  # Adjust unit here to "cm"
+      legend.text = ggplot2::element_text(size = legend_text_size, face = "italic"),
+      axis.line = ggplot2::element_line(),  # Ensure the axes lines are present
+      panel.grid = ggplot2::element_blank(),  # Remove grid lines
+      panel.border = ggplot2::element_blank(),  # Remove panel border
+      axis.ticks.x = ggplot2::element_blank()
     ) +
-    guides(fill = guide_legend(nrow = legend_nrow))
+    ggplot2::guides(fill = ggplot2::guide_legend(nrow = legend_nrow))
   
   # Add faceting if specified
   if (!is.null(facet_var)) {
     if (length(facet_var) == 1) {
-      p <- p + facet_wrap(as.formula(paste("~", facet_var)), scales = scales)
+      p <- p + ggplot2::facet_wrap(stats::as.formula(paste("~", facet_var)), scales = scales)
     } else if (length(facet_var) == 2) {
-      p <- p + facet_grid(as.formula(paste(facet_var[1], "~", facet_var[2])), scales = scales)
+      p <- p + ggplot2::facet_grid(stats::as.formula(paste(facet_var[1], "~", facet_var[2])), scales = scales)
     } else {
       stop("facet_var should be a character vector of length 1 or 2.")
     }
@@ -125,20 +112,20 @@ plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NUL
   # Handle multiple grouping variables for x-axis
   if (length(x_axis_var) > 1) {
     gv$x_axis_combined <- apply(gv[, x_axis_var], 1, paste, collapse = " - ")
-    p <- p + aes_string(x = "x_axis_combined")
+    p <- p + ggplot2::aes_string(x = "x_axis_combined")
   } else {
-    p <- p + scale_x_discrete(expand = c(0, 0))
+    p <- p + ggplot2::scale_x_discrete(expand = c(0, 0))
   }
   
   # Save plot if output prefix is provided
   if (!is.null(output_prefix)) {
     # Save plot as PNG
     png_filename <- paste0(output_prefix, ".png")
-    ggsave(png_filename, plot = p, width = 10, height = 8)
+    ggplot2::ggsave(png_filename, plot = p, width = 10, height = 8)
     
     # Save plot as PDF
     pdf_filename <- paste0(output_prefix, ".pdf")
-    ggsave(pdf_filename, plot = p, width = 10, height = 8)
+    ggplot2::ggsave(pdf_filename, plot = p, width = 10, height = 8)
   }
   
   # Return the plot or summarized data frame
@@ -148,74 +135,22 @@ plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NUL
     return(p)
   }
 }
-
 # Example usage:
-
-# Salamander_absolute_NospikeSp_pl <- subset_samples(Salamander_absolute_NospikeSp, 
-# Diet == "Insectivore" & Host.genus == "Plethodon")
-# Salamander_rel_NospikeSp_pl <- subset_samples(Salamander_relative_NospikeSp, 
-# Diet == "Insectivore" & Host.genus == "Plethodon")
-
-# Plot non-relativized (absolute) abundance
-# plot_absolute <- plotbar_abundance(Salamander_absolute_NospikeSp_pl,
-#                                    level = "Family", group = c("Host.species", "Diet","Ecoregion.III","Animal.ecomode"),
-#                                    x_axis_var = "Host.species", top = 25, x_size = 10, y_size = 10,
-#                                    legend_key_size = 0.5, legend_text_size = 10, legend_nrow = 25, relativize = FALSE,
-#                                    output_prefix = "non_relativized_abundance_plot",
-#                                    facet_var = c("Ecoregion.III"), scales = "free_x")
-# print(plot_absolute)
-# 
-# # Plot relative abundance
-# plot_rel <- plotbar_abundance(Salamander_rel_NospikeSp_pl,
-#                               level = "Family", group = c("Host.species", "Diet","Ecoregion.III","Animal.ecomode"),
-#                               x_axis_var = "Host.species", top = 25, x_size = 10, y_size = 10,
-#                               legend_key_size = 0.5, legend_text_size = 12, legend_nrow = 25, relativize = TRUE,
-#                               output_prefix = "relativized_abundance_plot",
-#                               facet_var = c("Ecoregion.III"), scales = "free_x")
-# print(plot_rel)
-
-# For customizing the color pallet
-
-# # Define your custom color palette
-# custom_color_palette <- c(
-#   "Lachnospiraceae" = "#FFFF33", "Tannerellaceae" = "#FF7F00", "Erysipelotrichaceae" = "#E41A1C", 
-#   "Fusobacteriaceae" = "firebrick4", "Erwiniaceae" = "#2e4057", "Akkermansiaceae" = "#984EA3", 
-#   "Streptococcaceae" = "#377EB8", "Simkaniaceae" = "olivedrab3", "Flavobacteriaceae" = "#4DAF4A", 
-#   "Leptospiraceae" = "#336633", "Legionellaceae" = "grey80", "Helicobacteraceae" = "#BB650B", 
-#   "Campylobacteraceae" = "gold", "Eugregarinorida" = "#559999", "Marinifilaceae" = "#7570b3", 
-#   "Rikenellaceae" = "#E78AC3", "Chromobacteriaceae" = "#A6D854", "Paenibacillaceae" = "#66a61e", 
-#   "Clostridiaceae" = "#e6ab02", "Oscillospirales" = "#a6761d", "Erysipelatoclostridiaceae" = "#663300", 
-#   "Bacteroidaceae" = "#66C2A5", "Xanthomonadaceae" = "#0e669b", "Ruminococcaceae" = "#00798c", 
-#   "Ilumatobacteraceae" = "dodgerblue4", "Dermabacteraceae" = "steelblue2", "Desulfovibrionaceae" = "#00AFBB", 
-#   "Rhodocyclaceae" = "#E7B800", "[Eubacterium]_coprostanoligenes_group" = "#FC4E07", "Dermatophilaceae" = "lightskyblue4", 
-#   "Coriobacteriales_Incertae_Sedis" = "green", "Fusibacteraceae" = "red", "Dysgonomonadaceae" = "#FFF000", 
-#   "Eggerthellaceae" = "#0099CC", "Anaerovoracaceae" = "#FF9933", "Neisseriaceae" = "#CC9900", 
-#   "Acidaminococcaceae" = "chartreuse1", "Aquaspirillaceae" = "#FF3399", "Micromonosporaceae" = "#00FFFF", 
-#   "Propionibacteriaceae" = "#0000CC"
-# )
-# 
-# 
-# wild.rel.16S<-subset_taxa(wild.rel.16S,Genus!="Tetragenococcus")
-# wild.rel.16S.Plethodon<-subset_samples(wild.rel.16S, Host.genus=="Plethodon")
-# saveRDS(wild.rel.16S.Plethodon,"wild.rel.16S.Plethodon.rds")
-# saveRDS(wild.abs.16S.Plethodon,"wild.abs.16S.Plethodon.rds")
-# 
-# # Call the function with your custom color palette
 # plot <- plotbar_abundance(
-#   physeq = wild.rel.16S.Plethodon, 
-#   level = "Family", 
-#   color = custom_color_palette, 
-#   group = c("Diet", "Host.species", "Ecoregion.III"), 
-#   x_axis_var = "Host.species", 
-#   top = 20, 
-#   x_size = 10, 
-#   y_size = 10, 
-#   legend_key_size = 1, 
-#   legend_text_size = 11, 
-#   legend_nrow = 20, 
-#   relativize = T, 
-#   output_prefix = "rel.abundance_plot", 
-#   facet_var = "Ecoregion.III", 
+#   physeq = physeq16SOTU,
+#   level = "Family",
+#   color = color_palette$MG,
+#   group = c("Diet", "Host.species", "Host.genus","Ecoregion.III"),
+#   x_axis_var = "Host.species",
+#   top = 20,
+#   x_size = 10,
+#   y_size = 10,
+#   legend_key_size = 1,
+#   legend_text_size = 11,
+#   legend_nrow = 20,
+#   relativize = T,
+#   output_prefix = "rel.abundance_plot",
+#   facet_var = "Diet",
 #   scales = "free_x"
 # )
-# print(plot)+my_custom_theme()+ggtitle("species of Plethodon across ecoregions")
+# print(plot)+my_custom_theme()+ggtitle("across ecoregions")

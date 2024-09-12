@@ -2,7 +2,7 @@
 % Please edit documentation in R/normalization_set.R
 \name{norm.QN}
 \alias{norm.QN}
-\title{Quantile Normalization (QN) for phyloseq object using base R}
+\title{Quantile Normalization (QN) for phyloseq object}
 \usage{
 norm.QN(ps, filter = FALSE)
 }
@@ -15,5 +15,5 @@ norm.QN(ps, filter = FALSE)
 A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
-Quantile Normalization (QN) for phyloseq object using base R
+Quantile Normalization (QN) for phyloseq object
 }

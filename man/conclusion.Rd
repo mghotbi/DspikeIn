@@ -30,13 +30,15 @@ It uses the `flextable` package to create and format the tables in the DOCX file
 }
 \examples{
 # Define the parameters
-merged_spiked_species <- c("Dekkera_bruxellensis")
-max_passed_range <- 11
+merged_spiked_species <- c("Tetragenococcus_halophilus") 
+max_passed_range <- 12 
 output_path <- "spike_success_report.docx"
-
-# Subset the phyloseq object to exclude blanks
-physeq_ITS_adj_scaled_perc <- subset_samples(physeq_ITS_OTU, sample_or_blank != "blank")
-
-# Generate the spike success report and summary statistics
-conclusion(physeq_ITS_adj_scaled_perc, merged_spiked_species, max_passed_range, output_path)
+absolute <- convert_to_absolute_counts(merged_physeq_sum, scaling_factors) 
+absolute_counts <- absolute$absolute_counts 
+physeq_absolute <- absolute$physeq_obj 
+# # Subset the phyloseq object to exclude blanks/optional
+physeq_16S_adj_scaled_perc <- phyloseq::subset_samples(physeq_absolute, sample.or.blank != "blank")
+# # Generate the spike success report and summary statistics
+summary_stats <- conclusion(physeq_16S_adj_scaled_perc, merged_spiked_species, max_passed_range,output_path)
+#' print(summary_stats)
 }

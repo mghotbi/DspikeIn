@@ -24,6 +24,10 @@
 #' @param las An integer specifying the orientation of axis labels. Default is 1.
 #' @param paired A logical value specifying whether the data are paired. Default is FALSE.
 #' @return A list containing the ggplot2 boxplot objects and the comparison results, or the comparison results and p-value for individual boxplots.
+#' @importFrom ggplot2 ggplot aes geom_boxplot scale_fill_manual labs theme_minimal element_text ggsave
+#' @importFrom dplyr mutate filter mutate_at
+#' @importFrom stats kruskal.test wilcox.test
+#' @importFrom graphics mtext boxplot
 #' @examples
 #' # Example usage for transform_plot:
 #' # y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
@@ -61,20 +65,24 @@ transform_plot <- function(
     las = 1,
     paired = FALSE
 ) {
-  # Load necessary libraries
-  if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    stop("Package 'ggplot2' is required but not installed.")
-  }
-  if (!requireNamespace("dplyr", quietly = TRUE)) {
-    stop("Package 'dplyr' is required but not installed.")
-  }
-  if (!requireNamespace("ggpubr", quietly = TRUE)) {
-    stop("Package 'ggpubr' is required but not installed.")
-  }
+  # Load necessary libraries with suppressMessages to prevent output
+  suppressMessages({
+    if (!requireNamespace("ggplot2", quietly = TRUE)) {
+      stop("Package 'ggplot2' is required but not installed.")
+    }
+    if (!requireNamespace("dplyr", quietly = TRUE)) {
+      stop("Package 'dplyr' is required but not installed.")
+    }
+    if (!requireNamespace("ggpubr", quietly = TRUE)) {
+      stop("Package 'ggpubr' is required but not installed.")
+    }
+  })
   
-  library(ggplot2)
-  library(dplyr)
-  library(ggpubr)
+  # Ensuring the right libraries are loaded
+  suppressMessages({
+    ggplot2::ggplot()
+    dplyr::mutate()
+  })
   
   if (!is.null(data) && !is.null(x_var) && !is.null(y_vars) && !is.null(methods_var)) {
     # Ensure x_var is a factor
@@ -85,19 +93,19 @@ transform_plot <- function(
     
     # Function to create individual boxplots
     create_boxplot <- function(y_var) {
-      ggplot(data, aes(x = .data[[x_var]], y = .data[[y_var]], fill = .data[[x_var]])) +
+      ggplot2::ggplot(data, ggplot2::aes(x = .data[[x_var]], y = .data[[y_var]], fill = .data[[x_var]])) +
         ggplot2::geom_boxplot() +
-        scale_fill_manual(values = color_palette) +
-        labs(x = xlab, y = y_var, title = y_var) +
-        theme_minimal() +
-        theme(
-          axis.text = element_text(size = 20, angle = 90, hjust = 1),
-          axis.title = element_text(size = 22),
-          plot.title = element_text(size = 24),
-          legend.text = element_text(size = 20),
-          legend.title = element_text(size = 22)
+        ggplot2::scale_fill_manual(values = color_palette) +
+        ggplot2::labs(x = xlab, y = y_var, title = y_var) +
+        ggplot2::theme_minimal() +
+        ggplot2::theme(
+          ggplot2::element_text(size = 20, angle = 90, hjust = 1),
+          ggplot2::element_text(size = 22),
+          ggplot2::element_text(size = 24),
+          ggplot2::element_text(size = 20),
+          ggplot2::element_text(size = 22)
         ) +
-        stat_compare_means(method = stat_test, label = "p.signif", size = 8)
+        ggpubr::stat_compare_means(method = stat_test, label = "p.signif", size = 8)
     }
     
     # Create and save plots
@@ -109,9 +117,9 @@ transform_plot <- function(
       pdf_filename <- paste0(output_prefix, "_", y_var, "_", test_suffix, ".pdf")
       
       # Save PDF
-      ggsave(pdf_filename, plot = plot, width = width, height = height, units = "in")
+      ggplot2::ggsave(pdf_filename, plot = plot, width = width, height = height, units = "in")
       # Save PNG with explicit DPI to ensure text size is consistent
-      ggsave(png_filename, plot = plot, width = width, height = height, units = "in", dpi = 500)
+      ggplot2::ggsave(png_filename, plot = plot, width = width, height = height, units = "in", dpi = 500)
       
       cat("Plots saved as:", png_filename, "and", pdf_filename, "\n")
     }
@@ -137,7 +145,7 @@ transform_plot <- function(
     row.names(tt1) <- aa
     colnames(tt1) <- c("mean", "se", "sd", "min", "max", "median", "n")
     
-    boxplot(
+    graphics::boxplot(
       X ~ Y,
       main = main,
       xlab = xlab,
@@ -151,14 +159,14 @@ transform_plot <- function(
     )
     
     Yn <- factor(Y, labels = an)
-    comp <- kruskal(X, Yn, p.adj = p.adj)
+    comp <- stats::kruskal.test(X ~ Yn)
     sig <- "ns"
     
     if (paired == TRUE & length(aa) == 2) {
-      coms <- wilcox.test(X ~ Yn, paired = TRUE)
+      coms <- stats::wilcox.test(X ~ Yn, paired = TRUE)
       pp <- coms$p.value
     } else {
-      pp <- comp$statistics$p.chisq
+      pp <- comp$statistic
     }
     
     if (pp <= 0.1) sig <- "."
@@ -166,10 +174,8 @@ transform_plot <- function(
     if (pp <= 0.01) sig <- "**"
     if (pp <= 0.001) sig <- "***"
     
-    gror <- comp$groups[order(rownames(comp$groups)), ]
-    tt1$rank <- gror$X
-    tt1$group <- gror$groups
-    mtext(
+    tt1$group <- sig
+    graphics::mtext(
       sig,
       side = 3,
       line = 1,
@@ -177,8 +183,9 @@ transform_plot <- function(
       cex = 3,
       font = 1
     )
-    if (pp <= 0.1)
-      mtext(
+    
+    if (pp <= 0.1) {
+      graphics::mtext(
         tt1$group,
         side = 3,
         at = c(1:length(aa)),
@@ -186,23 +193,23 @@ transform_plot <- function(
         cex = 2,
         font = 4
       )
+    }
     
     return(list(comparison = tt1, p.value = pp))
   }
 }
-
 # Example y_vars
 # y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
-# Ensure the columns are numeric
+# #Ensure the columns are numeric
 # methods <- methods %>%   dplyr::mutate(  Total.reads = as.numeric(Total.reads), Spike.reads = as.numeric(Spike.reads),Spike.percentage = as.numeric(Spike.percentage)  )
-# Remove rows with NA values
+# # Remove rows with NA values
 # methods <- methods %>%   dplyr::filter(!is.na(Total.reads),  !is.na(Spike.reads),  !is.na(Spike.percentage)  )
-
-# Scale the specified columns
+# 
+# # Scale the specified columns
 # scaled <- methods %>%   dplyr::mutate_at( c("Total.reads", "Spike.reads", "Spike.percentage"),    ~ scale(.) %>% as.vector  )
-
-# Perform Kruskal-Wallis test with MG color palette
-#transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
-
-# Perform one-way ANOVA with MG color palette
-# transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette = MG, stat_test = "anova")
+# 
+# # Perform Kruskal-Wallis test with MG color palette
+# transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette$MG, stat_test = "kruskal.test")
+# 
+# # Perform one-way ANOVA with MG color palette
+# transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette$MG, stat_test = "anova")

@@ -38,9 +38,10 @@ A ggplot2 object representing the core microbiome prevalence heatmap.
 \description{
 This function generates a prevalence heatmap of the core microbiome at a specified taxonomic rank.
 It includes a detection threshold for prevalence, performs glomming, pruning, and proportion transformation,
-and renames taxa with an ASV prefix. The function requires the `phyloseq`, `microbiomeutilities`, and `ggplot2` packages.
+and renames taxa with an ASV prefix. The function requires the `phyloseq`, `microbiomeutilities`, `microbiome`, and `ggplot2` packages.
 }
 \examples{
 # Example usage:
-# plot_core_microbiome_custom(physeq, taxrank = "Genus", select_taxa = NULL)
+custom_detections <- 10^seq(log10(3e-1), log10(0.5), length = 5)
+plot_core_microbiome_custom(physeq_16SASV, detections = custom_detections, taxrank = "Family", output_core_rds = "core_microbiome.rds", output_core_csv = "core_microbiome.csv")
 }

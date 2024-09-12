@@ -2,7 +2,7 @@
 #'
 #' This function generates a prevalence heatmap of the core microbiome at a specified taxonomic rank.
 #' It includes a detection threshold for prevalence, performs glomming, pruning, and proportion transformation,
-#' and renames taxa with an ASV prefix. The function requires the `phyloseq`, `microbiomeutilities`, and `ggplot2` packages.
+#' and renames taxa with an ASV prefix. The function requires the `phyloseq`, `microbiomeutilities`, `microbiome`, and `ggplot2` packages.
 #'
 #' @param physeq A phyloseq object containing the microbial data.
 #' @param taxrank A character string specifying the taxonomic rank to glom taxa. Default is "Genus".
@@ -15,7 +15,14 @@
 #' @return A ggplot2 object representing the core microbiome prevalence heatmap.
 #' @examples
 #' # Example usage:
-#' # plot_core_microbiome_custom(physeq, taxrank = "Genus", select_taxa = NULL)
+#' custom_detections <- 10^seq(log10(3e-1), log10(0.5), length = 5)
+#' plot_core_microbiome_custom(physeq_16SASV, detections = custom_detections, taxrank = "Family", output_core_rds = "core_microbiome.rds", output_core_csv = "core_microbiome.csv")
+#' @importFrom phyloseq tax_glom prune_taxa subset_taxa transform_sample_counts taxa_names psmelt
+#' @importFrom microbiomeutilities format_to_besthit
+#' @importFrom microbiome plot_core
+#' @importFrom ggplot2 ggplot theme_bw xlab element_blank element_line element_text element_rect
+#' @importFrom utils write.csv
+#' @importFrom RColorBrewer brewer.pal
 #' @export
 plot_core_microbiome_custom <- function(physeq = NULL, 
                                         taxrank = "Genus", 
@@ -26,20 +33,20 @@ plot_core_microbiome_custom <- function(physeq = NULL,
                                         output_core_csv = NULL, 
                                         output_core_rds = NULL) {
   # Load necessary libraries
-  if (!requireNamespace("phyloseq", quietly = TRUE)) {
-    stop("Package 'phyloseq' is required but not installed.")
-  }
-  if (!requireNamespace("ggplot2", quietly = TRUE)) {
-    stop("Package 'ggplot2' is required but not installed.")
-  }
-  if (!requireNamespace("microbiomeutilities", quietly = TRUE)) {
-    stop("Package 'microbiomeutilities' is required but not installed.")
-  }
-  
-  library(phyloseq)
-  library(ggplot2)
-  library(microbiomeutilities)
-  library(RColorBrewer)
+  suppressMessages({
+    if (!requireNamespace("phyloseq", quietly = TRUE)) {
+      stop("Package 'phyloseq' is required but not installed.")
+    }
+    if (!requireNamespace("ggplot2", quietly = TRUE)) {
+      stop("Package 'ggplot2' is required but not installed.")
+    }
+    if (!requireNamespace("microbiomeutilities", quietly = TRUE)) {
+      stop("Package 'microbiomeutilities' is required but not installed.")
+    }
+    if (!requireNamespace("microbiome", quietly = TRUE)) {
+      stop("Package 'microbiome' is required but not installed.")
+    }
+  })
   
   # Check for required input
   if (is.null(physeq)) {
@@ -49,7 +56,7 @@ plot_core_microbiome_custom <- function(physeq = NULL,
   # Glom taxa at specified taxonomic rank
   glom_phy <- phyloseq::tax_glom(physeq, taxrank = taxrank)
   
-  # Prune taxa with no abundance if select_taxa is specified
+  # Prune taxa if specific taxa are selected
   if (!is.null(select_taxa)) {
     glom_phy <- prune_taxa(select_taxa, glom_phy)
   }
@@ -66,56 +73,58 @@ plot_core_microbiome_custom <- function(physeq = NULL,
   # Format phyloseq object for besthit
   phy_rel_f <- microbiomeutilities::format_to_besthit(glom_phy)
   
-  # Save core microbiome as CSV file if output_core_csv argument is provided
+  # Save core microbiome as CSV file if output_core_csv is provided
   if (!is.null(output_core_csv)) {
-    pm_core <- psmelt(phy_rel_f)
-    write.csv(pm_core, output_core_csv, row.names = FALSE)
+    pm_core <- phyloseq::psmelt(phy_rel_f)
+    utils::write.csv(pm_core, output_core_csv, row.names = FALSE)
     cat("Core microbiome saved as CSV to:", output_core_csv, "\n")
   }
   
-  # Save core microbiome as RDS file if output_core_rds argument is provided
+  # Save core microbiome as RDS file if output_core_rds is provided
   if (!is.null(output_core_rds)) {
     saveRDS(phy_rel_f, file = output_core_rds)
     cat("Core microbiome saved as RDS to:", output_core_rds, "\n")
   }
   
   # Plot core microbiome
-  p.core <- plot_core(phy_rel_f, 
-                      plot.type = "heatmap", 
-                      colours = rev(brewer.pal(5, "Spectral")),
-                      prevalences = prevalences, 
-                      detections = detections, 
-                      min.prevalence = min_prevalence) + 
-    xlab("Detection Threshold (Relative Abundance (%))") +
-    theme_bw() + 
-    theme(
-      panel.grid.minor = element_blank(),
-      panel.grid.major = element_blank(),
-      panel.background = element_rect(fill = "white"),
-      plot.background = element_rect(fill = 'white', color = "#e1deda"),
-      panel.border = element_blank(),
-      axis.line.x = element_line(colour = 'black', size = 0.6),
-      axis.line.y = element_line(colour = 'black', size = 0.6),
-      axis.ticks = element_line(colour = 'black', size = 0.35),
-      legend.title = element_text(size = 12),
-      legend.text = element_text(size = 12, color = "black", face = "bold"), 
-      legend.key.size = unit(1, 'cm'),
-      axis.title.x = element_text(family = "Times New Roman", size = 12, color = "black", face = "plain"), 
-      axis.title.y = element_text(family = "Times New Roman", size = 12, color = "black", face = "plain"), 
-      axis.text.x = element_text(family = "Times New Roman", size = 12, angle = 10, color = "black", face = "bold"), 
-      axis.text.y = element_text(family = "Times New Roman", size = 12, color = "black", face = "bold"),
-      plot.title = element_text(color = "black", size = 12, face = "bold"),
-      plot.subtitle = element_text(size = 11),
-      strip.text.x = element_text(family="Times New Roman", size = 12, color="black", face = "bold"),
-      strip.text.y = element_text(family="Times New Roman", size = 12, color="black", face = "bold"),
-      strip.background = element_rect(colour = "black", fill = "gray98")
+  p.core <- microbiome::plot_core(phy_rel_f, 
+                                  plot.type = "heatmap", 
+                                  colours = rev(RColorBrewer::brewer.pal(5, "Spectral")),
+                                  prevalences = prevalences, 
+                                  detections = detections, 
+                                  min.prevalence = min_prevalence) + 
+    ggplot2::xlab("Detection Threshold (Relative Abundance (%))") +
+    ggplot2::theme_bw() + 
+    ggplot2::theme(
+      panel.grid.minor = ggplot2::element_blank(),
+      panel.grid.major = ggplot2::element_blank(),
+      panel.background = ggplot2::element_rect(fill = "white"),
+      plot.background = ggplot2::element_rect(fill = 'white', color = "#e1deda"),
+      panel.border = ggplot2::element_blank(),
+      axis.line.x = ggplot2::element_line(colour = 'black', size = 0.6),
+      axis.line.y = ggplot2::element_line(colour = 'black', size = 0.6),
+      axis.ticks = ggplot2::element_line(colour = 'black', size = 0.35),
+      legend.title = ggplot2::element_text(size = 12),
+      legend.text = ggplot2::element_text(size = 12, color = "black", face = "bold"), 
+      legend.key.size = grid::unit(1, 'cm'),
+      axis.title.x = ggplot2::element_text(family = "Times New Roman", size = 12, color = "black", face = "plain"), 
+      axis.title.y = ggplot2::element_text(family = "Times New Roman", size = 12, color = "black", face = "plain"), 
+      axis.text.x = ggplot2::element_text(family = "Times New Roman", size = 12, angle = 10, color = "black", face = "bold"), 
+      axis.text.y = ggplot2::element_text(family = "Times New Roman", size = 12, color = "black", face = "bold"),
+      plot.title = ggplot2::element_text(color = "black", size = 12, face = "bold"),
+      plot.subtitle = ggplot2::element_text(size = 11),
+      strip.text.x = ggplot2::element_text(family="Times New Roman", size = 12, color="black", face = "bold"),
+      strip.text.y = ggplot2::element_text(family="Times New Roman", size = 12, color="black", face = "bold"),
+      strip.background = ggplot2::element_rect(colour = "black", fill = "gray98")
     )
   
   return(p.core)
 }
 
-
 # Example usage:
 # Specify a different detection threshold
 # custom_detections <- 10^seq(log10(3e-1), log10(0.5), length = 5)
-# PCM <- plot_core_microbiome_custom(ps, detections = custom_detections, taxrank = "Family", output_core_rds = "core_microbiome.rds", output_core_csv = "core_microbiome.csv")
+# plot_result <- plot_core_microbiome_custom(physeq_16SASV, 
+# detections = custom_detections, taxrank = "Family", 
+# output_core_rds = "core_microbiome.rds", output_core_csv = "core_microbiome.csv")
+# plot_result

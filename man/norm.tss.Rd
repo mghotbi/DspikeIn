@@ -15,6 +15,3 @@ A list containing the normalized phyloseq object and scaling factors.
 \description{
 TSS Normalization (Total Sum Scaling)
 }
-\references{
-Bolstad et al., 2003.
-}

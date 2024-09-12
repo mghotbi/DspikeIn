@@ -4,19 +4,18 @@
 \alias{norm.DESeq}
 \title{DESeq Normalization}
 \usage{
-norm.DESeq(ps, groups)
+norm.DESeq(ps, groups, pseudocount = 1)
 }
 \arguments{
 \item{ps}{A phyloseq object.}
 
 \item{groups}{A string specifying the grouping variable in sample data.}
+
+\item{pseudocount}{A numeric value added to avoid zeros in the dataset.}
 }
 \value{
 A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
-DESeq Normalization
-}
-\references{
-DESeq2 package.
+DESeq Normalization with Pseudocount and Integer Conversion
 }

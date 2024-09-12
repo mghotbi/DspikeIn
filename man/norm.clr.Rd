@@ -4,23 +4,14 @@
 \alias{norm.clr}
 \title{CLR Normalization (Centered Log-Ratio Transformation)}
 \usage{
-norm.clr(
-  ps,
-  feature_category = c("all_features", "interquartile_range", "non_zero_counts",
-    "specified_features")
-)
+norm.clr(ps)
 }
 \arguments{
 \item{ps}{A phyloseq object.}
-
-\item{feature_category}{A character string specifying the feature category ("all_features", "interquartile_range", "non_zero_counts", "specified_features").}
 }
 \value{
 A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
 CLR Normalization (Centered Log-Ratio Transformation)
-}
-\references{
-Aitchison, 1986.
 }

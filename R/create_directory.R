@@ -12,20 +12,22 @@
 #' # create_directory("new", set_working_dir = TRUE)
 #' @export
 create_directory <- function(directory_path, set_working_dir = FALSE) {
-  # Check if the directory already exists
-  if (!dir.exists(directory_path)) {
-    # If it doesn't exist, create the directory
-    dir.create(directory_path)
-    cat("Directory created successfully.\n")
-  } else {
-    cat("Directory already exists.\n")
-  }
-  
-  # Optionally set the working directory
-  if (set_working_dir) {
-    setwd(directory_path)
-    cat("Working directory set to:", directory_path, "\n")
-  }
+  suppressMessages({
+    # Check if the directory already exists
+    if (!base::dir.exists(directory_path)) {
+      # If it doesn't exist, create the directory
+      base::dir.create(directory_path)
+      cat("Directory created successfully.\n")
+    } else {
+      cat("Directory already exists.\n")
+    }
+    
+    # Optionally set the working directory
+    if (set_working_dir) {
+      setwd(directory_path)
+      cat("Working directory set to:", directory_path, "\n")
+    }
+  })
 }
 
 # Example usage:

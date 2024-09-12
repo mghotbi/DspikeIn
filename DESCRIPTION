@@ -1,11 +1,11 @@
 Package: DspikeIn
 Type: Package
-Title: Quantifying Absolute Abundance for Enhanced Evaluation of Microbial Dynamics
+Title: Quantifying Absolute Abundance to Enhance Microbial Dynamics Assessment
 Version: 0.0.0.9000
 Author: Mitra Ghotbi
 Maintainer: Mitra Ghotbi <mitra.ghotbi@gmail.com>
-Description: DspikeIn quantifies absolute abundance, enhancing the evaluation of microbial dynamics, which is crucial for advancing microbial ecology. The package builds on the excellent phyloseq package and benefits from modified functions from other wonderful packages, including dplyr, ggplot2, edgeR, ggtree, flextable, DESeq2, microbiomeutilities, DECIPHER, and speedyseq.
-Acknowledgements: DspikeIn builds on the excellent phyloseq package and benefits from modified functions from other wonderful packages, including dplyr, ggtree, flextable, DESeq2, edgeR, microbiomeutilities, DECIPHER, and speedyseq.
+Description: The DspikeIn package enables the quantification of absolute microbial abundance, improving the evaluation of microbial dynamics ? a critical aspect in microbial ecology research. It extends the functionality of the phyloseq package and integrates enhanced or modified functions from several key packages, including dplyr, ggplot2, edgeR, ggtree, flextable, DESeq2, microbiomeutilities, DECIPHER, and speedyseq.
+Acknowledgements: DspikeIn is built upon the phyloseq package and utilizes additional functionality from dplyr, ggtree, flextable, DESeq2, edgeR, microbiomeutilities, DECIPHER, and speedyseq, among others.
 URL: https://github.com/mitraghotbi/DspikeIn
 BugReports: https://github.com/mitraghotbi/DspikeIn/issues
 License: GPL-3
@@ -14,67 +14,53 @@ LazyData: true
 Depends: R (>= 3.5.0)
 Imports:
     phyloseq,
+    msa,
+    stats,
     DESeq2,
     edgeR,
-    ANCOMBC,
-    sva,
-    EDASeq,
-    RUVSeq,
-    BiocGenerics,
-    vegan,
-    compositions,
-    microbiomeutilities,
     dplyr,
-    speedyseq,
-    ape,
     ggplot2,
-    ggalluvial,
-    phangorn,
-    msa,
-    ggridges,
-    agricolae,
+    ggtree,
     flextable,
-    RColorBrewer,
-    ShortRead,
     Biostrings,
     DECIPHER,
     randomForest,
-    ggtree,
-    ggpubr
-Suggests:
-    microbiomeMarker,
-    data.table,
+    ggridges,
+    phangorn,
+    ggalluvial,
     microbiome,
+    microbiomeutilities,
+    BiocManager,
     matrixStats,
+    RColorBrewer,   
+    ape,            
+    rlang,          
+    scales,        
+    speedyseq,      
+    magrittr        
+Suggests:
+    ShortRead,
+    agricolae,
+    testthat (>= 3.0.0),
+    devtools,
+    dada2,
+    DT,
+    data.table,
     preprocessCore,
     Biobase,
     methods,
     e1071,
     caret,
-    vcd,
     qpdf,
     optparse,
     foreach,
-    magrittr,
-    doParallel,
     viridis,
     plyr,
     reshape2,
     grid,
-    scales,
     cluster,
     intergraph,
-    decontam,
-    ggtext,
-    devtools,
-    dada2,
-    agridat,
-    rstatix,
-    reshape,
-    gridExtra,
-    descr,
-    testthat (>= 3.0.0)
+    ggtext
 RoxygenNote: 7.3.1.9000
-NeedsCompilation: no
 Packaged: 2024-07-28 21:21:56 UTC; mghotbi
-Config/testthat/edition: 3
+NeedsCompilation: no

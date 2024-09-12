@@ -1,123 +1,219 @@
-#' Calculate Spike Percentage for list of Specified Taxa in a Phyloseq Object
+#' Calculate Spike Percentage for List of Specified Taxa in a Phyloseq Object
 #'
-#' This function calculates the percentage of reads from specified spiked species or hashcodes in a phyloseq object.
+#' This function calculates the percentage of reads from specified spiked species in a \code{phyloseq} object.
 #' It merges the spiked taxa into one ASV, calculates the percentage of reads, categorizes the results as passed or failed,
 #' and saves the results as a DOCX and CSV file.
 #'
-#' @param physeq A phyloseq object containing the microbial data.
-#' @param merged_spiked_species A character vector of spiked species list to check in the phyloseq object. Default is NULL.
-#' @param merged_spiked_hashcodes A character vector of spiked hashcodes list to check in the phyloseq object. Default is NULL.
-#' @param output_path A character string specifying the path to save the output files. Default is "merged_data.docx".
-#' @param passed_range A numeric vector of length 2 specifying the range of percentages to categorize results as "passed". Default is c(0.1, 11).
+#' @param physeq A \code{phyloseq} object containing microbial data.
+#' @param merged_spiked_species A character vector or list of spiked species to check in the phyloseq object. Default is \code{NULL}.
+#' @param output_path A character string specifying the path to save the output files. Default is \code{"merged_data.docx"}.
+#' @param passed_range A numeric vector of length 2 specifying the range of percentages to categorize results as "passed". Default is \code{c(0.1, 11)}.
 #' @return A data frame containing the percentage of spiked taxa reads and the pass/fail results.
 #' @examples
-#' library(phyloseq)
-#' # Load example data
-#' physeq <- ps
-#'
-#' # Define the spiked species list
+#' \dontrun{
+#' # Example usage:
 #' spiked_species_list <- list(
-#'   c("Methylobacterium_phyllostachyos"),
-#'   c("Methylorubrum_salsuginis"),
-#'   c("Bosea_massiliensis"),
-#'   c("Bacillus_decolorationis")
+#'   c("Pseudomonas aeruginosa"),
+#'   c("Escherichia coli"),
+#'   c("Clostridium difficile")
 #' )
 #'
-#' # Use the spiked species list in the function
-#' merged_spiked_species <- spiked_species_list
-#' calculate_spike_percentage_list(ps, merged_spiked_species = merged_spiked_species, 
-#' passed_range = c(0.1, 10))
+#' # Create a mock phyloseq object (assuming merged_physeq_sum already exists in your environment)
+#' result <- calculate_spike_percentage_list(merged_physeq_sum, merged_spiked_species = spiked_species_list, passed_range = c(0.1, 10))
+#'
+#' # Print the results
+#' print(result)
+#' }
+#' @importFrom phyloseq subset_taxa tax_table sample_names sample_sums otu_table merge_taxa
+#' @importFrom dplyr left_join
+#' @importFrom flextable flextable fontsize font color bold italic save_as_docx
+#' @importFrom utils write.csv
 #' @export
-calculate_spike_percentage_list <- function(physeq, merged_spiked_species = NULL, merged_spiked_hashcodes = NULL, output_path = "merged_data.docx", passed_range = c(0.1, 11)) {
-  # Load necessary libraries
-  if (!requireNamespace("phyloseq", quietly = TRUE)) {
-    stop("Package 'phyloseq' is required but not installed.")
-  }
-  if (!requireNamespace("dplyr", quietly = TRUE)) {
-    stop("Package 'dplyr' is required but not installed.")
-  }
-  if (!requireNamespace("flextable", quietly = TRUE)) {
-    stop("Package 'flextable' is required but not installed.")
+calculate_spike_percentage_list <- function(physeq, merged_spiked_species = NULL, output_path = "merged_data.docx", passed_range = c(0.1, 11)) {
+  
+  # Validate the passed_range parameter
+  if (!is.numeric(passed_range) || length(passed_range) != 2) {
+    stop("passed_range must be a numeric vector of length 2.")
   }
   
-  library(phyloseq)
-  library(dplyr)
-  library(flextable)
+  # Suppress package load messages and check if required packages are installed
+  suppressMessages({
+    if (!requireNamespace("phyloseq", quietly = TRUE)) {
+      stop("Package 'phyloseq' is required but not installed.")
+    }
+    if (!requireNamespace("dplyr", quietly = TRUE)) {
+      stop("Package 'dplyr' is required but not installed.")
+    }
+    if (!requireNamespace("flextable", quietly = TRUE)) {
+      stop("Package 'flextable' is required but not installed.")
+    }
+  })
   
-  # Determine the taxonomic identifiers to use
-  if (!is.null(merged_spiked_species)) {
-    spiked_taxa <- subset_taxa(physeq, phyloseq::tax_table(physeq)[, "Species"] %in% unlist(merged_spiked_species))
-  } else if (!is.null(merged_spiked_hashcodes)) {
-    spiked_taxa <- subset_taxa(physeq, rownames(phyloseq::tax_table(physeq)) %in% merged_spiked_hashcodes)
-  } else {
-    stop("You must provide either 'merged_spiked_species' or 'merged_spiked_hashcodes'.")
-  }
+  # Ensure merged_spiked_species is provided
+  if (is.null(merged_spiked_species)) stop("You must provide 'merged_spiked_species'.")
   
-  # Check if there are any samples containing the spiked taxa
-  if (ntaxa(spiked_taxa) == 0) {
-    stop("No samples contain the specified spiked taxa.")
-  }
+  # Clean the species names (trim white spaces)
+  cleaned_spiked_species <- lapply(merged_spiked_species, trimws)
   
-  # Calculate total reads for samples
-  total_reads <- data.frame(Sample = sample_names(physeq), 
-                            Total_Reads = sample_sums(phyloseq::otu_table(physeq)))
+  # Subset taxa for spiked species
+  spiked_taxa <- phyloseq::subset_taxa(physeq, phyloseq::tax_table(physeq)[, "Species"] %in% unlist(cleaned_spiked_species))
   
-  # Merge all ASVs rooted from spiked taxa into one ASV
-  merged_spiked <- merge_taxa(spiked_taxa, taxa_names(spiked_taxa))
+  # Check if there are any spiked taxa in the samples
+  if (phyloseq::ntaxa(spiked_taxa) == 0) stop("No samples contain the specified spiked taxa.")
   
-  # Calculate reads specific to merged spiked taxa
-  spiked_reads <- data.frame(Sample = sample_names(merged_spiked),
-                             Total_Reads = sample_sums(phyloseq::otu_table(merged_spiked)))
+  # Merge all ASVs for the spiked taxa
+  merged_spiked <- phyloseq::merge_taxa(spiked_taxa, phyloseq::taxa_names(spiked_taxa))
   
-  # Merge total reads and spiked reads data frames
-  merged_data <- merge(total_reads, spiked_reads, by = "Sample", suffixes = c("_total", "_spiked"))
+  # Ensure the OTU and taxonomy tables are properly aligned
+  merged_spiked <- fix_phyloseq_dimensions(merged_spiked)
+  
+  # Calculate total reads for each sample
+  total_reads <- data.frame(Sample = phyloseq::sample_names(physeq), 
+                            Total_Reads = phyloseq::sample_sums(phyloseq::otu_table(physeq)))
+  
+  # Calculate reads specific to the merged spiked taxa
+  spiked_reads <- data.frame(Sample = phyloseq::sample_names(merged_spiked),
+                             Total_Reads_spiked = phyloseq::sample_sums(phyloseq::otu_table(merged_spiked)))
+  
+  # Merge total reads and spiked reads into a single data frame using dplyr::left_join
+  merged_data <- dplyr::left_join(total_reads, spiked_reads, by = "Sample")
   
   # Calculate the percentage of spiked taxa reads relative to total reads
-  merged_data$Percentage <- (merged_data$Total_Reads_spiked / merged_data$Total_Reads_total) * 100
+  merged_data$Percentage <- (merged_data$Total_Reads_spiked / merged_data$Total_Reads) * 100
   
-  # Categorize the results as "passed" or "failed" based on the passed_range
+  # Categorize results as "passed" or "failed" based on the passed_range
   merged_data$Result <- ifelse(merged_data$Percentage >= passed_range[1] & merged_data$Percentage <= passed_range[2], "passed", "failed")
   
-  # Create flextable
-  ft <- flextable(merged_data) %>% 
+  # Create a formatted table using flextable
+  ft <- flextable::flextable(merged_data) %>% 
     flextable::fontsize(size = 10) %>% 
     flextable::font(part = "all", fontname = "Inconsolata") %>% 
     flextable::color(part = "header", color = "red4") %>% 
     flextable::bold(part = "header") %>% 
-    flextable::italic() 
+    flextable::italic()
   
   # Save the flextable as a Word document
-  save_as_docx(ft, path = output_path)
+  flextable::save_as_docx(ft, path = output_path)
   
   # Save merged data frame as CSV
   csv_path <- sub(".docx", ".csv", output_path)
-  write.csv(merged_data, file = csv_path, row.names = FALSE)
+  utils::write.csv(merged_data, file = csv_path, row.names = FALSE)
   
-  # Print a message indicating the files have been saved
-  cat("Table saved in docx format:", output_path, "\n")
+  # Print file save locations
+  cat("Table saved in DOCX format:", output_path, "\n")
   cat("Merged data saved as CSV:", csv_path, "\n")
   
   # Return the merged data frame
   return(merged_data)
 }
 
+# Helper function to fix phyloseq table dimensions
+fix_phyloseq_dimensions <- function(physeq) {
+  otu_table_names <- rownames(phyloseq::otu_table(physeq))
+  tax_table_names <- rownames(phyloseq::tax_table(physeq))
+  
+  # Align OTU and taxonomy tables
+  if (!all(otu_table_names %in% tax_table_names)) {
+    physeq@tax_table <- phyloseq::tax_table(phyloseq::tax_table(physeq)[otu_table_names, , drop = FALSE])
+  }
+  
+  return(physeq)
+}
+
 # Example usage:
-# Define the spiked species list
-# spiked_species_list <- list(
-#   c("Methylobacterium_phyllostachyos"),
-#   c("Methylorubrum_salsuginis"),
-#   c("Bosea_massiliensis"),
-#   c("Bacillus_decolorationis")
+# # Step 1: Create a taxonomy table 
+# taxa_data <- data.frame(
+#   OTUID = c("ASV1", "ASV2", "ASV3",    
+#             "ASV4", "ASV5", "ASV6",   
+#             "ASV7", "ASV8", "ASV9",    
+#             "ASV10", "ASV11", "ASV12", 
+#             "ASV13", "ASV14", "ASV15", 
+#             "ASV16", "ASV17", "ASV18"),
+#   Kingdom = rep("Bacteria", 18),
+#   Phylum = c("Proteobacteria", "Proteobacteria", "Proteobacteria", 
+#              "Proteobacteria", "Proteobacteria", "Proteobacteria", 
+#              "Firmicutes", "Firmicutes", "Firmicutes", 
+#              "Proteobacteria", "Firmicutes", "Firmicutes", 
+#              "Firmicutes", "Firmicutes", "Firmicutes", 
+#              "Bacteroidota", "Bacteroidota", "Proteobacteria"),
+#   Class = c("Gammaproteobacteria", "Gammaproteobacteria", "Gammaproteobacteria", 
+#             "Gammaproteobacteria", "Gammaproteobacteria", "Gammaproteobacteria", 
+#             "Clostridia", "Clostridia", "Clostridia", 
+#             "Gammaproteobacteria", "Bacilli", "Bacilli", 
+#             "Bacilli", "Bacilli", "Clostridia", 
+#             "Bacteroidia", "Bacteroidia", "Epsilonproteobacteria"),
+#   Order = c("Pseudomonadales", "Pseudomonadales", "Pseudomonadales", 
+#             "Enterobacterales", "Enterobacterales", "Enterobacterales", 
+#             "Clostridiales", "Clostridiales", "Clostridiales", 
+#             "Enterobacterales", "Lactobacillales", "Bacillales", 
+#             "Bacillales", "Bacillales", "Clostridiales", 
+#             "Bacteroidales", "Bacteroidales", "Campylobacterales"),
+#   Family = c("Pseudomonadaceae", "Pseudomonadaceae", "Pseudomonadaceae", 
+#              "Enterobacteriaceae", "Enterobacteriaceae", "Enterobacteriaceae", 
+#              "Clostridiaceae", "Clostridiaceae", "Clostridiaceae", 
+#              "Enterobacteriaceae", "Enterococcaceae", "Staphylococcaceae", 
+#              "Listeriaceae", "Bacillaceae", "Clostridiaceae", 
+#              "Bacteroidaceae", "Bacteroidaceae", "Helicobacteraceae"),
+#   Genus = c("Pseudomonas", "Pseudomonas", "Pseudomonas", 
+#             "Escherichia", "Escherichia", "Escherichia", 
+#             "Clostridium", "Clostridium", "Clostridium", 
+#             "Salmonella", "Enterococcus", "Staphylococcus", 
+#             "Listeria", "Bacillus", "Lactobacillus", 
+#             "Bacteroides", "Bacteroides", "Helicobacter"),
+#   Species = c("Pseudomonas aeruginosa", "Pseudomonas aeruginosa", "Pseudomonas aeruginosa", 
+#               "Escherichia coli", "Escherichia coli", "Escherichia coli", 
+#               "Clostridium difficile", "Clostridium difficile", "Clostridium difficile", 
+#               "Salmonella enterica", "Enterococcus faecalis", "Staphylococcus aureus", 
+#               "Listeria monocytogenes", "Bacillus subtilis", "Lactobacillus plantarum", 
+#               "Bacteroides fragilis", "Bacteroides vulgatus", "Helicobacter pylori")
 # )
-# #Use the spiked species list in the function
-# merged_spiked_species <- spiked_species_list
-# calculate_spike_percentage_list(ps, merged_spiked_species = merged_spiked_species, passed_range = c(0.1, 10))
-
-# Define the spiked hashcodes
-# merged_spiked_hashcodes <- c("hashcode1", "hashcode2")
-# calculate_spike_percentage_list(physeq, merged_spiked_hashcodes = merged_spiked_hashcodes, passed_range = c(0.1, 10))
-
-# Example of calculating summary stats
-# result <- calculate_spike_percentage_list(spiked_ITS_OTU_scaled, merged_spiked_species = merged_spiked_species, passed_range = c(0.1, 35))
-# calculate_summary_stats_table(result)
-# result$Percentage
+# 
+# # Convert to matrix 
+# taxa_matrix <- as.matrix(taxa_data[, -1])
+# rownames(taxa_matrix) <- taxa_data$OTUID
+# 
+# # Step 2: Create an OTU table
+# otu_data <- round(matrix(
+#   c(5.1, 2.3, 1.5,    # Pseudomonas aeruginosa ASV1, ASV2, ASV3
+#     12.4, 6.8, 5.9,   # Escherichia coli ASV4, ASV5, ASV6
+#     15.2, 7.3, 6.9,   # Clostridium difficile ASV7, ASV8, ASV9
+#     12.7, 19, 17.3,   # Salmonella enterica
+#     21.4, 10.3, 14.6, # Enterococcus faecalis
+#     13.1, 9.8, 4.6,   # Staphylococcus aureus
+#     2.5, 1.8, 11.2,   # Listeria monocytogenes
+#     7.1, 6.3, 12.7,   # Bacillus subtilis
+#     5.8, 5.2, 11.4,   # Lactobacillus plantarum
+#     17.1, 15.6, 19.2, # Bacteroides fragilis
+#     12.7, 13.8, 12.5, # Bacteroides vulgatus
+#     8.3, 7.8, 3.9),   # Helicobacter pylori
+#   nrow = 18, ncol = 12, byrow = TRUE,   
+#   dimnames = list(taxa_data$OTUID, paste0("Sample", 1:12))
+# ))
+# 
+# # Step 3: Create sample metadata with 12 samples and 4 rep 
+# sample_data <- data.frame(
+#   SampleID = paste0("Sample", 1:12),  
+#   Category = rep(c("Control", "Extreme Environment", "Normal Condition"), each = 4),  # 4 replicates for each condition
+#   row.names = paste0("Sample", 1:12)  
+# )
+# 
+# # Step 4: build the phyloseq 
+# otu_table_ps <- otu_table(otu_data, taxa_are_rows = TRUE)
+# tax_table_ps <- tax_table(taxa_matrix)
+# sample_data_ps <- sample_data(sample_data)
+# 
+# physeq <- phyloseq(otu_table_ps, tax_table_ps, sample_data_ps)
+# 
+# # tidy up
+# physeq<- tidy_phyloseq(physeq)
+# spiked_species_list <- list(
+#   c("Pseudomonas aeruginosa"),
+#   c("Escherichia coli"),
+#   c("Clostridium difficile")
+# )
+# 
+# # Call the function to calculate the spike percentages
+# result <- calculate_spike_percentage_list(merged_physeq_sum, merged_spiked_species = spiked_species_list, passed_range = c(0.1, 50))
+# 
+# # Print the result
+# print(result)

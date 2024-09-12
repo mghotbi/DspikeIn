@@ -8,34 +8,35 @@
 #' # Example usage:
 #' # summary_stats <- summ_count_phyloseq(spiked_ITS)
 #' # summary_stats <- summ_count_phyloseq(processed_data)
+#' @importFrom matrixStats rowMeans2 rowMedians
 #' @export
 summ_count_phyloseq <- function(physeq) {
-  # Check if matrixStats package is installed, if not, install it
-  if (!require(matrixStats)) {
-    install.packages("matrixStats")
-  }
-  library(matrixStats)
-  
-  # Extract OTU table
-  otu_table <- as.matrix(phyloseq::otu_table(physeq))
-  
-  # Compute summary statistics
-  overall_summary <- data.frame(
-    Variable = c("Mean", "Median", "SD", "SE", "Q25", "Q50", "Q75"),
-    Value = c(
-      mean(rowMeans(otu_table, na.rm = TRUE)),
-      median(rowMedians(otu_table, na.rm = TRUE)),
-      sd(rowMeans(otu_table, na.rm = TRUE)),
-      sd(rowMeans(otu_table, na.rm = TRUE)) / sqrt(nrow(otu_table)),
-      quantile(rowMeans(otu_table, na.rm = TRUE), 0.25),
-      quantile(rowMeans(otu_table, na.rm = TRUE), 0.50),
-      quantile(rowMeans(otu_table, na.rm = TRUE), 0.75)
+  suppressMessages({
+    # Check if matrixStats package is installed, if not, stop
+    if (!requireNamespace("matrixStats", quietly = TRUE)) {
+      stop("Package 'matrixStats' is required but not installed.")
+    }
+    
+    # Extract OTU table
+    otu_table <- as.matrix(phyloseq::otu_table(physeq))
+    
+    # Compute summary statistics
+    overall_summary <- data.frame(
+      Variable = c("Mean", "Median", "SD", "SE", "Q25", "Q50", "Q75"),
+      Value = c(
+        base::mean(matrixStats::rowMeans2(otu_table, na.rm = TRUE)),
+        stats::median(matrixStats::rowMedians(otu_table, na.rm = TRUE)),
+        stats::sd(matrixStats::rowMeans2(otu_table, na.rm = TRUE)),
+        stats::sd(matrixStats::rowMeans2(otu_table, na.rm = TRUE)) / base::sqrt(nrow(otu_table)),
+        stats::quantile(matrixStats::rowMeans2(otu_table, na.rm = TRUE), 0.25),
+        stats::quantile(matrixStats::rowMeans2(otu_table, na.rm = TRUE), 0.50),
+        stats::quantile(matrixStats::rowMeans2(otu_table, na.rm = TRUE), 0.75)
+      )
     )
-  )
-  
-  return(overall_summary)
+    
+    return(overall_summary)
+  })
 }
-
 
 # Example usage:
 # summary_stats <- summ_count_phyloseq(spiked_ITS)

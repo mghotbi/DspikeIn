@@ -8,7 +8,7 @@ plot_glommed_tree(
   physeq,
   resolution,
   output_prefix = "glommed_tree",
-  width = 18,
+  width = 20,
   height = 18,
   print_plot = TRUE
 )

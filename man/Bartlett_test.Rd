@@ -27,7 +27,10 @@ and transformation combination.
 }
 \examples{
 # Example usage:
-# Assume `methods_df` is a data frame with a column "Methods" for grouping
+# Assume `methods` is a data frame with a column "Methods" for grouping
 # and other numeric columns to test.
-# Bartlett_test(methods_df, "Methods")
+# file_path <- system.file("extdata", "methods.rds", package = "DspikeIn") 
+methods <- readRDS(file_path) 
+print(methods) 
+Bartlett_test(methods, "Methods")
 }

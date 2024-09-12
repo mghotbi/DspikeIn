@@ -18,5 +18,5 @@ This function calculates summary statistics (mean, median, standard deviation, s
 \examples{
 # Example usage:
 # Generate summary statistics for a phyloseq object
-# summary_stats <- summ_phyloseq_sampleID(spiked_16S)
+# summary_stats <- summ_phyloseq_sampleID(physeq_ITSOTU)
 }

@@ -7,6 +7,7 @@
 perform_DESeq2(
   ps,
   group_var,
+  rank = "Genus",
   threshold_percentage,
   threshold_mean_abundance,
   threshold_count,
@@ -18,6 +19,8 @@ perform_DESeq2(
 \item{ps}{A phyloseq object.}
 
 \item{group_var}{A string specifying the grouping variable in sample data.}
+
+\item{rank}{A string specifying the taxonomic rank to glom (e.g., "Genus", "Family"). Default is "Genus".}
 
 \item{threshold_percentage}{A numeric value for filtering threshold percentage.}
 

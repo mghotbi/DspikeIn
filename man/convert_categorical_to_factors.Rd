@@ -18,7 +18,9 @@ A phyloseq object with updated sample data.
 A phyloseq object with updated sample data.
 }
 \description{
-This function converts all character and factor columns in the sample data of a phyloseq object to factors.
+Convert Categorical Columns to Factors in Sample Data
+
+Convert Categorical Columns to Factors in Sample Data
 }
 \examples{
 ps <- convert_categorical_to_factors(ps)

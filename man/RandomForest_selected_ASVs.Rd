@@ -10,7 +10,7 @@ RandomForest_selected_ASVs(
   minlib = 15000,
   prunescale = 1e-04,
   ntree = 100,
-  n_top_predictors = 20,
+  n_top_predictors = 50,
   output_csv = "randomforest_results.csv",
   na_vars = NULL
 )
@@ -26,7 +26,7 @@ RandomForest_selected_ASVs(
 
 \item{ntree}{An integer specifying the number of trees to grow in the Random Forest. Default is 100.}
 
-\item{n_top_predictors}{An integer specifying the number of top predictors to select. Default is 20.}
+\item{n_top_predictors}{An integer specifying the number of top predictors to select. Default is 50.}
 
 \item{output_csv}{A character string specifying the output CSV file name. Default is "randomforest_results.csv".}
 
@@ -42,6 +42,6 @@ The selected ASVs are saved to a CSV file.
 \examples{
 # Ensure you have a phyloseq object `physeq`
 # Use the name of the column in sample_data for response_var
-rf_physeq <- RandomForest_selected_ASVs(physeq, response_var = "host.species", 
-na_vars = c("Habitat", "Ecoregion_III", "Host_genus", "Animal_type"))
+rf_physeq <- RandomForest_selected_ASVs(physeq_16SOTU,response_var = "Host.genus",
+na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet"))
 }

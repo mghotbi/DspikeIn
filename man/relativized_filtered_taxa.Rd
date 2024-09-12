@@ -3,7 +3,8 @@
 %   R/relativized_filtered_taxa.R
 \name{relativized_filtered_taxa}
 \alias{relativized_filtered_taxa}
-\title{Relativized Filtered Taxa}
+\title{Relativized Filtered Taxa
+This function filters taxa from a phyloseq object based on custom thresholds.}
 \usage{
 relativized_filtered_taxa(
   physeq,
@@ -39,11 +40,9 @@ A phyloseq object containing only the taxa that meet the specified thresholds.
 }
 \description{
 This function filters taxa from a phyloseq object based on custom thresholds for percentage of samples, mean abundance, count, and relative abundance.
-
-This function filters taxa from a phyloseq object based on custom thresholds for percentage of samples, mean abundance, count, and relative abundance.
 }
 \examples{
-FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, threshold_mean_abundance = 0.0005, threshold_count = 5, threshold_relative_abundance = 0.01)
+FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, threshold_mean_abundance = 0.0005, threshold_count = 5)
 # Example usage with custom thresholds
 # FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, 
 # threshold_mean_abundance = 0.0005,

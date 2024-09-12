@@ -17,9 +17,9 @@ install_and_load(packages)
 Install and Load Required Packages
 This function installs and loads required packages.
 
-Install and Load Required Packages
+-----------------------------------------------------------
 }
 \examples{
-required_packages <- c("phyloseq", "DESeq2", "edgeR", "sva", "EDASeq", "RUVSeq", "BiocManager", "BiocGenerics", "ANCOMBC", "ggplot2", "dplyr", "DT")
+required_packages <- c("phyloseq", "DESeq2", "edgeR", "BiocManager", "BiocGenerics", "ggplot2", "dplyr", "DT")
 install_and_load(required_packages)
 }

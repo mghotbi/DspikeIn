@@ -12,23 +12,25 @@
 #' normalized_physeq <- proportion_adj(physeq, output_file = "proportion_adjusted_physeq.rds")
 #' @export
 proportion_adj <- function(physeq, output_file = "proportion_adjusted_physeq.rds") {
-  # Normalize total sequence counts
-  normf <- function(x, tot = max(sample_sums(physeq))) {
-    tot * x / sum(x)
-  }
-  
-  # Apply normalization to sample counts/abundance
-  physeq <- transform_sample_counts(physeq, normf)
-  
-  # Round the abundance counts within the OTU table
-  otu_table(physeq) <- round(otu_table(physeq), digits = 0)
-  
-  # Save the normalized and rounded phyloseq object
-  saveRDS(physeq, file = output_file)
-  cat("Normalized and rounded phyloseq object saved to:", output_file, "\n")
-  
-  # Return the normalized and rounded phyloseq obj
-  return(physeq)
+  suppressMessages({
+    # Normalize total sequence counts
+    normf <- function(x, tot = max(phyloseq::sample_sums(physeq))) {
+      tot * x / sum(x)
+    }
+    
+    # Apply normalization to sample counts/abundance
+    physeq <- phyloseq::transform_sample_counts(physeq, normf)
+    
+    # Round the abundance counts within the OTU table
+    phyloseq::otu_table(physeq) <- round(phyloseq::otu_table(physeq), digits = 0)
+    
+    # Save the normalized and rounded phyloseq object
+    saveRDS(physeq, file = output_file)
+    cat("Normalized and rounded phyloseq object saved to:", output_file, "\n")
+    
+    # Return the normalized and rounded phyloseq obj
+    return(physeq)
+  })
 }
 
 # Example usage:

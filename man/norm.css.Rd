@@ -4,23 +4,14 @@
 \alias{norm.css}
 \title{CSS Normalization (Cumulative Sum Scaling)}
 \usage{
-norm.css(
-  ps,
-  feature_category = c("all_features", "interquartile_range", "non_zero_counts",
-    "specified_features")
-)
+norm.css(ps)
 }
 \arguments{
 \item{ps}{A phyloseq object.}
-
-\item{feature_category}{A character string specifying the feature category ("all_features", "interquartile_range", "non_zero_counts", "specified_features").}
 }
 \value{
 A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
 CSS Normalization (Cumulative Sum Scaling)
-}
-\references{
-Paulson et al., 2013.
 }

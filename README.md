@@ -536,12 +536,9 @@ saveRDS(physeq_absolute_abundance_16S_OTU, "physeq_absolute_abundance_16S_OTU.rd
 library(phyloseq)
 library(DESeq2)
 library(edgeR)
-library(preprocessCore)
-library(sva)
 library(EDASeq)
 library(Biobase)
 library(BiocGenerics)
-library(vegan)
 
 
 #ps is a phyloseq object without spiked species counts
@@ -555,10 +552,6 @@ ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
 # result_DESeq <- normalization_set(ps, method = "DESeq", groups = group_var)
 # result_TMM <- normalization_set(ps, method = "TMM", groups = group_var)
 # result_CLR <- normalization_set(ps, method = "clr")
-# result_SVA <- normalization_set(ps, method = "SVA", groups = group_var)
-# result_RUVg <- normalization_set(ps, method = "RUVg", groups = group_var)
-# result_RUVr <- normalization_set(ps, method = "RUVr", groups = group_var)
-# result_RUVs <- normalization_set(ps, method = "RUVs", groups = group_var)
 # result_UQ <- normalization_set(ps, method = "UQ", groups = group_var)
 # result_med <- normalization_set(ps, method = "med", groups = group_var)
 # result_rle <- normalization_set(ps, method = "rle")

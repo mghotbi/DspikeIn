@@ -29,6 +29,3 @@ A list containing the normalized phyloseq object and scaling factors.
 \description{
 RLE Normalization (Relative Log Expression)
 }
-\references{
-Anders and Huber, 2010.
-}

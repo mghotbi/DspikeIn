@@ -2,7 +2,7 @@
 % Please edit documentation in R/alluvial_plot.R
 \name{alluvial_plot}
 \alias{alluvial_plot}
-\title{Generate an Alluvial Plot after converting phyloseq object to the long-format dataframe}
+\title{Generate an Alluvial Plot from a Long-Format Dataframe}
 \usage{
 alluvial_plot(
   data,
@@ -21,65 +21,79 @@ alluvial_plot(
 )
 }
 \arguments{
-\item{data}{A data frame containing the microbial data, including abundance and categorical variables.}
+\item{data}{A data frame containing microbial data, including abundance and categorical variables.}
 
 \item{axes}{A character vector specifying the axes (columns) to include in the alluvial plot.}
 
-\item{abundance_threshold}{A numeric value specifying the minimum abundance threshold for including samples. Default is 10000 for absolute abundance and a relative threshold value for relative abundance (e.g., 0.001 for 0.1%).}
+\item{abundance_threshold}{A numeric value specifying the minimum abundance threshold for including samples. Default is 10000 for absolute abundance and a relative threshold for relative abundance (e.g., 0.001 for 0.1\%).}
 
-\item{fill_variable}{A character string specifying the variable to use for fill in the alluvial plot. Default is "Phylum".}
+\item{fill_variable}{A character string specifying the variable to use for the fill color in the alluvial plot. Default is "Phylum".}
 
 \item{silent}{A logical indicating whether to suppress messages from `is_alluvia_form`. Default is TRUE.}
 
 \item{abundance_type}{A character string specifying whether to plot "relative" or "absolute" abundance. Default is "absolute".}
 
-\item{total_reads}{A numeric value specifying the total number of reads for the sample when using relative abundance. Default is NULL.}
+\item{total_reads}{A numeric value specifying the total number of reads for relative abundance calculation. Default is NULL.}
 
-\item{top_taxa}{An integer specifying the number of top taxa to display. Default is NULL, which means all taxa will be displayed.}
+\item{top_taxa}{An integer specifying the number of top taxa to display. Default is NULL, meaning all taxa will be displayed.}
 
-\item{facet_vars}{A character vector specifying the variables for faceting. Default is NULL.}
+\item{facet_vars}{A character vector specifying variables for faceting. Default is NULL (no faceting).}
 
-\item{text_size}{A numeric value specifying the size of the text inside the plot. Default is 4.}
+\item{text_size}{A numeric value specifying the size of the text labels inside the plot. Default is 4.}
 
 \item{legend_ncol}{An integer specifying the number of columns for the legend. Default is 1.}
 
-\item{custom_colors}{A character vector specifying custom colors to use for fill in the alluvial plot. Default is NULL, which will use the predefined MG colors.}
+\item{custom_colors}{A character vector specifying custom colors for the fill variable. Default is NULL (use predefined MG colors).}
 
-\item{color_mapping}{A named character vector specifying colors for specific taxa. Default is NULL.}
+\item{color_mapping}{A named character vector specifying specific colors for taxa. Default is NULL.}
 }
 \value{
 A ggplot2 object representing the alluvial plot.
 }
 \description{
-This function creates an alluvial plot to visualize the abundance of common taxa across multiple categorical axes, revealing factors that impact the abundance of taxa.
-It filters out samples with abundance below the specified threshold and generates the plot using `ggplot2`.
+This function generates an alluvial plot using a long-format data frame where microbial abundances are plotted across categorical variables (axes).
+It supports both relative and absolute abundance types, filters based on abundance thresholds, and allows for displaying the top taxa.
+Additional customization options include faceting, custom colors, and setting the legend.
 }
 \examples{
-# Load necessary libraries
 library(phyloseq)
 library(ggplot2)
 library(dplyr)
 library(ggalluvial)
 
-# 'ps' phyloseq object
+# Convert a phyloseq object to a long-format data frame
+pps <- psmelt(physeq_16SOTU)
 
-# Melt the phyloseq object into a long-format data frame
-pps <- psmelt(ps)
-
-# Define total reads for relative abundance calculation
-total_reads <- sum(pps$Abundance)  # Calculate total reads from the data
+# Calculate total reads for relative abundance
+total_reads <- sum(pps$Abundance)
 
 # Generate alluvial plot for absolute abundance
-alluvial_plot_abs <- alluvial_plot(data = pps, axes = c("Animal.ecomode", "Host.species", "Result"), 
-                                   abundance_threshold = 10000, fill_variable = "Phylum", 
-                                   silent = TRUE, abundance_type = "absolute", top_taxa = 10,
-                                   text_size = 4, legend_ncol = 1)
+alluvial_plot_abs <- alluvial_plot(
+  data = pps, 
+  axes = c("Animal.ecomode", "Host.species", "Result"), 
+  abundance_threshold = 10000, 
+  fill_variable = "Phylum", 
+  silent = TRUE, 
+  abundance_type = "absolute", 
+  top_taxa = 10,
+  text_size = 4, 
+  legend_ncol = 1
+)
 print(alluvial_plot_abs)
 
 # Generate alluvial plot for relative abundance
-alluvial_plot_rel <- alluvial_plot(data = pps, axes = c("Animal.ecomode", "Host.species", "Result"), 
-                                   abundance_threshold = 0.001, fill_variable = "Phylum", 
-                                   silent = TRUE, abundance_type = "relative", 
-                                   total_reads = total_reads, top_taxa = 10, text_size = 4, legend_ncol = 1)
+alluvial_plot_rel <- alluvial_plot(
+  data = pps, 
+  axes = c("Animal.ecomode", "Host.species", "Diet"), 
+  abundance_threshold = 0.001, 
+  fill_variable = "Phylum", 
+  silent = TRUE, 
+  abundance_type = "relative", 
+  total_reads = total_reads, 
+  top_taxa = 10, 
+  text_size = 4, 
+  legend_ncol = 1
+)
 print(alluvial_plot_rel)
+
 }

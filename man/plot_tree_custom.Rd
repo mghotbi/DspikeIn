@@ -34,5 +34,6 @@ This function plots a phylogenetic tree from a phyloseq object and saves the plo
 }
 \examples{
 # Plot and save the phylogenetic tree
+# layour options "rectangular", "circular", "fan", and "radial"
 plot_tree_custom(Tetragenococcus, output_prefix = "p0", width = 18, height = 18, layout = "circular")
 }

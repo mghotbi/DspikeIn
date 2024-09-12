@@ -2,7 +2,7 @@
 % Please edit documentation in R/microbiome_differential_abundance.R
 \name{perform_and_visualize_differential_abundance}
 \alias{perform_and_visualize_differential_abundance}
-\title{Perform and Visualize Differential Abundance Analysis}
+\title{Perform Differential Abundance Analysis with DESeq2}
 \usage{
 perform_and_visualize_differential_abundance(
   ps,
@@ -13,7 +13,23 @@ perform_and_visualize_differential_abundance(
   threshold_count = 1,
   threshold_relative_abundance = 1e-05,
   significance_level = 0.05,
-  point_size = 2
+  point_size = 3,
+  facet_variable = "Phylum",
+  target_glom = "Genus"
+)
+
+perform_and_visualize_differential_abundance(
+  ps,
+  group_var,
+  method = "edgeR",
+  threshold_percentage = 1e-04,
+  threshold_mean_abundance = 1e-05,
+  threshold_count = 1,
+  threshold_relative_abundance = 1e-05,
+  significance_level = 0.05,
+  point_size = 3,
+  facet_variable = "Phylum",
+  target_glom = "Genus"
 )
 }
 \arguments{
@@ -21,7 +37,7 @@ perform_and_visualize_differential_abundance(
 
 \item{group_var}{A string specifying the grouping variable in sample data.}
 
-\item{method}{A string specifying the differential abundance method ("edgeR", "DESeq2", "ANCOMBC"). Default is "edgeR".}
+\item{method}{A string specifying the differential abundance method ("edgeR", "DESeq2"). Default is "edgeR".}
 
 \item{threshold_percentage}{A numeric value for filtering threshold percentage. Default is 0.0001.}
 
@@ -33,18 +49,54 @@ perform_and_visualize_differential_abundance(
 
 \item{significance_level}{A numeric value specifying the significance level for filtering significant OTUs. Default is 0.05.}
 
-\item{point_size}{A numeric value specifying the size of points in the volcano plot. Default is 2.}
+\item{point_size}{A numeric value specifying the size of points in the volcano plot. Default is 3.}
+
+\item{facet_variable}{A string specifying the variable to facet the barplots. Default is "Phylum".}
+
+\item{target_glom}{A string specifying the taxonomic rank to aggregate taxa (e.g., "Genus", "Family"). Default is "Genus".}
 }
 \value{
+A data frame containing the differential abundance results.
+
+A list containing the final results, the phyloseq object with significant OTUs, and ggplot objects for the visualizations.
+
 A list containing the final results, the phyloseq object with significant OTUs, and ggplot objects for the visualizations.
 }
 \description{
-This function normalizes and filters the data, performs differential abundance analysis, extracts significant OTUs,
-rebuilds the phyloseq object, merges results with metadata, and visualizes the results.
+Perform Differential Abundance Analysis with DESeq2
+
+Perform and Visualize Differential Abundance Analysis
+This function normalizes and filters the data, performs differential abundance analysis, 
+extracts significant OTUs, rebuilds the phyloseq object, merges results with metadata, and visualizes the results.
 }
 \examples{
+# Install and load the required packages first
+required_packages <- c("phyloseq", "DESeq2", "edgeR", "BiocManager", "BiocGenerics", "ggplot2", "dplyr", "DT")
+install_and_load(required_packages)
+
+# Step 1: Clean and preprocess the data
 ps <- remove_zero_negative_count_samples(ps)
-results <- perform_and_visualize_differential_abundance(ps, "Animal.ecomode", method = "DESeq2", threshold_percentage = 0.001, threshold_mean_abundance = 0.001, threshold_count = 1, threshold_relative_abundance = 0.001, significance_level = 0.05, point_size = 2)
-print(results$plot)
-print(results$barplot)
+ps <- convert_categorical_to_factors(ps)
+
+# edgeR Example with default glomming at the "Genus" rank:
+results_edgeR <- perform_and_visualize_differential_abundance(ps, "Animal.ecomode", method = "edgeR", 
+                                                              threshold_percentage = 0.001, threshold_mean_abundance = 0.001,
+                                                              threshold_count = 5, threshold_relative_abundance = 0.001,
+                                                              significance_level = 0.05, point_size = 3, target_glom = "Genus")
+# Print the volcano plot and barplots for edgeR
+print(results_edgeR$plot)
+print(results_edgeR$barplot_rel)
+print(results_edgeR$barplot_abs)
+
+# DESeq2 Example with custom glomming at the "Family" rank and faceting by Class:
+results_DESeq2 <- perform_and_visualize_differential_abundance(ps, "Host.genus", method = "DESeq2",
+                                                               threshold_percentage = 0.001, threshold_mean_abundance = 0.001,
+                                                               threshold_count = 5, threshold_relative_abundance = 0.001,
+                                                               significance_level = 0.05, point_size = 3, target_glom = "Family", 
+                                                               facet_variable = "Class")
+# Print the volcano plot and barplots for DESeq2
+print(results_DESeq2$plot)
+print(results_DESeq2$barplot_rel)
+print(results_DESeq2$barplot_abs)
+
 }

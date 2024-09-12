@@ -72,16 +72,4 @@ legend_nrow = 10, relativize = TRUE, output_prefix = "relativized_abundance_plot
 facet_var = "Ecoregion.III", scales = "free_x")
 print(plot)
 
-# Plot non-relativized (absolute) abundance
-plot_absolute <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, 
-level = "Family", group = c("Diet", "Host.species","Ecoregion.III"), 
-x_axis_var = "Env_broad_scale.x", top = 10, x_size = 10, y_size = 10, 
-legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = FALSE, 
-output_prefix = "non_relativized_abundance_plot", facet_var = "Ecoregion.III", scales = "free_x")
-print(plot_absolute)
-
-# Return summarized data
-data <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", 
-group = c("Diet", "Host.species","Ecoregion.III"), 
-x_axis_var = "Ecoregion.III", top = 10, return = TRUE)
 }

@@ -12,31 +12,34 @@
 #' adjusted_physeq <- adjust_abundance_one_third(physeq16S, factor = 3)
 #' @export
 adjust_abundance_one_third <- function(physeq, factor = 3, output_file = NULL) {
-  print("Starting adjustment process...")
-  
-  # Check if the OTU table is already a matrix
-  if (inherits(physeq@otu_table, "matrix")) {
-    print("OTU table is already a matrix. Performing division...")
-    # Divide the OTU table by the specified factor
-    physeq@otu_table <- physeq@otu_table / factor
-  } else {
-    print("Converting OTU table to matrix...")
-    # Convert the OTU table to a matrix and divide by the specified factor
-    physeq@otu_table <- as.matrix(physeq@otu_table) / factor
-  }
-  
-  if (!is.null(output_file)) {
-    print("Saving modified phyloseq object...")
-    # Save the adjusted phyloseq object to a file
-    saveRDS(physeq, file = output_file)
-    cat("Modified phyloseq object saved as:", output_file, "\n")
-  }
-  
-  print("Adjustment complete.")
-  
-  return(physeq)
+  suppressMessages({
+    message("Starting adjustment process...")
+    
+    # Check if the OTU table is already a matrix
+    otu_table_matrix <- phyloseq::otu_table(physeq)
+    
+    if (is.matrix(otu_table_matrix)) {
+      message("OTU table is already a matrix. Performing division...")
+      # Divide the OTU table by the specified factor
+      otu_table_matrix <- otu_table_matrix / factor
+    } else {
+      message("Converting OTU table to matrix...")
+      # Convert the OTU table to a matrix and divide by the specified factor
+      otu_table_matrix <- as.matrix(otu_table_matrix) / factor
+    }
+    
+    # Update the OTU table in the phyloseq object
+    phyloseq::otu_table(physeq) <- otu_table_matrix
+    
+    # Save the adjusted phyloseq object to an output file if specified
+    if (!is.null(output_file)) {
+      message("Saving modified phyloseq object to: ", output_file)
+      saveRDS(physeq, file = output_file)
+    }
+    
+    return(physeq)
+  })
 }
-
 # Example usage:
 # Adjust the abundance data by dividing each value by 3
-# adjusted_physeq <- adjust_abundance_one_third(physeq16S, factor = 3)
+# adjusted_physeq <- adjust_abundance_one_third(physeq_16SASV, factor = 3)

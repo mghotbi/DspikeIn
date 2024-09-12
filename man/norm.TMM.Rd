@@ -17,6 +17,3 @@ A list containing the normalized phyloseq object and scaling factors.
 \description{
 TMM Normalization (Trimmed Mean of M component)
 }
-\references{
-Robinson and Oshlack, 2010.
-}

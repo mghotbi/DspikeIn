@@ -24,8 +24,11 @@ Taxa with NA or empty values in the taxonomic table are removed.
 }
 \examples{
 # Example usage:
-# Assume `spiked_16S` is a phyloseq object and `scaling_factors` is a numeric vector of scaling factors.
-# absolute <- convert_to_absolute_counts(spiked_16S, scaling_factors)
+# Assume `merged_physeq_sum` is a phyloseq object with one ASV/OTU resulting from spiked species and `scaling_factors` is a numeric vector of scaling factors.
+# merged_spiked_species <- c("Tetragenococcus_halophilus")
+# Calculate scaling factors and generate the report
+# result <- calculate_spikeIn_factors(merged_physeq_sum, 1874, merged_spiked_species)
+# absolute <- convert_to_absolute_counts(merged_physeq_sum, scaling_factors)
 # absolute_counts <- absolute$absolute_counts
 # physeq_obj <- absolute$physeq_obj
 }

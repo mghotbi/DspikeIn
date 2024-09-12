@@ -18,6 +18,6 @@ for each ASV (Amplicon Sequence Variant) in a phyloseq object.
 }
 \examples{
 # Summarize the phyloseq data based on ASV_ID
-summary_stats <- summ_phyloseq_ASV_OTUID(spiked_16S)
+summary_stats <- summ_phyloseq_ASV_OTUID(physeq_ITSOTU)
 print(summary_stats)
 }

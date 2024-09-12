@@ -15,32 +15,38 @@
 #' summ_phyloseq_sampleID(red)
 #' @export
 random_subsample_WithReductionFactor <- function(physeq, reduction_factor = 3, output_file = "Less_subsampled_physeq.rds") {
-  require(phyloseq)
-  
-  # Get the OTU table
-  otu_table_df <- as.data.frame(otu_table(physeq))
-  
-  # Loop through each sample
-  for (i in 1:ncol(otu_table_df)) {
-    # Get the counts for each ASV in the current sample
-    asv_counts <- otu_table_df[, i]
-    # Perform random subsampling for each ASV
-    subsampled_counts <- numeric(length(asv_counts))
-    for (j in seq_along(asv_counts)) {
-      subsampled_counts[j] <- max(0, round(asv_counts[j] / reduction_factor))
+  suppressMessages({
+    # Load necessary libraries
+    if (!requireNamespace("phyloseq", quietly = TRUE)) {
+      stop("Package 'phyloseq' is required but not installed.")
+    }
+    library(phyloseq)
+    
+    # Get the OTU table
+    otu_table_df <- as.data.frame(phyloseq::otu_table(physeq))
+    
+    # Loop through each sample
+    for (i in 1:ncol(otu_table_df)) {
+      # Get the counts for each ASV in the current sample
+      asv_counts <- otu_table_df[, i]
+      # Perform random subsampling for each ASV
+      subsampled_counts <- numeric(length(asv_counts))
+      for (j in seq_along(asv_counts)) {
+        subsampled_counts[j] <- max(0, round(asv_counts[j] / reduction_factor))
+      }
+      
+      # Update the OTU table with the subsampled counts
+      otu_table_df[, i] <- subsampled_counts
     }
     
-    # Update the OTU table with the subsampled counts
-    otu_table_df[, i] <- subsampled_counts
-  }
-  
-  # Convert the modified otu_table back to otu_table object
-  otu_table_mod <- otu_table(otu_table_df, taxa_are_rows = TRUE)
-  subsampled_physeq <- phyloseq(otu_table_mod, sample_data(physeq), tax_table(physeq))
-  
-  # Save the subsampled phyloseq object
-  saveRDS(subsampled_physeq, file = output_file)
-  cat("Less_Subsampled phyloseq object saved to:", output_file, "\n")
+    # Convert the modified OTU table back to an OTU table object
+    otu_table_mod <- phyloseq::otu_table(otu_table_df, taxa_are_rows = TRUE)
+    subsampled_physeq <- phyloseq::phyloseq(otu_table_mod, phyloseq::sample_data(physeq), phyloseq::tax_table(physeq))
+    
+    # Save the subsampled phyloseq object
+    saveRDS(subsampled_physeq, file = output_file)
+    cat("Less_Subsampled phyloseq object saved to:", output_file, "\n")
+  })
   
   return(subsampled_physeq)
 }

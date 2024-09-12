@@ -11,17 +11,16 @@
 #'
 #' @param my_phyloseq A phyloseq object containing the taxonomic and abundance data.
 #' @return A cleaned and tidied phyloseq object.
+#' @importFrom phyloseq tax_table prune_taxa taxa_sums subset_taxa
 #' @examples
 #' # Example usage:
 #' # spiked_16S <- tidy_phyloseq(spiked_16S)
 #' @export
 tidy_phyloseq <- function(my_phyloseq) {
-  # Load necessary libraries
-  if (!requireNamespace("phyloseq", quietly = TRUE)) {
+  # Load necessary libraries with suppressMessages
+  suppressMessages(if (!requireNamespace("phyloseq", quietly = TRUE)) {
     stop("Package 'phyloseq' is required but not installed.")
-  }
-  
-  library(phyloseq)
+  })
   
   # Fix taxa names by removing any characters followed by '__' and any spaces after '__'
   for (col in colnames(phyloseq::tax_table(my_phyloseq))) {
@@ -29,30 +28,30 @@ tidy_phyloseq <- function(my_phyloseq) {
   }
   
   # Set taxonomic ranks
-  tax_table(my_phyloseq) <- tax_table(my_phyloseq)[, c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
+  phyloseq::tax_table(my_phyloseq) <- phyloseq::tax_table(my_phyloseq)[, c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
   
   # Trim leading and trailing whitespace from taxa names
-  for (col in colnames(tax_table(my_phyloseq))) {
-    tax_table(my_phyloseq)[, col] <- trimws(tax_table(my_phyloseq)[, col])
+  for (col in colnames(phyloseq::tax_table(my_phyloseq))) {
+    phyloseq::tax_table(my_phyloseq)[, col] <- trimws(phyloseq::tax_table(my_phyloseq)[, col])
   }
   
   # Replace NA in Phylum with "Unidentified"
-  tax_table(my_phyloseq)[is.na(tax_table(my_phyloseq)[, "Phylum"]), "Phylum"] <- "Unidentified"
+  phyloseq::tax_table(my_phyloseq)[is.na(phyloseq::tax_table(my_phyloseq)[, "Phylum"]), "Phylum"] <- "Unidentified"
   
   # Remove taxa with zero counts
-  my_phyloseq <- prune_taxa(taxa_sums(my_phyloseq) > 0, my_phyloseq)
+  my_phyloseq <- phyloseq::prune_taxa(phyloseq::taxa_sums(my_phyloseq) > 0, my_phyloseq)
   
   # Check if "Class" and "Family" columns exist before attempting to subset taxa
-  if ("Class" %in% colnames(tax_table(my_phyloseq))) {
+  if ("Class" %in% colnames(phyloseq::tax_table(my_phyloseq))) {
     # Remove taxa classified as "Chloroplast" at the Class level
-    my_phyloseq <- subset_taxa(my_phyloseq, Class != "Chloroplast")
+    my_phyloseq <- phyloseq::subset_taxa(my_phyloseq, Class != "Chloroplast")
   } else {
     warning("The taxonomic rank 'Class' is not present in the tax_table. Skipping removal of 'Chloroplast'.")
   }
   
-  if ("Family" %in% colnames(tax_table(my_phyloseq))) {
+  if ("Family" %in% colnames(phyloseq::tax_table(my_phyloseq))) {
     # Remove taxa classified as "Mitochondria" at the Family level
-    my_phyloseq <- subset_taxa(my_phyloseq, Family != "Mitochondria")
+    my_phyloseq <- phyloseq::subset_taxa(my_phyloseq, Family != "Mitochondria")
   } else {
     warning("The taxonomic rank 'Family' is not present in the tax_table. Skipping removal of 'Mitochondria'.")
   }
@@ -61,4 +60,4 @@ tidy_phyloseq <- function(my_phyloseq) {
 }
 
 # Example usage:
-# spiked_16S <- tidy_phyloseq(spiked_16S)
+# physeq_ITSOTU <- tidy_phyloseq(physeq_ITSOTU)

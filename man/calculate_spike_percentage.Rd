@@ -32,10 +32,9 @@ It merges the spiked taxa into one ASV, calculates the percentage of reads, cate
 and saves the results as a DOCX and CSV file.
 }
 \examples{
-library(phyloseq)
 # Load example data
-data(GlobalPatterns)
-physeq <- GlobalPatterns
+data(physeq_16SASV)
+physeq <- physeq_16SASV
 
 # Define the spiked species
 merged_spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")

@@ -21,7 +21,12 @@ and transformation combination.
 }
 \examples{
 # Example usage:
-# Assume `methods_df` is a data frame with a column "Methods" for grouping
-# and other numeric columns to test.
-# Shapiro_Wilk_test(methods_df, "Methods")
+# Retrieve the methods.rds file in the extdata folder of DspikeIn package
+# Read the file 
+file_path <- system.file("extdata", "methods.rds", package = "DspikeIn")
+methods <- readRDS(file_path)
+
+# Perform the Shapiro-Wilk test on the methods data, using the "Methods" column for grouping
+Shapiro_Wilk_test(methods, "Methods")
+
 }

@@ -7,6 +7,10 @@
 #' @param output_file A character string specifying the output file path for the plot. Default is "tree_with_bootstrap_and_cophenetic.png".
 #' @param bootstrap_replicates An integer specifying the number of bootstrap replicates. Default is 100.
 #' @return NULL. The function saves the plot to the specified output file.
+#' @importFrom phyloseq phy_tree refseq
+#' @importFrom DECIPHER AlignSeqs
+#' @importFrom ape cophenetic.phylo boot.phylo
+#' @importFrom phangorn phyDat dist.ml
 #' @examples
 #' # Bootstrap and plot a phylogenetic tree
 #' Bootstrap_phy_tree_with_cophenetic(physeq_object = Tetragenococcus, 
@@ -82,6 +86,8 @@ Bootstrap_phy_tree_with_cophenetic <- function(physeq_object, output_file = "tre
 }
 
 # Example:
-# Bootstrap_phy_tree_with_cophenetic(physeq_object = Tetragenococcus, 
-#output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 1000)
+# Load the data from DspikeIn package
+# Tetragenococcus <-subset_taxa(physeq_16SASV, Genus=="Tetragenococcus")
+# Bootstrap_phy_tree_with_cophenetic(physeq_object = Tetragenococcus,
+# output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 1000)
 
