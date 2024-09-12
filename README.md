@@ -187,7 +187,7 @@ physeq_16S_ASV@sam_data$spiked.volume
 ```
 
 
-# Prepare the required information 
+## Prepare the required information 
 
 
 ```r
@@ -214,7 +214,7 @@ hashcodes <- row.names(phyloseq::tax_table(Dekkera))
 ```
 
 
-# Plot phylogenetic tree with Bootstrap Values
+## Plot phylogenetic tree with Bootstrap Values
 This step will be helpful for handling ASVs with/without Gene Copy Number Correction
 This section demonstrates how to use various functions from the package to plot and analyze phylogenetic trees.
 
@@ -485,7 +485,7 @@ spiked_species_reads <- result$spiked_species_reads
 ```
 
 
-# Convert Relative Counts to Absolute Counts and Create a New Phyloseq Object
+## Convert Relative Counts to Absolute Counts and Create a New Phyloseq Object
 
 
 ```r
@@ -505,7 +505,7 @@ print(post_eval_summary)
 ```
 
 
-# Let's check the conclusion and get the report table of spiked species success or failure.
+## Let's check the conclusion and get the report table of spiked species success or failure.
 
 
 
@@ -539,7 +539,7 @@ physeq_absolute_abundance_16S_OTU <- tidy_phyloseq(physeq_absolute_abundance_16S
 saveRDS(physeq_absolute_abundance_16S_OTU, "physeq_absolute_abundance_16S_OTU.rds")
 
 ```
-# Normalization and bias correction 
+## Normalization and bias correction 
 
 
 ```r
