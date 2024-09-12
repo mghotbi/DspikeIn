@@ -145,6 +145,7 @@ install.packages("remotes")
 remotes::install_github("mghotbi/DspikeIn")
 library(DspikeIn)
 
+```
 
 ```
 
