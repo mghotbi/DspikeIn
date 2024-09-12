@@ -96,7 +96,7 @@ lapply(c("stats", "dplyr", "ggplot2", "ggtree", "flextable", "randomForest", "gg
 ```
 
 #### Bioconductor Packages
-Install and load these packages from Bioconductor:
+
 
 ```r
 # Install BiocManager if not installed
@@ -111,7 +111,7 @@ lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings", "DECIPHER", "microb
 ```
 
 #### GitHub Packages
-Install and load these packages from GitHub:
+
 
 ```r
 
