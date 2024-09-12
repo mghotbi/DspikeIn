@@ -85,15 +85,55 @@ To install the required packages, use the following script:
 
 ```r
 
-# Please install devtools first
-install.packages("devtools")
+Before installing DspikeIn, please ensure that the following R packages are installed and loaded:
 
-# Source the helper function from our GitHub repository
-devtools::source_url("https://raw.githubusercontent.com/mghotbi/DspikeIn/MGhotbi/install_required_packages.R")
+---
 
-# Run this function to install all required packages
-install_required_packages()
+### Prerequisites
 
+#### CRAN Packages
+Install and load these packages from CRAN:
+
+```r
+# Install CRAN packages
+install.packages(c("stats", "dplyr", "ggplot2", "ggtree", "flextable", "randomForest", "ggridges", "ggalluvial", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"))
+
+# Load CRAN packages
+lapply(c("stats", "dplyr", "ggplot2", "ggtree", "flextable", "randomForest", "ggridges", "ggalluvial", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"), library, character.only = TRUE)
+
+```
+
+#### Bioconductor Packages
+Install and load these packages from Bioconductor:
+
+```r
+# Install BiocManager if not installed
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+
+# Install Bioconductor packages
+BiocManager::install(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings", "DECIPHER", "microbiome"))
+
+# Load Bioconductor packages
+lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings", "DECIPHER", "microbiome"), library, character.only = TRUE)
+
+```
+
+#### GitHub Packages
+Install and load these packages from GitHub:
+
+```r
+# Install remotes if not installed
+install.packages("remotes")
+
+# Install GitHub packages
+remotes::install_github("mikemc/speedyseq")
+remotes::install_github("microsud/microbiomeutilities")
+
+# Load GitHub packages
+library(speedyseq)
+library(microbiomeutilities)
+
+```
 
 ```
 ## Step 2: Install DspikeIn Package
