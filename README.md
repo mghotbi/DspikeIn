@@ -83,10 +83,7 @@ To test the DspikeIn package, you can download the dataset using the following l
 
 To install the required packages, use the following script:
 
-```r
-
-#### CRAN Packages
-Install and load these packages from CRAN:
+# CRAN packages
 
 ```r
 # Install CRAN packages
