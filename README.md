@@ -113,6 +113,7 @@ lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings", "DECIPHER", "microb
 Install and load these packages from GitHub:
 
 ```r
+
 # Install remotes if not installed
 install.packages("remotes")
 
@@ -126,7 +127,6 @@ library(microbiomeutilities)
 
 ```
 
-```
 ## Step 2: Install DspikeIn Package
 
 
