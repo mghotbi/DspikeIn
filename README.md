@@ -414,7 +414,7 @@ Spiked_16S_sum_scaled <- Pre_processing_hashcodes(
 Spiked_16S_max_scaled <- Pre_processing_hashcodes(
   spiked_16S_OTU, 
   hashcodes, 
-  merge_method = "max", 
+  merge_method = "max",  
   output_prefix = "merged_physeq_max")
 
 # Summarize count
