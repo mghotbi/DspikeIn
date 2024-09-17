@@ -429,10 +429,10 @@ merged_spiked_species <- c("Tetragenococcus_halophilus")
 max_passed_range <- 35
 
 # Subset the phyloseq object to exclude blanks
-physeq_16S_adj_scaled_perc <- subset_samples(Spiked_16S_OTU_scaled, sample.or.blank != "blank")
+physeq_absolute_abundance_16S_OTU_perc <- subset_samples(physeq_absolute_abundance_16S_OTU, sample.or.blank != "blank")
 
 # Generate the spike success report and summary statistics
-summary_stats <- conclusion(physeq_16S_adj_scaled_perc, merged_spiked_species, max_passed_range)
+summary_stats <- conclusion(physeq_absolute_abundance_16S_OTU_perc, merged_spiked_species, max_passed_range)
 print(summary_stats)
 
 
@@ -447,9 +447,8 @@ Here is an example of a success or failure report:
 
 #Save your file for later. Please stay tuned for the rest: Comparisons and several visualization methods to show how important it is to convert relative to absolute abundance in the context of microbial ecology.
 
-taxa_names(physeq_absolute_abundance_16S_OTU) <- paste0("ASV", seq(ntaxa(physeq_absolute_abundance_16S_OTU)))
-physeq_absolute_abundance_16S_OTU <- tidy_phyloseq(physeq_absolute_abundance_16S_OTU)
-saveRDS(physeq_absolute_abundance_16S_OTU, "physeq_absolute_abundance_16S_OTU.rds")
+physeq_absolute_16S_OTU <- tidy_phyloseq(physeq_absolute_abundance_16S_OTU_perc)
+saveRDS(physeq_absolute_16S_OTU, "physeq_absolute_16S_OTU.rds")
 
 ```
 ## Normalization and bias correction 
@@ -468,13 +467,12 @@ library(edgeR)
 library(BiocGenerics)
 
 #ps is a phyloseq object without spiked species counts
-#One can calculate the scaling factor using any normalization method in the absence of spiked species counts, and then determine the spiked scaling factor. Crossing both #scaling factors with relative abundance helps quantify absolute abundance while correcting for bias
-
+ps <- physeq_absolute_16S_OTU
 ps <- remove_zero_negative_count_samples(physeq_absolute_abundance_16S_OTU)
 ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
+# group_var <- "Animal.ecomode"  
 
 # Normalization Methods:
-# group_var <- "Animal.ecomode"  
 # result_DESeq <- normalization_set(ps, method = "DESeq", groups = "group_var")
 # result_TMM <- normalization_set(ps, method = "TMM", groups = "group_var")
 # result_CLR <- normalization_set(ps, method = "clr")
@@ -490,14 +488,13 @@ ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
 
 # Customized filtering and transformations
 # Proportion adjustment
-physeq<-physeq_absolute_abundance_16S_OTU
-normalized_physeq <- proportion_adj(physeq, output_file = "proportion_adjusted_physeq.rds")
+normalized_physeq <- proportion_adj(ps, output_file = "proportion_adjusted_physeq.rds")
 summ_count_phyloseq(normalized_16S)
 
 
 # Relativize and filter taxa based on selected thresholds
 FT_physeq <- relativized_filtered_taxa(
-  physeq,
+  ps,
   threshold_percentage = 0.0001,
   threshold_mean_abundance = 0.0001,
   threshold_count = 5,
@@ -505,7 +502,7 @@ FT_physeq <- relativized_filtered_taxa(
 summ_count_phyloseq(FT_physeq)
 
 # Adjust prevalence based on the minimum reads
-physeq_min <- adjusted_prevalence(physeq, method = "min")
+physeq_min <- adjusted_prevalence(ps, method = "min")
 
 
 ```
@@ -518,18 +515,14 @@ physeq_min <- adjusted_prevalence(physeq, method = "min")
 
 ```r
 
-taxa_names(physeq_16S_adj_scaled_absolute_abundance) <- paste0("ASV", seq(ntaxa(physeq_16S_adj_scaled_absolute_abundance)))
-physeq_16S_adj_scaled_absolute_abundance <- tidy_phyloseq(physeq_16S_adj_scaled_absolute_abundance)
-saveRDS(physeq_16S_adj_scaled_absolute_abundance, "physeq_16S_adj_scaled_absolute_abundance.rds")
 
-
-# A subset of the dataset for both relative and absolute abundance of spiked species was filtered
-
-# taxa barplot 
-bp_ab <- taxa_barplot(Salamander_absolute_NospikeSp, target_glom = "Genus", treatment_variable = "Host.genus", abundance_type = "absolute", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20)
+# taxa barplot
+#abundance_type = "absolute"/"relative"
+bp_ab <- taxa_barplot(physeq_absolute_16S_OTU, target_glom = "Genus", treatment_variable = "Host.genus", abundance_type = "absolute", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20)
 print(bp_ab$barplot)
 
-bp_rel <- taxa_barplot(Salamander_relative_NospikeSp, target_glom = "Genus", treatment_variable = "Host.genus", abundance_type = "relative", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20)
+# original relative count -> spiked_16S_OTU
+bp_rel <- taxa_barplot(spiked_16S_OTU, target_glom = "Genus", treatment_variable = "Host.genus", abundance_type = "relative", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20)
 print(bp_rel$barplot)
 
 ```
@@ -546,17 +539,17 @@ print(bp_rel$barplot)
 
 # simple barplot of taxonomy abundance
 # Plot relativized abundance
-plot <- plotbar_abundance(Salamander_relative_NospikeSp, level = "Family", group = "Env.broad.scale.x", top = 10, x_size = 10, y_size = 10, legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = TRUE, output_prefix = "relativized_abundance_plot")
+plot <- plotbar_abundance(physeq_absolute_16S_OTU, level = "Family", group = "Env.broad.scale.x", top = 10, x_size = 10, y_size = 10, legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = TRUE, output_prefix = "relativized_abundance_plot")
 print(plot)
 
 # Plot non-relativized (absolute) abundance
-plot_absolute <- plotbar_abundance(Salamander_absolute_NospikeSp, level = "Family", group = "Env.broad.scale.x", top = 10, x_size = 10, y_size = 10, legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = FALSE, output_prefix = "non_relativized_abundance_plot")
+plot_absolute <- plotbar_abundance(spiked_16S_OTU, level = "Family", group = "Env.broad.scale.x", top = 10, x_size = 10, y_size = 10, legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = FALSE, output_prefix = "non_relativized_abundance_plot")
 print(plot_absolute)
 
 
 # Check abundance distribution via Ridge Plots before and after converting to absolute abundance
-ridgeP_before <- ridge_plot_it(Salamander_relative_NospikeSp, taxrank = "Family", top_n = 10)
-ridgeP_after <- ridge_plot_it(Salamander_absolute_NospikeSp, taxrank = "Family", top_n = 10)
+ridgeP_before <- ridge_plot_it(spiked_16S_OTU, taxrank = "Family", top_n = 10)
+ridgeP_after <- ridge_plot_it(physeq_absolute_16S_OTU, taxrank = "Family", top_n = 10)
 
 
 ```
@@ -571,9 +564,9 @@ ridgeP_after <- ridge_plot_it(Salamander_absolute_NospikeSp, taxrank = "Family",
 
 # core_microbiome
 custom_detections <- 10^seq(log10(3e-1), log10(0.5), length = 5)
-PCM_rel <- plot_core_microbiome_custom(Salamander_relative_NospikeSp, detections = custom_detections, taxrank = "Family", output_core_rds = "core_microbiome.rds", output_core_csv = "core_microbiome.csv")
+PCM_rel <- plot_core_microbiome_custom(spiked_16S_OTU, detections = custom_detections, taxrank = "Family", output_core_rds = "core_microbiome.rds", output_core_csv = "core_microbiome.csv")
 
-PCM_Abs <- plot_core_microbiome_custom(Salamander_absolute_NospikeSp, detections = custom_detections, taxrank = "Family", output_core_rds = "core_microbiome.rds", output_core_csv = "core_microbiome.csv")
+PCM_Abs <- plot_core_microbiome_custom(physeq_absolute_16S_OTU, detections = custom_detections, taxrank = "Family", output_core_rds = "core_microbiome.rds", output_core_csv = "core_microbiome.csv")
 
 # core.microbiome is automatically saved in your working directory so yoou can go ahead and barplot it
 core.microbiome <- readRDS("core.microbiome.rds")
@@ -590,12 +583,12 @@ core.microbiome <- readRDS("core.microbiome.rds")
 
 # shift to long-format data frame and plot the abundance of taxa across the factor of your interest
 # Generate alluvial plot
-ps_Salamander_absolute_NospikeSp <- psmelt(Salamander_absolute_NospikeSp)
+ps_physeq_absolute_16S_OTU <- psmelt(physeq_absolute_16S_OTU)
 
 # Define total reads for relative abundance calculation
-total_reads <- sum(ps_Salamander_absolute_NospikeSp$Abundance)  
+total_reads <- sum(ps_physeq_absolute_16S_OTU$Abundance)  
 # Generate alluvial plot for absolute abundance
-alluvial_plot_abs <- alluvial_plot(data = ps_Salamander_absolute_NospikeSp,
+alluvial_plot_abs <- alluvial_plot(data = ps_physeq_absolute_16S_OTU,
                                    axes = c("Host.genus", "Ecoregion.III"),
                                    abundance_threshold = 1000, fill_variable = "Family",
                                    silent = TRUE, abundance_type = "absolute",
@@ -615,7 +608,7 @@ alluvial_plot_abs <- alluvial_plot(data = ps_Salamander_absolute_NospikeSp,
 
 # selecting the most important ASVs/OTUs through RandomForest classification
 # Salamander_absolute= subset of our phyloseq object
-rf_physeq <- RandomForest_selected_ASVs(Salamander_absolute, response_var = "Host_Species", na_vars = c("Habitat","Diet", "Ecoregion_III", "Host_genus", "Animal_type"))
+rf_physeq <- RandomForest_selected_ASVs(ps_physeq_absolute_16S_OTU, response_var = "Host_Species", na_vars = c("Habitat","Diet", "Ecoregion_III", "Host_genus", "Animal_type"))
 RP=ridge_plot_it(rf_physeq)
 RP+facet_wrap(~Diet)
 
