@@ -168,13 +168,13 @@ getwd()
 # We are going to work with a subset of the dataset for both ASVs and OTUs
 # approaches to accelerate this workshop.
 
-Salamander_relative_16S_ASV <-readRDS("Salamander_relative_16S_ASV.rds")
-Salamander_relative_ITS_ASV <-readRDS("Salamander_relative_ITS_ASV.rds")
+physeq_16SOTU <-readRDS("physeq_16SOTUV.rds")
+physeq_16SOTUASV <-readRDS("physeq_16SASV.rds")
 
-physeq_16S_ASV <- tidy_phyloseq(Salamander_relative_16S_ASV)
+physeq_16SOTU <- tidy_phyloseq(physeq_16SOTU)
 
 # Ensure your metadata contains spiked volumes:
-physeq_16S_ASV@sam_data$spiked.volume
+physeq_16SOTU@sam_data$spiked.volume
 
 
 ```
