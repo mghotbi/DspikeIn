@@ -18,10 +18,6 @@ The **DspikeIn** package was developed to facilitate:
 - Converting relative abundance to absolute abundance.
 - Data transformation, Differential abundance and visualization.
 
-We provide a step-by-step walkthrough of each procedure within the **DspikeIn** package.
-
-For more detailed methodology and results, please refer to our soon-to-be-published paper.
-
 
 ---
 
