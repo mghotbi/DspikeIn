@@ -61,7 +61,7 @@ The **DspikeIn** package was developed to facilitate:
 - Preprocessing data.
 - Calculating the spike-in scaling factor.
 - Converting relative abundance to absolute abundance.
-- Data transformation and visualization.
+- Data transformation, Differential abundance and visualization.
 
 We provide a step-by-step walkthrough of each procedure within the **DspikeIn** package.
 
