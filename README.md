@@ -1,7 +1,4 @@
 # DspikeIn
-The importance of converting relative to absolute abundance in the context of microbial ecology: Introducing the user-friendly DspikeIn R package
-
-![DspikeIn](https://github.com/mghotbi/DspikeIn/assets/29090547/f827aed9-2f99-42a1-adff-4b85124f8e94)
 
 ---
 
