@@ -2,7 +2,6 @@
 
 ---
 
-### Introduction
 *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples based on our previous studies [WalkerLab](https://walkerlabmtsu.weebly.com/personnel.html).
 
 ### DspikeIn Package
@@ -12,9 +11,6 @@ The **DspikeIn** package was developed to facilitate:
 - Calculating the spike-in scaling factor.
 - Converting relative abundance to absolute abundance.
 - Data transformation, Differential abundance and visualization.
-
-
----
 
 
 ---
