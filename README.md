@@ -194,14 +194,14 @@ library(phyloseq)
 spiked_cells <-1847
 species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp")
 merged_spiked_species<-"Tetragenococcus_halophilus"
-Tetra <- subset_taxa(physeq_16SASV,Species=="Tetragenococcus_halophilus" | Species=="Tetragenococcus_sp")
+Tetra <- subset_taxa(physeq_16SOTU,Species=="Tetragenococcus_halophilus" | Species=="Tetragenococcus_sp")
 hashcodes <- row.names(phyloseq::tax_table(Tetra))
 
 # ITS rDNA
 # presence of 'spiked.volume' column in metadata
 spiked_cells <- 733
 species_name <- spiked_species<-merged_spiked_species<-"Dekkera_bruxellensis"
-Dekkera <- subset_taxa(physeq_ITSASV, Species=="Dekkera_bruxellensis")
+Dekkera <- subset_taxa(physeq_ITSOTU, Species=="Dekkera_bruxellensis")
 hashcodes <- row.names(phyloseq::tax_table(Dekkera))
 
 ```
