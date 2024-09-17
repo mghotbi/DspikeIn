@@ -7,21 +7,6 @@
 *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples based on our previous studies [WalkerLab](https://walkerlabmtsu.weebly.com/personnel.html).
 
 
-
-## Methodology
-
-### Growth of Stock Cell Suspensions
-- _**Tetragenococcus halophilus**_: Cultivated in tryptic soy broth.
-- _**Dekkera bruxellensis**_: Cultivated in potato dextrose broth.
-- Both microbial cultures were serially diluted, and optical density (OD) measurements were obtained using a ClarioStar plate reader. To obtain an aliquot and follow our procedure, please contact [Prof. Donnald Walker](mailto:Donald.Walker@mtsu.edu).
-
-### DNA Extraction
-
-- DNA was extracted using the Qiagen DNeasy Powersoil Pro Kit.
-- These DNA isolations served as standards to determine the appropriate spike-in volume of cells to represent 0.1-10% of a sample, as detailed in [Rao et al., 2021](https://www.nature.com/articles/s41586-021-03241-8).
-
----
-
 ## Bioinformatics and Downstream Analyses
 
 ### Gene Marker Analysis
