@@ -2,13 +2,8 @@
 
 ---
 
-## Introduction
-
+### Introduction
 *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples based on our previous studies [WalkerLab](https://walkerlabmtsu.weebly.com/personnel.html).
-
-
----
-
 
 ### DspikeIn Package
 The **DspikeIn** package was developed to facilitate:
@@ -20,10 +15,6 @@ The **DspikeIn** package was developed to facilitate:
 
 
 ---
-
-## Introduction
-
-*Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples based on our previous studies [WalkerLab](https://walkerlabmtsu.weebly.com/personnel.html).
 
 
 ---
