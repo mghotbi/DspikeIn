@@ -257,7 +257,7 @@ _The VSEARCH with de novo robust clustering algorithms at a 97% similarity thres
 ```r
 
 # Subset spiked samples (264 samples are spiked)
-spiked_16S_OTU <- subset_samples(physeq_16S_OTU, spiked.volume %in% c("2", "1"))
+spiked_16S_OTU <- subset_samples(physeq16S_OTU, spiked.volume %in% c("2", "1"))
 spiked_16S_OTU <- tidy_phyloseq(spiked_16S_OTU)
 
 ```
@@ -268,10 +268,10 @@ spiked_16S_OTU <- tidy_phyloseq(spiked_16S_OTU)
 ```r
 
 # Summarize the initial statistics for ASVs/OTUs
-initial_stat_ASV <- summ_phyloseq_ASV_OTUID(physeq_16S_OTU)
+initial_stat_ASV <- summ_phyloseq_ASV_OTUID(spiked_16S_OTU)
 
 # Summarize the initial statistics sample-wise
-initial_stat_sampleWise <- summ_phyloseq_sampleID(physeq_16S_OTU)
+initial_stat_sampleWise <- summ_phyloseq_sampleID(spiked_16S_OTU)
 
 # Summarize the count data
 summ_count_phyloseq(physeq_16S_OTU)
@@ -303,7 +303,7 @@ summ_count_phyloseq(red16S)
 
 ## Preprocessing for Scaling Factor Calculation  
 
-If you are using OTUs and have only one OTU rooted from the spiked species, you can skip this preprocessing step. Follow the steps below to estimate the success of spike-in, particularly check if you have any samples with under or over-spikes.If the spiked species appear in several ASVs, check their phylogenetic distances and compare them to the reference sequences of your positive control. If the spiked species of interest has gene copy number variations and you prefer not to sum their abundances, use the `max` option instead of `sum` to combine these ASVs under a single taxon, simplifying data processing.
+If the spiked species appear in several OTUs/ASVs, check their phylogenetic distances and compare them to the reference sequences of your positive control.
 
 
 ```r
@@ -320,33 +320,19 @@ If you are using OTUs and have only one OTU rooted from the spiked species, you 
 
 species_name <- "Tetragenococcus_halophilus"
 
-# Merge using "sum" method
+# Merge using "sum" or "max" method
 Spiked_16S_sum_scaled <- Pre_processing_species(
   spiked_16S_OTU, 
   species_name, 
   merge_method = "sum", 
   output_file = "merged_physeq_sum.rds")
 
-# Merge using "max" method
-Spiked_16S_max_scaled <- Pre_processing_species(
-  spiked_16S_OTU, 
-  species_name, 
-  merge_method = "max", 
-  output_file = "merged_physeq_max.rds")
-
-# Merge hashcodes using "sum" method
+# Merge hashcodes using "sum" or "max" method
 Spiked_16S_sum_scaled <- Pre_processing_hashcodes(
   spiked_16S_OTU, 
   hashcodes, 
   merge_method = "sum", 
   output_prefix = "merged_physeq_sum")
-
-# Merge hashcodes using "max" method
-Spiked_16S_max_scaled <- Pre_processing_hashcodes(
-  spiked_16S_OTU, 
-  hashcodes, 
-  merge_method = "max",  
-  output_prefix = "merged_physeq_max")
 
 # Summarize count
 summ_count_phyloseq(Spiked_16S_sum_scaled)
@@ -356,13 +342,12 @@ Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_sum_scaled)
 
 # Now calculate the spiked species retrieval percentage.
 # Customize the passed_range and merged_spiked_species/merged_spiked_hashcodes based on your preferences.
-# passed_range = "c(0.1, 10)": threshold of acceptable spiked species %
-# passed_range = "c(0.1, 35)": threshold of acceptable spiked species %
+# passed_range = "c(0.1, 11)": threshold of acceptable spiked species %
 # Select either merged_spiked_species or merged_spiked_hashcodes
 
 merged_spiked_species <- c("Tetragenococcus_halophilus")
 result <- calculate_spike_percentage(
-  Spiked_16S_OTU_scaled, 
+  Spiked_16S_sum_scaled, 
   merged_spiked_species, 
   passed_range = c(0.1, 11))
 calculate_summary_stats_table(result)
@@ -376,7 +361,7 @@ merged_spiked_hashcodes <- row.names(tax_table(merged_Tetra))
 result <- calculate_spike_percentage(
   Spiked_16S_OTU_scaled,  
   merged_spiked_hashcodes, 
-  passed_range = c(0.1, 35))
+  passed_range = c(0.1, 11))
 calculate_summary_stats_table(result)
 
 # If you decide to remove the failed reads and go forward with passed reads, here is what you need to do
@@ -389,7 +374,7 @@ passed_samples <- result$Sample[result$Result == "passed"]
 # Subset the original phyloseq object to keep only the samples that passed
 passed_physeq <- prune_samples(
   passed_samples, 
-  Spiked_16S_ASV_scaled)
+  Spiked_16S_OTU_scaled)
 
 ```
 
@@ -422,7 +407,6 @@ spiked_species_reads <- result$spiked_species_reads
 ```r
 
 # Convert relative counts data to absolute counts
-physeq_16S_adj_scaled_AbsoluteCount <- convert_to_absolute_counts(Spiked_16S_OTU_scaled, scaling_factors)
 absolute <- convert_to_absolute_counts(Spiked_16S_OTU_scaled, scaling_factors)
 absolute_counts <- physeq_16S_adj_scaled_AbsoluteCount$absolute_counts
 physeq_absolute_abundance_16S_OTU <- physeq_16S_adj_scaled_AbsoluteCount$physeq_obj
