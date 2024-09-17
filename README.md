@@ -313,10 +313,8 @@ If the spiked species appear in several OTUs/ASVs, check their phylogenetic dist
 # please refer to the instructions in our upcoming paper.
 
 # Merge the spiked species
-# merge_method = "max": Selects the maximum abundance among ASVs of the spiked species, 
-# ensuring the most abundant ASV is retained.
-# merge_method = "sum": Sums the abundances of ASVs of the spiked species, 
-# providing a cumulative total.
+# merge_method = "max": Selects the maximum abundance among OTUs/ASVs of the spiked species, ensuring the most abundant ASV is retained.
+# merge_method = "sum": Sums the abundances of OTUs/ASVs of the spiked species, providing a cumulative total.
 
 species_name <- "Tetragenococcus_halophilus"
 
