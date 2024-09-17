@@ -168,8 +168,8 @@ getwd()
 # We are going to work with a subset of the dataset for both ASVs and OTUs
 # approaches to accelerate this workshop.
 
-physeq_16SOTU <-readRDS("physeq_16SOTUV.rds")
-physeq_16SOTUASV <-readRDS("physeq_16SASV.rds")
+physeq_16SOTU <-readRDS("physeq_16SOTU.rds")
+physeq_ITSOTU <-readRDS("physeq_ITSOTU.rds")
 
 physeq_16SOTU <- tidy_phyloseq(physeq_16SOTU)
 
