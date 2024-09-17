@@ -21,6 +21,13 @@ The **DspikeIn** package was developed to facilitate:
 
 ---
 
+## Introduction
+
+*Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples based on our previous studies [WalkerLab](https://walkerlabmtsu.weebly.com/personnel.html).
+
+
+---
+
 *If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:*
 
 ## Step 1: Install Required Packages
