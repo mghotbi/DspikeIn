@@ -7,11 +7,6 @@
 *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples based on our previous studies [WalkerLab](https://walkerlabmtsu.weebly.com/personnel.html).
 
 
-## Bioinformatics and Downstream Analyses
-
-### Gene Marker Analysis
-- 16S rRNA and ITS rDNA gene markers were analyzed.
-
 ---
 
 
