@@ -124,7 +124,7 @@ physeq_16SOTU@sam_data$spiked.volume
 ```
 
 ## Prepare the required information for our Protocol
-### Pre-process one Spiked-in Species
+#### Pre-process one Spiked-in Species
 
 
 ```r
@@ -153,7 +153,7 @@ hashcodes <- row.names(phyloseq::tax_table(Dekkera))
 ---
 
 ## Prepare the Required Information for the Synthetic Community
-### Pre-process a List of Spiked-in Species
+#### Pre-process a List of Spiked-in Species
 
 ---
 
