@@ -154,6 +154,9 @@ hashcodes <- row.names(phyloseq::tax_table(Dekkera))
 ## Prepare the Required Information for the Synthetic Community
 ### Pre-process a List of Spiked-in Species
 
+---
+
+
 ```r
 
 # Define the list of spiked-in species
