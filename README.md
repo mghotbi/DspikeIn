@@ -123,8 +123,7 @@ physeq_16SOTU@sam_data$spiked.volume
 
 ```
 
-
-## Prepare the required information 
+## Prepare the required information for our Protocol
 
 
 ```r
@@ -150,7 +149,22 @@ hashcodes <- row.names(phyloseq::tax_table(Dekkera))
 
 ```
 
+---
 
+## Prepare the Required Information for the Synthetic Community
+### Pre-process a List of Spiked-in Species
+
+```r
+
+# Define the list of spiked-in species
+spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
+
+# Define the corresponding copy numbers for each spiked-in species
+spiked_cells_list <- c(10000, 20000, 15000) # Alternatively, use spiked_species_list <- c(200, 200, 200)
+
+```
+
+```
 ## Plot phylogenetic tree with Bootstrap Values
 This step will be helpful for handling ASVs with/without Gene Copy Number Correction
 This section demonstrates how to use various functions from the package to plot and analyze phylogenetic trees.
@@ -158,7 +172,7 @@ This section demonstrates how to use various functions from the package to plot 
 
 
 ```r
-# In case there are still several ASVs rooting from the spiked species, you may want to check the phylogenetic distances.
+# In case there are several OTUs/ASVs resulting from the spiked species, you may want to check the phylogenetic distances.
 # We first read DNA sequences from a FASTA file, to perform multiple sequence alignment and compute a distance matrix using the maximum likelihood method, then we construct a phylogenetic tree
 # Use the Neighbor-Joining method  based on a Jukes-Cantor distance matrix and plot the tree with bootstrap values.
 # we compare the Sanger read of Tetragenococcus halophilus with the FASTA sequence of Tetragenococcus halophilus from our phyloseq object.
@@ -199,7 +213,6 @@ plot_tree_with_alignment(Tetra, output_prefix = "tree_alignment", width = 15, he
 
 # Plot phylogenetic tree with bootstrap values and cophenetic distances
 Bootstrap_phy_tree_with_cophenetic(Tetra, output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 500)
-
 
 
 ```
