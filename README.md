@@ -124,6 +124,7 @@ physeq_16SOTU@sam_data$spiked.volume
 ```
 
 ## Prepare the required information for our Protocol
+### Pre-process one Spiked-in Species
 
 
 ```r
