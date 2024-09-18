@@ -174,7 +174,7 @@ spiked_cells_list <- c(10000, 20000, 15000) # Alternatively, use spiked_species_
 This step will be helpful for handling ASVs with/without Gene Copy Number Correction
 This section demonstrates how to use various functions from the package to plot and analyze phylogenetic trees.
 
----
+```
 
 ```r
 # In case there are several OTUs/ASVs resulting from the spiked species, you may want to check the phylogenetic distances.
