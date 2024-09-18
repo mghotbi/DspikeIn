@@ -248,19 +248,15 @@ DNAStringSet object of length 5:
 ---
 
 Retrieved spiked species are correlated with abundance, richness, and beta diversity, and their recovery can therefore vary depending on the system under study. Our results indicate that the acceptable range of retrieved spiked species can be expanded to 35% in our model system. This contrasts with the findings of [Roa et al., 2021](https://www.nature.com/articles/s41586-021-03241-8), who reported an acceptable range of 0.1% to 10%.
+We selected the OTU approach using VSEARCH with de novo robust clustering algorithms at a 97% similarity threshold to minimize potential errors, following the methods outlined by [Westcott and Schloss (2015)](https://doi.org/10.7717/peerj.1487).
 
-
----
+**---**
 
 
 
 | ASVs Or OTUs | Acceptable range|
 |:----------:|:---------:|
 | ![Desired range of spiked sp](https://github.com/mghotbi/DspikeIn/assets/29090547/2f949616-6493-4445-8f1e-7ac9c9dd844f) | ![Acceptable range](https://github.com/mghotbi/DspikeIn/assets/29090547/8674f3de-ba24-4857-9cd7-d1b6dc15c669) |
-
-
-
-_The VSEARCH with de novo robust clustering algorithms at a 97% similarity threshold was used to reduce potential mistakes_ [Westcott and Schloss 2015](https://doi.org/10.7717/peerj.1487).
 
 
 
