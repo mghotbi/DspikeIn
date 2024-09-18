@@ -25,7 +25,9 @@ This function generates a phylogenetic tree with bootstrap values and cophenetic
 It performs multiple sequence alignment, computes bootstrap values, and plots the tree.
 }
 \examples{
+\dontrun{
 # Bootstrap and plot a phylogenetic tree
 Bootstrap_phy_tree_with_cophenetic(physeq_object = Tetragenococcus, 
 output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 500)
+}
 }

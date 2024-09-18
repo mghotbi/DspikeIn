@@ -20,6 +20,10 @@ based on a total value, typically the maximum total sequence count across all sa
 counts are then rounded to the nearest integer.
 }
 \examples{
-# Proportionally adjust the abundance data
-normalized_physeq <- proportion_adj(physeq, output_file = "proportion_adjusted_physeq.rds")
+\dontrun{
+if (interactive()) {
+  # Proportionally adjust the abundance data
+  normalized_physeq <- proportion_adj(physeq, output_file = "proportion_adjusted_physeq.rds")
+}
+}
 }

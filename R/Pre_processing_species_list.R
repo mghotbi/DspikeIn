@@ -79,7 +79,7 @@ Pre_processing_species_list <- function(physeq, spiked_species, merge_method = c
   
   # Optional: Save the merged phyloseq object if an output file path is provided
   if (!is.null(output_file)) {
-    phyloseq::saveRDS(physeq, file = output_file)
+    saveRDS(physeq, file = output_file)
     message("Merged phyloseq object saved to: ", output_file)
   }
   

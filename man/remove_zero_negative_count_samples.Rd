@@ -25,5 +25,9 @@ Remove Samples with Zero, Negative Counts, or NA Values and Add Pseudocount
 Remove Samples with Zero, Negative Counts, or NA Values and Add Pseudocount
 }
 \examples{
+\dontrun{
+# 'ps' is a phyloseq object with some samples having zero or negative counts
+# This function will remove those samples from the phyloseq object
 ps <- remove_zero_negative_count_samples(ps)
+}
 }

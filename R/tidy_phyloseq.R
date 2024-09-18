@@ -2,7 +2,7 @@
 #'
 #' This function cleans and tidies a phyloseq object by performing the following steps:
 #' - Fixes taxa names by removing any characters followed by '__' and any spaces after '__'
-#' - Sets taxonomic ranks to standard names
+#' - Sets taxonomic ranks to standard names and requires 7 ranks
 #' - Trims leading and trailing whitespace from taxa names
 #' - Replaces NA in the Phylum column with "Unidentified"
 #' - Removes taxa with zero counts
@@ -13,8 +13,17 @@
 #' @return A cleaned and tidied phyloseq object.
 #' @importFrom phyloseq tax_table prune_taxa taxa_sums subset_taxa
 #' @examples
+#' \dontrun{
+#' # Note: The DspikeIn package functions only work with datasets 
+#' # that contain 7 taxonomic ranks (e.g., Kingdom, Phylum, Class,
+#' # Order, Family, Genus, Species).
+#' 
 #' # Example usage:
-#' # spiked_16S <- tidy_phyloseq(spiked_16S)
+#' #' # Tidy up the phyloseq object for easier downstream analysis
+#' spiked_16S <- tidy_phyloseq(spiked_16S)
+#'
+#' # The tidied phyloseq object can now be used in further analyses
+#' }
 #' @export
 tidy_phyloseq <- function(my_phyloseq) {
   # Load necessary libraries with suppressMessages

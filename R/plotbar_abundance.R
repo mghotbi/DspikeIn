@@ -21,14 +21,21 @@
 #' @param scales A character string specifying scales in facet. Options are "fixed", "free", "free_x", "free_y". Default is "fixed".
 #' @return A ggplot object if return is FALSE, otherwise a data frame with summarized data.
 #' @examples
-#' # Plot relativized abundance or select relativize = FALSE to plot absolute abundance
-#' plot <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", 
-#' group = c("Diet", "Host.species","Ecoregion.III"), x_axis_var = "Diet", 
-#' top = 10, x_size = 10, y_size = 10, legend_key_size = 2, legend_text_size = 14,
-#' legend_nrow = 10, relativize = TRUE, output_prefix = "relativized_abundance_plot", 
-#' facet_var = "Ecoregion.III", scales = "free_x")
-#' print(plot)
-#' 
+#' \dontrun{
+#' if (interactive()) {
+#'   # Plot relativized abundance or select relativize = FALSE to plot absolute abundance
+#'   plot <- plotbar_abundance(physeq_16SOTU, 
+#'                             level = "Family", 
+#'                             group = c("Diet", "Host.species", "Ecoregion.III"), 
+#'                             x_axis_var = "Diet", 
+#'                             top = 10, x_size = 10, y_size = 10, 
+#'                             legend_key_size = 2, legend_text_size = 14,
+#'                             legend_nrow = 10, relativize = TRUE, 
+#'                             output_prefix = "relativized_abundance_plot", 
+#'                             facet_var = "Ecoregion.III", scales = "free_x")
+#'   print(plot)
+#' }
+#' }
 #' @importFrom phyloseq psmelt tax_table subset_taxa sample_data otu_table taxa_are_rows
 #' @importFrom dplyr group_by summarise arrange pull across
 #' @importFrom ggplot2 ggplot aes_string geom_bar scale_y_continuous ylab xlab scale_fill_manual theme_minimal theme element_text element_line element_blank unit guides guide_legend facet_wrap facet_grid aes

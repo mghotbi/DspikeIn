@@ -26,6 +26,13 @@ based on a specified method to determine the number of reads (min, mean, median,
 It then prunes the ASVs that do not meet the prevalence threshold and saves the adjusted phyloseq object.
 }
 \examples{
-spiked_16S_min <- adjusted_prevalence(physeq_16S_adj_scaled, method = "min")
-spiked_16S_max <- adjusted_prevalence(physeq_16S_adj_scaled, method = "max")
+\dontrun{
+if (interactive()) {
+  # Adjust prevalence using the "min" method
+  spiked_16S_min <- adjusted_prevalence(physeq_16S_adj_scaled, method = "min")
+  
+  # Adjust prevalence using the "max" method
+  spiked_16S_max <- adjusted_prevalence(physeq_16S_adj_scaled, method = "max")
+}
+}
 }

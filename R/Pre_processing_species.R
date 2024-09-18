@@ -10,16 +10,17 @@
 #' @param output_file Optional. A file path to save the merged phyloseq object.
 #' @return A phyloseq object with the specified species pre-processed.
 #' @examples
-#' Tetragenococcus <- phyloseq::subset_taxa(physeq_ASV16, Genus == "Tetragenococcus")
-#' species_name <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp")
-#' merged_physeq_sum <- Pre_processing_species(physeq_ASV16, species_name, 
-#' merge_method = "sum", output_file = "merged_physeq_sum.rds")
-#' merged_physeq_max <- Pre_processing_species(Tetrasum, species_name, 
-#' merge_method = "max", output_file = "merged_physeq_max.rds")
-#' 
-#' # Verify the results
-#' summ_count_phyloseq(merged_physeq_sum)
-#' Tetra_check <- phyloseq::subset_taxa(merged_physeq_sum, Genus == "Tetragenococcus")
+#' if (interactive()) {
+#'   Tetragenococcus <- phyloseq::subset_taxa(physeq_16SASV, 
+#'     Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp")
+#'   hashcodes <- row.names(phyloseq::otu_table(Tetragenococcus))
+#'   processed_data_sum <- Pre_processing_hashcodes(physeq_16SASV, hashcodes, 
+#'     merge_method = "sum", output_prefix = "merged_physeq_sum")
+#'   processed_data_max <- Pre_processing_hashcodes(physeq_16SASV, hashcodes, 
+#'     merge_method = "max", output_prefix = "merged_physeq_max")
+#'   summ_count_phyloseq(processed_data_sum)
+#' }
+#' @importFrom phyloseq otu_table tax_table merge_taxa subset_taxa taxa_sums otu_table<-
 #' @export
 Pre_processing_species <- function(physeq, species_name, merge_method = c("sum", "max"), output_file = NULL) {
   merge_method <- match.arg(merge_method)
@@ -59,7 +60,7 @@ Pre_processing_species <- function(physeq, species_name, merge_method = c("sum",
         
         # Update the phyloseq object with the new OTU table
         otu_table(physeq) <- new_otu_table
-
+        
         # Update the taxonomy table
         new_tax_table <- phyloseq::tax_table(physeq)
         new_tax_table <- new_tax_table[-which(rownames(new_tax_table) %in% species_asvs[-1]), ]

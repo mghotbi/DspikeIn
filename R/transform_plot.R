@@ -26,21 +26,49 @@
 #' @return A list containing the ggplot2 boxplot objects and the comparison results, or the comparison results and p-value for individual boxplots.
 #' @importFrom ggplot2 ggplot aes geom_boxplot scale_fill_manual labs theme_minimal element_text ggsave
 #' @importFrom dplyr mutate filter mutate_at
-#' @importFrom stats kruskal.test wilcox.test
+#' @importFrom stats kruskal.test wilcox.test 
 #' @importFrom graphics mtext boxplot
 #' @examples
-#' # Example usage for transform_plot:
-#' # y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
-#' # x_vars <- "Methods"
-#' # transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars,
-#' # methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
-#' # transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars,
-#' # methods_var = "Methods", color_palette = MG, stat_test = "anova")
-#' #
-#' # Example usage for individual boxplots:
-#' # X <- rnorm(100)
-#' # Y <- rep(c("A", "B"), each = 50)
-#' # transform_plot(X = X, Y = Y)
+#' if (interactive()) {
+#' file_path <- system.file("extdata", "methods.rds", package = "DspikeIn")
+#' if (nzchar(file_path) && file.exists(file_path)) {
+#'   methods <- readRDS(file_path)
+#'   
+#'   # Ensure numeric conversion for specified columns
+#'   methods <- methods %>%
+#'     dplyr::mutate(
+#'       Total.reads = as.numeric(Total.reads),
+#'       Spike.reads = as.numeric(Spike.reads),
+#'       Spike.percentage = as.numeric(Spike.percentage)
+#'     )
+#'   
+#'   # Remove rows with NA values
+#'   methods <- methods %>%
+#'     dplyr::filter(
+#'       !is.na(Total.reads),
+#'       !is.na(Spike.reads),
+#'       !is.na(Spike.percentage)
+#'     )
+#'   
+#'   # Scale the specified columns
+#'   scaled <- methods %>%
+#'     dplyr::mutate(across(c("Total.reads", "Spike.reads", 
+#'     "Spike.percentage"), ~ scale(.) %>% as.vector))
+#'   
+#'   # Define variables for transformation plot
+#'   y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
+#'   x_vars <- "Methods"
+#'   
+#'   # Create transformation plots
+#'   transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars,
+#'     methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
+#'   
+#'   transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars,
+#'     methods_var = "Methods", color_palette = MG, stat_test = "anova")
+#' } else {
+#'   message("Data file not found. Please ensure the package is properly installed.")
+#' }
+#' }
 #' @export
 transform_plot <- function(
     data = NULL,
@@ -201,15 +229,20 @@ transform_plot <- function(
 # Example y_vars
 # y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
 # #Ensure the columns are numeric
-# methods <- methods %>%   dplyr::mutate(  Total.reads = as.numeric(Total.reads), Spike.reads = as.numeric(Spike.reads),Spike.percentage = as.numeric(Spike.percentage)  )
+# methods <- methods %>%   dplyr::mutate(  Total.reads = as.numeric(Total.reads), 
+# Spike.reads = as.numeric(Spike.reads),Spike.percentage = as.numeric(Spike.percentage)  )
 # # Remove rows with NA values
-# methods <- methods %>%   dplyr::filter(!is.na(Total.reads),  !is.na(Spike.reads),  !is.na(Spike.percentage)  )
+# methods <- methods %>%   dplyr::filter(!is.na(Total.reads),  
+# !is.na(Spike.reads),  !is.na(Spike.percentage)  )
 # 
 # # Scale the specified columns
-# scaled <- methods %>%   dplyr::mutate_at( c("Total.reads", "Spike.reads", "Spike.percentage"),    ~ scale(.) %>% as.vector  )
+# scaled <- methods %>%   dplyr::mutate_at( c("Total.reads", 
+# "Spike.reads", "Spike.percentage"),    ~ scale(.) %>% as.vector  )
 # 
 # # Perform Kruskal-Wallis test with MG color palette
-# transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette$MG, stat_test = "kruskal.test")
+# transform_plot(data = scaled, x_var = "Methods", 
+# y_vars = y_vars, methods_var = "Methods", 
+# color_palette$MG, stat_test = "kruskal.test")
 # 
 # # Perform one-way ANOVA with MG color palette
 # transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette$MG, stat_test = "anova")

@@ -6,12 +6,20 @@
 #' @return A ggplot2 theme object.
 #' @importFrom ggplot2 theme_bw theme element_blank element_rect element_line element_text unit
 #' @examples
+#' \dontrun{
 #' # Apply the custom theme to a ggplot
+#' # The custom theme 'my_custom_theme()' is part of the package
+#' 
 #' suppressMessages(library(ggplot2))
+#' 
+#' # Create a scatter plot using the 'mtcars' dataset
 #' p <- ggplot(mtcars, aes(x = wt, y = mpg)) + 
 #'   geom_point(size = 3) + 
-#'   my_custom_theme()
+#'   my_custom_theme()  # Apply the custom theme
+#' 
+#' # Print the plot
 #' print(p)
+#' }
 #' @export
 my_custom_theme <- function() {
   ggplot2::theme_bw() + 
@@ -27,10 +35,10 @@ my_custom_theme <- function() {
       legend.title = ggplot2::element_text(size = 12),
       legend.text = ggplot2::element_text(size = 11, color = "black", face = "plain"), 
       legend.key.size = ggplot2::unit(0.7, 'cm'),
-      axis.title.x = ggplot2::element_text(family = "Times New Roman", size = 12, color = "black", face = "bold"), 
-      axis.title.y = ggplot2::element_text(family = "Times New Roman", size = 12, color = "black", face = "bold"), 
-      axis.text.x = ggplot2::element_text(family = "Times New Roman", size = 12, angle = 0, color = "black", face = "bold"), 
-      axis.text.y = ggplot2::element_text(family = "Times New Roman", size = 12, color = "black", face = "bold"),
+      axis.title.x = ggplot2::element_text(family = "Arial", size = 12, color = "black", face = "bold"), 
+      axis.title.y = ggplot2::element_text(family = "Arial", size = 12, color = "black", face = "bold"), 
+      axis.text.x = ggplot2::element_text(family = "Arial", size = 12, angle = 0, color = "black", face = "bold"), 
+      axis.text.y = ggplot2::element_text(family = "Arial", size = 12, color = "black", face = "bold"),
       plot.title = ggplot2::element_text(color = "black", size = 12, face = "bold"),
       plot.subtitle = ggplot2::element_text(size = 11),
       strip.background = ggplot2::element_rect(fill = "gray98", color = NA),  # Set facet background color

@@ -8,8 +8,11 @@
 #' @param height A numeric value specifying the height of the output plot. Default is 15.
 #' @return NULL. The function saves the plots to the specified output files.
 #' @examples
-#' # Plot the phylogenetic tree with multiple sequence alignment
-#' plot_tree_with_alignment(Tetragenococcus, output_prefix = "tree_alignment", width = 15, height = 15)
+#' if (interactive()) {
+#'   # Plot the phylogenetic tree with multiple sequence alignment
+#'   plot_tree_with_alignment(Tetragenococcus, 
+#'   output_prefix = "tree_alignment", width = 15, height = 15)
+#' }
 #' @export
 plot_tree_with_alignment <- function(physeq, output_prefix = "physeq_tree_alignment", width = 15, height = 15) {
   # Suppress messages when loading necessary libraries
@@ -28,8 +31,8 @@ plot_tree_with_alignment <- function(physeq, output_prefix = "physeq_tree_alignm
     }
   })
   
-  # Check if physeq is a valid phyloseq object
-  if (!phyloseq::is(physeq, "phyloseq")) {
+  # Check if physeq is a valid phyloseq object using inherits()
+  if (!inherits(physeq, "phyloseq")) {
     stop("Input 'physeq' must be a valid phyloseq object.")
   }
   
@@ -73,8 +76,11 @@ plot_tree_with_alignment <- function(physeq, output_prefix = "physeq_tree_alignm
   ggplot2::ggsave(png_filename, plot = final_plot, width = width, height = height, units = "in")
   ggplot2::ggsave(pdf_filename, plot = final_plot, width = width, height = height, units = "in")
   
-  cat("Plots saved as:", png_filename, "and", pdf_filename, "\n")
+  cat("Plots saved as:", png_filename, "and", pdf_filename, "/n")
 }
 
 # Example usage:
-# plot_tree_with_alignment(Tetragenococcus, output_prefix = "tree_alignment", width = 15, height = 15)
+# plot_tree_with_alignment(Tetragenococcus, 
+# output_prefix = "tree_alignment", width = 15, height = 15)
+
+

@@ -78,16 +78,44 @@ A list containing the ggplot2 boxplot objects and the comparison results, or the
 This function generates boxplots for multiple y variables and performs statistical tests (Kruskal-Wallis or ANOVA) to compare groups. It also generates individual boxplots for Y variables and performs statistical tests (Kruskal-Wallis or Wilcoxon) to compare groups, and saves the plots as PNG and PDF files.
 }
 \examples{
-# Example usage for transform_plot:
-# y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
-# x_vars <- "Methods"
-# transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars,
-# methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
-# transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars,
-# methods_var = "Methods", color_palette = MG, stat_test = "anova")
-#
-# Example usage for individual boxplots:
-# X <- rnorm(100)
-# Y <- rep(c("A", "B"), each = 50)
-# transform_plot(X = X, Y = Y)
+if (interactive()) {
+file_path <- system.file("extdata", "methods.rds", package = "DspikeIn")
+if (nzchar(file_path) && file.exists(file_path)) {
+  methods <- readRDS(file_path)
+  
+  # Ensure numeric conversion for specified columns
+  methods <- methods \%>\%
+    dplyr::mutate(
+      Total.reads = as.numeric(Total.reads),
+      Spike.reads = as.numeric(Spike.reads),
+      Spike.percentage = as.numeric(Spike.percentage)
+    )
+  
+  # Remove rows with NA values
+  methods <- methods \%>\%
+    dplyr::filter(
+      !is.na(Total.reads),
+      !is.na(Spike.reads),
+      !is.na(Spike.percentage)
+    )
+  
+  # Scale the specified columns
+  scaled <- methods \%>\%
+    dplyr::mutate(across(c("Total.reads", "Spike.reads", 
+    "Spike.percentage"), ~ scale(.) \%>\% as.vector))
+  
+  # Define variables for transformation plot
+  y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
+  x_vars <- "Methods"
+  
+  # Create transformation plots
+  transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars,
+    methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
+  
+  transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars,
+    methods_var = "Methods", color_palette = MG, stat_test = "anova")
+} else {
+  message("Data file not found. Please ensure the package is properly installed.")
+}
+}
 }

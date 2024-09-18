@@ -7,8 +7,11 @@
 #' @param output_file A character string specifying the output file path for the plot. Default is "neighbor_joining_tree.png".
 #' @return NULL. The function saves the plot to the specified output file and displays it.
 #' @examples
-#' # Plot the Neighbor-Joining tree
+#' \dontrun{
+#' # Plot the Neighbor-Joining tree from the "tetra.fasta" file
+#' # The output will be saved as "neighbor_joining_tree_with_bootstrap.png"
 #' plot_tree_nj("tetra.fasta", output_file = "neighbor_joining_tree_with_bootstrap.png")
+#' }
 #' @importFrom ape nj plot.phylo boot.phylo nodelabels
 #' @importFrom Biostrings readDNAStringSet
 #' @importFrom msa msa

@@ -34,8 +34,12 @@ This function identifies the common ASVs (Amplicon Sequence Variants) and common
 It extracts ASVs and taxa from the provided phyloseq objects, finds the common ones, and optionally saves the results to CSV and RDS files.
 }
 \examples{
-# Example usage:
-# results <- detect_common_asvs_taxa(list(physeq1, physeq2, physeq3), return_as_df = TRUE)
-# common_asvs_df <- results$common_asvs
-# common_taxa_df <- results$common_taxa
+\dontrun{
+if (interactive()) {
+  # Example usage:
+  # results <- detect_common_asvs_taxa(list(physeq1, physeq2, physeq3), return_as_df = TRUE)
+  # common_asvs_df <- results$common_asvs
+  # common_taxa_df <- results$common_taxa
+}
+}
 }

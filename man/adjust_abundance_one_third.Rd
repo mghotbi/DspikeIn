@@ -21,6 +21,10 @@ This function normalizes the abundance data in a phyloseq object by dividing eac
 The normalization process is based on the volume of DNA processed for sequencing, such as 16S rRNA amplicons.
 }
 \examples{
-# Adjust the abundance data by dividing each value by 3
-adjusted_physeq <- adjust_abundance_one_third(physeq16S, factor = 3)
+\dontrun{
+if(interactive()){
+  # Adjust the abundance data by dividing each value by 3
+  adjusted_physeq <- adjust_abundance_one_third(physeq16S, factor = 3)
+}
+}
 }

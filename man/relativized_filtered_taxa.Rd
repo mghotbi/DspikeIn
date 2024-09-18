@@ -42,9 +42,23 @@ A phyloseq object containing only the taxa that meet the specified thresholds.
 This function filters taxa from a phyloseq object based on custom thresholds for percentage of samples, mean abundance, count, and relative abundance.
 }
 \examples{
-FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, threshold_mean_abundance = 0.0005, threshold_count = 5)
-# Example usage with custom thresholds
-# FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, 
-# threshold_mean_abundance = 0.0005,
-# threshold_count = 5, threshold_relative_abundance = 0.01)
+\dontrun{
+# Assume 'spiked_16S' is a phyloseq object
+# This function will filter taxa based on the given thresholds
+# - threshold_percentage: Minimum percentage of samples in which taxa should appear
+# - threshold_mean_abundance: Minimum mean abundance across samples for taxa
+# - threshold_count: Minimum total count for taxa across all samples
+FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, 
+                                threshold_mean_abundance = 0.0005, 
+                                threshold_count = 5)
+}
+\dontrun{
+if (interactive()) {
+  # Example usage with custom thresholds
+  FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, 
+    threshold_mean_abundance = 0.0005, 
+    threshold_count = 5, 
+    threshold_relative_abundance = 0.01)
+}
+}
 }

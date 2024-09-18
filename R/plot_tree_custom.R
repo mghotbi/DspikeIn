@@ -10,9 +10,17 @@
 #' @param print_plot A logical value specifying whether to print the plot. Default is TRUE.
 #' @return NULL. The function saves the plot to the specified output file.
 #' @examples
-#' # Plot and save the phylogenetic tree
-#' # layour options "rectangular", "circular", "fan", and "radial"
-#' plot_tree_custom(Tetragenococcus, output_prefix = "p0", width = 18, height = 18, layout = "circular")
+#' \dontrun{
+#'   # Plot and save the phylogenetic tree
+#'   # Available layout options: "rectangular", "circular", "fan", and "radial"
+#'   
+#'   # Example: Plot the phylogenetic tree with a circular layout and save it as an output file
+#'   plot_tree_custom(Tetragenococcus, 
+#'                    output_prefix = "p0",  # Prefix of file
+#'                    width = 18,            # Width of image
+#'                    height = 18,           # Height 
+#'                    layout = "circular")   # Layout type (e.g., circular)
+#' }
 #' @importFrom phyloseq phy_tree
 #' @importFrom ggtree ggtree geom_tiplab geom_tippoint theme_tree2
 #' @importFrom ggplot2 ggsave aes theme
@@ -65,4 +73,5 @@ plot_tree_custom <- function(physeq, output_prefix = "phy_tree", width = 10, hei
 }
 
 # Example usage:
-# plot_tree_custom(Tetragenococcus, output_prefix = "p0", width = 18, height = 18, layout = "circular")
+# plot_tree_custom(Tetragenococcus, output_prefix = "p0",
+# width = 18, height = 18, layout = "circular")

@@ -20,13 +20,15 @@ within a data frame, using specified transformations. It prints the p-value for 
 and transformation combination.
 }
 \examples{
-# Example usage:
-# Retrieve the methods.rds file in the extdata folder of DspikeIn package
-# Read the file 
-file_path <- system.file("extdata", "methods.rds", package = "DspikeIn")
-methods <- readRDS(file_path)
-
-# Perform the Shapiro-Wilk test on the methods data, using the "Methods" column for grouping
-Shapiro_Wilk_test(methods, "Methods")
-
+\dontrun{
+if (interactive()) {
+  # Example usage:
+  # Retrieve the methods.rds file in the extdata folder of DspikeIn package
+  file_path <- system.file("extdata", "methods.rds", package = "DspikeIn")
+  methods <- readRDS(file_path)
+  
+  # Perform the Shapiro-Wilk test on the methods data, using the "Methods" column for grouping
+  Shapiro_Wilk_test(methods, "Methods")
+}
+}
 }

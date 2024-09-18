@@ -9,9 +9,12 @@
 #' @param top_n An integer specifying the number of top taxa to include in the plot. Default is 10.
 #' @return A ggplot2 object representing the ridge plot of the distribution of relative abundances of taxa.
 #' @examples
-#' # Example usage:
-#' ridgeP <- ridge_plot_it(spiked_16S, taxrank = "Family", top_n = 10)
-#' print(ridgeP) + my_custom_theme()
+#' \dontrun{
+#' if (interactive()) {
+#'   ridgeP <- ridge_plot_it(spiked_16S, taxrank = "Family", top_n = 10)
+#'   print(ridgeP) + my_custom_theme()
+#' }
+#' }
 #' @importFrom phyloseq rarefy_even_depth tax_glom prune_taxa taxa_sums psmelt
 #' @importFrom ggplot2 ggplot aes ggtitle labs theme_minimal theme element_text
 #' @importFrom dplyr group_by summarise arrange desc slice_head pull filter

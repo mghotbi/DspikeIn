@@ -8,9 +8,13 @@
 #' @importFrom phyloseq otu_table
 #' @importFrom stats quantile sd
 #' @examples
+#' \dontrun{
 #' # Summarize the phyloseq data based on ASV_ID
 #' summary_stats <- summ_phyloseq_ASV_OTUID(physeq_ITSOTU)
+#' 
+#' # Print the summary statistics
 #' print(summary_stats)
+#' }
 #' @export
 summ_phyloseq_ASV_OTUID <- function(physeq) {
   suppressMessages({

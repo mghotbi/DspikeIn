@@ -49,16 +49,34 @@ This function generates a bar plot of the relative or absolute abundances of tax
 The top taxa are selected, and the plot can be customized with various options.
 }
 \examples{
+\dontrun{
 # Generate a taxa barplot for the Genus rank with absolute abundance
-bp_ab <- taxa_barplot(physeq_16SASV, target_glom = "Genus",
-  treatment_variable = "Host.species", abundance_type = "absolute", x_angle = 90,
-  fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20, palette = MG())
+bp_ab <- taxa_barplot(physeq_16SASV, 
+                      target_glom = "Genus",
+                      treatment_variable = "Host.species", 
+                      abundance_type = "absolute", 
+                      x_angle = 90,
+                      fill_variable = "Genus", 
+                      facet_variable = "Diet", 
+                      top_n_taxa = 20, 
+                      palette = MG())
+
+# Print the barplot for absolute abundance
 print(bp_ab$barplot)
 
 # Generate a taxa barplot for the Genus rank with relative abundance
-bp_rel <- taxa_barplot(physeq_16SASV, target_glom = "Genus", 
-  treatment_variable = "Host.genus", abundance_type = "relative", x_angle = 90, 
-  fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20, palette = MG())
+bp_rel <- taxa_barplot(physeq_16SASV, 
+                       target_glom = "Genus", 
+                       treatment_variable = "Host.genus", 
+                       abundance_type = "relative", 
+                       x_angle = 90, 
+                       fill_variable = "Genus", 
+                       facet_variable = "Diet", 
+                       top_n_taxa = 20, 
+                       palette = MG())
+
+# Print the barplot for relative abundance
 print(bp_rel$barplot)
+}
 
 }

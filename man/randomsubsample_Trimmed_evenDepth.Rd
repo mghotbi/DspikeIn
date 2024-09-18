@@ -28,6 +28,10 @@ This function performs subsampling to an equal sequencing depth, determined by t
 It rounds down the result to the nearest integer (floor). Caution: you might lose samples.
 }
 \examples{
-# Perform subsampling
-spiked_ITS_evenDepth <- randomsubsample_Trimmed_evenDepth(spiked_ITS, smalltrim = 0.001)
+\dontrun{
+if (interactive()) {
+  # Perform subsampling
+  spiked_ITS_evenDepth <- randomsubsample_Trimmed_evenDepth(spiked_ITS, smalltrim = 0.001)
+}
+}
 }

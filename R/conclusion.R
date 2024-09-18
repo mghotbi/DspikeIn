@@ -10,18 +10,29 @@
 #' @param output_path A character string specifying the path to save the output files. Default is NULL, which saves the report as "spike_success_report.docx".
 #' @return A data frame containing the summary statistics of the spike success report.
 #' @examples
+#' \dontrun{
 #' # Define the parameters
 #' merged_spiked_species <- c("Tetragenococcus_halophilus") 
 #' max_passed_range <- 12 
 #' output_path <- "spike_success_report.docx"
+#' 
+#' # Convert the phyloseq object to absolute counts using scaling factors
 #' absolute <- convert_to_absolute_counts(merged_physeq_sum, scaling_factors) 
 #' absolute_counts <- absolute$absolute_counts 
 #' physeq_absolute <- absolute$physeq_obj 
-#' # # Subset the phyloseq object to exclude blanks/optional
+#' 
+#' # Subset the phyloseq object to exclude blank samples (optional step)
 #' physeq_16S_adj_scaled_perc <- phyloseq::subset_samples(physeq_absolute, sample.or.blank != "blank")
-#' # # Generate the spike success report and summary statistics
-#' summary_stats <- conclusion(physeq_16S_adj_scaled_perc, merged_spiked_species, max_passed_range,output_path)
-#' #' print(summary_stats)
+#' 
+#' # Generate the spike success report and calculate summary statistics
+#' summary_stats <- conclusion(physeq_16S_adj_scaled_perc, 
+#'                             merged_spiked_species, 
+#'                             max_passed_range, 
+#'                             output_path)
+#' 
+#' # Print the summary statistics
+#' print(summary_stats)
+#' }
 #' @export
 conclusion <- function(physeq, merged_spiked_species, max_passed_range = 11, output_path = NULL) {
   suppressMessages({

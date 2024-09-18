@@ -19,6 +19,9 @@ This function reads DNA sequences from a FASTA file, constructs a Neighbor-Joini
 generates bootstrap values, and plots the tree.
 }
 \examples{
-# Plot the Neighbor-Joining tree
+\dontrun{
+# Plot the Neighbor-Joining tree from the "tetra.fasta" file
+# The output will be saved as "neighbor_joining_tree_with_bootstrap.png"
 plot_tree_nj("tetra.fasta", output_file = "neighbor_joining_tree_with_bootstrap.png")
+}
 }

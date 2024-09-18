@@ -70,33 +70,48 @@ This function normalizes and filters the data, performs differential abundance a
 extracts significant OTUs, rebuilds the phyloseq object, merges results with metadata, and visualizes the results.
 }
 \examples{
+\dontrun{
 # Install and load the required packages first
-required_packages <- c("phyloseq", "DESeq2", "edgeR", "BiocManager", "BiocGenerics", "ggplot2", "dplyr", "DT")
+required_packages <- c("phyloseq", "DESeq2", "edgeR", 
+                       "BiocManager", "BiocGenerics", "ggplot2", 
+                       "dplyr", "DT")
 install_and_load(required_packages)
 
-# Step 1: Clean and preprocess the data
-ps <- remove_zero_negative_count_samples(ps)
-ps <- convert_categorical_to_factors(ps)
+# Step 1: Clean and preprocess the phyloseq object
+ps <- remove_zero_negative_count_samples(ps)  
+ps <- convert_categorical_to_factors(ps)      
 
-# edgeR Example with default glomming at the "Genus" rank:
-results_edgeR <- perform_and_visualize_differential_abundance(ps, "Animal.ecomode", method = "edgeR", 
-                                                              threshold_percentage = 0.001, threshold_mean_abundance = 0.001,
-                                                              threshold_count = 5, threshold_relative_abundance = 0.001,
-                                                              significance_level = 0.05, point_size = 3, target_glom = "Genus")
-# Print the volcano plot and barplots for edgeR
+# edgeR Example with default glomming at the "Genus" rank
+results_edgeR <- perform_and_visualize_differential_abundance(ps, "Animal.ecomode", 
+                                                              method = "edgeR", 
+                                                              threshold_percentage = 0.001, 
+                                                              threshold_mean_abundance = 0.001,
+                                                              threshold_count = 5, 
+                                                              threshold_relative_abundance = 0.001,
+                                                              significance_level = 0.05, 
+                                                              point_size = 3, 
+                                                              target_glom = "Genus")
+
+# Print the volcano plot and bar plots for edgeR results
 print(results_edgeR$plot)
-print(results_edgeR$barplot_rel)
-print(results_edgeR$barplot_abs)
+print(results_edgeR$barplot_rel)  # Relative abundance 
+print(results_edgeR$barplot_abs)  # Absolute abundance 
 
-# DESeq2 Example with custom glomming at the "Family" rank and faceting by Class:
-results_DESeq2 <- perform_and_visualize_differential_abundance(ps, "Host.genus", method = "DESeq2",
-                                                               threshold_percentage = 0.001, threshold_mean_abundance = 0.001,
-                                                               threshold_count = 5, threshold_relative_abundance = 0.001,
-                                                               significance_level = 0.05, point_size = 3, target_glom = "Family", 
+# DESeq2 Example with custom glomming at the "Family" rank and faceting by "Class"
+results_DESeq2 <- perform_and_visualize_differential_abundance(ps, "Host.genus", 
+                                                               method = "DESeq2",
+                                                               threshold_percentage = 0.001, 
+                                                               threshold_mean_abundance = 0.001,
+                                                               threshold_count = 5, 
+                                                               threshold_relative_abundance = 0.001,
+                                                               significance_level = 0.05, 
+                                                               point_size = 3, 
+                                                               target_glom = "Family", 
                                                                facet_variable = "Class")
-# Print the volcano plot and barplots for DESeq2
-print(results_DESeq2$plot)
-print(results_DESeq2$barplot_rel)
-print(results_DESeq2$barplot_abs)
 
+# Print the volcano plot and bar plots for DESeq2 results
+print(results_DESeq2$plot)
+print(results_DESeq2$barplot_rel)  # Relative abundance 
+print(results_DESeq2$barplot_abs)  # Absolute abundance 
+}
 }

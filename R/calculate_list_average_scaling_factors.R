@@ -23,7 +23,8 @@
 #'   c("Clostridium difficile")
 #' )
 #' spiked_cells_list <- c(10000, 20000, 15000)
-#' scaling_factors <- calculate_list_average_scaling_factors(physeq, spiked_species_list, spiked_cells_list, merge_method = "sum")
+#' scaling_factors <- calculate_list_average_scaling_factors(physeq, spiked_species_list, 
+#' spiked_cells_list, merge_method = "sum")
 #' print(scaling_factors)
 #' }
 #' @importFrom phyloseq taxa_names otu_table

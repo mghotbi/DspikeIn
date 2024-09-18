@@ -16,7 +16,13 @@ A data frame containing the summary statistics for each sample, with columns for
 This function calculates summary statistics (mean, median, standard deviation, standard error, and quartiles) for each sample in a phyloseq object.
 }
 \examples{
+\dontrun{
 # Example usage:
-# Generate summary statistics for a phyloseq object
-# summary_stats <- summ_phyloseq_sampleID(physeq_ITSOTU)
+
+# Generate summary statistics for a phyloseq object based on sample IDs
+summary_stats <- summ_phyloseq_sampleID(physeq_ITSOTU)
+
+# Print the summary statistics
+print(summary_stats)
+}
 }

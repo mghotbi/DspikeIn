@@ -23,17 +23,35 @@
 #' @return A list containing the ggplot2 bar plot object (`barplot`) and the pruned phyloseq object (`taxa_data`) with the top taxa.
 #'
 #' @examples
+#' \dontrun{
 #' # Generate a taxa barplot for the Genus rank with absolute abundance
-#' bp_ab <- taxa_barplot(physeq_16SASV, target_glom = "Genus",
-#'   treatment_variable = "Host.species", abundance_type = "absolute", x_angle = 90,
-#'   fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20, palette = MG())
+#' bp_ab <- taxa_barplot(physeq_16SASV, 
+#'                       target_glom = "Genus",
+#'                       treatment_variable = "Host.species", 
+#'                       abundance_type = "absolute", 
+#'                       x_angle = 90,
+#'                       fill_variable = "Genus", 
+#'                       facet_variable = "Diet", 
+#'                       top_n_taxa = 20, 
+#'                       palette = MG())
+#' 
+#' # Print the barplot for absolute abundance
 #' print(bp_ab$barplot)
 #'
 #' # Generate a taxa barplot for the Genus rank with relative abundance
-#' bp_rel <- taxa_barplot(physeq_16SASV, target_glom = "Genus", 
-#'   treatment_variable = "Host.genus", abundance_type = "relative", x_angle = 90, 
-#'   fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20, palette = MG())
+#' bp_rel <- taxa_barplot(physeq_16SASV, 
+#'                        target_glom = "Genus", 
+#'                        treatment_variable = "Host.genus", 
+#'                        abundance_type = "relative", 
+#'                        x_angle = 90, 
+#'                        fill_variable = "Genus", 
+#'                        facet_variable = "Diet", 
+#'                        top_n_taxa = 20, 
+#'                        palette = MG())
+#'
+#' # Print the barplot for relative abundance
 #' print(bp_rel$barplot)
+#' }
 #' 
 #' @export
 taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL, 
@@ -83,8 +101,8 @@ taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL,
     ggplot2::labs(x = "", y = if (abundance_type == "relative") "Relative Abundance" else "Absolute Abundance") +
     ggplot2::facet_grid(cols = ggplot2::vars(.data[[facet_variable]]), scales = "free") +
     ggplot2::theme(
-      strip.text.x = ggplot2::element_text(family = "Times New Roman", size = 12, color = "black", face = "bold"),
-      strip.text.y = ggplot2::element_text(family = "Times New Roman", size = 12, color = "black", face = "bold"),
+      strip.text.x = ggplot2::element_text(family = "Arial", size = 12, color = "black", face = "bold"),
+      strip.text.y = ggplot2::element_text(family = "Arial", size = 12, color = "black", face = "bold"),
       strip.background = ggplot2::element_blank(),  # Remove the border of facets
       axis.text.x = ggplot2::element_text(angle = x_angle, vjust = 0.5, hjust = 1)
     )

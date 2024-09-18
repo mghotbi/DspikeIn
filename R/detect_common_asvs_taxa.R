@@ -13,10 +13,14 @@
 #' @importFrom phyloseq otu_table tax_table prune_taxa psmelt
 #' @importFrom utils write.csv
 #' @examples
-#' # Example usage:
-#' # results <- detect_common_asvs_taxa(list(physeq1, physeq2, physeq3), return_as_df = TRUE)
-#' # common_asvs_df <- results$common_asvs
-#' # common_taxa_df <- results$common_taxa
+#' \dontrun{
+#' if (interactive()) {
+#'   # Example usage:
+#'   # results <- detect_common_asvs_taxa(list(physeq1, physeq2, physeq3), return_as_df = TRUE)
+#'   # common_asvs_df <- results$common_asvs
+#'   # common_taxa_df <- results$common_taxa
+#' }
+#' }
 #' @export
 detect_common_asvs_taxa <- function(phyloseq_list, 
                                     output_common_asvs_csv = "common_asvs.csv", 

@@ -14,10 +14,18 @@ This function generates a custom ggplot2 theme with specific styling options.
 Additionally, it provides predefined color and shape vectors for consistent plot styling.
 }
 \examples{
+\dontrun{
 # Apply the custom theme to a ggplot
+# The custom theme 'my_custom_theme()' is part of the package
+
 suppressMessages(library(ggplot2))
+
+# Create a scatter plot using the 'mtcars' dataset
 p <- ggplot(mtcars, aes(x = wt, y = mpg)) + 
   geom_point(size = 3) + 
-  my_custom_theme()
+  my_custom_theme()  # Apply the custom theme
+
+# Print the plot
 print(p)
+}
 }

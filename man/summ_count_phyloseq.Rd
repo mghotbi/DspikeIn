@@ -16,7 +16,11 @@ A data frame with overall summary statistics.
 This function computes overall summary statistics (mean, median, standard deviation, standard error, and quantiles) for the OTU table in a phyloseq object.
 }
 \examples{
-# Example usage:
-# summary_stats <- summ_count_phyloseq(spiked_ITS)
-# summary_stats <- summ_count_phyloseq(processed_data)
+\dontrun{
+if (interactive()) {
+  # Example usage:
+  summary_stats <- summ_count_phyloseq(spiked_ITS)
+  summary_stats <- summ_count_phyloseq(processed_data)
+}
+}
 }

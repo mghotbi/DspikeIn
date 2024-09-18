@@ -41,7 +41,17 @@ It includes a detection threshold for prevalence, performs glomming, pruning, an
 and renames taxa with an ASV prefix. The function requires the `phyloseq`, `microbiomeutilities`, `microbiome`, and `ggplot2` packages.
 }
 \examples{
+\dontrun{
 # Example usage:
+# Specify a custom detection threshold range
 custom_detections <- 10^seq(log10(3e-1), log10(0.5), length = 5)
-plot_core_microbiome_custom(physeq_16SASV, detections = custom_detections, taxrank = "Family", output_core_rds = "core_microbiome.rds", output_core_csv = "core_microbiome.csv")
+
+# Plot the core microbiome using the custom detection thresholds
+# and save the results to .rds and .csv files
+plot_result <- plot_core_microbiome_custom(physeq_16SASV, 
+                                           detections = custom_detections, 
+                                           taxrank = "Family", 
+                                           output_core_rds = "core_microbiome.rds", 
+                                           output_core_csv = "core_microbiome.csv")
+}
 }

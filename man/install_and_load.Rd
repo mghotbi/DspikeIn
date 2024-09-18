@@ -20,6 +20,14 @@ This function installs and loads required packages.
 -----------------------------------------------------------
 }
 \examples{
-required_packages <- c("phyloseq", "DESeq2", "edgeR", "BiocManager", "BiocGenerics", "ggplot2", "dplyr", "DT")
-install_and_load(required_packages)
+\dontrun{
+if (interactive()) {
+  # List of required packages to install and load
+  required_packages <- c("phyloseq", "DESeq2", "edgeR", "BiocManager", 
+                         "BiocGenerics", "ggplot2", "dplyr", "DT")
+  
+  # Function to install and load required packages
+  install_and_load(required_packages)
+}
+}
 }

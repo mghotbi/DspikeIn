@@ -12,14 +12,24 @@
 #' @importFrom phyloseq subset_taxa tax_table otu_table
 #' @importFrom utils write.csv
 #' @examples
+#' \dontrun{
 #' # Example usage:
-#' # Assume `merged_physeq_sum` is a phyloseq object with one ASV/OTU resulting from spiked species and `scaling_factors` is a numeric vector of scaling factors.
-#' # merged_spiked_species <- c("Tetragenococcus_halophilus")
-#' # Calculate scaling factors and generate the report
-#' # result <- calculate_spikeIn_factors(merged_physeq_sum, 1874, merged_spiked_species)
-#' # absolute <- convert_to_absolute_counts(merged_physeq_sum, scaling_factors)
-#' # absolute_counts <- absolute$absolute_counts
-#' # physeq_obj <- absolute$physeq_obj
+#' #' # Assume `merged_physeq_sum` is a phyloseq object with one ASV/OTU 
+#' # resulting from spiked species, and `scaling_factors` is a 
+#' # numeric vector of scaling factors.
+#' merged_spiked_species <- c("Tetragenococcus_halophilus")
+#' 
+#' # Calculate scaling factors and generate a report
+#' result <- calculate_spikeIn_factors(merged_physeq_sum, 1874, merged_spiked_species)
+#' 
+#' # Convert the phyloseq object to absolute counts using scaling factors
+#' absolute <- convert_to_absolute_counts(merged_physeq_sum, scaling_factors)
+#' absolute_counts <- absolute$absolute_counts
+#' physeq_obj <- absolute$physeq_obj
+#' 
+#' # The 'absolute_counts' variable contains the converted counts, and 'physeq_obj' 
+#' #is the updated phyloseq object
+#' }
 #' @export
 convert_to_absolute_counts <- function(physeq, scaling_factors, output_dir = NULL) {
   suppressMessages({

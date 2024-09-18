@@ -9,12 +9,14 @@
 #' @return NULL. The function saves the plot to the specified output file.
 #' @importFrom phyloseq phy_tree refseq
 #' @importFrom DECIPHER AlignSeqs
-#' @importFrom ape cophenetic.phylo boot.phylo
+#' @importFrom ape cophenetic.phylo boot.phylo nj nodelabels
 #' @importFrom phangorn phyDat dist.ml
 #' @examples
+#' \dontrun{
 #' # Bootstrap and plot a phylogenetic tree
 #' Bootstrap_phy_tree_with_cophenetic(physeq_object = Tetragenococcus, 
 #' output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 500)
+#' }
 #' @export
 Bootstrap_phy_tree_with_cophenetic <- function(physeq_object, output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 100) {
   # Load necessary libraries
@@ -31,13 +33,8 @@ Bootstrap_phy_tree_with_cophenetic <- function(physeq_object, output_file = "tre
     stop("Package 'phangorn' is required but not installed.")
   }
   
-  library(phyloseq)
-  library(DECIPHER)
-  library(ape)
-  library(phangorn)
-  
   # Extract the phylogenetic tree from the phyloseq object
-  tree <- phy_tree(physeq_object)
+  tree <- phyloseq::phy_tree(physeq_object)
   
   # Check if the tree has branch lengths
   if (is.null(tree$edge.length) || length(tree$edge.length) == 0) {
@@ -45,23 +42,23 @@ Bootstrap_phy_tree_with_cophenetic <- function(physeq_object, output_file = "tre
   }
   
   # Perform multiple sequence alignment (assuming you have the sequences in your physeq object)
-  ref_sequences <- refseq(physeq_object)
+  ref_sequences <- phyloseq::refseq(physeq_object)
   alignment <- DECIPHER::AlignSeqs(ref_sequences, anchor = NA)
   
   # Convert alignment to DNAStringSet
   aligned_sequences <- as(alignment, "DNAStringSet")
   
   # Convert DNAStringSet to phyDat format
-  phyDat_alignment <- phyDat(as(aligned_sequences, "matrix"), type = "DNA")
+  phyDat_alignment <- phangorn::phyDat(as(aligned_sequences, "matrix"), type = "DNA")
   
   # Convert phyDat_alignment to matrix format for bootstrapping
   alignment_matrix <- as.matrix(aligned_sequences)
   
   # Function for bootstrap
-  bootstrap_fun <- function(x) nj(dist.ml(phyDat(x, type = "DNA")))
+  bootstrap_fun <- function(x) ape::nj(dist.ml(phangorn::phyDat(x, type = "DNA")))
   
   # Generate bootstrap values
-  bootstrap_values <- boot.phylo(tree, alignment_matrix, FUN = bootstrap_fun, B = bootstrap_replicates)
+  bootstrap_values <- ape::boot.phylo(tree, alignment_matrix, FUN = bootstrap_fun, B = bootstrap_replicates)
   
   # Normalize bootstrap values to percentages
   bootstrap_percentages <- bootstrap_values / bootstrap_replicates * 100
@@ -79,7 +76,7 @@ Bootstrap_phy_tree_with_cophenetic <- function(physeq_object, output_file = "tre
   png(output_file, width = 1200, height = 1200)
   par(mar = c(5, 4, 4, 10))  # Increase the right margin for node labels
   plot(tree, main = "Phylogenetic Tree with Bootstrap Values and Cophenetic Distances", cex = 0.9, tip.color = "dodgerblue4")
-  nodelabels(round(bootstrap_percentages, 1), cex = 0.9, frame = "none", adj = c(1.0, -0.5), col = "red4")
+  ape::nodelabels(round(bootstrap_percentages, 1), cex = 0.9, frame = "none", adj = c(1.0, -0.5), col = "red4")
   dev.off()
   
   cat("Phylogenetic tree with bootstrap values and cophenetic distances saved as:", output_file, "\n")

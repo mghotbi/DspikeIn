@@ -9,8 +9,12 @@
 #' @param output_file A character string specifying the output file name for the subsampled phyloseq object. Default is "randomsubsample_Trimmed_evenDepth.rds".
 #' @return A phyloseq object with subsampled sequencing depths.
 #' @examples
-#' # Perform subsampling
-#' spiked_ITS_evenDepth <- randomsubsample_Trimmed_evenDepth(spiked_ITS, smalltrim = 0.001)
+#' \dontrun{
+#' if (interactive()) {
+#'   # Perform subsampling
+#'   spiked_ITS_evenDepth <- randomsubsample_Trimmed_evenDepth(spiked_ITS, smalltrim = 0.001)
+#' }
+#' }
 #' @export
 randomsubsample_Trimmed_evenDepth <- function(physeq, smalltrim = 0.001, replace = TRUE, output_file = "randomsubsample_Trimmed_evenDepth.rds") {
   suppressMessages({

@@ -27,6 +27,9 @@ NULL. The function saves the plots to the specified output files.
 This function generates a phylogenetic tree plot with an additional plot of the multiple sequence alignment.
 }
 \examples{
-# Plot the phylogenetic tree with multiple sequence alignment
-plot_tree_with_alignment(Tetragenococcus, output_prefix = "tree_alignment", width = 15, height = 15)
+if (interactive()) {
+  # Plot the phylogenetic tree with multiple sequence alignment
+  plot_tree_with_alignment(Tetragenococcus, 
+  output_prefix = "tree_alignment", width = 15, height = 15)
+}
 }

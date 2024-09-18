@@ -64,12 +64,19 @@ This function generates bar plots for phyloseq data at a specified taxonomic lev
 with options to customize the appearance/size/legend, relativize the data or plot absolute abundance, facet the plots, and save the plots.
 }
 \examples{
-# Plot relativized abundance or select relativize = FALSE to plot absolute abundance
-plot <- plotbar_abundance(physeq_16S_adj_scaled_absolute_abundance, level = "Family", 
-group = c("Diet", "Host.species","Ecoregion.III"), x_axis_var = "Diet", 
-top = 10, x_size = 10, y_size = 10, legend_key_size = 2, legend_text_size = 14,
-legend_nrow = 10, relativize = TRUE, output_prefix = "relativized_abundance_plot", 
-facet_var = "Ecoregion.III", scales = "free_x")
-print(plot)
-
+\dontrun{
+if (interactive()) {
+  # Plot relativized abundance or select relativize = FALSE to plot absolute abundance
+  plot <- plotbar_abundance(physeq_16SOTU, 
+                            level = "Family", 
+                            group = c("Diet", "Host.species", "Ecoregion.III"), 
+                            x_axis_var = "Diet", 
+                            top = 10, x_size = 10, y_size = 10, 
+                            legend_key_size = 2, legend_text_size = 14,
+                            legend_nrow = 10, relativize = TRUE, 
+                            output_prefix = "relativized_abundance_plot", 
+                            facet_var = "Ecoregion.III", scales = "free_x")
+  print(plot)
+}
+}
 }

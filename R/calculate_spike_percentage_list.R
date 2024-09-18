@@ -18,8 +18,10 @@
 #'   c("Clostridium difficile")
 #' )
 #'
-#' # Create a mock phyloseq object (assuming merged_physeq_sum already exists in your environment)
-#' result <- calculate_spike_percentage_list(merged_physeq_sum, merged_spiked_species = spiked_species_list, passed_range = c(0.1, 10))
+#' # Create a mock phyloseq object 
+#' #' result <- calculate_spike_percentage_list(merged_physeq_sum, 
+#' merged_spiked_species = spiked_species_list, 
+#' passed_range = c(0.1, 10))
 #'
 #' # Print the results
 #' print(result)

@@ -8,15 +8,17 @@
 #' @param grouping_var A character string specifying the column name to use for grouping.
 #' @return NULL. The function prints the Shapiro-Wilk test results for each variable and transformation.
 #' @examples
-#' # Example usage:
-#' # Retrieve the methods.rds file in the extdata folder of DspikeIn package
-#' # Read the file 
-#' file_path <- system.file("extdata", "methods.rds", package = "DspikeIn")
-#' methods <- readRDS(file_path)
-#' 
-#' # Perform the Shapiro-Wilk test on the methods data, using the "Methods" column for grouping
-#' Shapiro_Wilk_test(methods, "Methods")
-#'
+#' \dontrun{
+#' if (interactive()) {
+#'   # Example usage:
+#'   # Retrieve the methods.rds file in the extdata folder of DspikeIn package
+#'   file_path <- system.file("extdata", "methods.rds", package = "DspikeIn")
+#'   methods <- readRDS(file_path)
+#'   
+#'   # Perform the Shapiro-Wilk test on the methods data, using the "Methods" column for grouping
+#'   Shapiro_Wilk_test(methods, "Methods")
+#' }
+#' }
 #' @importFrom stats shapiro.test aov resid
 #' @importFrom dplyr select_if
 #' @export

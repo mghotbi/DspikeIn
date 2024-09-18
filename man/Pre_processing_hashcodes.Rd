@@ -29,11 +29,14 @@ based on specified hashcodes and a merge method (sum or max). It retains the tax
 information and creates various intermediate and final datasets for further processing.
 }
 \examples{
-Tetragenococcus <- subset_taxa(physeq_ASV16, Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp")
+\dontrun{
+Tetragenococcus <- phyloseq::subset_taxa(physeq_16SASV, 
+  Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp")
 hashcodes <- row.names(phyloseq::otu_table(Tetragenococcus))
-processed_data_sum <- Pre_processing_hashcodes(physeq_ASV16, hashcodes, 
-merge_method = "sum", output_prefix = "merged_physeq_sum")
-processed_data_max <- Pre_processing_hashcodes(physeq_ASV16, hashcodes, 
-merge_method = "max", output_prefix = "merged_physeq_max")
+processed_data_sum <- Pre_processing_hashcodes(physeq_16SASV, hashcodes, 
+  merge_method = "sum", output_prefix = "merged_physeq_sum")
+processed_data_max <- Pre_processing_hashcodes(physeq_16SASV, hashcodes, 
+  merge_method = "max", output_prefix = "merged_physeq_max")
 summ_count_phyloseq(processed_data_sum)
+}
 }

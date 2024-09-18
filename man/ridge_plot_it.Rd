@@ -23,7 +23,10 @@ This function rarefies the data, performs proportion transformation, gloms and p
 and generates ridge plots to visualize the distribution of relative abundances of taxa.
 }
 \examples{
-# Example usage:
-ridgeP <- ridge_plot_it(spiked_16S, taxrank = "Family", top_n = 10)
-print(ridgeP) + my_custom_theme()
+\dontrun{
+if (interactive()) {
+  ridgeP <- ridge_plot_it(spiked_16S, taxrank = "Family", top_n = 10)
+  print(ridgeP) + my_custom_theme()
+}
+}
 }

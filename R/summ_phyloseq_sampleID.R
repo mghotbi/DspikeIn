@@ -7,9 +7,15 @@
 #' @importFrom phyloseq otu_table
 #' @importFrom stats quantile sd
 #' @examples
+#' \dontrun{
 #' # Example usage:
-#' # Generate summary statistics for a phyloseq object
-#' # summary_stats <- summ_phyloseq_sampleID(physeq_ITSOTU)
+#' 
+#' # Generate summary statistics for a phyloseq object based on sample IDs
+#' summary_stats <- summ_phyloseq_sampleID(physeq_ITSOTU)
+#'
+#' # Print the summary statistics
+#' print(summary_stats)
+#' }
 #' @export
 summ_phyloseq_sampleID <- function(physeq) {
   suppressMessages({

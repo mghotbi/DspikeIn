@@ -10,12 +10,18 @@
 #' @param print_plot A logical value specifying whether to print the plot. Default is TRUE.
 #' @return NULL. The function saves the plot to the specified output file.
 #' @examples
-#' # Plot the tree with glommed OTUs
-#' plot_glommed_tree(Tetragenococcus, resolution = 0.2, output_prefix = "top", width = 18, height = 18)
+#' \dontrun{
+#' if (interactive()) {
+#'   # Plot the tree with glommed OTUs
+#'   plot_glommed_tree(Tetragenococcus, resolution = 0.2, 
+#'   output_prefix = "top", width = 18, height = 18)
+#' }
+#' }
 #' @importFrom phyloseq phy_tree
 #' @importFrom speedyseq tree_glom
 #' @importFrom ggtree ggtree geom_tiplab theme_tree2 geom_text2 
 #' @importFrom ggplot2 ggsave aes ggtitle
+#' @importFrom tibble as_tibble
 #' @export
 plot_glommed_tree <- function(physeq, resolution, output_prefix = "glommed_tree", width = 20, height = 18, print_plot = TRUE) {
   suppressMessages({
@@ -46,7 +52,7 @@ plot_glommed_tree <- function(physeq, resolution, output_prefix = "glommed_tree"
     phy_tree <- phyloseq::phy_tree(physeq_glommed)
     
     # Convert to a format suitable for ggtree
-    tree_data <- as_tibble(phy_tree)
+    tree_data <- tibble::as_tibble(phy_tree)
     
     # Determine if nodes are tips
     tree_data$isTip <- !is.na(match(tree_data$label, phy_tree$tip.label))

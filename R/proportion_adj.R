@@ -8,8 +8,12 @@
 #' @param output_file A character string specifying the output file name for the adjusted phyloseq object. Default is "proportion_adjusted_physeq.rds".
 #' @return A phyloseq object with the proportionally adjusted and rounded abundance data.
 #' @examples
-#' # Proportionally adjust the abundance data
-#' normalized_physeq <- proportion_adj(physeq, output_file = "proportion_adjusted_physeq.rds")
+#' \dontrun{
+#' if (interactive()) {
+#'   # Proportionally adjust the abundance data
+#'   normalized_physeq <- proportion_adj(physeq, output_file = "proportion_adjusted_physeq.rds")
+#' }
+#' }
 #' @export
 proportion_adj <- function(physeq, output_file = "proportion_adjusted_physeq.rds") {
   suppressMessages({

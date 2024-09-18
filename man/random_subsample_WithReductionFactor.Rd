@@ -26,8 +26,14 @@ reducing the counts of each ASV (Amplicon Sequence Variant) by a specified reduc
 The resulting subsampled phyloseq object is saved to a specified output file.
 }
 \examples{
-# Perform random subsampling with a reduction factor of 10
+\dontrun{
+# Perform random subsampling on the phyloseq object with a reduction factor of 10
 red <- random_subsample_WithReductionFactor(spiked_16S, reduction_factor = 10)
-# Summarize the subsampled phyloseq object
-summ_phyloseq_sampleID(red)
+
+# Summarize the subsampled phyloseq object by sample IDs
+summary_stats <- summ_phyloseq_sampleID(red)
+
+# Print the summary statistics
+print(summary_stats)
+}
 }

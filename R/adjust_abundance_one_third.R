@@ -8,8 +8,12 @@
 #' @param output_file A character string specifying the output file name for the adjusted phyloseq object. Default is NULL.
 #' @return A phyloseq object with the adjusted abundance data.
 #' @examples
-#' # Adjust the abundance data by dividing each value by 3
-#' adjusted_physeq <- adjust_abundance_one_third(physeq16S, factor = 3)
+#' \dontrun{
+#' if(interactive()){
+#'   # Adjust the abundance data by dividing each value by 3
+#'   adjusted_physeq <- adjust_abundance_one_third(physeq16S, factor = 3)
+#' }
+#' }
 #' @export
 adjust_abundance_one_third <- function(physeq, factor = 3, output_file = NULL) {
   suppressMessages({

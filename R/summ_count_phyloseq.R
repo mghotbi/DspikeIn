@@ -5,9 +5,13 @@
 #' @param physeq A phyloseq object containing the taxonomic and abundance data.
 #' @return A data frame with overall summary statistics.
 #' @examples
-#' # Example usage:
-#' # summary_stats <- summ_count_phyloseq(spiked_ITS)
-#' # summary_stats <- summ_count_phyloseq(processed_data)
+#' \dontrun{
+#' if (interactive()) {
+#'   # Example usage:
+#'   summary_stats <- summ_count_phyloseq(spiked_ITS)
+#'   summary_stats <- summ_count_phyloseq(processed_data)
+#' }
+#' }
 #' @importFrom matrixStats rowMeans2 rowMedians
 #' @export
 summ_count_phyloseq <- function(physeq) {

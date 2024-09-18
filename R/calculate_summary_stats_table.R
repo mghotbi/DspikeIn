@@ -7,9 +7,19 @@
 #' @param output_path A character string specifying the output path for the Word document. Default is NULL, which sets the output path to "post_eval_summary.docx".
 #' @return A flextable object containing the summary statistics.
 #' @examples
-#' # Calculate summary statistics and save the table
+#' \dontrun{
+#' # Calculate summary statistics and save the table to a Word document
 #' summary_table <- calculate_summary_stats_table(initial_stat_ASV, output_path = "summary.docx")
+#' 
+#' # Read a post-evaluation summary from a CSV file
 #' post_eval_summary <- read.csv("post_eval_summary.csv")
+#'
+#' # Print the calculated summary table
+#' print(summary_table)
+#'
+#' # Preview the post-evaluation summary
+#' head(post_eval_summary)
+#' }
 #' @importFrom flextable flextable fontsize font color bold italic save_as_docx
 #' @export
 calculate_summary_stats_table <- function(data, output_path = NULL) {

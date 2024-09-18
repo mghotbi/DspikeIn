@@ -40,8 +40,10 @@ This function selects the most important ASVs (Amplicon Sequence Variants) based
 The selected ASVs are saved to a CSV file.
 }
 \examples{
-# Ensure you have a phyloseq object `physeq`
-# Use the name of the column in sample_data for response_var
-rf_physeq <- RandomForest_selected_ASVs(physeq_16SOTU,response_var = "Host.genus",
-na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet"))
+if (interactive()) {
+  # Ensure you have a phyloseq object `physeq`
+  # Use the name of the column in sample_data for response_var
+  rf_physeq <- RandomForest_selected_ASVs(physeq_16SOTU, response_var = "Host.genus",
+    na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet"))
+}
 }

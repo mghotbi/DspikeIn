@@ -11,11 +11,16 @@
 #' @examples
 #' # Example usage:
 #' # Assume `methods` is a data frame with a column "Methods" for grouping
+#' ##' @examples
+#' \dontrun{
+#' # Example usage:
+#' # Assume `methods` is a data frame with a column "Methods" for grouping
 #' # and other numeric columns to test.
-#' # file_path <- system.file("extdata", "methods.rds", package = "DspikeIn") 
-#' methods <- readRDS(file_path) 
-#' print(methods) 
+#' # file_path <- system.file("extdata", "methods.rds", package = "DspikeIn")
+#' methods <- readRDS(file_path)
+#' print(methods)
 #' Bartlett_test(methods, "Methods")
+#' }
 #' @export
 Bartlett_test <- function(data, grouping_var, transformations = c("raw", "sqrt", "log", "zscale")) {
   

@@ -56,6 +56,8 @@ It supports both relative and absolute abundance types, filters based on abundan
 Additional customization options include faceting, custom colors, and setting the legend.
 }
 \examples{
+\dontrun{
+# Load necessary libraries
 library(phyloseq)
 library(ggplot2)
 library(dplyr)
@@ -79,6 +81,8 @@ alluvial_plot_abs <- alluvial_plot(
   text_size = 4, 
   legend_ncol = 1
 )
+
+# Print the alluvial plot for absolute abundance
 print(alluvial_plot_abs)
 
 # Generate alluvial plot for relative abundance
@@ -94,6 +98,9 @@ alluvial_plot_rel <- alluvial_plot(
   text_size = 4, 
   legend_ncol = 1
 )
+
+# Print the alluvial plot for relative abundance
 print(alluvial_plot_rel)
+}
 
 }

@@ -9,8 +9,15 @@
 #' @param output_file A character string specifying the file path to save the adjusted phyloseq object. Default is "adjusted_prevalence_physeq.rds".
 #' @return A phyloseq object with adjusted prevalence.
 #' @examples
-#' spiked_16S_min <- adjusted_prevalence(physeq_16S_adj_scaled, method = "min")
-#' spiked_16S_max <- adjusted_prevalence(physeq_16S_adj_scaled, method = "max")
+#' \dontrun{
+#' if (interactive()) {
+#'   # Adjust prevalence using the "min" method
+#'   spiked_16S_min <- adjusted_prevalence(physeq_16S_adj_scaled, method = "min")
+#'   
+#'   # Adjust prevalence using the "max" method
+#'   spiked_16S_max <- adjusted_prevalence(physeq_16S_adj_scaled, method = "max")
+#' }
+#' }
 #' @export
 adjusted_prevalence <- function(spiked_16S, method = "min", output_file = "adjusted_prevalence_physeq.rds") {
   suppressMessages({

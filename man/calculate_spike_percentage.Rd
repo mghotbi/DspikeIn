@@ -32,15 +32,39 @@ It merges the spiked taxa into one ASV, calculates the percentage of reads, cate
 and saves the results as a DOCX and CSV file.
 }
 \examples{
+\dontrun{
 # Load example data
 data(physeq_16SASV)
 physeq <- physeq_16SASV
 
 # Define the spiked species
 merged_spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
-calculate_spike_percentage(physeq, merged_spiked_species = merged_spiked_species, passed_range = c(0.1, 10))
+
+# Calculate spike percentage for the defined spiked species within the range 0.1 to 10
+calculate_spike_percentage(physeq, 
+                           merged_spiked_species = merged_spiked_species, 
+                           passed_range = c(0.1, 10))
 
 # Define the spiked hashcodes
 merged_spiked_hashcodes <- c("hashcode1", "hashcode2")
-calculate_spike_percentage(physeq, merged_spiked_hashcodes = merged_spiked_hashcodes, passed_range = c(0.1, 10))
+
+# Calculate spike percentage for the defined spiked hashcodes within the range 0.1 to 10
+calculate_spike_percentage(physeq,
+                           merged_spiked_hashcodes = merged_spiked_hashcodes,
+                           passed_range = c(0.1, 10))
+
+# Example with a single species
+merged_spiked_species <- "Dekkera_bruxellensis"
+
+# Calculate spike percentage for the single species within the range 0.1 to 35
+result <- calculate_spike_percentage(spiked_ITS_OTU_scaled, 
+                                     merged_spiked_species, 
+                                     passed_range = c(0.1, 35))
+
+# Generate a summary statistics table from the result
+calculate_summary_stats_table(result)
+
+# Display the calculated spike percentage
+result$Percentage
+}
 }

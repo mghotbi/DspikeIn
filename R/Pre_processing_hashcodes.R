@@ -11,13 +11,16 @@
 #' @return A phyloseq object with the processed data.
 #' @importFrom phyloseq taxa_names tax_table otu_table merge_taxa prune_taxa merge_phyloseq sample_data
 #' @examples
-#' Tetragenococcus <- subset_taxa(physeq_ASV16, Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp")
+#' \dontrun{
+#' Tetragenococcus <- phyloseq::subset_taxa(physeq_16SASV, 
+#'   Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp")
 #' hashcodes <- row.names(phyloseq::otu_table(Tetragenococcus))
-#' processed_data_sum <- Pre_processing_hashcodes(physeq_ASV16, hashcodes, 
-#' merge_method = "sum", output_prefix = "merged_physeq_sum")
-#' processed_data_max <- Pre_processing_hashcodes(physeq_ASV16, hashcodes, 
-#' merge_method = "max", output_prefix = "merged_physeq_max")
+#' processed_data_sum <- Pre_processing_hashcodes(physeq_16SASV, hashcodes, 
+#'   merge_method = "sum", output_prefix = "merged_physeq_sum")
+#' processed_data_max <- Pre_processing_hashcodes(physeq_16SASV, hashcodes, 
+#'   merge_method = "max", output_prefix = "merged_physeq_max")
 #' summ_count_phyloseq(processed_data_sum)
+#' }
 #' @export
 Pre_processing_hashcodes <- function(spiked_16S, hashcodes, merge_method = c("sum", "max"), output_prefix = "merged_physeq") {
   suppressMessages({
@@ -79,7 +82,8 @@ Pre_processing_hashcodes <- function(spiked_16S, hashcodes, merge_method = c("su
 }
 
 # Example usage:
-# Tetragenococcus <- subset_taxa(physeq_16SASV, Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp")
+# Tetragenococcus <- subset_taxa(physeq_16SASV, 
+# Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp")
 # hashcodes <- row.names(phyloseq::otu_table(Tetragenococcus))
 # processed_data_sum <- Pre_processing_hashcodes(physeq_16SASV, hashcodes, merge_method = "sum",
 # output_prefix = "merged_physeq_sum")

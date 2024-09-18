@@ -32,18 +32,21 @@ and saves the results as RDS, CSV, and DOCX files.
 Note: The metadata in the phyloseq object must contain a column named 'spiked.volume' with the appropriate values.
 }
 \examples{
+\dontrun{
 # Example usage:
+
 # Define the spiked species
 merged_spiked_species <- c("Tetragenococcus_halophilus")
 
 # Calculate scaling factors and generate the report
 result <- calculate_spikeIn_factors(merged_physeq_sum, 1874, merged_spiked_species)
 
-# Access the results
-scaling_factors <- result$scaling_factors
-physeq_no_spiked <- result$physeq_no_spiked
-spiked_16S_total_reads <- result$spiked_16S_total_reads
-spiked_species <- result$spiked_species
-spiked_species_merged <- result$spiked_species_merged
-spiked_species_reads <- result$spiked_species_reads
+# Access the results from the calculation
+scaling_factors <- result$scaling_factors        # The calculated scaling factors
+physeq_no_spiked <- result$physeq_no_spiked      # Phyloseq object with no spiked species
+spiked_16S_total_reads <- result$spiked_16S_total_reads  # Total reads of the spiked 16S species
+spiked_species <- result$spiked_species          # List of spiked species
+spiked_species_merged <- result$spiked_species_merged  # Merged spiked species
+spiked_species_reads <- result$spiked_species_reads    # Reads associated with the spiked species
+}
 }

@@ -33,6 +33,11 @@ NULL. The function saves the plot to the specified output file.
 This function gloms the OTUs in the phyloseq object at the specified resolution and plots the tree.
 }
 \examples{
-# Plot the tree with glommed OTUs
-plot_glommed_tree(Tetragenococcus, resolution = 0.2, output_prefix = "top", width = 18, height = 18)
+\dontrun{
+if (interactive()) {
+  # Plot the tree with glommed OTUs
+  plot_glommed_tree(Tetragenococcus, resolution = 0.2, 
+  output_prefix = "top", width = 18, height = 18)
+}
+}
 }

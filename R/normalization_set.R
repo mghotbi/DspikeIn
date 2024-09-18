@@ -1,4 +1,5 @@
-# For Differential Abundance Analysis: Consider DESeq, TMM, or CSS normalization, as these methods are designed to handle compositional biases and library size differences.
+# For Differential Abundance Analysis: Consider DESeq, TMM, or CSS normalization, as these methods are designed to handle 
+# compositional biases and library size differences.
 # For Compositional Data: CLR normalization is a good choice, as it transforms the data to account for its compositional nature.
 # For Simplicity and Ease of Use: TC, UQ, or Median normalization are quick and straightforward but may not be as robust.
 # Install and Load Required Packages 

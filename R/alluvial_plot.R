@@ -17,10 +17,10 @@
 #' @param legend_ncol An integer specifying the number of columns for the legend. Default is 1.
 #' @param custom_colors A character vector specifying custom colors for the fill variable. Default is NULL (use predefined MG colors).
 #' @param color_mapping A named character vector specifying specific colors for taxa. Default is NULL.
-#'
 #' @return A ggplot2 object representing the alluvial plot.
-#'
 #' @examples
+#' \dontrun{
+#' # Load necessary libraries
 #' library(phyloseq)
 #' library(ggplot2)
 #' library(dplyr)
@@ -44,6 +44,8 @@
 #'   text_size = 4, 
 #'   legend_ncol = 1
 #' )
+#' 
+#' # Print the alluvial plot for absolute abundance
 #' print(alluvial_plot_abs)
 #'
 #' # Generate alluvial plot for relative abundance
@@ -59,7 +61,10 @@
 #'   text_size = 4, 
 #'   legend_ncol = 1
 #' )
+#' 
+#' # Print the alluvial plot for relative abundance
 #' print(alluvial_plot_rel)
+#' }
 #'
 #' @importFrom ggplot2 ggplot aes geom_label theme scale_x_discrete scale_fill_manual ylab ggtitle guides guide_legend facet_grid
 #' @importFrom dplyr group_by summarise mutate ungroup arrange desc pull across filter

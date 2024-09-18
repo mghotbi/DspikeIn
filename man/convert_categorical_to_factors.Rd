@@ -23,5 +23,9 @@ Convert Categorical Columns to Factors in Sample Data
 Convert Categorical Columns to Factors in Sample Data
 }
 \examples{
+\dontrun{
+# Assume 'ps' is a phyloseq object where certain metadata columns are categorical
+# This function will convert those categorical columns to factors
 ps <- convert_categorical_to_factors(ps)
+}
 }

@@ -3,8 +3,16 @@
 #' 
 #' @param packages A vector of package names to be installed and loaded.
 #' @examples
-#' required_packages <- c("phyloseq", "DESeq2", "edgeR", "BiocManager", "BiocGenerics", "ggplot2", "dplyr", "DT")
-#' install_and_load(required_packages)
+#' \dontrun{
+#' if (interactive()) {
+#'   # List of required packages to install and load
+#'   required_packages <- c("phyloseq", "DESeq2", "edgeR", "BiocManager", 
+#'                          "BiocGenerics", "ggplot2", "dplyr", "DT")
+#'   
+#'   # Function to install and load required packages
+#'   install_and_load(required_packages)
+#' }
+#' }
 #' @export
 #' @importFrom utils install.packages
 #' @importFrom BiocManager install
@@ -56,7 +64,11 @@ MG <- function() {
 #' @param pseudocount A numeric value to add to avoid zero counts.
 #' @return A phyloseq object with filtered and adjusted OTU table.
 #' @examples
+#' \dontrun{
+#' # 'ps' is a phyloseq object with some samples having zero or negative counts
+#' # This function will remove those samples from the phyloseq object
 #' ps <- remove_zero_negative_count_samples(ps)
+#' }
 #' @export
 remove_zero_negative_count_samples <- function(ps, pseudocount = 1) {
   otu <- as(phyloseq::otu_table(ps), "matrix")
@@ -89,7 +101,11 @@ remove_zero_negative_count_samples <- function(ps, pseudocount = 1) {
 #' @param ps A phyloseq object.
 #' @return A phyloseq object with updated sample data.
 #' @examples
+#' \dontrun{
+#' # Assume 'ps' is a phyloseq object where certain metadata columns are categorical
+#' # This function will convert those categorical columns to factors
 #' ps <- convert_categorical_to_factors(ps)
+#' }
 #' @export
 convert_categorical_to_factors <- function(ps) {
   sample_data_df <- as(phyloseq::sample_data(ps), "data.frame")
@@ -101,7 +117,6 @@ convert_categorical_to_factors <- function(ps) {
   phyloseq::sample_data(ps) <- phyloseq::sample_data(sample_data_df)
   return(ps)
 }
-
 #' Relativized Filtered Taxa
 #' This function filters taxa from a phyloseq object based on custom thresholds.
 #' @param physeq A phyloseq object containing the microbial data.
@@ -111,7 +126,16 @@ convert_categorical_to_factors <- function(ps) {
 #' @param threshold_relative_abundance A numeric value specifying the minimum relative abundance.
 #' @return A phyloseq object containing only the taxa that meet the specified thresholds.
 #' @examples
-#' FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, threshold_mean_abundance = 0.0005, threshold_count = 5)
+#' \dontrun{
+#' # Assume 'spiked_16S' is a phyloseq object
+#' # This function will filter taxa based on the given thresholds
+#' # - threshold_percentage: Minimum percentage of samples in which taxa should appear
+#' # - threshold_mean_abundance: Minimum mean abundance across samples for taxa
+#' # - threshold_count: Minimum total count for taxa across all samples
+#' FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, 
+#'                                 threshold_mean_abundance = 0.0005, 
+#'                                 threshold_count = 5)
+#' }
 #' @export
 relativized_filtered_taxa <- function(physeq, threshold_percentage = 0.5, threshold_mean_abundance = 0.001, threshold_count = 10, threshold_relative_abundance = NULL) {
   nsamples <- phyloseq::nsamples(physeq)
@@ -132,8 +156,15 @@ relativized_filtered_taxa <- function(physeq, threshold_percentage = 0.5, thresh
 #' @param rank A character string specifying the taxonomic rank to glom. Default is "Genus".
 #' @return A phyloseq object with taxa glommed at the specified rank.
 #' @examples
-#' ps_glommed <- glom_taxa_at_rank(ps) # Defaults to "Genus"
-#' ps_glommed <- glom_taxa_at_rank(ps, "Family") # Gloms at "Family"
+#' \dontrun{
+#' # Assume 'ps' is a phyloseq object
+#' # This function will glom (group) taxa at a specific taxonomic rank
+#' # Default taxonomic rank is "Genus"
+#' ps_glommed <- glom_taxa_at_rank(ps) 
+#' 
+#' # Glom taxa at the "Family" rank
+#' ps_glommed <- glom_taxa_at_rank(ps, "Family")
+#' }
 #' @export
 glom_taxa_at_rank <- function(physeq, rank = "Genus") {
   if (is.null(phyloseq::tax_table(physeq, errorIfNULL = FALSE))) {
@@ -390,37 +421,51 @@ perform_edgeR <- function(ps, group_var, threshold_percentage, threshold_mean_ab
 #' @param facet_variable A string specifying the variable to facet the barplots. Default is "Phylum".
 #' @param target_glom A string specifying the taxonomic rank to aggregate taxa (e.g., "Genus", "Family"). Default is "Genus".
 #' @return A list containing the final results, the phyloseq object with significant OTUs, and ggplot objects for the visualizations.
-#' 
 #' @examples
+#' \dontrun{
 #' # Install and load the required packages first
-#' required_packages <- c("phyloseq", "DESeq2", "edgeR", "BiocManager", "BiocGenerics", "ggplot2", "dplyr", "DT")
+#' required_packages <- c("phyloseq", "DESeq2", "edgeR", 
+#'                        "BiocManager", "BiocGenerics", "ggplot2", 
+#'                        "dplyr", "DT")
 #' install_and_load(required_packages)
 #' 
-#' # Step 1: Clean and preprocess the data
-#' ps <- remove_zero_negative_count_samples(ps)
-#' ps <- convert_categorical_to_factors(ps)
+#' # Step 1: Clean and preprocess the phyloseq object
+#' ps <- remove_zero_negative_count_samples(ps)  
+#' ps <- convert_categorical_to_factors(ps)      
 #' 
-#' # edgeR Example with default glomming at the "Genus" rank:
-#' results_edgeR <- perform_and_visualize_differential_abundance(ps, "Animal.ecomode", method = "edgeR", 
-#'                                                               threshold_percentage = 0.001, threshold_mean_abundance = 0.001,
-#'                                                               threshold_count = 5, threshold_relative_abundance = 0.001,
-#'                                                               significance_level = 0.05, point_size = 3, target_glom = "Genus")
-#' # Print the volcano plot and barplots for edgeR
+#' # edgeR Example with default glomming at the "Genus" rank
+#' results_edgeR <- perform_and_visualize_differential_abundance(ps, "Animal.ecomode", 
+#'                                                               method = "edgeR", 
+#'                                                               threshold_percentage = 0.001, 
+#'                                                               threshold_mean_abundance = 0.001,
+#'                                                               threshold_count = 5, 
+#'                                                               threshold_relative_abundance = 0.001,
+#'                                                               significance_level = 0.05, 
+#'                                                               point_size = 3, 
+#'                                                               target_glom = "Genus")
+#' 
+#' # Print the volcano plot and bar plots for edgeR results
 #' print(results_edgeR$plot)
-#' print(results_edgeR$barplot_rel)
-#' print(results_edgeR$barplot_abs)
+#' print(results_edgeR$barplot_rel)  # Relative abundance 
+#' print(results_edgeR$barplot_abs)  # Absolute abundance 
 #' 
-#' # DESeq2 Example with custom glomming at the "Family" rank and faceting by Class:
-#' results_DESeq2 <- perform_and_visualize_differential_abundance(ps, "Host.genus", method = "DESeq2",
-#'                                                                threshold_percentage = 0.001, threshold_mean_abundance = 0.001,
-#'                                                                threshold_count = 5, threshold_relative_abundance = 0.001,
-#'                                                                significance_level = 0.05, point_size = 3, target_glom = "Family", 
+#' # DESeq2 Example with custom glomming at the "Family" rank and faceting by "Class"
+#' results_DESeq2 <- perform_and_visualize_differential_abundance(ps, "Host.genus", 
+#'                                                                method = "DESeq2",
+#'                                                                threshold_percentage = 0.001, 
+#'                                                                threshold_mean_abundance = 0.001,
+#'                                                                threshold_count = 5, 
+#'                                                                threshold_relative_abundance = 0.001,
+#'                                                                significance_level = 0.05, 
+#'                                                                point_size = 3, 
+#'                                                                target_glom = "Family", 
 #'                                                                facet_variable = "Class")
-#' # Print the volcano plot and barplots for DESeq2
-#' print(results_DESeq2$plot)
-#' print(results_DESeq2$barplot_rel)
-#' print(results_DESeq2$barplot_abs)
 #' 
+#' # Print the volcano plot and bar plots for DESeq2 results
+#' print(results_DESeq2$plot)
+#' print(results_DESeq2$barplot_rel)  # Relative abundance 
+#' print(results_DESeq2$barplot_abs)  # Absolute abundance 
+#' }
 #' @export
 perform_and_visualize_differential_abundance <- function(ps, group_var, method = "edgeR",
                                                          threshold_percentage = 0.0001, threshold_mean_abundance = 0.00001, 
@@ -445,7 +490,7 @@ perform_and_visualize_differential_abundance <- function(ps, group_var, method =
     warning("No taxonomy table found. Skipping tax glomming step.")
   }
   
-  # Step 4: Perform differential abundance analysis based on the chosen method
+  # Step 4: Perform differential abundance analysis based on the chosen method edgR/DESeq2
   if (method == "edgeR") {
     results <- perform_edgeR(ps, group_var, threshold_percentage, threshold_mean_abundance, threshold_count, threshold_relative_abundance, significance_level)
   } else if (method == "DESeq2") {
@@ -493,7 +538,8 @@ perform_and_visualize_differential_abundance <- function(ps, group_var, method =
 #                                                               threshold_count = 5, 
 #                                                               threshold_relative_abundance = 0.001,
 #                                                               significance_level = 0.05, 
-#                                                               point_size = 3, facet_variable = "Animal.ecomode",
+#                                                               point_size = 3, 
+#                                                               facet_variable = "Animal.ecomode",
 #                                                               target_glom = "Genus")
 # 
 # # Print results from edgeR

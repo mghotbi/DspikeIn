@@ -17,7 +17,11 @@ This function generates summary statistics (mean, median, standard deviation, st
 for each ASV (Amplicon Sequence Variant) in a phyloseq object.
 }
 \examples{
+\dontrun{
 # Summarize the phyloseq data based on ASV_ID
 summary_stats <- summ_phyloseq_ASV_OTUID(physeq_ITSOTU)
+
+# Print the summary statistics
 print(summary_stats)
+}
 }

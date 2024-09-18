@@ -11,19 +11,44 @@
 #' @param passed_range A numeric vector of length 2 specifying the range of percentages to categorize results as "passed". Default is c(0.1, 11).
 #' @return A data frame containing the percentage of spiked taxa reads and the pass/fail results.
 #' @examples
+#' \dontrun{
 #' # Load example data
 #' data(physeq_16SASV)
 #' physeq <- physeq_16SASV
 #'
 #' # Define the spiked species
 #' merged_spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
-#' calculate_spike_percentage(physeq, merged_spiked_species = merged_spiked_species, passed_range = c(0.1, 10))
+#' 
+#' # Calculate spike percentage for the defined spiked species within the range 0.1 to 10
+#' calculate_spike_percentage(physeq, 
+#'                            merged_spiked_species = merged_spiked_species, 
+#'                            passed_range = c(0.1, 10))
 #'
 #' # Define the spiked hashcodes
 #' merged_spiked_hashcodes <- c("hashcode1", "hashcode2")
-#' calculate_spike_percentage(physeq, merged_spiked_hashcodes = merged_spiked_hashcodes, passed_range = c(0.1, 10))
-#' @importFrom phyloseq subset_taxa tax_table ntaxa sample_names sample_sums merge_taxa taxa_names
+#' 
+#' # Calculate spike percentage for the defined spiked hashcodes within the range 0.1 to 10
+#' calculate_spike_percentage(physeq,
+#'                            merged_spiked_hashcodes = merged_spiked_hashcodes,
+#'                            passed_range = c(0.1, 10))
+#' 
+#' # Example with a single species
+#' merged_spiked_species <- "Dekkera_bruxellensis"
+#' 
+#' # Calculate spike percentage for the single species within the range 0.1 to 35
+#' result <- calculate_spike_percentage(spiked_ITS_OTU_scaled, 
+#'                                      merged_spiked_species, 
+#'                                      passed_range = c(0.1, 35))
+#' 
+#' # Generate a summary statistics table from the result
+#' calculate_summary_stats_table(result)
+#' 
+#' # Display the calculated spike percentage
+#' result$Percentage
+#' }
+#' @importFrom phyloseq subset_taxa tax_table ntaxa sample_names sample_sums merge_taxa taxa_names otu_table
 #' @importFrom flextable flextable fontsize font color bold italic save_as_docx
+#' @importFrom dplyr filter mutate pull summarise group_by ungroup desc all_of top_n
 #' @importFrom magrittr %>%
 #' @export
 calculate_spike_percentage <- function(physeq, merged_spiked_species = NULL, merged_spiked_hashcodes = NULL, output_path = "merged_data.docx", passed_range = c(0.1, 11)) {
@@ -120,3 +145,4 @@ calculate_spike_percentage <- function(physeq, merged_spiked_species = NULL, mer
 #result <- calculate_spike_percentage( spiked_ITS_OTU_scaled,"Dekkera_bruxellensis",  passed_range = c(0.1, 35))
 #calculate_summary_stats_table(result)
 #result$Percentage
+

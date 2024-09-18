@@ -27,6 +27,13 @@ Glom Taxa at Specific Level
 This function gloms taxa at a specified taxonomic rank.
 }
 \examples{
-ps_glommed <- glom_taxa_at_rank(ps) # Defaults to "Genus"
-ps_glommed <- glom_taxa_at_rank(ps, "Family") # Gloms at "Family"
+\dontrun{
+# Assume 'ps' is a phyloseq object
+# This function will glom (group) taxa at a specific taxonomic rank
+# Default taxonomic rank is "Genus"
+ps_glommed <- glom_taxa_at_rank(ps) 
+
+# Glom taxa at the "Family" rank
+ps_glommed <- glom_taxa_at_rank(ps, "Family")
+}
 }
