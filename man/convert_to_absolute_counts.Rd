@@ -25,8 +25,7 @@ Taxa with NA or empty values in the taxonomic table are removed.
 \examples{
 \dontrun{
 # Example usage:
-
-# Assume `merged_physeq_sum` is a phyloseq object with one ASV/OTU 
+#' # Assume `merged_physeq_sum` is a phyloseq object with one ASV/OTU 
 # resulting from spiked species, and `scaling_factors` is a 
 # numeric vector of scaling factors.
 merged_spiked_species <- c("Tetragenococcus_halophilus")

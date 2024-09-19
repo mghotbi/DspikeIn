@@ -397,10 +397,13 @@ perform_edgeR <- function(ps, group_var, threshold_percentage, threshold_mean_ab
   
   # Add OTU names and compute FDR
   results$OTU <- rownames(results)
+  
+  # Rename PValue to pvalue to match the expected column in the plot
   results <- results %>%
-    arrange(PValue) %>%
-    mutate(FDR = p.adjust(PValue, method = "BH")) %>%
-    mutate(diff_abn = FDR < significance_level)
+    dplyr::rename(pvalue = PValue) %>%
+    dplyr::arrange(pvalue) %>%
+    dplyr::mutate(FDR = p.adjust(pvalue, method = "BH")) %>%
+    dplyr::mutate(diff_abn = FDR < significance_level)
   
   return(results)
 }
@@ -445,6 +448,7 @@ perform_edgeR <- function(ps, group_var, threshold_percentage, threshold_mean_ab
 #'                                                               target_glom = "Genus")
 #' 
 #' # Print the volcano plot and bar plots for edgeR results
+#' results_edgeR$results
 #' print(results_edgeR$plot)
 #' print(results_edgeR$barplot_rel)  # Relative abundance 
 #' print(results_edgeR$barplot_abs)  # Absolute abundance 
@@ -543,6 +547,7 @@ perform_and_visualize_differential_abundance <- function(ps, group_var, method =
 #                                                               target_glom = "Genus")
 # 
 # # Print results from edgeR
+# print(results_edgeR$results)
 # print(results_edgeR$plot)
 # print(results_edgeR$barplot_rel)
 # print(results_edgeR$barplot_abs)
