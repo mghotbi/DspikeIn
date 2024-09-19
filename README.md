@@ -24,10 +24,10 @@ To install the required packages, use the following script:
 
 ```r
 # Install CRAN packages
-install.packages(c("stats", "dplyr", "ggplot2", "ggtree", "flextable", "randomForest", "ggridges", "ggalluvial","tibble", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"))
+install.packages(c("stats", "dplyr", "ggplot2", "flextable", "randomForest", "ggridges", "ggalluvial","tibble", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"))
 
 # Load CRAN packages
-lapply(c("stats", "dplyr", "ggplot2", "ggtree", "flextable", "randomForest", "ggridges", "ggalluvial","tibble", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"), library, character.only = TRUE)
+lapply(c("stats", "dplyr", "ggplot2", "flextable", "randomForest", "ggridges", "ggalluvial","tibble", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"), library, character.only = TRUE)
 
 
 ```
@@ -40,10 +40,10 @@ lapply(c("stats", "dplyr", "ggplot2", "ggtree", "flextable", "randomForest", "gg
 if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 
 # Install Bioconductor packages
-BiocManager::install(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings", "DECIPHER", "microbiome"))
+BiocManager::install(c("phyloseq", "msa", "DESeq2","ggtree", "edgeR", "Biostrings", "DECIPHER", "microbiome"))
 
 # Load Bioconductor packages
-lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings", "DECIPHER", "microbiome"), library, character.only = TRUE)
+lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings","ggtree", "DECIPHER", "microbiome"), library, character.only = TRUE)
 
 ```
 
