@@ -418,8 +418,8 @@ spiked_species_reads <- result$spiked_species_reads
 
 # Convert relative counts data to absolute counts
 absolute <- convert_to_absolute_counts(Spiked_16S_OTU_scaled, scaling_factors)
-absolute_counts <- physeq_16S_adj_scaled_AbsoluteCount$absolute_counts
-physeq_absolute_abundance_16S_OTU <- physeq_16S_adj_scaled_AbsoluteCount$physeq_obj
+absolute_counts <- absolute$absolute_counts
+physeq_absolute_abundance_16S_OTU <- absolute$physeq_obj
 
 
 # summary statistics 
