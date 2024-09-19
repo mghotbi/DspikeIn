@@ -164,7 +164,7 @@ hashcodes <- row.names(phyloseq::tax_table(Dekkera))
 spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
 
 # Define the corresponding copy numbers for each spiked-in species
-spiked_cells_list <- c(10000, 20000, 15000) # Alternatively, use spiked_species_list <- c(200, 200, 200)
+spiked_cells_list <- c(10000, 20000, 15000) # or equal number of copies-> spiked_cells_list <- c(200, 200, 200)
 
 ```
 
