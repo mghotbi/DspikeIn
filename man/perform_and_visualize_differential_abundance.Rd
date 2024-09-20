@@ -93,7 +93,6 @@ results_edgeR <- perform_and_visualize_differential_abundance(ps, "Animal.ecomod
                                                               target_glom = "Genus")
 
 # Print the volcano plot and bar plots for edgeR results
-results_edgeR$results
 print(results_edgeR$plot)
 print(results_edgeR$barplot_rel)  # Relative abundance 
 print(results_edgeR$barplot_abs)  # Absolute abundance 

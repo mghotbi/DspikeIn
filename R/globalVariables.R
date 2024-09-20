@@ -26,8 +26,10 @@
 #' @importFrom ggplot2 after_stat 
 #' @importFrom ggpubr color_palette
 #' @importFrom tibble as_tibble
+#' @importFrom scales label_scientific
 utils::globalVariables(c(
-  ".data", "taxa_sums", "Class", "Family", "Species", "Abundance", "otu_table<-", "taxa_names<-",
+  ".data", "taxa_sums", "Class", "Family", "Species", "Abundance", "otu_table<-", "taxa_names<-","visualize_differential_abundance",
+  "final_results", "group_var", "point_size", "palette",
   "DESeq", "DESeqDataSetFromMatrix", "DGEList", "FDR", "MeanDecreaseGini", 
   "OTU", "PValue", "Percentage", "Result", "TotalAbundance", "Total_Reads_spiked",
   "aes", "aes_string", "annotate", "as.formula", "boot.phylo", "boxplot", "capture.output", 

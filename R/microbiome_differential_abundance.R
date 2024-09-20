@@ -408,6 +408,29 @@ perform_edgeR <- function(ps, group_var, threshold_percentage, threshold_mean_ab
   return(results)
 }
 
+#' Visualize Differential Abundance
+#' @param results A data frame containing the differential abundance results.
+#' @param group_var A string specifying the grouping variable.
+#' @param point_size A numeric value specifying the size of points in the volcano plot.
+#' @param palette A character vector of color hex codes for plotting.
+#' @return A ggplot2 object representing the volcano plot.
+#' @importFrom ggplot2 ggplot geom_point aes scale_y_continuous theme_minimal labs scale_color_manual theme
+#' @importFrom scales label_scientific
+#' @export
+visualize_differential_abundance <- function(results, group_var, point_size = 3, palette) {
+  
+  # Replace pvalue of 0 with a very small value to avoid issues with log10
+  results$pvalue[results$pvalue == 0] <- 1e-10
+  
+  # Create the volcano plot
+  ggplot(results, aes(x = logFC, y = pvalue)) +
+    geom_point(aes(color = diff_abn), size = point_size) +
+    scale_y_continuous(trans = "log10", labels = scales::label_scientific()) +  # Log10 transformation
+    theme_minimal() +
+    labs(x = "Log2 Fold Change", y = "P-value", title = paste("Volcano Plot -", group_var)) +
+    scale_color_manual(values = c("gray60", "red4")) +
+    theme(legend.position = "bottom")
+}
 #' Perform and Visualize Differential Abundance Analysis
 #' This function normalizes and filters the data, performs differential abundance analysis, 
 #' extracts significant OTUs, rebuilds the phyloseq object, merges results with metadata, and visualizes the results.
@@ -448,7 +471,6 @@ perform_edgeR <- function(ps, group_var, threshold_percentage, threshold_mean_ab
 #'                                                               target_glom = "Genus")
 #' 
 #' # Print the volcano plot and bar plots for edgeR results
-#' results_edgeR$results
 #' print(results_edgeR$plot)
 #' print(results_edgeR$barplot_rel)  # Relative abundance 
 #' print(results_edgeR$barplot_abs)  # Absolute abundance 
@@ -547,7 +569,6 @@ perform_and_visualize_differential_abundance <- function(ps, group_var, method =
 #                                                               target_glom = "Genus")
 # 
 # # Print results from edgeR
-# print(results_edgeR$results)
 # print(results_edgeR$plot)
 # print(results_edgeR$barplot_rel)
 # print(results_edgeR$barplot_abs)
