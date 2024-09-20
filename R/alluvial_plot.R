@@ -8,16 +8,16 @@
 #' @param axes A character vector specifying the axes (columns) to include in the alluvial plot.
 #' @param abundance_threshold A numeric value specifying the minimum abundance threshold for including samples. Default is 10000 for absolute abundance and a relative threshold for relative abundance (e.g., 0.001 for 0.1\%).
 #' @param fill_variable A character string specifying the variable to use for the fill color in the alluvial plot. Default is "Phylum".
-#' @param silent A logical indicating whether to suppress messages from `is_alluvia_form`. Default is TRUE.
+#' @param silent A logical indicating whether to suppress messages from `ggalluvial::is_alluvia_form`. Default is TRUE.
 #' @param abundance_type A character string specifying whether to plot "relative" or "absolute" abundance. Default is "absolute".
 #' @param total_reads A numeric value specifying the total number of reads for relative abundance calculation. Default is NULL.
 #' @param top_taxa An integer specifying the number of top taxa to display. Default is NULL, meaning all taxa will be displayed.
 #' @param facet_vars A character vector specifying variables for faceting. Default is NULL (no faceting).
 #' @param text_size A numeric value specifying the size of the text labels inside the plot. Default is 4.
 #' @param legend_ncol An integer specifying the number of columns for the legend. Default is 1.
-#' @param custom_colors A character vector specifying custom colors for the fill variable. Default is NULL (use predefined MG colors).
+#' @param custom_colors A character vector specifying custom colors for the fill variable. Can use `color_palette$MG` or `color_palette$extended_palette`. Default is `color_palette$MG`.
 #' @param color_mapping A named character vector specifying specific colors for taxa. Default is NULL.
-#' @return A ggplot2 object representing the alluvial plot.
+#' @return A `ggplot2` object representing the alluvial plot.
 #' @examples
 #' \dontrun{
 #' # Load necessary libraries
@@ -26,44 +26,29 @@
 #' library(dplyr)
 #' library(ggalluvial)
 #'
-#' # Convert a phyloseq object to a long-format data frame
-#' pps <- psmelt(physeq_16SOTU)
+#' # Use the extended palette from your package
+#' data(physeq_16SOTU)  # Replace with actual data loading
+#' pps_Abs <- phyloseq::psmelt(physeq_16SOTU)
 #'
-#' # Calculate total reads for relative abundance
-#' total_reads <- sum(pps$Abundance)
+#' # Example of total reads calculation for relative abundance
+#' total_reads <- sum(pps_Abs$Abundance)
 #'
-#' # Generate alluvial plot for absolute abundance
+#' # Generate an alluvial plot using the extended palette
 #' alluvial_plot_abs <- alluvial_plot(
-#'   data = pps, 
-#'   axes = c("Animal.ecomode", "Host.species", "Result"), 
+#'   data = pps_Abs, 
+#'   axes = c("Env.broad.scale", "Host.genus", "Diet"), 
 #'   abundance_threshold = 10000, 
 #'   fill_variable = "Phylum", 
 #'   silent = TRUE, 
 #'   abundance_type = "absolute", 
-#'   top_taxa = 10,
-#'   text_size = 4, 
-#'   legend_ncol = 1
-#' )
-#' 
-#' # Print the alluvial plot for absolute abundance
-#' print(alluvial_plot_abs)
-#'
-#' # Generate alluvial plot for relative abundance
-#' alluvial_plot_rel <- alluvial_plot(
-#'   data = pps, 
-#'   axes = c("Animal.ecomode", "Host.species", "Diet"), 
-#'   abundance_threshold = 0.001, 
-#'   fill_variable = "Phylum", 
-#'   silent = TRUE, 
-#'   abundance_type = "relative", 
-#'   total_reads = total_reads, 
 #'   top_taxa = 10, 
 #'   text_size = 4, 
-#'   legend_ncol = 1
+#'   legend_ncol = 1, 
+#'   custom_colors = color_palette$extended_palette  # Use the extended palette from your package
 #' )
-#' 
-#' # Print the alluvial plot for relative abundance
-#' print(alluvial_plot_rel)
+#'
+#' # Print the alluvial plot for absolute abundance
+#' print(alluvial_plot_abs)
 #' }
 #'
 #' @importFrom ggplot2 ggplot aes geom_label theme scale_x_discrete scale_fill_manual ylab ggtitle guides guide_legend facet_grid
@@ -75,7 +60,7 @@
 alluvial_plot <- function(data, axes, abundance_threshold = 10000, fill_variable = "Phylum", silent = TRUE, 
                           abundance_type = "absolute", total_reads = NULL, top_taxa = NULL, 
                           facet_vars = NULL, text_size = 4, legend_ncol = 1, 
-                          custom_colors = NULL, color_mapping = NULL) {
+                          custom_colors = color_palette$MG, color_mapping = NULL) {
   # Ensure specified axes exist in the data
   if (!all(axes %in% names(data))) {
     stop("Some specified axes are not present in the data.")
@@ -87,14 +72,14 @@ alluvial_plot <- function(data, axes, abundance_threshold = 10000, fill_variable
   }
   
   # Remove rows with NA values in the specified axes and abundance
-  data <- data[complete.cases(data[, c("Abundance", axes)]), ]
+  data <- data[stats::complete.cases(data[, c("Abundance", axes)]), ]
   
   # Filter out samples with abundance below the threshold
   if (abundance_type == "relative") {
     data <- data %>%
-      group_by(across(all_of(axes))) %>%
-      mutate(RelativeAbundance = Abundance / sum(Abundance)) %>%
-      ungroup()
+      dplyr::group_by(dplyr::across(all_of(axes))) %>%
+      dplyr::mutate(RelativeAbundance = Abundance / sum(Abundance)) %>%
+      dplyr::ungroup()
     data <- data[data$RelativeAbundance > abundance_threshold, ]
     abundance_column <- "RelativeAbundance"
   } else {
@@ -105,26 +90,26 @@ alluvial_plot <- function(data, axes, abundance_threshold = 10000, fill_variable
   # Filter top taxa if specified
   if (!is.null(top_taxa)) {
     top_taxa_names <- data %>%
-      group_by(!!sym(fill_variable)) %>%
-      summarise(TotalAbundance = sum(!!sym(abundance_column))) %>%
-      top_n(n = top_taxa, wt = TotalAbundance) %>%
-      pull(!!sym(fill_variable))
+      dplyr::group_by(!!rlang::sym(fill_variable)) %>%
+      dplyr::summarise(TotalAbundance = sum(!!rlang::sym(abundance_column))) %>%
+      dplyr::top_n(n = top_taxa, wt = TotalAbundance) %>%
+      dplyr::pull(!!rlang::sym(fill_variable))
     
     data <- data %>%
-      filter(!!sym(fill_variable) %in% top_taxa_names)
+      dplyr::filter(!!rlang::sym(fill_variable) %in% top_taxa_names)
   }
   
   # Order the levels of the fill variable based on abundance
   data <- data %>%
-    group_by(!!sym(fill_variable)) %>%
-    mutate(TotalAbundance = sum(!!sym(abundance_column))) %>%
-    ungroup() %>%
-    arrange(desc(TotalAbundance))
+    dplyr::group_by(!!rlang::sym(fill_variable)) %>%
+    dplyr::mutate(TotalAbundance = sum(!!rlang::sym(abundance_column))) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(dplyr::desc(TotalAbundance))
   data[[fill_variable]] <- factor(data[[fill_variable]], levels = unique(data[[fill_variable]]))
   
-  # Check if is_alluvia_form needs to be called
+  # Check if ggalluvial::is_alluvia_form needs to be called
   if (!silent) {
-    is_alluvia_form(as.data.frame(data), axes = axes, silent = silent)
+    ggalluvial::is_alluvia_form(as.data.frame(data), axes = axes, silent = silent)
   }
   
   # Set colors to use
@@ -137,47 +122,60 @@ alluvial_plot <- function(data, axes, abundance_threshold = 10000, fill_variable
       stop("Insufficient values in manual scale.")
     }
   } else {
-    color_palette <- MG
+    color_palette <- color_palette$MG  # Use MG by default
     if (length(unique(data[[fill_variable]])) > length(color_palette)) {
       stop("Insufficient values in manual scale.")
     }
   }
   
   # Create the alluvial plot
-  AllE <- ggplot(data, aes(y = .data[[abundance_column]], !!!setNames(lapply(axes, as.name), paste0("axis", seq_along(axes))))) +
-    geom_alluvium(aes(fill = .data[[fill_variable]]), width = 0.5, alpha = 0.8, decreasing = TRUE) +
-    geom_stratum(alpha = 0.5, width = 0.3, fill = "gray80", color = "gray30") +
-    geom_label(stat = "stratum", size = text_size, aes(label = after_stat(stratum)), reverse = FALSE) +
-    theme(legend.position = "right") +
-    scale_x_discrete(limits = axes, expand = c(.0, .0)) +
-    scale_fill_manual(values = color_palette) +
-    ylab(if (abundance_type == "relative") "Relative Abundance (%)" else "Abundance") +
-    ggtitle("Abundance across factors") +
+  AllE <- ggplot2::ggplot(data, ggplot2::aes(y = .data[[abundance_column]], !!!rlang::set_names(lapply(axes, rlang::as_name), paste0("axis", seq_along(axes))))) +
+    ggalluvial::geom_alluvium(ggplot2::aes(fill = .data[[fill_variable]]), width = 0.5, alpha = 0.8, decreasing = TRUE) +
+    ggalluvial::geom_stratum(alpha = 0.5, width = 0.3, fill = "gray80", color = "gray30") +
+    ggplot2::geom_label(stat = "stratum", size = text_size, ggplot2::aes(label = ggplot2::after_stat(stratum)), reverse = FALSE) +
+    ggplot2::theme(legend.position = "right") +
+    ggplot2::scale_x_discrete(limits = axes, expand = c(.0, .0)) +
+    ggplot2::scale_fill_manual(values = color_palette) +
+    ggplot2::ylab(if (abundance_type == "relative") "Relative Abundance (%)" else "Abundance") +
+    ggplot2::ggtitle("Abundance across factors") +
     my_custom_theme() +
-    guides(fill = guide_legend(ncol = legend_ncol))
+    ggplot2::guides(fill = ggplot2::guide_legend(ncol = legend_ncol))
   
   # Add faceting if specified
   if (!is.null(facet_vars)) {
-    AllE <- AllE + facet_grid(reformulate(facet_vars))
+    AllE <- AllE + ggplot2::facet_grid(stats::reformulate(facet_vars))
   }
   
   return(AllE)
 }
+# Example:
+# Load necessary libraries
+# library(phyloseq)
+# library(ggplot2)
+# library(dplyr)
+# library(ggalluvial)
 
-# Example usage
-# pps_rel<-psmelt(physeq_16SOTU)
-# total_reads <- sum(pps_rel$Abundance)  # Calculate total reads from the data
-# MG<-color_palette$MG
-# # Generate alluvial plot for relative abundance
-# alluvial_plot_rel <- alluvial_plot(
-# data = pps_rel, 
-# axes = c("Animal.ecomode", "Host.species", "Diet"), 
-# abundance_threshold = 0.001, 
-# fill_variable = "Phylum", 
-# silent = TRUE, 
-# abundance_type = "relative", 
-# total_reads = total_reads, 
-# top_taxa = 10, 
-# text_size = 4, 
-# legend_ncol = 1)
-# print(alluvial_plot_rel)
+# Assuming `color_palette` is already defined in your package with MG and extended_palette
+
+# Convert a phyloseq object to a long-format data frame
+# pps_Abs <- phyloseq::psmelt(physeq_16SOTU)
+
+# Example of total reads calculation for relative abundance
+# total_reads <- sum(pps_Abs$Abundance)
+
+# Generate an alluvial plot using the extended palette from your package
+# alluvial_plot_abs <- alluvial_plot(
+#   data = pps_Abs, 
+#   axes = c("Env.broad.scale", "Host.genus", "Diet"), 
+#   abundance_threshold = 10000, 
+#   fill_variable = "Phylum", 
+#   silent = TRUE, 
+#   abundance_type = "absolute", 
+#   top_taxa = 10, 
+#   text_size = 4, 
+#   legend_ncol = 1, 
+#   custom_colors = color_palette$extended_palette  # Use the extended palette from your package
+# )
+
+# Print the alluvial plot for absolute abundance
+# print(alluvial_plot_abs)

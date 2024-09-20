@@ -28,7 +28,7 @@
 #' @importFrom tibble as_tibble
 #' @importFrom scales label_scientific
 utils::globalVariables(c(
-  ".data", "taxa_sums", "Class", "Family", "Species", "Abundance", "otu_table<-", "taxa_names<-","visualize_differential_abundance",
+  ".data", "taxa_sums","diff_abn", "Class", "Family", "Species", "Abundance", "otu_table<-", "taxa_names<-","visualize_differential_abundance",
   "final_results", "group_var", "point_size", "palette",
   "DESeq", "DESeqDataSetFromMatrix", "DGEList", "FDR", "MeanDecreaseGini", 
   "OTU", "PValue", "Percentage", "Result", "TotalAbundance", "Total_Reads_spiked",

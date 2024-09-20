@@ -16,7 +16,7 @@ alluvial_plot(
   facet_vars = NULL,
   text_size = 4,
   legend_ncol = 1,
-  custom_colors = NULL,
+  custom_colors = color_palette$MG,
   color_mapping = NULL
 )
 }
@@ -29,7 +29,7 @@ alluvial_plot(
 
 \item{fill_variable}{A character string specifying the variable to use for the fill color in the alluvial plot. Default is "Phylum".}
 
-\item{silent}{A logical indicating whether to suppress messages from `is_alluvia_form`. Default is TRUE.}
+\item{silent}{A logical indicating whether to suppress messages from `ggalluvial::is_alluvia_form`. Default is TRUE.}
 
 \item{abundance_type}{A character string specifying whether to plot "relative" or "absolute" abundance. Default is "absolute".}
 
@@ -43,12 +43,12 @@ alluvial_plot(
 
 \item{legend_ncol}{An integer specifying the number of columns for the legend. Default is 1.}
 
-\item{custom_colors}{A character vector specifying custom colors for the fill variable. Default is NULL (use predefined MG colors).}
+\item{custom_colors}{A character vector specifying custom colors for the fill variable. Can use `color_palette$MG` or `color_palette$extended_palette`. Default is `color_palette$MG`.}
 
 \item{color_mapping}{A named character vector specifying specific colors for taxa. Default is NULL.}
 }
 \value{
-A ggplot2 object representing the alluvial plot.
+A `ggplot2` object representing the alluvial plot.
 }
 \description{
 This function generates an alluvial plot using a long-format data frame where microbial abundances are plotted across categorical variables (axes).
@@ -63,44 +63,29 @@ library(ggplot2)
 library(dplyr)
 library(ggalluvial)
 
-# Convert a phyloseq object to a long-format data frame
-pps <- psmelt(physeq_16SOTU)
+# Use the extended palette from your package
+data(physeq_16SOTU)  # Replace with actual data loading
+pps_Abs <- phyloseq::psmelt(physeq_16SOTU)
 
-# Calculate total reads for relative abundance
-total_reads <- sum(pps$Abundance)
+# Example of total reads calculation for relative abundance
+total_reads <- sum(pps_Abs$Abundance)
 
-# Generate alluvial plot for absolute abundance
+# Generate an alluvial plot using the extended palette
 alluvial_plot_abs <- alluvial_plot(
-  data = pps, 
-  axes = c("Animal.ecomode", "Host.species", "Result"), 
+  data = pps_Abs, 
+  axes = c("Env.broad.scale", "Host.genus", "Diet"), 
   abundance_threshold = 10000, 
   fill_variable = "Phylum", 
   silent = TRUE, 
   abundance_type = "absolute", 
-  top_taxa = 10,
+  top_taxa = 10, 
   text_size = 4, 
-  legend_ncol = 1
+  legend_ncol = 1, 
+  custom_colors = color_palette$extended_palette  # Use the extended palette from your package
 )
 
 # Print the alluvial plot for absolute abundance
 print(alluvial_plot_abs)
-
-# Generate alluvial plot for relative abundance
-alluvial_plot_rel <- alluvial_plot(
-  data = pps, 
-  axes = c("Animal.ecomode", "Host.species", "Diet"), 
-  abundance_threshold = 0.001, 
-  fill_variable = "Phylum", 
-  silent = TRUE, 
-  abundance_type = "relative", 
-  total_reads = total_reads, 
-  top_taxa = 10, 
-  text_size = 4, 
-  legend_ncol = 1
-)
-
-# Print the alluvial plot for relative abundance
-print(alluvial_plot_rel)
 }
 
 }
