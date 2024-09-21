@@ -44,7 +44,7 @@ and renames taxa with an ASV prefix. The function requires the `phyloseq`, `micr
 \dontrun{
 # Example usage:
 # Specify a custom detection threshold range
-custom_detections <- 10^seq(log10(3e-1), log10(0.5), length = 5)
+custom_detections <- 10^seq(log10(3e-1), log10(0.5), length = 8)
 
 # Plot the core microbiome using the custom detection thresholds
 # and save the results to .rds and .csv files

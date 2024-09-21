@@ -11,7 +11,7 @@ taxa_barplot(
   normalize = TRUE,
   treatment_variable = "Treatment",
   abundance_type = "relative",
-  x_angle = 20,
+  x_angle = 25,
   fill_variable = target_glom,
   facet_variable = "Phylum",
   top_n_taxa = 20,

@@ -23,13 +23,16 @@
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom graphics mtext boxplot
 #' @importFrom tibble as_tibble
-#' @importFrom ggplot2 after_stat 
+#' @importFrom ggplot2 after_stat ggplot aes geom_label theme scale_x_discrete scale_fill_manual ylab ggtitle guides guide_legend facet_grid
 #' @importFrom ggpubr color_palette
 #' @importFrom tibble as_tibble
 #' @importFrom scales label_scientific
+#' @importFrom ggalluvial is_alluvia_form geom_alluvium geom_stratum
+#' @importFrom magrittr %>%
+#' @importFrom grid unit
 utils::globalVariables(c(
   ".data", "taxa_sums","diff_abn", "Class", "Family", "Species", "Abundance", "otu_table<-", "taxa_names<-","visualize_differential_abundance",
-  "final_results", "group_var", "point_size", "palette",
+  "final_results", "group_var", "point_size", "palette","StatStratum",
   "DESeq", "DESeqDataSetFromMatrix", "DGEList", "FDR", "MeanDecreaseGini", 
   "OTU", "PValue", "Percentage", "Result", "TotalAbundance", "Total_Reads_spiked",
   "aes", "aes_string", "annotate", "as.formula", "boot.phylo", "boxplot", "capture.output", 

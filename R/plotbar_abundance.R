@@ -1,13 +1,14 @@
 #' Plot Bar Abundance for Phyloseq Data
 #'
 #' This function generates bar plots for phyloseq data at a specified taxonomic level,
-#' with options to customize the appearance/size/legend, relativize the data or plot absolute abundance, facet the plots, and save the plots.
+#' with options to customize the appearance, relativize the data or plot absolute abundance, 
+#' facet the plots, and save the plots.
 #'
 #' @param physeq A phyloseq object containing the microbiome data.
 #' @param level A character string specifying the taxonomic level to plot (e.g., "Genus", "Family").
-#' @param color A character vector specifying colors to use for the different taxa. Default is NULL, which will use the MG color palette.
+#' @param color A character vector specifying colors to use for the different taxa. Default is NULL.
 #' @param group A character vector specifying the grouping variables. Default is NULL.
-#' @param x_axis_var A character vector specifying the variable(s) to be shown on the x-axis. Default is NULL.
+#' @param x_axis_var A character string specifying the variable(s) to be shown on the x-axis. Default is NULL.
 #' @param top An integer specifying the number of top taxa to display. Default is 20.
 #' @param return A logical indicating whether to return the summarized data frame. Default is FALSE.
 #' @param x_size An integer specifying the size of the x-axis text. Default is 12.
@@ -23,17 +24,24 @@
 #' @examples
 #' \dontrun{
 #' if (interactive()) {
-#'   # Plot relativized abundance or select relativize = FALSE to plot absolute abundance
-#'   plot <- plotbar_abundance(physeq_16SOTU, 
-#'                             level = "Family", 
-#'                             group = c("Diet", "Host.species", "Ecoregion.III"), 
-#'                             x_axis_var = "Diet", 
-#'                             top = 10, x_size = 10, y_size = 10, 
-#'                             legend_key_size = 2, legend_text_size = 14,
-#'                             legend_nrow = 10, relativize = TRUE, 
-#'                             output_prefix = "relativized_abundance_plot", 
-#'                             facet_var = "Ecoregion.III", scales = "free_x")
-#'   print(plot)
+#'   # Example usage of plotbar_abundance
+#'   plot <- plotbar_abundance(
+#'     physeq_16SOTU,                   # phyloseq obj
+#'     level = "Family",                 # Taxonomic level
+#'     group = c("Diet", "Host.species", "Ecoregion.III"),  # Grouping variables
+#'     x_axis_var = "Ecoregion.III",              # X-axis variable
+#'     top = 10,                         # Number of top taxa 
+#'     x_size = 10,                      # X-axis text size
+#'     y_size = 10,                      # Y-axis text size
+#'     legend_key_size = 0.5,            # Legend key size
+#'     legend_text_size = 11,            # Legend text size
+#'     legend_nrow = 10,                 # Legend Number of rows
+#'     relativize = TRUE,                # Whether to show relative/absolute
+#'     output_prefix = "rel_abundance_plot",  # File output prefix
+#'     facet_var = "Diet",      # Facet by variable
+#'     scales = "free_x"                 # Allow free scales for the x-axis/or y
+#'   )
+#'   print(plot) + ggtitle("Relative Abundance Across Ecoregions")
 #' }
 #' }
 #' @importFrom phyloseq psmelt tax_table subset_taxa sample_data otu_table taxa_are_rows
@@ -43,17 +51,24 @@
 #' @importFrom stats complete.cases as.formula
 #' @importFrom utils head
 #' @export
-plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NULL, x_axis_var = NULL, top = 20, return = FALSE, x_size = 12, y_size = 12, legend_key_size = 1.5, legend_text_size = 12, legend_nrow = 20, relativize = TRUE, output_prefix = NULL, facet_var = NULL, scales = "fixed") {
+plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NULL, 
+                              x_axis_var = NULL, top = 20, return = FALSE, 
+                              x_size = 12, y_size = 12, legend_key_size = 1.5, 
+                              legend_text_size = 12, legend_nrow = 20, 
+                              relativize = TRUE, output_prefix = NULL, 
+                              facet_var = NULL, scales = "fixed") {
+  
   # Filter out taxa with missing or empty values before melting
   physeq <- phyloseq::subset_taxa(physeq, apply(phyloseq::tax_table(physeq), 1, function(x) all(x != "" & !is.na(x))))
   
   # Melt the phyloseq object into a long-format data frame
   pm <- phyloseq::psmelt(physeq)
   
-  # Fix column name conflicts by renaming the taxonomic column if it conflicts with sample data
+  # Handle conflicts between taxonomic level and sample data
   tax_levels <- phyloseq::tax_table(physeq)@.Data
   sample_vars <- phyloseq::sample_data(physeq)@names
   conflicting_names <- intersect(colnames(tax_levels), sample_vars)
+  
   if (length(conflicting_names) > 0) {
     for (name in conflicting_names) {
       colnames(pm)[colnames(pm) == name] <- paste0("tax_", name)
@@ -64,7 +79,7 @@ plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NUL
   # Generate colors if not provided
   if (is.null(color)) {
     len <- length(unique(pm[[level]]))
-    color <- MG[1:len]  # Use the MG color palette
+    color <- MG[1:len]  # Assuming MG color palette is available
   }
   
   # Remove rows with NA values in the specified variables
@@ -96,11 +111,11 @@ plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NUL
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(angle = 25, size = x_size, vjust = 0.5, hjust = 1),
       axis.text.y = ggplot2::element_text(size = y_size),
-      legend.key.size = ggplot2::unit(legend_key_size, "cm"),  # Adjust unit here to "cm"
+      legend.key.size = ggplot2::unit(legend_key_size, "cm"),
       legend.text = ggplot2::element_text(size = legend_text_size, face = "italic"),
-      axis.line = ggplot2::element_line(),  # Ensure the axes lines are present
-      panel.grid = ggplot2::element_blank(),  # Remove grid lines
-      panel.border = ggplot2::element_blank(),  # Remove panel border
+      axis.line = ggplot2::element_line(),
+      panel.grid = ggplot2::element_blank(),
+      panel.border = ggplot2::element_blank(),
       axis.ticks.x = ggplot2::element_blank()
     ) +
     ggplot2::guides(fill = ggplot2::guide_legend(nrow = legend_nrow))
@@ -126,11 +141,9 @@ plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NUL
   
   # Save plot if output prefix is provided
   if (!is.null(output_prefix)) {
-    # Save plot as PNG
     png_filename <- paste0(output_prefix, ".png")
     ggplot2::ggsave(png_filename, plot = p, width = 10, height = 8)
     
-    # Save plot as PDF
     pdf_filename <- paste0(output_prefix, ".pdf")
     ggplot2::ggsave(pdf_filename, plot = p, width = 10, height = 8)
   }
@@ -142,22 +155,25 @@ plotbar_abundance <- function(physeq, level = "Genus", color = NULL, group = NUL
     return(p)
   }
 }
+
 # Example usage:
 # plot <- plotbar_abundance(
 #   physeq = physeq16SOTU,
 #   level = "Family",
 #   color = color_palette$MG,
-#   group = c("Diet", "Host.species", "Host.genus","Ecoregion.III"),
+#   group = c("Diet", "Host.species", "Host.genus", "Ecoregion.III"),
 #   x_axis_var = "Host.species",
 #   top = 20,
 #   x_size = 10,
 #   y_size = 10,
-#   legend_key_size = 1,
+#   legend_key_size = 0.5,
 #   legend_text_size = 11,
 #   legend_nrow = 20,
-#   relativize = T,
+#   relativize = TRUE,
 #   output_prefix = "rel.abundance_plot",
 #   facet_var = "Diet",
 #   scales = "free_x"
 # )
-# print(plot)+my_custom_theme()+ggtitle("across ecoregions")
+# print(plot) + ggplot2::ggtitle("Relative Abundance Across Ecoregions")
+
+

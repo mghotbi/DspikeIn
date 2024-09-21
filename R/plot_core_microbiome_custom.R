@@ -17,7 +17,7 @@
 #' \dontrun{
 #' # Example usage:
 #' # Specify a custom detection threshold range
-#' custom_detections <- 10^seq(log10(3e-1), log10(0.5), length = 5)
+#' custom_detections <- 10^seq(log10(3e-1), log10(0.5), length = 8)
 #' 
 #' # Plot the core microbiome using the custom detection thresholds
 #' # and save the results to .rds and .csv files
@@ -30,7 +30,7 @@
 #' @importFrom phyloseq tax_glom prune_taxa subset_taxa transform_sample_counts taxa_names psmelt otu_table<- taxa_names<-
 #' @importFrom microbiomeutilities format_to_besthit
 #' @importFrom microbiome plot_core
-#' @importFrom ggplot2 ggplot theme_bw xlab element_blank element_line element_text element_rect
+#' @importFrom ggplot2 ggplot theme_bw xlab element_blank element_line element_text element_rect scale_x_discrete
 #' @importFrom utils write.csv
 #' @importFrom RColorBrewer brewer.pal
 #' @export
@@ -99,14 +99,15 @@ plot_core_microbiome_custom <- function(physeq = NULL,
   }
   
   # Plot core microbiome
-  p.core <- microbiome::plot_core(phy_rel_f, 
-                                  plot.type = "heatmap", 
-                                  colours = rev(RColorBrewer::brewer.pal(5, "Spectral")),
-                                  prevalences = prevalences, 
-                                  detections = detections, 
-                                  min.prevalence = min_prevalence) + 
-    ggplot2::xlab("Detection Threshold (Relative Abundance (%))") +
+  p.core <- suppressWarnings(microbiome::plot_core(phy_rel_f, 
+                                                   plot.type = "heatmap", 
+                                                   colours = rev(RColorBrewer::brewer.pal(5, "Spectral")),
+                                                   prevalences = prevalences, 
+                                                   detections = detections, 
+                                                   min.prevalence = min_prevalence)) + 
+    ggplot2::xlab("Detection Threshold (Relative Abundance)") +
     ggplot2::theme_bw() + 
+    ggplot2::scale_x_discrete(labels = function(x) sprintf("%.2f", as.numeric(x))) +  # Format discrete axis with 2 decimal places
     ggplot2::theme(
       panel.grid.minor = ggplot2::element_blank(),
       panel.grid.major = ggplot2::element_blank(),
@@ -134,7 +135,7 @@ plot_core_microbiome_custom <- function(physeq = NULL,
 }
 
 # Example usage:
-# custom_detections <- 10^seq(log10(3e-1), log10(0.9), length = 5)
+# custom_detections <- 10^seq(log10(3e-2), log10(1), length = 10)
 # plot_result <- plot_core_microbiome_custom(physeq_16SOTU,
 # detections = custom_detections, taxrank = "Family",
 # output_core_rds = "core_microbiome.rds", output_core_csv = "core_microbiome.csv")

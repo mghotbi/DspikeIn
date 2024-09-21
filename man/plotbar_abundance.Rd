@@ -28,11 +28,11 @@ plotbar_abundance(
 
 \item{level}{A character string specifying the taxonomic level to plot (e.g., "Genus", "Family").}
 
-\item{color}{A character vector specifying colors to use for the different taxa. Default is NULL, which will use the MG color palette.}
+\item{color}{A character vector specifying colors to use for the different taxa. Default is NULL.}
 
 \item{group}{A character vector specifying the grouping variables. Default is NULL.}
 
-\item{x_axis_var}{A character vector specifying the variable(s) to be shown on the x-axis. Default is NULL.}
+\item{x_axis_var}{A character string specifying the variable(s) to be shown on the x-axis. Default is NULL.}
 
 \item{top}{An integer specifying the number of top taxa to display. Default is 20.}
 
@@ -61,22 +61,30 @@ A ggplot object if return is FALSE, otherwise a data frame with summarized data.
 }
 \description{
 This function generates bar plots for phyloseq data at a specified taxonomic level,
-with options to customize the appearance/size/legend, relativize the data or plot absolute abundance, facet the plots, and save the plots.
+with options to customize the appearance, relativize the data or plot absolute abundance, 
+facet the plots, and save the plots.
 }
 \examples{
 \dontrun{
 if (interactive()) {
-  # Plot relativized abundance or select relativize = FALSE to plot absolute abundance
-  plot <- plotbar_abundance(physeq_16SOTU, 
-                            level = "Family", 
-                            group = c("Diet", "Host.species", "Ecoregion.III"), 
-                            x_axis_var = "Diet", 
-                            top = 10, x_size = 10, y_size = 10, 
-                            legend_key_size = 2, legend_text_size = 14,
-                            legend_nrow = 10, relativize = TRUE, 
-                            output_prefix = "relativized_abundance_plot", 
-                            facet_var = "Ecoregion.III", scales = "free_x")
-  print(plot)
+  # Example usage of plotbar_abundance
+  plot <- plotbar_abundance(
+    physeq_16SOTU,                   # phyloseq obj
+    level = "Family",                 # Taxonomic level
+    group = c("Diet", "Host.species", "Ecoregion.III"),  # Grouping variables
+    x_axis_var = "Ecoregion.III",              # X-axis variable
+    top = 10,                         # Number of top taxa 
+    x_size = 10,                      # X-axis text size
+    y_size = 10,                      # Y-axis text size
+    legend_key_size = 0.5,            # Legend key size
+    legend_text_size = 11,            # Legend text size
+    legend_nrow = 10,                 # Legend Number of rows
+    relativize = TRUE,                # Whether to show relative/absolute
+    output_prefix = "rel_abundance_plot",  # File output prefix
+    facet_var = "Diet",      # Facet by variable
+    scales = "free_x"                 # Allow free scales for the x-axis/or y
+  )
+  print(plot) + ggtitle("Relative Abundance Across Ecoregions")
 }
 }
 }
