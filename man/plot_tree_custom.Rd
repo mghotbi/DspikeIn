@@ -37,7 +37,8 @@ This function plots a phylogenetic tree from a phyloseq object and saves the plo
   # Plot and save the phylogenetic tree
   # Available layout options: "rectangular", "circular", "fan", and "radial"
   
-  # Example: Plot the phylogenetic tree with a circular layout and save it as an output file
+  # Example: Plot the phylogenetic tree with a circular 
+  # layout and save it as an output file
   plot_tree_custom(Tetragenococcus, 
                    output_prefix = "p0",  # Prefix of file
                    width = 18,            # Width of image

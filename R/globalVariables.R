@@ -30,9 +30,10 @@
 #' @importFrom ggalluvial is_alluvia_form geom_alluvium geom_stratum
 #' @importFrom magrittr %>%
 #' @importFrom grid unit
+#' @importFrom limma makeContrasts
 utils::globalVariables(c(
   ".data", "taxa_sums","diff_abn", "Class", "Family", "Species", "Abundance", "otu_table<-", "taxa_names<-","visualize_differential_abundance",
-  "final_results", "group_var", "point_size", "palette","StatStratum",
+  "final_results", "group_var", "point_size", "palette","StatStratum","makeContrasts","treatment","padj",
   "DESeq", "DESeqDataSetFromMatrix", "DGEList", "FDR", "MeanDecreaseGini", 
   "OTU", "PValue", "Percentage", "Result", "TotalAbundance", "Total_Reads_spiked",
   "aes", "aes_string", "annotate", "as.formula", "boot.phylo", "boxplot", "capture.output", 

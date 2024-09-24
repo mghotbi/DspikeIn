@@ -42,23 +42,6 @@ plot_core_microbiome_custom <- function(physeq = NULL,
                                         min_prevalence = 0.3,
                                         output_core_csv = NULL, 
                                         output_core_rds = NULL) {
-  # Suppress specific warning about replacing 'ggplot2::alpha' with 'microbiome::alpha'
-  suppressWarnings({
-    suppressPackageStartupMessages({
-      if (!requireNamespace("phyloseq", quietly = TRUE)) {
-        stop("Package 'phyloseq' is required but not installed.")
-      }
-      if (!requireNamespace("ggplot2", quietly = TRUE)) {
-        stop("Package 'ggplot2' is required but not installed.")
-      }
-      if (!requireNamespace("microbiomeutilities", quietly = TRUE)) {
-        stop("Package 'microbiomeutilities' is required but not installed.")
-      }
-      if (!requireNamespace("microbiome", quietly = TRUE)) {
-        stop("Package 'microbiome' is required but not installed.")
-      }
-    })
-  })
   
   # Check for required input
   if (is.null(physeq)) {
@@ -70,17 +53,17 @@ plot_core_microbiome_custom <- function(physeq = NULL,
   
   # Prune taxa if specific taxa are selected
   if (!is.null(select_taxa)) {
-    glom_phy <- prune_taxa(select_taxa, glom_phy)
+    glom_phy <- phyloseq::prune_taxa(select_taxa, glom_phy)
   }
   
   # Exclude the species level
-  glom_phy <- subset_taxa(glom_phy, select = -Species)
+  glom_phy <- phyloseq::subset_taxa(glom_phy, select = -Species)
   
   # Transform counts to relative abundance
-  glom_phy <- transform_sample_counts(glom_phy, function(x) 100 * x / sum(x))
+  glom_phy <- phyloseq::transform_sample_counts(glom_phy, function(x) 100 * x / sum(x))
   
   # Rename taxa with ASV prefix
-  taxa_names(glom_phy) <- paste0("ASV", seq(ntaxa(glom_phy)))
+  phyloseq::taxa_names(glom_phy) <- paste0("ASV", seq(phyloseq::ntaxa(glom_phy)))
   
   # Format phyloseq object for besthit
   phy_rel_f <- microbiomeutilities::format_to_besthit(glom_phy)
@@ -126,8 +109,8 @@ plot_core_microbiome_custom <- function(physeq = NULL,
       axis.text.y = ggplot2::element_text(family = "Arial", size = 12, color = "black", face = "bold"),
       plot.title = ggplot2::element_text(color = "black", size = 12, face = "bold"),
       plot.subtitle = ggplot2::element_text(size = 11),
-      strip.text.x = ggplot2::element_text(family="Arial", size = 12, color="black", face = "bold"),
-      strip.text.y = ggplot2::element_text(family="Arial", size = 12, color="black", face = "bold"),
+      strip.text.x = ggplot2::element_text(family="Arial", size = 12, color="black", face="bold"),
+      strip.text.y = ggplot2::element_text(family="Arial", size = 12, color="black", face="bold"),
       strip.background = ggplot2::element_rect(colour = "black", fill = "gray98")
     )
   
@@ -136,8 +119,7 @@ plot_core_microbiome_custom <- function(physeq = NULL,
 
 # Example usage:
 # custom_detections <- 10^seq(log10(3e-2), log10(1), length = 10)
-# plot_result <- plot_core_microbiome_custom(physeq_16SOTU,
+# plot_result <- plot_core_microbiome_custom(ps,
 # detections = custom_detections, taxrank = "Family",
 # output_core_rds = "core_microbiome.rds", output_core_csv = "core_microbiome.csv")
 # plot_result
-

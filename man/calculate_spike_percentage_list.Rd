@@ -38,7 +38,7 @@ spiked_species_list <- list(
 )
 
 # Create a mock phyloseq object 
-#' result <- calculate_spike_percentage_list(merged_physeq_sum, 
+result <- calculate_spike_percentage_list(merged_physeq_sum, 
 merged_spiked_species = spiked_species_list, 
 passed_range = c(0.1, 10))
 

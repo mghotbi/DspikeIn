@@ -4,10 +4,10 @@
 #' The top taxa are selected, and the plot can be customized with various options.
 #'
 #' @importFrom phyloseq tax_glom prune_taxa tax_table taxa_sums psmelt transform_sample_counts
-#' @importFrom ggplot2 ggplot geom_bar scale_y_continuous scale_fill_manual theme guides guide_legend labs facet_grid vars element_text element_blank element_line
+#' @importFrom ggplot2 ggplot geom_bar scale_y_continuous scale_fill_manual theme guides guide_legend labs facet_grid vars element_text element_blank element_line unit
 #' @importFrom scales percent_format
 #' @importFrom magrittr %>%
-#' 
+#'
 #' @param physeq A phyloseq object containing the microbiome data.
 #' @param target_glom A character string specifying the taxonomic rank to plot (e.g., "Genus").
 #' @param custom_tax_names A character vector specifying custom taxonomic names for the levels. Default is NULL.
@@ -59,18 +59,6 @@ taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL,
                          abundance_type = "relative", x_angle = 25, fill_variable = target_glom, 
                          facet_variable = "Phylum", top_n_taxa = 20, palette = MG()) {
   
-  # Suppress specific package startup messages
-  suppressWarnings({
-    suppressPackageStartupMessages({
-      if (!requireNamespace("phyloseq", quietly = TRUE)) {
-        stop("Package 'phyloseq' is required but not installed.")
-      }
-      if (!requireNamespace("ggplot2", quietly = TRUE)) {
-        stop("Package 'ggplot2' is required but not installed.")
-      }
-    })
-  })
-  
   # Taxonomic grouping using tax_glom from phyloseq
   glom <- phyloseq::tax_glom(physeq, taxrank = target_glom)
   glom_1 <- phyloseq::prune_taxa(phyloseq::taxa_sums(glom) > 0, glom)
@@ -96,14 +84,18 @@ taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL,
   # Prepare the data for ggplot
   pm <- phyloseq::psmelt(top_v5)
   
+  # Convert dynamic variable names to symbols
+  treatment_var <- rlang::sym(treatment_variable)
+  fill_var <- rlang::sym(fill_variable)
+  
   # Create barplot
   if (abundance_type == "relative") {
-    p <- ggplot2::ggplot(pm, ggplot2::aes_string(x = treatment_variable, y = "Abundance", fill = fill_variable)) +
+    p <- ggplot2::ggplot(pm, ggplot2::aes(x = !!treatment_var, y = Abundance, fill = !!fill_var)) +
       ggplot2::geom_bar(stat = "identity", position = "fill") +
       ggplot2::scale_y_continuous(labels = scales::percent_format(), 
                                   name = "Relative Abundance (%)")  # Change Y-axis label
   } else {
-    p <- ggplot2::ggplot(pm, ggplot2::aes_string(x = treatment_variable, y = "Abundance", fill = fill_variable)) +
+    p <- ggplot2::ggplot(pm, ggplot2::aes(x = !!treatment_var, y = Abundance, fill = !!fill_var)) +
       ggplot2::geom_bar(stat = "identity") +
       ggplot2::ylab("Absolute Abundance")
   }
@@ -178,14 +170,14 @@ MG <- function() {
 #
 # Generate a taxa barplot for the Genus rank with absolute abundance
 # In this example, we're grouping by "Host.species" and faceting by "Diet"
-# bp_ab <- taxa_barplot(physeq_16SASV, 
+# bp_ab <- taxa_barplot(ps, 
 #                       target_glom = "Genus",              # Taxonomic level to glom
 #                       treatment_variable = "Host.species", # Variable to use on x-axis
-#                       abundance_type = "absolute",    # Plot absolute abundance
-#                       x_angle = 90,                   # Rotate x-axis labels by 90 degrees
-#                       fill_variable = "Genus",         # Fill bars by Genus
-#                       facet_variable = "Diet",       # Facet the plot by Diet
-#                       top_n_taxa = 20,              # Show the top 20 taxa
-#                       palette = MG())              # Use custom color palette (MG)
+#                       abundance_type = "absolute",         # Plot absolute abundance
+#                       x_angle = 90,                       # Rotate x-axis labels by 90 degrees
+#                       fill_variable = "Genus",            # Fill bars by Genus
+#                       facet_variable = "Diet",            # Facet the plot by Diet
+#                       top_n_taxa = 20,                    # Show the top 20 taxa
+#                       palette = MG())                     # Use custom color palette (MG)
 #
-# print(bp_ab$barplot)
+# print(bp_ab$barplot)                                      # Print the barplot

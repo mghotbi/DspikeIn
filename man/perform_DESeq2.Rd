@@ -2,39 +2,23 @@
 % Please edit documentation in R/microbiome_differential_abundance.R
 \name{perform_DESeq2}
 \alias{perform_DESeq2}
-\title{Perform Differential Abundance Analysis with DESeq2}
+\title{Perform Pairwise Comparisons with DESeq2}
 \usage{
-perform_DESeq2(
-  ps,
-  group_var,
-  rank = "Genus",
-  threshold_percentage,
-  threshold_mean_abundance,
-  threshold_count,
-  threshold_relative_abundance,
-  significance_level
-)
+perform_DESeq2(ps, group_var, contrast, significance_level = 0.05)
 }
 \arguments{
-\item{ps}{A phyloseq object.}
+\item{ps}{A phyloseq object containing microbiome data.}
 
 \item{group_var}{A string specifying the grouping variable in sample data.}
 
-\item{rank}{A string specifying the taxonomic rank to glom (e.g., "Genus", "Family"). Default is "Genus".}
+\item{contrast}{A vector specifying the levels to compare (e.g., c("level1", "level2")).}
 
-\item{threshold_percentage}{A numeric value for filtering threshold percentage.}
-
-\item{threshold_mean_abundance}{A numeric value for filtering mean abundance.}
-
-\item{threshold_count}{A numeric value for filtering count.}
-
-\item{threshold_relative_abundance}{A numeric value for filtering relative abundance.}
-
-\item{significance_level}{A numeric value specifying the significance level for filtering significant OTUs.}
+\item{significance_level}{A numeric value specifying the significance level for filtering significant OTUs. Default is 0.05.}
 }
 \value{
 A data frame containing the differential abundance results.
 }
 \description{
-Perform Differential Abundance Analysis with DESeq2
+This function performs pairwise comparisons for differential abundance analysis using DESeq2.
+It filters out NA values from the results before returning the data frame.
 }

@@ -26,10 +26,6 @@
 #' }
 #' @export
 tidy_phyloseq <- function(my_phyloseq) {
-  # Load necessary libraries with suppressMessages
-  suppressMessages(if (!requireNamespace("phyloseq", quietly = TRUE)) {
-    stop("Package 'phyloseq' is required but not installed.")
-  })
   
   # Fix taxa names by removing any characters followed by '__' and any spaces after '__'
   for (col in colnames(phyloseq::tax_table(my_phyloseq))) {
@@ -70,3 +66,4 @@ tidy_phyloseq <- function(my_phyloseq) {
 
 # Example usage:
 # physeq_ITSOTU <- tidy_phyloseq(physeq_ITSOTU)
+

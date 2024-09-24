@@ -19,14 +19,10 @@
 #' # Print the summary statistics
 #' print(summary_stats)
 #' }
+#' @importFrom phyloseq otu_table sample_data tax_table phyloseq
 #' @export
 random_subsample_WithReductionFactor <- function(physeq, reduction_factor = 3, output_file = "Less_subsampled_physeq.rds") {
   suppressMessages({
-    # Load necessary libraries
-    if (!requireNamespace("phyloseq", quietly = TRUE)) {
-      stop("Package 'phyloseq' is required but not installed.")
-    }
-    library(phyloseq)
     
     # Get the OTU table
     otu_table_df <- as.data.frame(phyloseq::otu_table(physeq))
@@ -49,7 +45,7 @@ random_subsample_WithReductionFactor <- function(physeq, reduction_factor = 3, o
     otu_table_mod <- phyloseq::otu_table(otu_table_df, taxa_are_rows = TRUE)
     subsampled_physeq <- phyloseq::phyloseq(otu_table_mod, phyloseq::sample_data(physeq), phyloseq::tax_table(physeq))
     
-    # Save the subsampled phyloseq object
+    # Save the subsampled physeq object
     saveRDS(subsampled_physeq, file = output_file)
     cat("Less_Subsampled phyloseq object saved to:", output_file, "\n")
   })

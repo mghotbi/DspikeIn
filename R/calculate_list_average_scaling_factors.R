@@ -34,11 +34,6 @@ calculate_list_average_scaling_factors <- function(physeq, spiked_species_list, 
   # Ensure correct merge_method input
   merge_method <- match.arg(merge_method)
   
-  # Suppress messages for loading required packages
-  suppressMessages({
-    requireNamespace("phyloseq", quietly = TRUE)
-  })
-  
   # Check if lengths of spiked_species_list and spiked_cells_list match
   if (length(spiked_species_list) != length(spiked_cells_list)) {
     stop("The length of spiked_species_list must match the length of spiked_cells_list.")
@@ -169,9 +164,9 @@ calculate_list_average_scaling_factors <- function(physeq, spiked_species_list, 
 # )
 # 
 # # Step 4: build the phyloseq 
-# otu_table_ps <- otu_table(otu_data, taxa_are_rows = TRUE)
-# tax_table_ps <- tax_table(taxa_matrix)
-# sample_data_ps <- sample_data(sample_data)
+# otu_table_ps <- phyloseq::otu_table(otu_data, taxa_are_rows = TRUE)
+# tax_table_ps <- phyloseq::tax_table(taxa_matrix)
+# sample_data_ps <- phyloseq::sample_data(sample_data)
 # 
 # physeq <- phyloseq(otu_table_ps, tax_table_ps, sample_data_ps)
 # 

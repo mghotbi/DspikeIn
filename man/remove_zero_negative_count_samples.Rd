@@ -15,19 +15,10 @@ remove_zero_negative_count_samples(ps, pseudocount = 1e-06)
 \item{pseudocount}{A numeric value to add to avoid zero counts.}
 }
 \value{
-A phyloseq object with filtered and adjusted OTU table.
+A phyloseq object with updated OTU table after pseudocount addition.
 
 A phyloseq object with filtered and adjusted OTU table.
 }
 \description{
-Remove Samples with Zero, Negative Counts, or NA Values and Add Pseudocount
-
-Remove Samples with Zero, Negative Counts, or NA Values and Add Pseudocount
-}
-\examples{
-\dontrun{
-# 'ps' is a phyloseq object with some samples having zero or negative counts
-# This function will remove those samples from the phyloseq object
-ps <- remove_zero_negative_count_samples(ps)
-}
+This function removes samples with zero, negative counts, or NA values and adds pseudocounts.
 }

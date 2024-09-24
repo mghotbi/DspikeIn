@@ -4,16 +4,18 @@ Title: Quantifying Absolute Abundance to Enhance Microbial Dynamics Assessment
 Version: 0.0.0.9000
 Author: Mitra Ghotbi
 Maintainer: Mitra Ghotbi <mitra.ghotbi@gmail.com>
-Description: The DspikeIn package enables the quantification of absolute microbial abundance, improving the evaluation of microbial dynamics — a critical aspect in microbial ecology research. It extends the functionality of the phyloseq package and integrates enhanced or modified functions from several key packages, including dplyr,stats, ggplot2, edgeR, ggtree, flextable, DESeq2, microbiomeutilities, DECIPHER, and speedyseq.
+Description: The DspikeIn package enables the quantification of absolute microbial abundance, improving the evaluation of microbial dynamics — a critical aspect in microbial ecology research. It extends the functionality of the phyloseq package and integrates enhanced or modified functions from several key packages, including dplyr, stats, ggplot2, edgeR, ggtree, flextable, DESeq2, microbiomeutilities, DECIPHER, and speedyseq.
 Acknowledgements: DspikeIn is built upon the phyloseq package and utilizes additional functionality from dplyr, ggtree, flextable, DESeq2, edgeR, microbiomeutilities, DECIPHER, and speedyseq, among others.
 URL: https://github.com/mghotbi/DspikeIn
 BugReports: https://github.com/mghotbi/DspikeIn/issues
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.5.0)
+Depends: 
+    R (>= 3.5.0)
 Imports:
     tibble,
+    limma,
     phyloseq,
     msa,
     stats,
@@ -30,16 +32,19 @@ Imports:
     phangorn,
     ggalluvial,
     microbiome,
-    microbiomeutilities,
-    BiocManager,
     matrixStats,
-    RColorBrewer,   
-    ape,            
-    rlang,          
-    scales,        
-    speedyseq,      
+    RColorBrewer,
+    ape,
+    rlang,
+    scales,
     magrittr,
-    ggpubr
+    ggpubr,
+    BiocManager,         
+    microbiomeutilities, 
+    speedyseq            
+Remotes: 
+    mikemc/speedyseq,
+    microsud/microbiomeutilities
 Suggests:
     ShortRead,
     agricolae,

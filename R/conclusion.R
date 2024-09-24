@@ -33,6 +33,11 @@
 #' # Print the summary statistics
 #' print(summary_stats)
 #' }
+#' @importFrom phyloseq subset_samples
+#' @importFrom dplyr filter summarize n
+#' @importFrom stats sd quantile median
+#' @importFrom flextable flextable fontsize font color bold italic save_as_docx
+#' @importFrom utils write.csv
 #' @export
 conclusion <- function(physeq, merged_spiked_species, max_passed_range = 11, output_path = NULL) {
   suppressMessages({

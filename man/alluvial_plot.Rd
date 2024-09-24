@@ -61,12 +61,6 @@ The function uses the \code{ggalluvial} package to construct the plot and relies
 }
 \examples{
 \dontrun{
-# Load necessary libraries
-library(phyloseq)
-library(ggplot2)
-library(dplyr)
-library(ggalluvial)
-
 # Example data
 data(physeq_16SOTU)  # Replace with actual data loading
 pps_Abs <- phyloseq::psmelt(physeq_16SOTU)

@@ -13,24 +13,14 @@
 #'   plot_tree_with_alignment(Tetragenococcus, 
 #'   output_prefix = "tree_alignment", width = 15, height = 15)
 #' }
+#' @importFrom phyloseq phy_tree refseq
+#' @importFrom DECIPHER AlignSeqs
+#' @importFrom Biostrings writeXStringSet
+#' @importFrom ggtree ggtree theme_tree2 msaplot geom_tiplab geom_tippoint
+#' @importFrom ggplot2 scale_color_continuous theme ggsave
+#' @importFrom grid unit
 #' @export
 plot_tree_with_alignment <- function(physeq, output_prefix = "physeq_tree_alignment", width = 15, height = 15) {
-  # Suppress messages when loading necessary libraries
-  suppressMessages({
-    if (!requireNamespace("phyloseq", quietly = TRUE)) {
-      stop("Package 'phyloseq' is required but not installed.")
-    }
-    if (!requireNamespace("DECIPHER", quietly = TRUE)) {
-      stop("Package 'DECIPHER' is required but not installed.")
-    }
-    if (!requireNamespace("ggtree", quietly = TRUE)) {
-      stop("Package 'ggtree' is required but not installed.")
-    }
-    if (!requireNamespace("Biostrings", quietly = TRUE)) {
-      stop("Package 'Biostrings' is required but not installed.")
-    }
-  })
-  
   # Check if physeq is a valid phyloseq object using inherits()
   if (!inherits(physeq, "phyloseq")) {
     stop("Input 'physeq' must be a valid phyloseq object.")
@@ -76,7 +66,7 @@ plot_tree_with_alignment <- function(physeq, output_prefix = "physeq_tree_alignm
   ggplot2::ggsave(png_filename, plot = final_plot, width = width, height = height, units = "in")
   ggplot2::ggsave(pdf_filename, plot = final_plot, width = width, height = height, units = "in")
   
-  cat("Plots saved as:", png_filename, "and", pdf_filename, "/n")
+  cat("Plots saved as:", png_filename, "and", pdf_filename, "\n")
 }
 
 # Example usage:

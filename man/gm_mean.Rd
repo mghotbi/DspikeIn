@@ -2,18 +2,20 @@
 % Please edit documentation in R/normalization_set.R
 \name{gm_mean}
 \alias{gm_mean}
-\title{Calculate Geometric Mean}
+\title{-----------------------------------------------------------
+Calculate Geometric Mean}
 \usage{
 gm_mean(x, na.rm = TRUE)
 }
 \arguments{
 \item{x}{A numeric vector.}
 
-\item{na.rm}{Logical, should missing values (NAs) be removed?}
+\item{na.rm}{Logical. Should missing values (NAs) be removed? Defaults to TRUE.}
 }
 \value{
-Geometric mean of x.
+Geometric mean of x, or NA if no valid values are present.
 }
 \description{
-Calculate Geometric Mean
+This function calculates the geometric mean of a numeric vector.
+It removes non-positive and NA values by default.
 }

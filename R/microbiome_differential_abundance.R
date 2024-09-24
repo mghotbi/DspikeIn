@@ -1,44 +1,321 @@
-#' Install and Load Required Packages
-#' This function installs and loads required packages.
-#' 
-#' @param packages A vector of package names to be installed and loaded.
+#' Perform and Visualize Differential Abundance Analysis with edgeR
+#'
+#' This function performs edgeR analysis and generates a volcano plot based on microbiome data.
+#'
+#' @param ps A phyloseq object containing microbiome data.
+#' @param group_var A string specifying the grouping variable in sample data.
+#' @param contrast A vector specifying the levels to compare (e.g., c("Acris", "Anaxyrus")).
+#' @param pseudocount A numeric value for pseudocount addition. Default is 1.
+#' @param significance_level A numeric value specifying the significance level for filtering significant OTUs. Default is 0.05.
+#' @param output_csv_path Path to save the edgeR results as a CSV file. Default is "DA_edgeR.csv".
+#' @param point_size A numeric value specifying the size of points in the volcano plot. Default is 3.
+#' @param target_glom A string specifying the taxonomic rank to aggregate taxa. Default is "Genus".
+#' @param palette A character vector of color hex codes for plotting. Default is `MG()`.
+#' @return A list containing the edgeR results, a phyloseq object with significant OTUs/ASVs, and a volcano plot.
+#'
+#' @importFrom phyloseq otu_table sample_data tax_table prune_taxa tax_glom
+#' @importFrom edgeR DGEList estimateDisp glmFit glmLRT topTags
+#' @importFrom limma makeContrasts
+#' @importFrom dplyr arrange mutate filter pull left_join rename
+#' @importFrom ggplot2 ggplot aes geom_point scale_y_continuous theme_minimal labs scale_color_manual scale_shape_manual theme
+#' @importFrom scales label_scientific
+#' @importFrom utils write.csv 
+#'
 #' @examples
 #' \dontrun{
-#' if (interactive()) {
-#'   # List of required packages to install and load
-#'   required_packages <- c("phyloseq", "DESeq2", "edgeR", "BiocManager", 
-#'                          "BiocGenerics", "ggplot2", "dplyr", "DT")
-#'   
-#'   # Function to install and load required packages
-#'   install_and_load(required_packages)
+#' results_edgeR <- perform_and_visualize_DA_edgeR(
+#'   ps = ps, 
+#'   group_var = "Host.genus", 
+#'   contrast = c("Acris", "Anaxyrus"), 
+#'   output_csv_path = "DA_edgeR.csv", 
+#'   target_glom = "Genus", 
+#'   significance_level = 0.05
+#' )
+#' 
+#' # Visualize Volcano Plot
+#' print(results_edgeR$plot)
 #' }
-#' }
+#' 
 #' @export
-#' @importFrom utils install.packages
-#' @importFrom BiocManager install
-install_and_load <- function(packages) {
-  for (package in packages) {
-    # Check if the package is already installed
-    if (!requireNamespace(package, quietly = TRUE)) {
-      suppressMessages({
-        suppressWarnings({
-          # Check if it is a Bioconductor package
-          if (package %in% c("phyloseq", "DESeq2", "edgeR", "BiocManager", "BiocGenerics")) {
-            if (!requireNamespace("BiocManager", quietly = TRUE)) {
-              utils::install.packages("BiocManager")
-            }
-            BiocManager::install(package, suppressUpdates = TRUE, ask = FALSE)
-          } else {
-            utils::install.packages(package)
-          }
-        })
-      })
-    }
-    # Load the package
-    suppressMessages(suppressWarnings(library(package, character.only = TRUE)))
+perform_and_visualize_DA_edgeR <- function(ps, group_var, contrast, pseudocount = 1, significance_level = 0.05, 
+                                           output_csv_path = "DA_edgeR.csv", point_size = 3, 
+                                           target_glom = "Genus", palette = MG()) {
+  
+  # Step 1: Remove samples with zero, negative counts, or NA values and add pseudocount
+  ps <- remove_zero_negative_count_samples(ps, pseudocount = pseudocount)
+  
+  # Step 2: Convert categorical columns in sample data to factors
+  ps <- convert_categorical_to_factors(ps)
+  
+  # Step 3: Glom taxa at the desired rank (e.g., Genus)
+  ps <- glom_taxa_at_rank(ps, rank = target_glom)
+  
+  # Step 4: Ensure that the contrast levels are valid within the group_var
+  metadata <- as(phyloseq::sample_data(ps), "data.frame")
+  if (!all(contrast %in% levels(metadata[[group_var]]))) {
+    stop("One or both of the levels in the contrast do not exist in the group_var factor levels.")
   }
+  
+  # Step 5: Perform edgeR analysis
+  results <- perform_edgeR(ps, group_var, contrast, significance_level = significance_level)
+  
+  # Step 6: Ensure that results contain logFC, pvalue, and FDR columns
+  required_columns <- c("logFC", "PValue", "FDR")
+  if (!all(required_columns %in% colnames(results))) {
+    stop("Merged results are missing required columns (logFC, pvalue, FDR).")
+  }
+  
+  # Step 7: Save results to CSV file
+  utils::write.csv(results, output_csv_path, row.names = FALSE)
+  cat("edgeR results saved to:", output_csv_path, "\n")
+  
+  # Step 8: Filter significant OTUs and create a phyloseq object with significant taxa
+  significant_otus <- results %>% dplyr::filter(FDR < significance_level) %>% dplyr::pull(OTU)
+  ps_significant <- phyloseq::prune_taxa(significant_otus, ps)
+  
+  # Step 9: Merge differential abundance results with phyloseq metadata
+  tax_metadata <- as.data.frame(phyloseq::tax_table(ps_significant))
+  tax_metadata$OTU <- rownames(tax_metadata)
+  merged_results <- dplyr::left_join(results, tax_metadata, by = "OTU")
+  
+  # Step 10: Ensure columns are available after merging
+  if (!all(required_columns %in% colnames(merged_results))) {
+    stop("Merged results after join are missing required columns (logFC, pvalue, FDR).")
+  }
+  
+  # Step 11: Add a column for the treatment level (shape by treatment)
+  merged_results$treatment <- ifelse(merged_results$logFC > 0, contrast[1], contrast[2])
+  
+  # Step 12: Generate volcano plot
+  p <- ggplot2::ggplot(merged_results, ggplot2::aes(x = logFC, y = -log10(PValue))) +
+    ggplot2::geom_point(ggplot2::aes(color = diff_abn, shape = treatment), size = point_size) +
+    ggplot2::scale_shape_manual(values = c(16, 17)) +  # Shapes for treatment levels
+    ggplot2::scale_color_manual(values = palette) +  # Use the MG color palette
+    ggplot2::scale_y_continuous(labels = scales::label_scientific()) +
+    ggplot2::theme_minimal() +
+    ggplot2::labs(x = "Log2 Fold Change", y = "-log10(P-value)", title = paste("Volcano Plot -", group_var)) +
+    ggplot2::theme(legend.position = "bottom")
+  
+  return(list(results = merged_results, ps_significant = ps_significant, plot = p))
 }
 
+#' Perform and Visualize Differential Abundance Analysis with DESeq2
+#'
+#' This function performs DESeq2 analysis and generates a volcano plot based on microbiome data.
+#'
+#' @param ps A phyloseq object containing microbiome data.
+#' @param group_var A string specifying the grouping variable in sample data.
+#' @param contrast A vector specifying the levels to compare (e.g., c("Acris", "Anaxyrus")).
+#' @param pseudocount A numeric value for pseudocount addition. Default is 1.
+#' @param significance_level A numeric value specifying the significance level for filtering significant OTUs. Default is 0.05.
+#' @param output_csv_path Path to save the DESeq2 results as a CSV file. Default is "DA_deseq2.csv".
+#' @param point_size A numeric value specifying the size of points in the volcano plot. Default is 3.
+#' @param target_glom A string specifying the taxonomic rank to aggregate taxa. Default is "Genus".
+#' @param palette A character vector of color hex codes for plotting. Default is `MG()`.
+#' @return A list containing the DESeq2 results, a phyloseq object with significant OTUs/ASVs, and a volcano plot.
+#'
+#' @importFrom phyloseq otu_table sample_data tax_table prune_taxa tax_glom
+#' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq results
+#' @importFrom dplyr filter pull left_join rename
+#' @importFrom ggplot2 ggplot aes geom_point scale_y_continuous theme_minimal labs scale_color_manual scale_shape_manual
+#' @importFrom scales label_scientific
+#' @importFrom utils write.csv 
+#' @examples
+#' \dontrun{
+#' results_DESeq2 <- perform_and_visualize_DA_DESeq2(
+#' ps = ps, 
+#' group_var = "Host.genus", 
+#' contrast = c("Acris", "Anaxyrus"), 
+#' output_csv_path = "DA_deseq2.csv", 
+#' target_glom = "Genus", 
+#' significance_level = 0.05
+#' )
+#' # Visualize Volcano Plot
+#' print(results_DESeq2$plot)
+#' results_deseq2$results
+#' results_deseq2$ps_significant
+#' }
+#' @export
+perform_and_visualize_DA_DESeq2 <- function(ps, group_var, contrast, pseudocount = 1, significance_level = 0.05, 
+                                            output_csv_path = "DA_deseq2.csv", point_size = 3, 
+                                            target_glom = "Genus", palette = MG()) {
+  
+  # Step 1: Remove samples with zero, negative counts, or NA values and add pseudocount
+  ps <- remove_zero_negative_count_samples(ps, pseudocount = pseudocount)
+  
+  # Step 2: Convert categorical columns in sample data to factors
+  ps <- convert_categorical_to_factors(ps)
+  
+  # Step 3: Glom taxa at the desired rank (e.g., Genus)
+  ps <- glom_taxa_at_rank(ps, rank = target_glom)
+  
+  # Step 4: Perform DESeq2 analysis
+  results <- perform_DESeq2(ps, group_var, contrast, significance_level = significance_level)
+  
+  # Step 5: Save results to CSV file
+  utils::write.csv(results, output_csv_path, row.names = FALSE)
+  cat("DESeq2 results saved to:", output_csv_path, "\n")
+  
+  # Step 6: Filter significant OTUs and create a phyloseq object with significant taxa
+  significant_otus <- results %>% dplyr::filter(FDR < significance_level) %>% dplyr::pull(OTU)
+  ps_significant <- phyloseq::prune_taxa(significant_otus, ps)
+  
+  # Step 7: Merge differential abundance results with phyloseq metadata
+  tax_metadata <- as.data.frame(phyloseq::tax_table(ps_significant))
+  tax_metadata$OTU <- rownames(tax_metadata)
+  merged_results <- dplyr::left_join(results, tax_metadata, by = "OTU")
+  
+  # Step 8: Ensure columns are available after merging
+  required_columns <- c("logFC", "pvalue", "FDR")
+  if (!all(required_columns %in% colnames(merged_results))) {
+    stop("Merged results are missing required columns (logFC, pvalue, FDR).")
+  }
+  
+  # Step 9: Add a column for the treatment level (shape by treatment)
+  merged_results$treatment <- ifelse(merged_results$logFC > 0, contrast[1], contrast[2])
+  
+  # Step 10: Generate volcano plot
+  p <- ggplot2::ggplot(merged_results, ggplot2::aes(x = logFC, y = -log10(pvalue))) +
+    ggplot2::geom_point(ggplot2::aes(color = FDR < significance_level, shape = treatment), size = point_size) +
+    ggplot2::scale_shape_manual(values = c(16, 17)) +  # Shapes for treatment levels
+    ggplot2::scale_color_manual(values = palette) +  # Color based on significance
+    ggplot2::scale_y_continuous(labels = scales::label_scientific()) +
+    ggplot2::theme_minimal() +
+    ggplot2::labs(x = "Log2 Fold Change", y = "-log10(P-value)", title = paste("Volcano Plot -", group_var)) +
+    ggplot2::theme(legend.position = "bottom")
+  
+  return(list(results = merged_results, ps_significant = ps_significant, plot = p))
+}
+
+
+#' Perform Pairwise Comparisons with DESeq2
+#'
+#' This function performs pairwise comparisons for differential abundance analysis using DESeq2.
+#' It filters out NA values from the results before returning the data frame.
+#'
+#' @param ps A phyloseq object containing microbiome data.
+#' @param group_var A string specifying the grouping variable in sample data.
+#' @param contrast A vector specifying the levels to compare (e.g., c("level1", "level2")).
+#' @param significance_level A numeric value specifying the significance level for filtering significant OTUs. Default is 0.05.
+#' @return A data frame containing the differential abundance results.
+#' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq results
+#' @importFrom dplyr arrange mutate pull rename filter
+#' @export
+perform_DESeq2 <- function(ps, group_var, contrast, significance_level = 0.05) {
+  otu <- as(phyloseq::otu_table(ps), "matrix")
+  metadata <- as(phyloseq::sample_data(ps), "data.frame")
+  
+  # Ensure grouping variable is a factor
+  metadata[[group_var]] <- as.factor(metadata[[group_var]])
+  
+  # Validate that the levels in the contrast exist in the factor levels
+  if (!all(contrast %in% levels(metadata[[group_var]]))) {
+    stop("One or both of the levels in the contrast do not exist in the group_var factor levels.")
+  }
+  
+  # Create DESeq2 dataset
+  dds <- DESeq2::DESeqDataSetFromMatrix(countData = otu, colData = metadata, design = as.formula(paste("~", group_var)))
+  
+  # Run DESeq2
+  dds <- DESeq2::DESeq(dds)
+  
+  # Perform custom contrast comparison
+  res <- DESeq2::results(dds, contrast = c(group_var, contrast[1], contrast[2]))
+  res <- as.data.frame(res)
+  
+  # Rename log2FoldChange to logFC for consistency with edgeR
+  res <- res %>%
+    dplyr::rename(logFC = log2FoldChange)
+  
+  # Add OTU column and remove rows with NA in critical columns
+  res$OTU <- rownames(res)
+  res <- res %>%
+    dplyr::filter(!is.na(logFC) & !is.na(pvalue) & !is.na(padj)) %>%  # Filter out rows with NA values
+    dplyr::mutate(FDR = p.adjust(pvalue, method = "BH")) %>%
+    dplyr::mutate(diff_abn = FDR < significance_level)
+  
+  return(res)
+}
+
+#' Perform Pairwise Comparisons with edgeR
+#'
+#' This function performs pairwise comparisons for differential abundance analysis using edgeR.
+#' It filters out NA values from the results before returning the data frame.
+#'
+#' @param ps A phyloseq object containing microbiome data.
+#' @param group_var A string specifying the grouping variable in sample data.
+#' @param contrast A vector specifying the levels to compare (e.g., c("level1", "level2")).
+#' @param significance_level A numeric value specifying the significance level for filtering significant OTUs. Default is 0.05.
+#' @return A data frame containing the differential abundance results.
+#' @importFrom edgeR DGEList estimateDisp glmFit glmLRT topTags
+#' @importFrom limma makeContrasts
+#' @importFrom dplyr arrange mutate pull rename filter
+#' @export
+perform_edgeR <- function(ps, group_var, contrast, significance_level = 0.05) {
+  otu <- as(phyloseq::otu_table(ps), "matrix")
+  metadata <- as(phyloseq::sample_data(ps), "data.frame")
+  
+  # Ensure grouping variable is a factor
+  metadata[[group_var]] <- as.factor(metadata[[group_var]])
+  
+  # Check that contrast levels exist in the group_var
+  if (!all(contrast %in% levels(metadata[[group_var]]))) {
+    stop("One or both of the levels in the contrast do not exist in the group_var factor levels.")
+  }
+  
+  # Create the DGEList object
+  dge <- edgeR::DGEList(counts = otu, group = metadata[[group_var]])
+  
+  # Create the design matrix
+  design <- stats::model.matrix(~ 0 + metadata[[group_var]])
+  colnames(design) <- make.names(levels(metadata[[group_var]]))  # Ensure syntactically valid names
+  
+  # Print the column names to debug
+  cat("Column names in the design matrix:\n", colnames(design), "\n")
+  
+  # Ensure contrast levels use syntactically valid names
+  contrast1 <- make.names(contrast[1])
+  contrast2 <- make.names(contrast[2])
+  
+  # Check if the contrast levels exist in the design matrix
+  if (!contrast1 %in% colnames(design) || !contrast2 %in% colnames(design)) {
+    stop(paste("One or both contrasts", contrast1, "or", contrast2, "do not exist in the design matrix."))
+  }
+  
+  # Create the contrast expression
+  contrast_expr <- paste0(contrast1, "-", contrast2)
+  
+  # Generate the contrast matrix
+  contrast_matrix <- limma::makeContrasts(contrasts = contrast_expr, levels = colnames(design))
+  
+  # Estimate dispersion
+  dge <- edgeR::estimateDisp(dge, design)
+  
+  # Fit the model using glmFit
+  fit <- edgeR::glmFit(dge, design)
+  
+  # Perform the likelihood ratio test using the contrast matrix
+  lrt <- edgeR::glmLRT(fit, contrast = contrast_matrix)
+  
+  # Extract the top results
+  res <- edgeR::topTags(lrt, n = Inf)$table
+  res$OTU <- rownames(res)
+  res$comparison <- paste0(contrast[1], "_vs_", contrast[2])
+  
+  res <- res %>%
+    dplyr::arrange(PValue) %>%
+    dplyr::mutate(FDR = p.adjust(PValue, method = "BH")) %>%
+    dplyr::mutate(diff_abn = FDR < significance_level)
+  
+  # Remove rows with NA values in logFC, PValue, or FDR
+  res <- res %>%
+    dplyr::filter(!is.na(logFC) & !is.na(PValue) & !is.na(FDR))
+  
+  return(res)
+}
+
+# Supporting functions -----------------------------------------------------
+#' 
 #' MG Color Palette
 #' This function returns a character vector of color palettes used in the package.
 #' @return A character vector of color hex codes.
@@ -60,19 +337,18 @@ MG <- function() {
 }
 
 #' Remove Samples with Zero, Negative Counts, or NA Values and Add Pseudocount
-#' @param ps A phyloseq object.
-#' @param pseudocount A numeric value to add to avoid zero counts.
-#' @return A phyloseq object with filtered and adjusted OTU table.
-#' @examples
-#' \dontrun{
-#' # 'ps' is a phyloseq object with some samples having zero or negative counts
-#' # This function will remove those samples from the phyloseq object
-#' ps <- remove_zero_negative_count_samples(ps)
-#' }
+#'
+#' This function removes samples with zero, negative counts, or NA values and adds pseudocounts.
+#' 
+#' @param ps A phyloseq object containing the OTU table and sample data.
+#' @param pseudocount A numeric value to add to avoid zero counts. Default is 1.
+#' @return A phyloseq object with updated OTU table after pseudocount addition.
+#' @importFrom phyloseq otu_table prune_samples prune_taxa sample_sums
 #' @export
 remove_zero_negative_count_samples <- function(ps, pseudocount = 1) {
   otu <- as(phyloseq::otu_table(ps), "matrix")
   
+  # Remove samples with zero or negative counts
   zero_negative_count_samples <- phyloseq::sample_sums(ps) <= 0
   na_count_samples <- apply(otu, 2, function(x) any(is.na(x)))
   samples_to_remove <- zero_negative_count_samples | na_count_samples
@@ -82,6 +358,7 @@ remove_zero_negative_count_samples <- function(ps, pseudocount = 1) {
     otu <- as(phyloseq::otu_table(ps), "matrix")
   }
   
+  # Remove rows (features) with zero counts across all samples
   zero_rows <- rowSums(otu) == 0
   if (any(zero_rows)) {
     cat("Removing", sum(zero_rows), "features with zero counts across all samples.\n")
@@ -89,23 +366,21 @@ remove_zero_negative_count_samples <- function(ps, pseudocount = 1) {
     ps <- phyloseq::prune_taxa(!zero_rows, ps)
   }
   
+  # Add pseudocount and round to integer
   otu <- otu + pseudocount
   otu <- round(otu)
-  
   phyloseq::otu_table(ps) <- phyloseq::otu_table(otu, taxa_are_rows = TRUE)
   
   return(ps)
 }
 
 #' Convert Categorical Columns to Factors in Sample Data
+#'
+#' This function converts categorical columns in sample data to factors.
+#'
 #' @param ps A phyloseq object.
 #' @return A phyloseq object with updated sample data.
-#' @examples
-#' \dontrun{
-#' # Assume 'ps' is a phyloseq object where certain metadata columns are categorical
-#' # This function will convert those categorical columns to factors
-#' ps <- convert_categorical_to_factors(ps)
-#' }
+#' @importFrom phyloseq sample_data
 #' @export
 convert_categorical_to_factors <- function(ps) {
   sample_data_df <- as(phyloseq::sample_data(ps), "data.frame")
@@ -117,476 +392,57 @@ convert_categorical_to_factors <- function(ps) {
   phyloseq::sample_data(ps) <- phyloseq::sample_data(sample_data_df)
   return(ps)
 }
-#' Relativized Filtered Taxa
-#' This function filters taxa from a phyloseq object based on custom thresholds.
-#' @param physeq A phyloseq object containing the microbial data.
-#' @param threshold_percentage A numeric value specifying the minimum percentage of samples in which a taxon must be present.
-#' @param threshold_mean_abundance A numeric value specifying the minimum mean abundance.
-#' @param threshold_count A numeric value specifying the minimum count of a taxon in a sample.
-#' @param threshold_relative_abundance A numeric value specifying the minimum relative abundance.
-#' @return A phyloseq object containing only the taxa that meet the specified thresholds.
-#' @examples
-#' \dontrun{
-#' # Assume 'spiked_16S' is a phyloseq object
-#' # This function will filter taxa based on the given thresholds
-#' # - threshold_percentage: Minimum percentage of samples in which taxa should appear
-#' # - threshold_mean_abundance: Minimum mean abundance across samples for taxa
-#' # - threshold_count: Minimum total count for taxa across all samples
-#' FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, 
-#'                                 threshold_mean_abundance = 0.0005, 
-#'                                 threshold_count = 5)
-#' }
-#' @export
-relativized_filtered_taxa <- function(physeq, threshold_percentage = 0.5, threshold_mean_abundance = 0.001, threshold_count = 10, threshold_relative_abundance = NULL) {
-  nsamples <- phyloseq::nsamples(physeq)
-  sample_sum <- phyloseq::sample_sums(physeq)
-  
-  filter_function <- function(x) {
-    (sum(x > threshold_count) > nsamples * threshold_percentage) | 
-      ((sum(x > threshold_count) > (nsamples * 0.1)) & (mean(x / sample_sum) > threshold_mean_abundance) & (max(x / sample_sum) > threshold_relative_abundance))
-  }
-  
-  two_way_filtered <- phyloseq::filter_taxa(physeq, filter_function, prune = TRUE)
-  return(two_way_filtered)
-}
-
-#' #Glom Taxa at Specific Level
-#' #This function gloms taxa at a specified taxonomic rank. If no rank is provided, it defaults to "Genus".
-#' @param physeq A phyloseq object.
-#' @param rank A character string specifying the taxonomic rank to glom. Default is "Genus".
-#' @return A phyloseq object with taxa glommed at the specified rank.
-#' @examples
-#' \dontrun{
-#' # Assume 'ps' is a phyloseq object
-#' # This function will glom (group) taxa at a specific taxonomic rank
-#' # Default taxonomic rank is "Genus"
-#' ps_glommed <- glom_taxa_at_rank(ps) 
-#' 
-#' # Glom taxa at the "Family" rank
-#' ps_glommed <- glom_taxa_at_rank(ps, "Family")
-#' }
-#' @export
-glom_taxa_at_rank <- function(physeq, rank = "Genus") {
-  if (is.null(phyloseq::tax_table(physeq, errorIfNULL = FALSE))) {
-    stop("The tax_glom() function requires that physeq contain a taxonomyTable")
-  }
-  physeq <- phyloseq::tax_glom(physeq, taxrank = rank)
-  
-  if (phyloseq::ntaxa(physeq) == 0) stop("No taxa remain after glomming.")
-  
-  return(physeq)
-}
-
-#' Perform Differential Abundance Analysis with DESeq2
-#' @param ps A phyloseq object.
-#' @param group_var A string specifying the grouping variable in sample data.
-#' @param threshold_percentage A numeric value for filtering threshold percentage.
-#' @param threshold_mean_abundance A numeric value for filtering mean abundance.
-#' @param threshold_count A numeric value for filtering count.
-#' @param threshold_relative_abundance A numeric value for filtering relative abundance.
-#' @param significance_level A numeric value specifying the significance level for filtering significant OTUs.
-#' @return A data frame containing the differential abundance results.
-#' @export
-#' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq results
-#'
-#' @param ps A phyloseq object containing the microbiome data.
-#' @param group_var A string specifying the grouping variable in sample data.
-#' @param threshold_percentage A numeric value for filtering threshold percentage. Default is 0.0001.
-#' @param threshold_mean_abundance A numeric value for filtering mean abundance. Default is 0.00001.
-#' @param threshold_count A numeric value for filtering count. Default is 1.
-#' @param threshold_relative_abundance A numeric value for filtering relative abundance. Default is 0.00001.
-#' @param significance_level A numeric value specifying the significance level for filtering significant OTUs. Default is 0.05.
-#' @param point_size A numeric value specifying the size of points in the volcano plot. Default is 3.
-#' @param facet_variable A string specifying the variable to facet the barplots. Default is "Phylum".
-#' @param target_glom A string specifying the taxonomic rank to aggregate taxa (e.g., "Genus", "Family"). Default is "Genus".
-#' @return A list containing the final results, the phyloseq object with significant OTUs, and ggplot objects for the visualizations.
-#' @export
-perform_and_visualize_differential_abundance <- function(ps, group_var, threshold_percentage = 0.0001, 
-                                                         threshold_mean_abundance = 0.00001, threshold_count = 1, 
-                                                         threshold_relative_abundance = 0.00001, significance_level = 0.05, 
-                                                         point_size = 3, facet_variable = "Phylum", target_glom = "Genus") {
-  
-  # Step 1: Prune samples and taxa with zero counts
-  ps <- phyloseq::prune_samples(phyloseq::sample_sums(ps) > 0, ps)
-  ps <- phyloseq::prune_taxa(phyloseq::taxa_sums(ps) > 0, ps)
-  
-  # Step 2: Check if the phyloseq object has a taxonomy table before glomming
-  if (!is.null(phyloseq::tax_table(ps, errorIfNULL = FALSE))) {
-    ps <- glom_taxa_at_rank(ps, target_glom)
-  } else {
-    warning("No taxonomy table found. Skipping tax glomming step.")
-  }
-  
-  # Step 3: Perform DESeq2 differential abundance analysis
-  results <- perform_DESeq2(ps, group_var, threshold_percentage, threshold_mean_abundance, 
-                            threshold_count, threshold_relative_abundance, significance_level)
-  
-  # Rename DESeq2 log2FoldChange to logFC for consistency
-  results <- results %>%
-    dplyr::rename(logFC = log2FoldChange)
-  
-  # Step 4: Create Volcano Plot
-  volcano_plot <- ggplot(results, aes(x = logFC, y = pvalue)) +
-    geom_point(aes(color = diff_abn), size = point_size) +
-    scale_y_continuous(trans = "log10", labels = scales::label_scientific()) +
-    theme_minimal() +
-    labs(x = "Log2 Fold Change", y = "P-value", title = "Volcano Plot") +
-    scale_color_manual(values = c("black", "red")) +
-    theme(legend.position = "bottom")
-  
-  # Step 5: Create Barplots for Relative and Absolute Abundances
-  barplot_rel <- taxa_barplot(ps, target_glom = target_glom, treatment_variable = group_var, 
-                              abundance_type = "relative", x_angle = 90, fill_variable = "Genus", 
-                              facet_variable = facet_variable, top_n_taxa = 20, palette = MG())$barplot
-  
-  barplot_abs <- taxa_barplot(ps, target_glom = target_glom, treatment_variable = group_var, 
-                              abundance_type = "absolute", x_angle = 90, fill_variable = "Genus", 
-                              facet_variable = facet_variable, top_n_taxa = 20, palette = MG())$barplot
-  
-  # Return results and plots
-  return(list(plot = volcano_plot, barplot_rel = barplot_rel, barplot_abs = barplot_abs, results = results))
-}
 
 #' Glom Taxa at Specific Level
-#' This function gloms taxa at a specified taxonomic rank.
-#' @param physeq A phyloseq object.
+#'
+#' This function gloms taxa at a specific taxonomic level in a phyloseq object.
+#'
+#' @param physeq A phyloseq object containing the OTU and taxonomy tables.
 #' @param rank A character string specifying the taxonomic rank to glom. Default is "Genus".
 #' @return A phyloseq object with taxa glommed at the specified rank.
+#' @importFrom phyloseq tax_glom tax_table ntaxa
 #' @export
 glom_taxa_at_rank <- function(physeq, rank = "Genus") {
   if (is.null(phyloseq::tax_table(physeq, errorIfNULL = FALSE))) {
-    stop("The tax_glom() function requires that physeq contain a taxonomyTable")
+    stop("The tax_glom() function requires that physeq contains a taxonomy table.")
   }
-  physeq <- phyloseq::tax_glom(physeq, taxrank = rank)
   
+  physeq <- phyloseq::tax_glom(physeq, taxrank = rank)
   if (phyloseq::ntaxa(physeq) == 0) stop("No taxa remain after glomming.")
   
   return(physeq)
 }
-#' Perform Differential Abundance Analysis with DESeq2
-#' @param ps A phyloseq object.
-#' @param group_var A string specifying the grouping variable in sample data.
-#' @param rank A string specifying the taxonomic rank to glom (e.g., "Genus", "Family"). Default is "Genus".
-#' @param threshold_percentage A numeric value for filtering threshold percentage.
-#' @param threshold_mean_abundance A numeric value for filtering mean abundance.
-#' @param threshold_count A numeric value for filtering count.
-#' @param threshold_relative_abundance A numeric value for filtering relative abundance.
-#' @param significance_level A numeric value specifying the significance level for filtering significant OTUs.
-#' @return A data frame containing the differential abundance results.
-#' @export
-perform_DESeq2 <- function(ps, group_var, rank = "Genus", threshold_percentage, threshold_mean_abundance, 
-                           threshold_count, threshold_relative_abundance, significance_level) {
-  
-  # Step 1: Glom taxa at the specified rank (e.g., Genus)
-  ps_glommed <- glom_taxa_at_rank(ps, rank = rank)
-  
-  # Step 2: Prune samples and taxa with zero counts after glomming
-  ps_glommed <- phyloseq::prune_samples(phyloseq::sample_sums(ps_glommed) > 0, ps_glommed)
-  ps_glommed <- phyloseq::prune_taxa(phyloseq::taxa_sums(ps_glommed) > 0, ps_glommed)
-  
-  # Step 3: Ensure sample names are aligned
-  if (!all(colnames(phyloseq::otu_table(ps_glommed)) == rownames(phyloseq::sample_data(ps_glommed)))) {
-    stop("Sample names in OTU table and sample data do not match.")
-  }
-  
-  # Convert the phyloseq object to a DESeq2-compatible matrix
-  otu <- as(phyloseq::otu_table(ps_glommed), "matrix")
-  metadata <- as(phyloseq::sample_data(ps_glommed), "data.frame")
-  
-  # Check if the group variable exists in metadata
-  if (!group_var %in% colnames(metadata)) {
-    stop("The specified group variable does not exist in the sample data.")
-  }
-  
-  # Filter taxa using custom thresholds
-  ps_filtered <- tryCatch({
-    relativized_filtered_taxa(ps_glommed, threshold_percentage, threshold_mean_abundance, 
-                              threshold_count, threshold_relative_abundance)
-  }, error = function(e) {
-    warning("Filtering resulted in no taxa remaining: ", e$message, ". Skipping filtering step.")
-    return(ps_glommed)
-  })
-  
-  if (phyloseq::nsamples(ps_filtered) == 0 || phyloseq::ntaxa(ps_filtered) == 0) {
-    stop("No taxa remain after filtering. Adjust the filtering thresholds.")
-  }
-  
-  # Glom taxa at the rank specified
-  ps_filtered_glom <- glom_taxa_at_rank(ps_filtered, rank)
-  
-  # Round the OTU table
-  otu <- as(phyloseq::otu_table(ps_filtered_glom), "matrix")
-  otu <- round(otu)
-  phyloseq::otu_table(ps_filtered_glom) <- phyloseq::otu_table(otu, taxa_are_rows = TRUE)
-  
-  # Create DESeq2 dataset and run DESeq
-  dds <- DESeq2::DESeqDataSetFromMatrix(countData = otu, colData = metadata, 
-                                        design = as.formula(paste("~", group_var)))
-  dds <- DESeq2::DESeq(dds)
-  
-  # Extract results and arrange by p-value
-  res <- DESeq2::results(dds)
-  res <- as.data.frame(res)
-  res$OTU <- rownames(res)
-  
-  # Adjust for multiple testing using FDR and mark significant results
-  res <- res %>%
-    dplyr::arrange(pvalue) %>%
-    dplyr::mutate(FDR = p.adjust(pvalue, method = "BH")) %>%
-    dplyr::mutate(diff_abn = FDR < significance_level)
-  
-  return(res)
-}
-#' Perform Differential Abundance Analysis with edgeR
-#' @param ps A phyloseq object.
-#' @param group_var A string specifying the grouping variable in sample data.
-#' @param threshold_percentage A numeric value for filtering threshold percentage.
-#' @param threshold_mean_abundance A numeric value for filtering mean abundance.
-#' @param threshold_count A numeric value for filtering count.
-#' @param threshold_relative_abundance A numeric value for filtering relative abundance.
-#' @param significance_level A numeric value specifying the significance level for filtering significant OTUs.
-#' @return A data frame containing the differential abundance results.
-#' @export
-#' @importFrom edgeR DGEList estimateDisp glmFit glmLRT topTags
-perform_edgeR <- function(ps, group_var, threshold_percentage, threshold_mean_abundance, threshold_count, threshold_relative_abundance, significance_level) {
-  # Extract OTU table and metadata from phyloseq object
-  otu <- as(otu_table(ps), "matrix")
-  metadata <- as(sample_data(ps), "data.frame")
-  
-  # Check if the grouping variable exists in the sample data
-  if (!group_var %in% colnames(metadata)) {
-    stop("The specified group variable does not exist in the sample data.")
-  }
-  
-  # Filter taxa based on the thresholds
-  ps_filtered <- tryCatch({
-    relativized_filtered_taxa(ps, threshold_percentage, threshold_mean_abundance, threshold_count, threshold_relative_abundance)
-  }, error = function(e) {
-    warning("Filtering resulted in no taxa remaining: ", e$message, ". Skipping filtering step.")
-    return(ps)
-  })
-  
-  # Check if there are any remaining taxa or samples after filtering
-  if (nsamples(ps_filtered) == 0 || ntaxa(ps_filtered) == 0) {
-    stop("No taxa remain after filtering. Adjust the filtering thresholds.")
-  }
-  
-  # Glom taxa at the genus rank
-  ps_filtered_glom <- glom_taxa_at_rank(ps_filtered, "Genus")
-  
-  # Normalize the OTU table
-  otu_normalized <- as(otu_table(ps_filtered_glom), "matrix")
-  group <- metadata[[group_var]]
-  
-  # Create DGEList object for edgeR analysis
-  dge <- edgeR::DGEList(counts = otu_normalized, group = group)
-  
-  # Design matrix
-  design <- model.matrix(~ group)
-  
-  # Estimate dispersions
-  dge <- edgeR::estimateDisp(dge, design)
-  
-  # Fit the model and perform likelihood ratio test
-  fit <- edgeR::glmFit(dge, design)
-  lrt <- edgeR::glmLRT(fit)
-  
-  # Extract top tags (significant results)
-  top_tags <- edgeR::topTags(lrt, n = Inf)
-  results <- top_tags$table
-  
-  # Add OTU names and compute FDR
-  results$OTU <- rownames(results)
-  
-  # Rename PValue to pvalue to match the expected column in the plot
-  results <- results %>%
-    dplyr::rename(pvalue = PValue) %>%
-    dplyr::arrange(pvalue) %>%
-    dplyr::mutate(FDR = p.adjust(pvalue, method = "BH")) %>%
-    dplyr::mutate(diff_abn = FDR < significance_level)
-  
-  return(results)
-}
 
-#' Visualize Differential Abundance
-#' @param results A data frame containing the differential abundance results.
-#' @param group_var A string specifying the grouping variable.
-#' @param point_size A numeric value specifying the size of points in the volcano plot.
-#' @param palette A character vector of color hex codes for plotting.
-#' @return A ggplot2 object representing the volcano plot.
-#' @importFrom ggplot2 ggplot geom_point aes scale_y_continuous theme_minimal labs scale_color_manual theme
-#' @importFrom scales label_scientific
-#' @export
-visualize_differential_abundance <- function(results, group_var, point_size = 3, palette) {
-  
-  # Replace pvalue of 0 with a very small value to avoid issues with log10
-  results$pvalue[results$pvalue == 0] <- 1e-10
-  
-  # Create the volcano plot
-  ggplot(results, aes(x = logFC, y = pvalue)) +
-    geom_point(aes(color = diff_abn), size = point_size) +
-    scale_y_continuous(trans = "log10", labels = scales::label_scientific()) +  # Log10 transformation
-    theme_minimal() +
-    labs(x = "Log2 Fold Change", y = "P-value", title = paste("Volcano Plot -", group_var)) +
-    scale_color_manual(values = c("gray60", "red4")) +
-    theme(legend.position = "bottom")
-}
-#' Perform and Visualize Differential Abundance Analysis
-#' This function normalizes and filters the data, performs differential abundance analysis, 
-#' extracts significant OTUs, rebuilds the phyloseq object, merges results with metadata, and visualizes the results.
-#' 
-#' @param ps A phyloseq object containing the microbiome data.
-#' @param group_var A string specifying the grouping variable in sample data.
-#' @param method A string specifying the differential abundance method ("edgeR", "DESeq2"). Default is "edgeR".
-#' @param threshold_percentage A numeric value for filtering threshold percentage. Default is 0.0001.
-#' @param threshold_mean_abundance A numeric value for filtering mean abundance. Default is 0.00001.
-#' @param threshold_count A numeric value for filtering count. Default is 1.
-#' @param threshold_relative_abundance A numeric value for filtering relative abundance. Default is 0.00001.
-#' @param significance_level A numeric value specifying the significance level for filtering significant OTUs. Default is 0.05.
-#' @param point_size A numeric value specifying the size of points in the volcano plot. Default is 3.
-#' @param facet_variable A string specifying the variable to facet the barplots. Default is "Phylum".
-#' @param target_glom A string specifying the taxonomic rank to aggregate taxa (e.g., "Genus", "Family"). Default is "Genus".
-#' @return A list containing the final results, the phyloseq object with significant OTUs, and ggplot objects for the visualizations.
-#' @examples
-#' \dontrun{
-#' # Install and load the required packages first
-#' required_packages <- c("phyloseq", "DESeq2", "edgeR", 
-#'                        "BiocManager", "BiocGenerics", "ggplot2", 
-#'                        "dplyr", "DT")
-#' install_and_load(required_packages)
-#' 
-#' # Step 1: Clean and preprocess the phyloseq object
-#' ps <- remove_zero_negative_count_samples(ps)  
-#' ps <- convert_categorical_to_factors(ps)      
-#' 
-#' # edgeR Example with default glomming at the "Genus" rank
-#' results_edgeR <- perform_and_visualize_differential_abundance(ps, "Animal.ecomode", 
-#'                                                               method = "edgeR", 
-#'                                                               threshold_percentage = 0.001, 
-#'                                                               threshold_mean_abundance = 0.001,
-#'                                                               threshold_count = 5, 
-#'                                                               threshold_relative_abundance = 0.001,
-#'                                                               significance_level = 0.05, 
-#'                                                               point_size = 3, 
-#'                                                               target_glom = "Genus")
-#' 
-#' # Print the volcano plot and bar plots for edgeR results
-#' print(results_edgeR$plot)
-#' print(results_edgeR$barplot_rel)  # Relative abundance 
-#' print(results_edgeR$barplot_abs)  # Absolute abundance 
-#' 
-#' # DESeq2 Example with custom glomming at the "Family" rank and faceting by "Class"
-#' results_DESeq2 <- perform_and_visualize_differential_abundance(ps, "Host.genus", 
-#'                                                                method = "DESeq2",
-#'                                                                threshold_percentage = 0.001, 
-#'                                                                threshold_mean_abundance = 0.001,
-#'                                                                threshold_count = 5, 
-#'                                                                threshold_relative_abundance = 0.001,
-#'                                                                significance_level = 0.05, 
-#'                                                                point_size = 3, 
-#'                                                                target_glom = "Family", 
-#'                                                                facet_variable = "Class")
-#' 
-#' # Print the volcano plot and bar plots for DESeq2 results
-#' print(results_DESeq2$plot)
-#' print(results_DESeq2$barplot_rel)  # Relative abundance 
-#' print(results_DESeq2$barplot_abs)  # Absolute abundance 
-#' }
-#' @export
-perform_and_visualize_differential_abundance <- function(ps, group_var, method = "edgeR",
-                                                         threshold_percentage = 0.0001, threshold_mean_abundance = 0.00001, 
-                                                         threshold_count = 1, threshold_relative_abundance = 0.00001,
-                                                         significance_level = 0.05, point_size = 3, facet_variable = "Phylum",
-                                                         target_glom = "Genus") {
-  
-  # Step 1: Check if the grouping variable has at least two levels
-  group_levels <- levels(as.factor(phyloseq::sample_data(ps)[[group_var]]))
-  if (length(group_levels) < 2) {
-    stop(paste("The grouping variable '", group_var, "' must have at least two levels. Currently, it has the following levels: ", paste(group_levels, collapse = ", "), sep = ""))
-  }
-  
-  # Step 2: Prune samples and taxa with zero counts
-  ps <- phyloseq::prune_samples(phyloseq::sample_sums(ps) > 0, ps)
-  ps <- phyloseq::prune_taxa(phyloseq::taxa_sums(ps) > 0, ps)
-  
-  # Step 3: Check if the physeq object has a taxonomy table before glomming
-  if (!is.null(phyloseq::tax_table(ps, errorIfNULL = FALSE))) {
-    ps <- glom_taxa_at_rank(ps, target_glom)  # Proceed with tax glom at user-specified rank
-  } else {
-    warning("No taxonomy table found. Skipping tax glomming step.")
-  }
-  
-  # Step 4: Perform differential abundance analysis based on the chosen method edgR/DESeq2
-  if (method == "edgeR") {
-    results <- perform_edgeR(ps, group_var, threshold_percentage, threshold_mean_abundance, threshold_count, threshold_relative_abundance, significance_level)
-  } else if (method == "DESeq2") {
-    results <- perform_DESeq2(ps, group_var, threshold_percentage, threshold_mean_abundance, threshold_count, threshold_relative_abundance, significance_level)
-  } else {
-    stop("Invalid method specified. Use 'edgeR' or 'DESeq2'.")
-  }
-  
-  # Adjust for DESeq2 logFC column
-  if (method == "DESeq2") {
-    results <- results %>%
-      dplyr::rename(logFC = log2FoldChange)  # DESeq2 uses log2FoldChange instead of logFC
-  }
-  
-  # Step 5: Generate visualizations based on the analysis results
-  p <- visualize_differential_abundance(results, group_var, point_size = point_size, palette = MG())
-  
-  bp_rel <- taxa_barplot(ps, target_glom = target_glom, treatment_variable = group_var, 
-                         abundance_type = "relative", x_angle = 90, fill_variable = "Genus", facet_variable = facet_variable, top_n_taxa = 20, palette = MG())
-  
-  bp_abs <- taxa_barplot(ps, target_glom = target_glom, treatment_variable = group_var, 
-                         abundance_type = "absolute", x_angle = 90, fill_variable = "Genus", facet_variable = facet_variable, top_n_taxa = 20, palette = MG())
-  
-  return(list(plot = p, barplot_rel = bp_rel$barplot, barplot_abs = bp_abs$barplot, results = results))
-}
+# Usage Examples,
+# Example DESeq2,
+# results_deseq2 <- perform_and_visualize_DA_DESeq2(
+#  ps = ps, 
+#  group_var = "Host.genus", 
+#  contrast = c("Acris", "Anaxyrus"), 
+#  output_csv_path = "DA_deseq2.csv", 
+# target_glom = "Genus", 
+#  significance_level = 0.05
+#)
+# print(results_deseq2$plot)
+# results_deseq2$results
+# results_deseq2$ps_significant
 
 
-# Example usage:
-# Assuming 'ps' is a phyloseq object with group variables
-# Remove samples with zero, negative, or NA counts and add a pseudocount
-# ps <- remove_zero_negative_count_samples(ps)
-# 
-# # Step 2: Ensure that categorical variables in the sample data are factors
-# ps <- convert_categorical_to_factors(ps)
+# Example edgeR,
 
-# Step 3: Perform differential abundance analysis and visualize results
-# edgeR/DESeq2 Example with default faceting by "Phylum":
-# Diet<-as.factor(ps@sam_data$Diet)
-# edgeR Example with default glomming at the "Genus" rank
-# results_edgeR <- perform_and_visualize_differential_abundance(ps, 
-#                                                               group_var = "Animal.ecomode", 
-#                                                               method = "edgeR", 
-#                                                               threshold_percentage = 0.001, 
-#                                                               threshold_mean_abundance = 0.001,
-#                                                               threshold_count = 5, 
-#                                                               threshold_relative_abundance = 0.001,
-#                                                               significance_level = 0.05, 
-#                                                               point_size = 3, 
-#                                                               facet_variable = "Animal.ecomode",
-#                                                               target_glom = "Genus")
-# 
-# # Print results from edgeR
-# print(results_edgeR$plot)
-# print(results_edgeR$barplot_rel)
-# print(results_edgeR$barplot_abs)
-# 
-# # DESeq2 Example with custom glomming at the "Family" rank and faceting by Class
-# results_DESeq2 <- perform_and_visualize_differential_abundance(ps,
-#                                                                group_var = "Diet",
-#                                                                threshold_percentage = 0.001,
-#                                                                threshold_mean_abundance = 0.001,
-#                                                                threshold_count = 5,
-#                                                                threshold_relative_abundance = 0.001,
-#                                                                significance_level = 0.05,
-#                                                                point_size = 3,
-#                                                                facet_variable = "Animal.ecomode")
-# 
-# # Print the volcano plot and barplots
-# print(results_DESeq2$plot)
-# print(results_DESeq2$barplot_rel)
-# print(results_DESeq2$barplot_abs)
+# group_var <- "Host.genus"     # sample variable
+# contrast <- c("Acris", "Anaxyrus")  # Specify the levels to compare
 
+# with edgeR and visualize results
+# results_edgeR <- perform_and_visualize_DA_edgeR(
+#  ps = ps,                           #  phyloseq object
+#  group_var = group_var,              # Grouping variable
+#  contrast = contrast,                # Contrast levels
+#  output_csv_path = "DA_edgeR.csv",   # Path to save the edgeR results
+# target_glom = "Genus",              # Taxonomic rank to aggregate
+#  significance_level = 0.05           # Significance threshold (default is 0.05)
+#)
 
+#print(results_edgeR$plot)
+#head(results_edgeR$results)           # View the differential abundance results
+#results_edgeR$ps_significant          # View the significant taxa (phyloseq obj)

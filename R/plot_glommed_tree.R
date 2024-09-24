@@ -24,65 +24,49 @@
 #' @importFrom tibble as_tibble
 #' @export
 plot_glommed_tree <- function(physeq, resolution, output_prefix = "glommed_tree", width = 20, height = 18, print_plot = TRUE) {
-  suppressMessages({
-    # Load necessary libraries
-    if (!requireNamespace("phyloseq", quietly = TRUE)) {
-      stop("Package 'phyloseq' is required but not installed.")
-    }
-    if (!requireNamespace("speedyseq", quietly = TRUE)) {
-      message("Package 'speedyseq' is required but not installed. Installing from GitHub...")
-      remotes::install_github("mikemc/speedyseq")
-    }
-    if (!requireNamespace("ggtree", quietly = TRUE)) {
-      stop("Package 'ggtree' is required but not installed.")
-    }
-    if (!requireNamespace("ggplot2", quietly = TRUE)) {
-      stop("Package 'ggplot2' is required but not installed.")
-    }
-    
-    # Perform tree glomming
-    physeq_glommed <- speedyseq::tree_glom(physeq, resolution = resolution)
-    
-    # Check if tree glomming worked correctly
-    if (is.null(physeq_glommed)) {
-      stop("Tree glomming failed. Please check the input phyloseq object and resolution.")
-    }
-    
-    # Extract tree from phyloseq object
-    phy_tree <- phyloseq::phy_tree(physeq_glommed)
-    
-    # Convert to a format suitable for ggtree
-    tree_data <- tibble::as_tibble(phy_tree)
-    
-    # Determine if nodes are tips
-    tree_data$isTip <- !is.na(match(tree_data$label, phy_tree$tip.label))
-    
-    # Create ggtree object
-    tree_plot <- ggtree::ggtree(phy_tree) +
-      ggtree::geom_tiplab(ggplot2::aes(label = label), size = 3) +  # Label tips with ASV names
-      ggtree::theme_tree2() +
-      ggplot2::ggtitle(paste("Glommed Tree at Resolution", resolution))
-    
-    # Add bootstrap values if available
-    if (!is.null(phy_tree$node.label)) {
-      bootstrap_values <- phy_tree$node.label
-      internal_nodes <- which(!tree_data$isTip)
-      tree_plot <- tree_plot + ggtree::geom_text2(ggplot2::aes(subset = !isTip, label = bootstrap_values[match(node, internal_nodes)]), size = 2, vjust = -0.5)
-    } else {
-      warning("Bootstrap values not found. Skipping bootstrap labels.")
-    }
-    
-    # Print the plot if required
-    if (print_plot) {
-      print(tree_plot)
-    }
-    
-    # Save the plot
-    ggplot2::ggsave(paste0(output_prefix, "_tree.pdf"), plot = tree_plot, width = width, height = height)
-    cat("Glommed tree plot saved to:", paste0(output_prefix, "_tree.pdf"), "\n")
-    
-    return(NULL)
-  })
+  
+  # Perform tree glomming
+  physeq_glommed <- speedyseq::tree_glom(physeq, resolution = resolution)
+  
+  # Check if tree glomming worked correctly
+  if (is.null(physeq_glommed)) {
+    stop("Tree glomming failed. Please check the input phyloseq object and resolution.")
+  }
+  
+  # Extract tree from phyloseq object
+  phy_tree <- phyloseq::phy_tree(physeq_glommed)
+  
+  # Convert to a format suitable for ggtree
+  tree_data <- tibble::as_tibble(phy_tree)
+  
+  # Determine if nodes are tips
+  tree_data$isTip <- !is.na(match(tree_data$label, phy_tree$tip.label))
+  
+  # Create ggtree object
+  tree_plot <- ggtree::ggtree(phy_tree) +
+    ggtree::geom_tiplab(ggplot2::aes(label = label), size = 3) +  # Label tips with ASV names
+    ggtree::theme_tree2() +
+    ggplot2::ggtitle(paste("Glommed Tree at Resolution", resolution))
+  
+  # Add bootstrap values if available
+  if (!is.null(phy_tree$node.label)) {
+    bootstrap_values <- phy_tree$node.label
+    internal_nodes <- which(!tree_data$isTip)
+    tree_plot <- tree_plot + ggtree::geom_text2(ggplot2::aes(subset = !isTip, label = bootstrap_values[match(node, internal_nodes)]), size = 2, vjust = -0.5)
+  } else {
+    warning("Bootstrap values not found. Skipping bootstrap labels.")
+  }
+  
+  # Print the plot if required
+  if (print_plot) {
+    print(tree_plot)
+  }
+  
+  # Save the plot
+  ggplot2::ggsave(paste0(output_prefix, "_tree.pdf"), plot = tree_plot, width = width, height = height)
+  cat("Glommed tree plot saved to:", paste0(output_prefix, "_tree.pdf"), "\n")
+  
+  return(NULL)
 }
 
 # Example usage:

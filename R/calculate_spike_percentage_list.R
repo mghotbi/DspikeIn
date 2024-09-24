@@ -19,7 +19,7 @@
 #' )
 #'
 #' # Create a mock phyloseq object 
-#' #' result <- calculate_spike_percentage_list(merged_physeq_sum, 
+#' result <- calculate_spike_percentage_list(merged_physeq_sum, 
 #' merged_spiked_species = spiked_species_list, 
 #' passed_range = c(0.1, 10))
 #'
@@ -37,19 +37,6 @@ calculate_spike_percentage_list <- function(physeq, merged_spiked_species = NULL
   if (!is.numeric(passed_range) || length(passed_range) != 2) {
     stop("passed_range must be a numeric vector of length 2.")
   }
-  
-  # Suppress package load messages and check if required packages are installed
-  suppressMessages({
-    if (!requireNamespace("phyloseq", quietly = TRUE)) {
-      stop("Package 'phyloseq' is required but not installed.")
-    }
-    if (!requireNamespace("dplyr", quietly = TRUE)) {
-      stop("Package 'dplyr' is required but not installed.")
-    }
-    if (!requireNamespace("flextable", quietly = TRUE)) {
-      stop("Package 'flextable' is required but not installed.")
-    }
-  })
   
   # Ensure merged_spiked_species is provided
   if (is.null(merged_spiked_species)) stop("You must provide 'merged_spiked_species'.")

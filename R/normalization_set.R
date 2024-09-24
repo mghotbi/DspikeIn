@@ -15,52 +15,21 @@
 # TC, UQ, or Median normalization methods are quick and easy but might not be as robust.
 
 #' -----------------------------------------------------------
-#' @importFrom phyloseq otu_table sample_data sample_sums prune_samples prune_taxa taxa_are_rows tax_table sample_names
-#' @importFrom edgeR DGEList calcNormFactors estimateDisp glmFit glmLRT topTags
-#' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq sizeFactors counts
-#' @importFrom BiocManager install
-#' @importFrom stats model.matrix median
-#' 
-# ------------------------------------------------------------------------
-#'
-#' @param packages A character vector of package names to install and load.
-install_and_load <- function(packages) {
-  for (package in packages) {
-    suppressMessages({
-      if (!requireNamespace(package, quietly = TRUE)) {
-        if (package %in% c("phyloseq", "DESeq2", "edgeR", "EDASeq", "BiocManager", "BiocGenerics")) {
-          if (!requireNamespace("BiocManager", quietly = TRUE)) {
-            utils::install.packages("BiocManager", quiet = TRUE)
-          }
-          BiocManager::install(package, suppressUpdates = TRUE, ask = FALSE, quiet = TRUE)
-        } else {
-          utils::install.packages(package, quiet = TRUE)
-        }
-      }
-      suppressWarnings(suppressMessages(library(package, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)))
-    })
-  }
-}
-
-# Example usage
-required_packages <- c("phyloseq", "DESeq2", "edgeR", "EDASeq", "BiocManager", "BiocGenerics")
-install_and_load(required_packages)
-
-# ------------------------------------------------------------------------
-
 #' Calculate Geometric Mean
 #'
+#' This function calculates the geometric mean of a numeric vector.
+#' It removes non-positive and NA values by default.
+#'
 #' @param x A numeric vector.
-#' @param na.rm Logical, should missing values (NAs) be removed?
-#' @return Geometric mean of x.
+#' @param na.rm Logical. Should missing values (NAs) be removed? Defaults to TRUE.
+#' @return Geometric mean of x, or NA if no valid values are present.
+#' @export
 gm_mean <- function(x, na.rm = TRUE) {
   valid_x <- x[x > 0 & !is.na(x)]
   if (length(valid_x) == 0) return(NA)
   exp(sum(log(valid_x), na.rm = na.rm) / length(valid_x))
 }
-
 # ------------------------------------------------------------------------
-
 #' Set Normalization Factors in the Sample Data of the Phyloseq Object
 #'
 #' @param ps A phyloseq object.
@@ -86,6 +55,7 @@ set_nf <- function(ps, scaling.factor) {
 #' @param ps A phyloseq object.
 #' @param pseudocount A numeric value to add to avoid zero counts.
 #' @return A phyloseq object with filtered and adjusted OTU table.
+#' @importFrom phyloseq otu_table prune_samples prune_taxa sample_sums
 remove_zero_negative_count_samples <- function(ps, pseudocount = 1e-6) {
   otu <- as(phyloseq::otu_table(ps), "matrix")
   
@@ -115,6 +85,7 @@ remove_zero_negative_count_samples <- function(ps, pseudocount = 1e-6) {
 
 # -----------------------------------------------------------
 #' Convert Categorical Columns to Factors in Sample Data
+#' @importFrom phyloseq sample_data
 #' 
 #' @param ps A phyloseq object.
 #' @return A phyloseq object with updated sample data.
@@ -131,6 +102,7 @@ convert_categorical_to_factors <- function(ps) {
 
 # -----------------------------------------------------------
 #' Create a List from a Phyloseq Object
+#' @importFrom phyloseq otu_table sample_data tax_table
 #' 
 #' @param physeq A phyloseq object.
 #' @return A list containing the DGE list and updated phyloseq object.
@@ -203,6 +175,8 @@ normalization_set <- function(ps, method, groups = NULL) {
 
 # -----------------------------------------------------------
 #' TC Normalization (Total Count Scaling)
+#' @importFrom phyloseq otu_table taxa_are_rows
+#' @importFrom edgeR DGEList
 #' 
 #' @param ps A phyloseq object.
 #' @param groups A string specifying the grouping variable in sample data.
@@ -220,6 +194,8 @@ norm.TC <- function(ps, groups) {
 # -----------------------------------------------------------
 #' UQ Normalization (Upper Quartile)
 #' 
+#' @importFrom phyloseq otu_table taxa_are_rows
+#' @importFrom stats quantile
 #' @param ps A phyloseq object.
 #' @param groups A string specifying the grouping variable in sample data.
 #' @return A list containing the normalized phyloseq object and scaling factors.
@@ -249,6 +225,8 @@ norm.UQ <- function(ps, groups) {
 
 # -----------------------------------------------------------
 #' Median Normalization
+#' @importFrom phyloseq otu_table taxa_are_rows
+#' @importFrom stats median
 #' 
 #' @param ps A phyloseq object.
 #' @param groups A string specifying the grouping variable in sample data.
@@ -269,7 +247,10 @@ norm.med <- function(ps, groups) {
 #' 
 # -----------------------------------------------------------
 #' DESeq Normalization with Pseudocount and Integer Conversion
-#' 
+#' @importFrom phyloseq otu_table taxa_are_rows
+#' @importFrom stats model.matrix
+#' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq sizeFactors counts estimateSizeFactors
+#'
 #' @param ps A phyloseq object.
 #' @param groups A string specifying the grouping variable in sample data.
 #' @param pseudocount A numeric value added to avoid zeros in the dataset.
@@ -318,8 +299,10 @@ norm.DESeq <- function(ps, groups, pseudocount = 1) {
 }
 
 # -----------------------------------------------------------
-#' Quantile Normalization (QN) for phyloseq object 
+#' Quantile Normalization (QN) for phyloseq object
 #' 
+#' @importFrom phyloseq otu_table taxa_are_rows taxa_names tax_table
+#'
 #' @param ps A phyloseq object.
 #' @param filter Logical, whether to filter low counts.
 #' @return A list containing the normalized phyloseq object and scaling factors.
@@ -355,14 +338,15 @@ norm.QN <- function(ps, filter = FALSE) {
 }
 
 # -----------------------------------------------------------
-
 #' Poisson Normalization and Differential Abundance Function
-#' 
+#' @importFrom phyloseq otu_table sample_data taxa_are_rows
+#' @importFrom edgeR DGEList calcNormFactors estimateDisp glmFit glmLRT topTags
+#' @importFrom stats model.matrix
+#'
 #' @param ps A phyloseq object or matrix of raw counts.
 #' @param group_var A string specifying the grouping variable in sample data (if phyloseq object).
 #' @param pseudocount A numeric value added to avoid division by zero.
 #' @return A list containing the normalized data, scaling factor, and differential abundance results.
-#' @importFrom edgeR DGEList calcNormFactors estimateDisp glmFit glmLRT topTags
 norm.Poisson <- function(ps, group_var = NULL, pseudocount = 1e-6) {
   ps <- remove_zero_negative_count_samples(ps)
   
@@ -410,11 +394,12 @@ norm.Poisson <- function(ps, group_var = NULL, pseudocount = 1e-6) {
 
 # -----------------------------------------------------------
 #' TMM Normalization (Trimmed Mean of M component)
-#' 
+#' @importFrom phyloseq otu_table taxa_are_rows sample_data
+#' @importFrom edgeR DGEList calcNormFactors
+#'
 #' @param ps A phyloseq object.
 #' @param groups A string specifying the grouping variable in sample data.
 #' @return A list containing the normalized phyloseq object and scaling factors.
-#' @importFrom edgeR DGEList calcNormFactors
 norm.TMM <- function(ps, groups) {
   otu_table_matrix <- as(phyloseq::otu_table(ps), "matrix")
   
@@ -444,6 +429,7 @@ norm.TMM <- function(ps, groups) {
 
 # -----------------------------------------------------------
 #' CLR Normalization (Centered Log-Ratio Transformation)
+#' @importFrom phyloseq transform_sample_counts nsamples
 #' 
 #' @param ps A phyloseq object.
 #' @return A list containing the normalized phyloseq object and scaling factors.
@@ -460,10 +446,10 @@ norm.clr <- function(ps) {
 
 # -----------------------------------------------------------
 #' Rarefying
-#' 
+#' @importFrom phyloseq rarefy_even_depth sample_sums
+#'
 #' @param ps A phyloseq object.
 #' @return A list containing the normalized phyloseq object and scaling factors.
-#' @importFrom phyloseq rarefy_even_depth sample_sums
 norm.rar <- function(ps) {
   ps <- remove_zero_negative_count_samples(ps)
   
@@ -475,7 +461,8 @@ norm.rar <- function(ps) {
 
 # -----------------------------------------------------------
 #' TSS Normalization (Total Sum Scaling)
-#' 
+#' @importFrom phyloseq otu_table taxa_are_rows nsamples
+#'
 #' @param ps A phyloseq object.
 #' @return A list containing the normalized phyloseq object and scaling factors.
 norm.tss <- function(ps) {
@@ -493,10 +480,11 @@ norm.tss <- function(ps) {
 
 # -----------------------------------------------------------
 #' CSS Normalization (Cumulative Sum Scaling)
-#' 
+#' @importFrom phyloseq otu_table taxa_are_rows
+#' @importFrom edgeR DGEList calcNormFactors
+#'
 #' @param ps A phyloseq object.
 #' @return A list containing the normalized phyloseq object and scaling factors.
-#' @importFrom edgeR DGEList calcNormFactors
 norm.css <- function(ps) {
   ps <- remove_zero_negative_count_samples(ps)
   
@@ -514,14 +502,16 @@ norm.css <- function(ps) {
 
 # -----------------------------------------------------------
 #' RLE Normalization (Relative Log Expression)
-#' 
+#' @importFrom phyloseq otu_table taxa_are_rows
+#' @importFrom DESeq2 estimateSizeFactorsForMatrix
+#' @importFrom stats median
+#'
 #' @param ps A phyloseq object.
 #' @param locfunc A function to compute the location statistic (default is median).
 #' @param type A character string specifying the type of normalization ("poscounts" or "ratio").
 #' @param geo_means A vector of geometric means for each feature.
 #' @param control_genes A vector of control genes.
 #' @return A list containing the normalized phyloseq object and scaling factors.
-#' @importFrom DESeq2 estimateSizeFactorsForMatrix
 norm.rle <- function(ps, locfunc = stats::median, type = c("poscounts", "ratio"), geo_means = NULL, control_genes = NULL) {
   type <- match.arg(type, c("poscounts", "ratio"))
   

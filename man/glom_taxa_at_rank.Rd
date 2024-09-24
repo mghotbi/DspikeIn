@@ -2,38 +2,18 @@
 % Please edit documentation in R/microbiome_differential_abundance.R
 \name{glom_taxa_at_rank}
 \alias{glom_taxa_at_rank}
-\title{#Glom Taxa at Specific Level
-#This function gloms taxa at a specified taxonomic rank. If no rank is provided, it defaults to "Genus".}
+\title{Glom Taxa at Specific Level}
 \usage{
-glom_taxa_at_rank(physeq, rank = "Genus")
-
 glom_taxa_at_rank(physeq, rank = "Genus")
 }
 \arguments{
-\item{physeq}{A phyloseq object.}
+\item{physeq}{A phyloseq object containing the OTU and taxonomy tables.}
 
 \item{rank}{A character string specifying the taxonomic rank to glom. Default is "Genus".}
 }
 \value{
 A phyloseq object with taxa glommed at the specified rank.
-
-A phyloseq object with taxa glommed at the specified rank.
 }
 \description{
-#Glom Taxa at Specific Level
-#This function gloms taxa at a specified taxonomic rank. If no rank is provided, it defaults to "Genus".
-
-Glom Taxa at Specific Level
-This function gloms taxa at a specified taxonomic rank.
-}
-\examples{
-\dontrun{
-# Assume 'ps' is a phyloseq object
-# This function will glom (group) taxa at a specific taxonomic rank
-# Default taxonomic rank is "Genus"
-ps_glommed <- glom_taxa_at_rank(ps) 
-
-# Glom taxa at the "Family" rank
-ps_glommed <- glom_taxa_at_rank(ps, "Family")
-}
+This function gloms taxa at a specific taxonomic level in a phyloseq object.
 }

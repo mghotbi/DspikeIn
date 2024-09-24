@@ -21,16 +21,11 @@
 #' head(post_eval_summary)
 #' }
 #' @importFrom flextable flextable fontsize font color bold italic save_as_docx
+#' @importFrom dplyr select_if summarise_all
+#' @importFrom utils write.csv
 #' @export
 calculate_summary_stats_table <- function(data, output_path = NULL) {
   suppressMessages({
-    # Load necessary libraries
-    if (!requireNamespace("dplyr", quietly = TRUE)) {
-      stop("Package 'dplyr' is required but not installed.")
-    }
-    if (!requireNamespace("flextable", quietly = TRUE)) {
-      stop("Package 'flextable' is required but not installed.")
-    }
     
     # Calculate summary statistics for numeric columns
     summary_stats <- dplyr::select_if(data, is.numeric) %>%

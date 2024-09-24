@@ -14,7 +14,8 @@
 #'   # Plot and save the phylogenetic tree
 #'   # Available layout options: "rectangular", "circular", "fan", and "radial"
 #'   
-#'   # Example: Plot the phylogenetic tree with a circular layout and save it as an output file
+#'   # Example: Plot the phylogenetic tree with a circular 
+#'   # layout and save it as an output file
 #'   plot_tree_custom(Tetragenococcus, 
 #'                    output_prefix = "p0",  # Prefix of file
 #'                    width = 18,            # Width of image
@@ -27,17 +28,6 @@
 #' @export
 plot_tree_custom <- function(physeq, output_prefix = "phy_tree", width = 10, height = 10, layout = "rectangular", print_plot = TRUE) {
   suppressMessages({
-    # Check if the required packages are installed
-    if (!requireNamespace("phyloseq", quietly = TRUE)) {
-      stop("Package 'phyloseq' is required but not installed.")
-    }
-    if (!requireNamespace("ggtree", quietly = TRUE)) {
-      stop("Package 'ggtree' is required but not installed.")
-    }
-    if (!requireNamespace("ggplot2", quietly = TRUE)) {
-      stop("Package 'ggplot2' is required but not installed.")
-    }
-    
     # Check if physeq is a valid phyloseq object
     if (!inherits(physeq, "phyloseq")) {
       stop("Input 'physeq' must be a valid phyloseq object.")
