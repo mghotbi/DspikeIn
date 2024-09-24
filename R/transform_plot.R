@@ -25,8 +25,9 @@
 #' @param paired A logical value specifying whether the data are paired. Default is FALSE.
 #' @return A list containing the ggplot2 boxplot objects and the comparison results, or the comparison results and p-value for individual boxplots.
 #' @importFrom ggplot2 ggplot aes geom_boxplot scale_fill_manual labs theme_minimal element_text ggsave
-#' @importFrom dplyr mutate filter mutate_at
-#' @importFrom stats kruskal.test wilcox.test 
+#' @importFrom ggpubr stat_compare_means
+#' @importFrom dplyr mutate filter across
+#' @importFrom stats kruskal.test wilcox.test
 #' @importFrom graphics mtext boxplot
 #' @examples
 #' if (interactive()) {
@@ -93,24 +94,6 @@ transform_plot <- function(
     las = 1,
     paired = FALSE
 ) {
-  # Load necessary libraries with suppressMessages to prevent output
-  suppressMessages({
-    if (!requireNamespace("ggplot2", quietly = TRUE)) {
-      stop("Package 'ggplot2' is required but not installed.")
-    }
-    if (!requireNamespace("dplyr", quietly = TRUE)) {
-      stop("Package 'dplyr' is required but not installed.")
-    }
-    if (!requireNamespace("ggpubr", quietly = TRUE)) {
-      stop("Package 'ggpubr' is required but not installed.")
-    }
-  })
-  
-  # Ensuring the right libraries are loaded
-  suppressMessages({
-    ggplot2::ggplot()
-    dplyr::mutate()
-  })
   
   if (!is.null(data) && !is.null(x_var) && !is.null(y_vars) && !is.null(methods_var)) {
     # Ensure x_var is a factor
@@ -226,11 +209,13 @@ transform_plot <- function(
     return(list(comparison = tt1, p.value = pp))
   }
 }
+
 # Example y_vars
 # y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
 # #Ensure the columns are numeric
-# methods <- methods %>%   dplyr::mutate(  Total.reads = as.numeric(Total.reads), 
-# Spike.reads = as.numeric(Spike.reads),Spike.percentage = as.numeric(Spike.percentage)  )
+# methods <- methods %>%   dplyr::mutate(Total.reads = as.numeric(Total.reads), 
+# Spike.reads = as.numeric(Spike.reads),
+# Spike.percentage = as.numeric(Spike.percentage)  )
 # # Remove rows with NA values
 # methods <- methods %>%   dplyr::filter(!is.na(Total.reads),  
 # !is.na(Spike.reads),  !is.na(Spike.percentage)  )
@@ -245,4 +230,6 @@ transform_plot <- function(
 # color_palette$MG, stat_test = "kruskal.test")
 # 
 # # Perform one-way ANOVA with MG color palette
-# transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars, methods_var = "Methods", color_palette$MG, stat_test = "anova")
+# transform_plot(data = scaled, x_var = "Methods",
+# y_vars = y_vars, methods_var = "Methods",
+# color_palette$MG, stat_test = "anova")

@@ -26,11 +26,6 @@ relativized_filtered_taxa <- function(physeq,
                                       threshold_count = 10,
                                       threshold_relative_abundance = NULL) {
   suppressMessages({
-    # Check if phyloseq is available
-    if (!requireNamespace("phyloseq", quietly = TRUE)) {
-      stop("Package 'phyloseq' is required but not installed.")
-    }
-    
     # Get the number of samples and sample sums
     nsamples <- phyloseq::nsamples(physeq)
     sample_sum <- phyloseq::sample_sums(physeq)

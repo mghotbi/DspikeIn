@@ -26,9 +26,6 @@ within a data frame, using specified transformations. It prints the p-value for 
 and transformation combination.
 }
 \examples{
-# Example usage:
-# Assume `methods` is a data frame with a column "Methods" for grouping
-##' @examples
 \dontrun{
 # Example usage:
 # Assume `methods` is a data frame with a column "Methods" for grouping

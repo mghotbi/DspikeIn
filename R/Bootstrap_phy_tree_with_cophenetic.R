@@ -19,20 +19,6 @@
 #' }
 #' @export
 Bootstrap_phy_tree_with_cophenetic <- function(physeq_object, output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 100) {
-  # Load necessary libraries
-  if (!requireNamespace("phyloseq", quietly = TRUE)) {
-    stop("Package 'phyloseq' is required but not installed.")
-  }
-  if (!requireNamespace("DECIPHER", quietly = TRUE)) {
-    stop("Package 'DECIPHER' is required but not installed.")
-  }
-  if (!requireNamespace("ape", quietly = TRUE)) {
-    stop("Package 'ape' is required but not installed.")
-  }
-  if (!requireNamespace("phangorn", quietly = TRUE)) {
-    stop("Package 'phangorn' is required but not installed.")
-  }
-  
   # Extract the phylogenetic tree from the phyloseq object
   tree <- phyloseq::phy_tree(physeq_object)
   
@@ -70,7 +56,7 @@ Bootstrap_phy_tree_with_cophenetic <- function(physeq_object, output_file = "tre
   # Plot the phylogenetic tree with bootstrap values
   par(mar = c(5, 4, 4, 10))  # Increase the right margin for node labels
   plot(tree, main = "Phylogenetic Tree with Bootstrap Values and Cophenetic Distances", cex = 0.9, tip.color = "dodgerblue4")
-  nodelabels(round(bootstrap_percentages, 1), cex = 0.9, frame = "none", adj = c(1.0, -0.5), col = "red4")
+  ape::nodelabels(round(bootstrap_percentages, 1), cex = 0.9, frame = "none", adj = c(1.0, -0.5), col = "red4")
   
   # Save the plot as PNG
   png(output_file, width = 1200, height = 1200)
@@ -87,4 +73,3 @@ Bootstrap_phy_tree_with_cophenetic <- function(physeq_object, output_file = "tre
 # Tetragenococcus <-subset_taxa(physeq_16SASV, Genus=="Tetragenococcus")
 # Bootstrap_phy_tree_with_cophenetic(physeq_object = Tetragenococcus,
 # output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 1000)
-

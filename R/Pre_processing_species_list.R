@@ -17,9 +17,10 @@
 #' merged_physeq_sum@tax_table
 #' merged_physeq_sum@otu_table
 #' }
-#' @importFrom phyloseq otu_table tax_table 
+#' @importFrom phyloseq otu_table tax_table
 #' @export
 Pre_processing_species_list <- function(physeq, spiked_species, merge_method = c("sum", "max"), output_file = NULL) {
+  
   # Match the merge method argument
   merge_method <- match.arg(merge_method)
   
@@ -167,19 +168,13 @@ Pre_processing_species_list <- function(physeq, spiked_species, merge_method = c
 # )
 # 
 # # Step 4: build the phyloseq
-# otu_table_ps <- otu_table(otu_data, taxa_are_rows = TRUE)
-# tax_table_ps <- tax_table(taxa_matrix)
-# sample_data_ps <- sample_data(sample_data)
-# # Example usage:
-# spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
-# merged_physeq_sum <- Pre_processing_species_list(physeq, spiked_species, merge_method = "sum")
-# merged_physeq_sum@tax_table
-# merged_physeq_sum@otu_table
-# 
+# otu_table_ps <- phyloseq::otu_table(otu_data, taxa_are_rows = TRUE)
+# tax_table_ps <- phyloseq::tax_table(taxa_matrix)
+# sample_data_ps <- phyloseq::sample_data(sample_data)
 # physeq <- phyloseq(otu_table_ps, tax_table_ps, sample_data_ps)
 # 
 # # tidy up
-# physeq<- tidy_phyloseq(physeq)
+# physeq <- tidy_phyloseq(physeq)
 # 
 # spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
 # merged_physeq_sum <- Pre_processing_species_list(physeq, spiked_species, merge_method = "sum")

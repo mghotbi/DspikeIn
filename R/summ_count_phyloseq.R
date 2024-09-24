@@ -13,14 +13,10 @@
 #' }
 #' }
 #' @importFrom matrixStats rowMeans2 rowMedians
+#' @importFrom stats median sd quantile
 #' @export
 summ_count_phyloseq <- function(physeq) {
   suppressMessages({
-    # Check if matrixStats package is installed, if not, stop
-    if (!requireNamespace("matrixStats", quietly = TRUE)) {
-      stop("Package 'matrixStats' is required but not installed.")
-    }
-    
     # Extract OTU table
     otu_table <- as.matrix(phyloseq::otu_table(physeq))
     

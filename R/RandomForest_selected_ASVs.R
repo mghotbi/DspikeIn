@@ -26,16 +26,6 @@
 #' @export
 RandomForest_selected_ASVs <- function(physeq, response_var, minlib = 15000, prunescale = 0.0001, ntree = 100, n_top_predictors = 50, output_csv = "randomforest_results.csv", na_vars = NULL) {
   suppressMessages({
-    # Load necessary libraries
-    if (!requireNamespace("phyloseq", quietly = TRUE)) {
-      stop("Package 'phyloseq' is required but not installed.")
-    }
-    if (!requireNamespace("dplyr", quietly = TRUE)) {
-      stop("Package 'dplyr' is required but not installed.")
-    }
-    if (!requireNamespace("randomForest", quietly = TRUE)) {
-      stop("Package 'randomForest' is required but not installed.")
-    }
     
     # Check if response_var exists in sample_data
     if (!response_var %in% colnames(phyloseq::sample_data(physeq))) {

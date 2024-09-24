@@ -26,13 +26,7 @@ Pre_processing_species <- function(physeq, species_name, merge_method = c("sum",
   merge_method <- match.arg(merge_method)
   message("Starting pre-processing...")
   
-  # Suppress messages when loading necessary libraries
-  suppressMessages({
-    if (!requireNamespace("phyloseq", quietly = TRUE)) {
-      stop("Package 'phyloseq' is required but not installed.")
-    }
-  })
-  
+  # Loop through each species in the species_name vector
   for (species in species_name) {
     message("Processing species: ", species)
     
@@ -59,14 +53,14 @@ Pre_processing_species <- function(physeq, species_name, merge_method = c("sum",
         new_otu_table <- phyloseq::otu_table(new_otu_table, taxa_are_rows = TRUE)
         
         # Update the phyloseq object with the new OTU table
-        otu_table(physeq) <- new_otu_table
+        phyloseq::otu_table(physeq) <- new_otu_table
         
         # Update the taxonomy table
         new_tax_table <- phyloseq::tax_table(physeq)
         new_tax_table <- new_tax_table[-which(rownames(new_tax_table) %in% species_asvs[-1]), ]
         
         # Ensure taxonomy table dimensions and names are correct
-        new_tax_table <- phyloseq::tax_table(new_tax_table)
+        phyloseq::tax_table(physeq) <- phyloseq::tax_table(new_tax_table)
         
         # Retain the Genus and Species information
         phyloseq::tax_table(physeq)[species_asvs[1], "Genus"] <- taxa_table[species_asvs[1], "Genus"]
@@ -121,14 +115,14 @@ Pre_processing_species <- function(physeq, species_name, merge_method = c("sum",
 # spiked_cells <-1847
 # species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp")
 # merged_spiked_species<-"Tetragenococcus_halophilus"
-# Tetragenococcus <- subset_taxa(physeq_16SASV,Species=="Tetragenococcus_halophilus" | Species=="Tetragenococcus_sp")
+# Tetragenococcus <- phyloseq::subset_taxa(physeq_16SASV,Species=="Tetragenococcus_halophilus" | Species=="Tetragenococcus_sp")
 # hashcodes <- row.names(phyloseq::tax_table(Tetragenococcus))
 # 
 # # ITS rDNA
 # # presence of 'spiked.volume' column in metadata
 # spiked_cells <- 733
 # species_name <- spiked_species<-merged_spiked_species<-"Dekkera_bruxellensis"
-# Dekkera <- subset_taxa(physeq_ITSASV, Species=="Dekkera_bruxellensis")
+# Dekkera <- phyloseq::subset_taxa(physeq_ITSASV, Species=="Dekkera_bruxellensis")
 # hashcodes <- row.names(phyloseq::tax_table(Dekkera))
 # 
 # 

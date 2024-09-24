@@ -9,9 +9,6 @@
 #' @param transformations A character vector specifying the transformations to apply. Default is c("raw", "sqrt", "log", "zscale").
 #' @return NULL. The function prints the Bartlett test results for each variable and transformation.
 #' @examples
-#' # Example usage:
-#' # Assume `methods` is a data frame with a column "Methods" for grouping
-#' ##' @examples
 #' \dontrun{
 #' # Example usage:
 #' # Assume `methods` is a data frame with a column "Methods" for grouping
