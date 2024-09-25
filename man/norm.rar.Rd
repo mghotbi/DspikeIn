@@ -15,3 +15,10 @@ A list containing the normalized phyloseq object and scaling factors.
 \description{
 Rarefying
 }
+\examples{
+\dontrun{
+ps <- phyloseq::GlobalPatterns
+result_rar <- norm.rar(ps)
+normalized_ps_rar <- result_rar$dat.normed
+}
+}

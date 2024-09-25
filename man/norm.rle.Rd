@@ -29,3 +29,10 @@ A list containing the normalized phyloseq object and scaling factors.
 \description{
 RLE Normalization (Relative Log Expression)
 }
+\examples{
+\dontrun{
+ps <- phyloseq::GlobalPatterns
+result_rle <- norm.rle(ps)
+normalized_ps_rle <- result_rle$dat.normed
+}
+}

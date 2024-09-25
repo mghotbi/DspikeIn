@@ -17,3 +17,9 @@ A list containing the normalized phyloseq object and scaling factors.
 \description{
 TC Normalization (Total Count Scaling)
 }
+\examples{
+\dontrun{
+ps <- phyloseq::GlobalPatterns
+result <- norm.TC(ps, "SampleType")
+}
+}

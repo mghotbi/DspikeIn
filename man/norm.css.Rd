@@ -15,3 +15,10 @@ A list containing the normalized phyloseq object and scaling factors.
 \description{
 CSS Normalization (Cumulative Sum Scaling)
 }
+\examples{
+\dontrun{
+ps <- phyloseq::GlobalPatterns
+result_css <- norm.css(ps)
+normalized_ps_css <- result_css$dat.normed
+}
+}

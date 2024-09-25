@@ -22,3 +22,9 @@ A phyloseq object with filtered and adjusted OTU table.
 \description{
 This function removes samples with zero, negative counts, or NA values and adds pseudocounts.
 }
+\examples{
+\dontrun{
+ps <- phyloseq::GlobalPatterns
+ps_clean <- remove_zero_negative_count_samples(ps)
+}
+}

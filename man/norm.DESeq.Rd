@@ -19,3 +19,10 @@ A list containing the normalized phyloseq object and scaling factors.
 \description{
 DESeq Normalization with Pseudocount and Integer Conversion
 }
+\examples{
+\dontrun{
+result_DESeq <- normalization_set(ps, method = "DESeq", groups = "SampleType")
+normalized_ps_DESeq <- result_DESeq$dat.normed
+scaling_factors_DESeq <- result_DESeq$scaling.factor
+}
+}

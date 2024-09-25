@@ -2,7 +2,9 @@
 % Please edit documentation in R/calculate_spike_percentage.R
 \name{calculate_spike_percentage}
 \alias{calculate_spike_percentage}
-\title{Calculate Spike Percentage for Specified Taxa in a Phyloseq Object}
+\title{Declare global variables to avoid check warnings
+utils::globalVariables(c("Total_Reads_total", "Total_Reads_spiked", "Percentage", "Result"))
+Calculate Spike Percentage for Specified Taxa in a Phyloseq Object}
 \usage{
 calculate_spike_percentage(
   physeq,
@@ -52,19 +54,5 @@ merged_spiked_hashcodes <- c("hashcode1", "hashcode2")
 calculate_spike_percentage(physeq,
                            merged_spiked_hashcodes = merged_spiked_hashcodes,
                            passed_range = c(0.1, 10))
-
-# Example with a single species
-merged_spiked_species <- "Dekkera_bruxellensis"
-
-# Calculate spike percentage for the single species within the range 0.1 to 35
-result <- calculate_spike_percentage(spiked_ITS_OTU_scaled, 
-                                     merged_spiked_species, 
-                                     passed_range = c(0.1, 35))
-
-# Generate a summary statistics table from the result
-calculate_summary_stats_table(result)
-
-# Display the calculated spike percentage
-result$Percentage
 }
 }

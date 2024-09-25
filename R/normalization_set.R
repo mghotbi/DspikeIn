@@ -23,6 +23,9 @@
 #' @param x A numeric vector.
 #' @param na.rm Logical. Should missing values (NAs) be removed? Defaults to TRUE.
 #' @return Geometric mean of x, or NA if no valid values are present.
+#' @examples
+#' vec <- c(1, 10, 100, 1000)
+#' gm_mean(vec)
 #' @export
 gm_mean <- function(x, na.rm = TRUE) {
   valid_x <- x[x > 0 & !is.na(x)]
@@ -35,6 +38,12 @@ gm_mean <- function(x, na.rm = TRUE) {
 #' @param ps A phyloseq object.
 #' @param scaling.factor A vector of normalization factors.
 #' @return A phyloseq object with updated sample data.
+#' @examples
+#' \dontrun{
+#' ps <- phyloseq::GlobalPatterns
+#' factors <- rep(1, phyloseq::nsamples(ps))
+#' ps <- set_nf(ps, factors)
+#' }
 #' @export
 set_nf <- function(ps, scaling.factor) {
   if (!inherits(ps, "phyloseq")) {
@@ -55,6 +64,11 @@ set_nf <- function(ps, scaling.factor) {
 #' @param ps A phyloseq object.
 #' @param pseudocount A numeric value to add to avoid zero counts.
 #' @return A phyloseq object with filtered and adjusted OTU table.
+#' @examples
+#' \dontrun{
+#' ps <- phyloseq::GlobalPatterns
+#' ps_clean <- remove_zero_negative_count_samples(ps)
+#' }
 #' @importFrom phyloseq otu_table prune_samples prune_taxa sample_sums
 remove_zero_negative_count_samples <- function(ps, pseudocount = 1e-6) {
   otu <- as(phyloseq::otu_table(ps), "matrix")
@@ -86,9 +100,13 @@ remove_zero_negative_count_samples <- function(ps, pseudocount = 1e-6) {
 # -----------------------------------------------------------
 #' Convert Categorical Columns to Factors in Sample Data
 #' @importFrom phyloseq sample_data
-#' 
-#' @param ps A phyloseq object.
+#' @param ps A phy#' 
 #' @return A phyloseq object with updated sample data.
+#' @examples
+#' \dontrun{
+#' ps <- phyloseq::GlobalPatterns
+#' ps_factor <- convert_categorical_to_factors(ps)
+#' }loseq object.
 convert_categorical_to_factors <- function(ps) {
   sample_data_df <- as(phyloseq::sample_data(ps), "data.frame")
   for (col in colnames(sample_data_df)) {
@@ -106,6 +124,11 @@ convert_categorical_to_factors <- function(ps) {
 #' 
 #' @param physeq A phyloseq object.
 #' @return A list containing the DGE list and updated phyloseq object.
+#' @examples
+#' \dontrun{
+#' ps <- phyloseq::GlobalPatterns
+#' ps_list <- create_list(ps)
+#' }
 create_list <- function(physeq) {
   if (!inherits(physeq, "phyloseq")) {
     stop("Input must be a phyloseq object.")
@@ -137,6 +160,11 @@ create_list <- function(physeq) {
 #' @param method A character string specifying the normalization method ("TC", "UQ", "med", "DESeq", "Poisson", "QN", "TMM", "clr", "rar", "css", "tss", "rle").
 #' @param groups A column name of group labels from sample data.
 #' @return A list containing the normalized phyloseq object and scaling factors.
+#' @examples
+#' \dontrun{
+#' ps <- phyloseq::GlobalPatterns
+#' result <- normalization_set(ps, method = "TC", groups = "SampleType")
+#' }
 #' @export
 normalization_set <- function(ps, method, groups = NULL) {
   if (phyloseq::nsamples(ps) == 0) stop("The phyloseq object contains no samples.")
@@ -181,6 +209,11 @@ normalization_set <- function(ps, method, groups = NULL) {
 #' @param ps A phyloseq object.
 #' @param groups A string specifying the grouping variable in sample data.
 #' @return A list containing the normalized phyloseq object and scaling factors.
+#' @examples
+#' \dontrun{
+#' ps <- phyloseq::GlobalPatterns
+#' result <- norm.TC(ps, "SampleType")
+#' }
 norm.TC <- function(ps, groups) {
   ps <- create_list(ps)$phyloseq_obj
   dat.DGE <- create_list(ps)$dge_list
@@ -199,6 +232,11 @@ norm.TC <- function(ps, groups) {
 #' @param ps A phyloseq object.
 #' @param groups A string specifying the grouping variable in sample data.
 #' @return A list containing the normalized phyloseq object and scaling factors.
+#' @examples
+#' \dontrun{
+#' ps <- phyloseq::GlobalPatterns
+#' result <- norm.UQ(ps, "SampleType")
+#' }
 norm.UQ <- function(ps, groups) {
   # Create a custom list
   physeq_list <- create_list(ps)
@@ -227,10 +265,14 @@ norm.UQ <- function(ps, groups) {
 #' Median Normalization
 #' @importFrom phyloseq otu_table taxa_are_rows
 #' @importFrom stats median
-#' 
 #' @param ps A phyloseq object.
 #' @param groups A string specifying the grouping variable in sample data.
 #' @return A list containing the normalized phyloseq object and scaling factors.
+#' @examples
+#' \dontrun{
+#' ps <- phyloseq::GlobalPatterns
+#' result <- norm.med(ps, "SampleType")
+#' }
 norm.med <- function(ps, groups) {
   ps <- create_list(ps)$phyloseq_obj
   dat.DGE <- create_list(ps)$dge_list
@@ -255,6 +297,12 @@ norm.med <- function(ps, groups) {
 #' @param groups A string specifying the grouping variable in sample data.
 #' @param pseudocount A numeric value added to avoid zeros in the dataset.
 #' @return A list containing the normalized phyloseq object and scaling factors.
+#' @examples
+#' \dontrun{
+#' result_DESeq <- normalization_set(ps, method = "DESeq", groups = "SampleType")
+#' normalized_ps_DESeq <- result_DESeq$dat.normed
+#' scaling_factors_DESeq <- result_DESeq$scaling.factor
+#' }
 norm.DESeq <- function(ps, groups, pseudocount = 1) {
   ps <- remove_zero_negative_count_samples(ps)  # Clean the data
   
@@ -306,6 +354,12 @@ norm.DESeq <- function(ps, groups, pseudocount = 1) {
 #' @param ps A phyloseq object.
 #' @param filter Logical, whether to filter low counts.
 #' @return A list containing the normalized phyloseq object and scaling factors.
+#' @examples
+#' \dontrun{
+#' ps <- phyloseq::GlobalPatterns
+#' result_QN <- norm.QN(ps)
+#' normalized_ps_QN <- result_QN$dat.normed
+#' }
 norm.QN <- function(ps, filter = FALSE) {
   otu <- as(phyloseq::otu_table(ps), "matrix")
   
@@ -347,6 +401,13 @@ norm.QN <- function(ps, filter = FALSE) {
 #' @param group_var A string specifying the grouping variable in sample data (if phyloseq object).
 #' @param pseudocount A numeric value added to avoid division by zero.
 #' @return A list containing the normalized data, scaling factor, and differential abundance results.
+#' @examples
+#' \dontrun{
+#' ps <- phyloseq::GlobalPatterns
+#' result_Poisson <- norm.Poisson(ps, group_var = "SampleType")
+#' normalized_ps_Poisson <- result_Poisson$dat.normed
+#' diff_abund_Poisson <- result_Poisson$differential_abundance
+#' }
 norm.Poisson <- function(ps, group_var = NULL, pseudocount = 1e-6) {
   ps <- remove_zero_negative_count_samples(ps)
   
@@ -400,6 +461,14 @@ norm.Poisson <- function(ps, group_var = NULL, pseudocount = 1e-6) {
 #' @param ps A phyloseq object.
 #' @param groups A string specifying the grouping variable in sample data.
 #' @return A list containing the normalized phyloseq object and scaling factors.
+#' @examples
+#' \dontrun{
+#' ps <- phyloseq::GlobalPatterns
+#' result_TMM <- norm.TMM(ps, "SampleType")
+#' normalized_ps_TMM <- result_TMM$dat.normed
+#' scaling_factors_TMM <- result_TMM$scaling.factor
+#' }
+#' 
 norm.TMM <- function(ps, groups) {
   otu_table_matrix <- as(phyloseq::otu_table(ps), "matrix")
   
@@ -433,6 +502,12 @@ norm.TMM <- function(ps, groups) {
 #' 
 #' @param ps A phyloseq object.
 #' @return A list containing the normalized phyloseq object and scaling factors.
+#' @examples
+#' \dontrun{
+#' ps <- phyloseq::GlobalPatterns
+#' result_clr <- norm.clr(ps)
+#' normalized_ps_clr <- result_clr$dat.normed
+#' }
 norm.clr <- function(ps) {
   ps <- remove_zero_negative_count_samples(ps)
   
@@ -450,6 +525,12 @@ norm.clr <- function(ps) {
 #'
 #' @param ps A phyloseq object.
 #' @return A list containing the normalized phyloseq object and scaling factors.
+#' @examples
+#' \dontrun{
+#' ps <- phyloseq::GlobalPatterns
+#' result_rar <- norm.rar(ps)
+#' normalized_ps_rar <- result_rar$dat.normed
+#' }
 norm.rar <- function(ps) {
   ps <- remove_zero_negative_count_samples(ps)
   
@@ -464,7 +545,13 @@ norm.rar <- function(ps) {
 #' @importFrom phyloseq otu_table taxa_are_rows nsamples
 #'
 #' @param ps A phyloseq object.
-#' @return A list containing the normalized phyloseq object and scaling factors.
+#' @return A list containing the normalized phyloseq object and scaling factor
+#' @examples
+#' \dontrun{
+#' ps <- phyloseq::GlobalPatterns
+#' result_tss <- norm.tss(ps)
+#' normalized_ps_tss <- result_tss$dat.normed
+#' }ctors.
 norm.tss <- function(ps) {
   ps <- remove_zero_negative_count_samples(ps)
   
@@ -485,6 +572,12 @@ norm.tss <- function(ps) {
 #'
 #' @param ps A phyloseq object.
 #' @return A list containing the normalized phyloseq object and scaling factors.
+#' @examples
+#' \dontrun{
+#' ps <- phyloseq::GlobalPatterns
+#' result_css <- norm.css(ps)
+#' normalized_ps_css <- result_css$dat.normed
+#' }
 norm.css <- function(ps) {
   ps <- remove_zero_negative_count_samples(ps)
   
@@ -512,6 +605,12 @@ norm.css <- function(ps) {
 #' @param geo_means A vector of geometric means for each feature.
 #' @param control_genes A vector of control genes.
 #' @return A list containing the normalized phyloseq object and scaling factors.
+#' @examples
+#' \dontrun{
+#' ps <- phyloseq::GlobalPatterns
+#' result_rle <- norm.rle(ps)
+#' normalized_ps_rle <- result_rle$dat.normed
+#' }
 norm.rle <- function(ps, locfunc = stats::median, type = c("poscounts", "ratio"), geo_means = NULL, control_genes = NULL) {
   type <- match.arg(type, c("poscounts", "ratio"))
   
@@ -538,7 +637,8 @@ norm.rle <- function(ps, locfunc = stats::median, type = c("poscounts", "ratio")
 # -----------------------------------------------------------
 
 # Example usage for TC normalization
-# ps is phyloseq object and sample_data(ps)$Animal.type contains your group labels
+# ps is phyloseq object and sample_data(ps)$Animal.type
+# contains your group labels
 # ps=physeq_16SOTU
 # Host.species <- as.factor(ps@sam_data$Host.species)
 # result_TC <- normalization_set(ps, method = "TC", groups = "Host.species")
@@ -553,20 +653,23 @@ norm.rle <- function(ps, locfunc = stats::median, type = c("poscounts", "ratio")
 
 # -----------------------------------------------------------
 # Example for Median normalization
-# result_med <- normalization_set(ps, method = "med", groups = "Host.species")
+# result_med <- normalization_set(ps, 
+# method = "med", groups = "Host.species")
 # normalized_ps_med <- result_med$dat.normed
 # scaling_factors_med <- result_med$scaling.factor
 
 # -----------------------------------------------------------
 # Example for DESeq normalization
 # ps_n<-remove_zero_negative_count_samples(ps)
-# result_DESeq <- normalization_set(ps_n, method = "DESeq", groups = "Animal.type")
+# result_DESeq <- normalization_set(ps_n, 
+# method = "DESeq", groups = "Animal.type")
 # normalized_ps_DESeq <- result_DESeq$dat.normed
 # scaling_factors_DESeq <- result_DESeq$scaling.factor
 
 # -----------------------------------------------------------
 # Example for Poisson normalization
-# result_Poisson <- normalization_set(ps, method = "Poisson", groups = "Host.genus")
+# result_Poisson <- normalization_set(ps, 
+# method = "Poisson", groups = "Host.genus")
 # normalized_ps_Poisson <- result_Poisson$dat.normed
 # scaling_factors_Poisson <- result_Poisson$scaling.factor
 
@@ -578,7 +681,8 @@ norm.rle <- function(ps, locfunc = stats::median, type = c("poscounts", "ratio")
 
 # -----------------------------------------------------------
 # Example for TMM normalization
-# result_TMM <- normalization_set(physeq_ITS_adj_scaled_n, method = "TMM", groups = "Animal.type")
+# result_TMM <- normalization_set(physeq_ITS_adj_scaled_n, 
+# method = "TMM", groups = "Animal.type")
 # normalized_ps_TMM <- result_TMM$dat.normed
 # scaling_factors_TMM <- result_TMM$scaling.factor
 

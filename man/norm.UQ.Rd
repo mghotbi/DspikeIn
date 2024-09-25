@@ -17,3 +17,9 @@ A list containing the normalized phyloseq object and scaling factors.
 \description{
 UQ Normalization (Upper Quartile)
 }
+\examples{
+\dontrun{
+ps <- phyloseq::GlobalPatterns
+result <- norm.UQ(ps, "SampleType")
+}
+}

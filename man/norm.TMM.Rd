@@ -17,3 +17,12 @@ A list containing the normalized phyloseq object and scaling factors.
 \description{
 TMM Normalization (Trimmed Mean of M component)
 }
+\examples{
+\dontrun{
+ps <- phyloseq::GlobalPatterns
+result_TMM <- norm.TMM(ps, "SampleType")
+normalized_ps_TMM <- result_TMM$dat.normed
+scaling_factors_TMM <- result_TMM$scaling.factor
+}
+
+}

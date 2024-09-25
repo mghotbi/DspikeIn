@@ -10,7 +10,7 @@ convert_categorical_to_factors(ps)
 convert_categorical_to_factors(ps)
 }
 \arguments{
-\item{ps}{A phyloseq object.}
+\item{ps}{A phy#'}
 }
 \value{
 A phyloseq object with updated sample data.
@@ -19,4 +19,10 @@ A phyloseq object with updated sample data.
 }
 \description{
 This function converts categorical columns in sample data to factors.
+}
+\examples{
+\dontrun{
+ps <- phyloseq::GlobalPatterns
+ps_factor <- convert_categorical_to_factors(ps)
+}loseq object.
 }

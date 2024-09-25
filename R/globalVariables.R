@@ -34,7 +34,7 @@
 utils::globalVariables(c(
   ".data", "taxa_sums","diff_abn", "Class", "Family", "Species", "Abundance", "otu_table<-", "taxa_names<-","visualize_differential_abundance",
   "final_results", "group_var", "point_size", "palette","StatStratum","makeContrasts","treatment","padj",
-  "DESeq", "DESeqDataSetFromMatrix", "DGEList", "FDR", "MeanDecreaseGini", 
+  "DESeq", "DESeqDataSetFromMatrix", "DGEList", "FDR", "MeanDecreaseGini","Total_Reads_total",
   "OTU", "PValue", "Percentage", "Result", "TotalAbundance", "Total_Reads_spiked",
   "aes", "aes_string", "annotate", "as.formula", "boot.phylo", "boxplot", "capture.output", 
   "complete.cases", "counts", "desc", "dev.off", "dist.ml", "element_blank", 

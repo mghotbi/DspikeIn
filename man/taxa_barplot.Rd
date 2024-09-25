@@ -2,7 +2,7 @@
 % Please edit documentation in R/taxa_barplot.R
 \name{taxa_barplot}
 \alias{taxa_barplot}
-\title{Create a Taxa Barplot}
+\title{Generate a Taxa Barplot with Relative or Absolute Abundance}
 \usage{
 taxa_barplot(
   physeq,
@@ -19,64 +19,59 @@ taxa_barplot(
 )
 }
 \arguments{
-\item{physeq}{A phyloseq object containing the microbiome data.}
+\item{physeq}{A phyloseq object containing microbiome data.}
 
 \item{target_glom}{A character string specifying the taxonomic rank to plot (e.g., "Genus").}
 
 \item{custom_tax_names}{A character vector specifying custom taxonomic names for the levels. Default is NULL.}
 
-\item{normalize}{A logical indicating whether to normalize the sample counts to relative abundances. Default is TRUE.}
+\item{normalize}{A logical value indicating whether to normalize the sample counts to relative abundances. Default is TRUE.}
 
 \item{treatment_variable}{A character string specifying the treatment variable to use for the x-axis. Default is "Treatment".}
 
 \item{abundance_type}{A character string specifying whether to plot "relative" or "absolute" abundance. Default is "relative".}
 
-\item{x_angle}{A numeric value specifying the angle of the x-axis text labels. Default is 20.}
+\item{x_angle}{A numeric value specifying the angle of the x-axis text labels. Default is 25.}
 
-\item{fill_variable}{A character string specifying the variable to use for fill in stacking taxa. Default is target_glom.}
+\item{fill_variable}{A character string specifying the variable to use for filling the bar colors. Default is the same as `target_glom`.}
 
-\item{facet_variable}{A character string specifying the variable to use for faceting. Default is "Phylum".}
+\item{facet_variable}{A character string specifying the variable to use for faceting the plot. Default is "Phylum".}
 
 \item{top_n_taxa}{A numeric value specifying the number of top taxa to include in the plot. Default is 20.}
 
 \item{palette}{A character vector of color hex codes to use for the fill colors. Default is `MG()`.}
 }
 \value{
-A list containing the ggplot2 bar plot object (`barplot`) and the pruned phyloseq object (`taxa_data`) with the top taxa.
+A list containing the following components:
+\describe{
+  \item{barplot}{A ggplot2 object representing the taxa barplot.}
+  \item{taxa_data}{A phyloseq object containing only the top taxa (and optionally "Others").}
+}
 }
 \description{
-This function generates a bar plot of the relative or absolute abundances of taxa at a specified taxonomic rank.
-The top taxa are selected, and the plot can be customized with various options.
+This function creates a bar plot of the relative or absolute abundances of the top `n` taxa 
+(OTUs/ASVs) at a specified taxonomic rank. If desired, the function can aggregate 
+non-top taxa into an "Others" category to ensure the bar fills up to 100% in relative abundance plots.
+}
+\details{
+If the `abundance_type` is set to "relative", the bar plot will show the percentage of each 
+taxon, and non-top taxa will be aggregated into an "Others" category to fill up the bar to 100%.
 }
 \examples{
 \dontrun{
-# Generate a taxa barplot for the Genus rank with absolute abundance
-bp_ab <- taxa_barplot(physeq_16SASV, 
-                      target_glom = "Genus",
-                      treatment_variable = "Host.species", 
-                      abundance_type = "absolute", 
-                      x_angle = 90,
-                      fill_variable = "Genus", 
-                      facet_variable = "Diet", 
-                      top_n_taxa = 20, 
-                      palette = MG())
-
-# Print the barplot for absolute abundance
-print(bp_ab$barplot)
-
-# Generate a taxa barplot for the Genus rank with relative abundance
-bp_rel <- taxa_barplot(physeq_16SASV, 
-                       target_glom = "Genus", 
-                       treatment_variable = "Host.genus", 
-                       abundance_type = "relative", 
-                       x_angle = 90, 
-                       fill_variable = "Genus", 
-                       facet_variable = "Diet", 
-                       top_n_taxa = 20, 
-                       palette = MG())
-
-# Print the barplot for relative abundance
-print(bp_rel$barplot)
+# Generate a barplot for the Genus rank with relative abundance
+bp_rel <- taxa_barplot(
+  physeq = physeq_data,                 # Your phyloseq object
+  target_glom = "Genus",                # Taxonomic level to aggregate (e.g., Genus)
+  treatment_variable = "Host.species",  # Variable to use on x-axis
+  abundance_type = "relative",          # Plot relative abundance
+  x_angle = 45,                         # Angle for x-axis labels
+  fill_variable = "Genus",              # Fill bars by taxon (Genus)
+  facet_variable = "Diet",              # Facet the plot by diet
+  top_n_taxa = 20,                      # Show the top 20 taxa
+  palette = MG()                        # Use a predefined color palette
+)
+print(bp_rel$barplot)                   # Print the resulting barplot
 }
 
 }

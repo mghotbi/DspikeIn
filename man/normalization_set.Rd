@@ -19,3 +19,9 @@ A list containing the normalized phyloseq object and scaling factors.
 \description{
 Apply the Selected Normalization Method to the Phyloseq Object
 }
+\examples{
+\dontrun{
+ps <- phyloseq::GlobalPatterns
+result <- normalization_set(ps, method = "TC", groups = "SampleType")
+}
+}

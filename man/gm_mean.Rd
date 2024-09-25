@@ -19,3 +19,7 @@ Geometric mean of x, or NA if no valid values are present.
 This function calculates the geometric mean of a numeric vector.
 It removes non-positive and NA values by default.
 }
+\examples{
+vec <- c(1, 10, 100, 1000)
+gm_mean(vec)
+}

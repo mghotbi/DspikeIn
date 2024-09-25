@@ -24,10 +24,6 @@
 #' @export
 Pre_processing_hashcodes <- function(spiked_16S, hashcodes, merge_method = c("sum", "max"), output_prefix = "merged_physeq") {
   suppressMessages({
-    # Load necessary libraries
-    if (!requireNamespace("phyloseq", quietly = TRUE)) {
-      stop("Package 'phyloseq' is required but not installed.")
-    }
     
     merge_method <- match.arg(merge_method)
     message("Starting pre-processing...")
@@ -82,7 +78,7 @@ Pre_processing_hashcodes <- function(spiked_16S, hashcodes, merge_method = c("su
 }
 
 # Example usage:
-# Tetragenococcus <- subset_taxa(physeq_16SASV, 
+# Tetragenococcus <- phyloseq::subset_taxa(physeq_16SASV, 
 # Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp")
 # hashcodes <- row.names(phyloseq::otu_table(Tetragenococcus))
 # processed_data_sum <- Pre_processing_hashcodes(physeq_16SASV, hashcodes, merge_method = "sum",

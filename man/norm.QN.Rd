@@ -17,3 +17,10 @@ A list containing the normalized phyloseq object and scaling factors.
 \description{
 Quantile Normalization (QN) for phyloseq object
 }
+\examples{
+\dontrun{
+ps <- phyloseq::GlobalPatterns
+result_QN <- norm.QN(ps)
+normalized_ps_QN <- result_QN$dat.normed
+}
+}

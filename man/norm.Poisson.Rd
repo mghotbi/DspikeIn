@@ -19,3 +19,11 @@ A list containing the normalized data, scaling factor, and differential abundanc
 \description{
 Poisson Normalization and Differential Abundance Function
 }
+\examples{
+\dontrun{
+ps <- phyloseq::GlobalPatterns
+result_Poisson <- norm.Poisson(ps, group_var = "SampleType")
+normalized_ps_Poisson <- result_Poisson$dat.normed
+diff_abund_Poisson <- result_Poisson$differential_abundance
+}
+}

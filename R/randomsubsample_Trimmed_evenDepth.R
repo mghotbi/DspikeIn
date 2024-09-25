@@ -55,7 +55,7 @@ randomsubsample_Trimmed_evenDepth <- function(physeq, smalltrim = 0.001, replace
     # Rarefy to even depth
     physeq_evenDepth <- phyloseq::rarefy_even_depth(physeq, samplemin, rngseed = FALSE, replace = replace, trimOTUs = TRUE)
     
-    utils::saveRDS(physeq_evenDepth, file = output_file)
+    saveRDS(physeq_evenDepth, file = output_file)
     cat("Rarefied phyloseq object saved to:", output_file, "\n")
     
     return(physeq_evenDepth)

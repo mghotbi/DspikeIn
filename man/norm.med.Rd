@@ -17,3 +17,9 @@ A list containing the normalized phyloseq object and scaling factors.
 \description{
 Median Normalization
 }
+\examples{
+\dontrun{
+ps <- phyloseq::GlobalPatterns
+result <- norm.med(ps, "SampleType")
+}
+}

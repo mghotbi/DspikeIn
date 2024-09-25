@@ -1,56 +1,52 @@
-#' Create a Taxa Barplot
+#' Generate a Taxa Barplot with Relative or Absolute Abundance
 #'
-#' This function generates a bar plot of the relative or absolute abundances of taxa at a specified taxonomic rank.
-#' The top taxa are selected, and the plot can be customized with various options.
+#' This function creates a bar plot of the relative or absolute abundances of the top `n` taxa 
+#' (OTUs/ASVs) at a specified taxonomic rank. If desired, the function can aggregate 
+#' non-top taxa into an "Others" category to ensure the bar fills up to 100% in relative abundance plots.
 #'
-#' @importFrom phyloseq tax_glom prune_taxa tax_table taxa_sums psmelt transform_sample_counts
-#' @importFrom ggplot2 ggplot geom_bar scale_y_continuous scale_fill_manual theme guides guide_legend labs facet_grid vars element_text element_blank element_line unit
-#' @importFrom scales percent_format
-#' @importFrom magrittr %>%
-#'
-#' @param physeq A phyloseq object containing the microbiome data.
+#' @param physeq A phyloseq object containing microbiome data.
 #' @param target_glom A character string specifying the taxonomic rank to plot (e.g., "Genus").
 #' @param custom_tax_names A character vector specifying custom taxonomic names for the levels. Default is NULL.
-#' @param normalize A logical indicating whether to normalize the sample counts to relative abundances. Default is TRUE.
+#' @param normalize A logical value indicating whether to normalize the sample counts to relative abundances. Default is TRUE.
 #' @param treatment_variable A character string specifying the treatment variable to use for the x-axis. Default is "Treatment".
 #' @param abundance_type A character string specifying whether to plot "relative" or "absolute" abundance. Default is "relative".
-#' @param x_angle A numeric value specifying the angle of the x-axis text labels. Default is 20.
-#' @param fill_variable A character string specifying the variable to use for fill in stacking taxa. Default is target_glom.
-#' @param facet_variable A character string specifying the variable to use for faceting. Default is "Phylum".
+#' @param x_angle A numeric value specifying the angle of the x-axis text labels. Default is 25.
+#' @param fill_variable A character string specifying the variable to use for filling the bar colors. Default is the same as `target_glom`.
+#' @param facet_variable A character string specifying the variable to use for faceting the plot. Default is "Phylum".
 #' @param top_n_taxa A numeric value specifying the number of top taxa to include in the plot. Default is 20.
 #' @param palette A character vector of color hex codes to use for the fill colors. Default is `MG()`.
-#'
-#' @return A list containing the ggplot2 bar plot object (`barplot`) and the pruned phyloseq object (`taxa_data`) with the top taxa.
-#'
+#' 
+#' @return A list containing the following components:
+#' \describe{
+#'   \item{barplot}{A ggplot2 object representing the taxa barplot.}
+#'   \item{taxa_data}{A phyloseq object containing only the top taxa (and optionally "Others").}
+#' }
+#' 
+#' @details
+#' If the `abundance_type` is set to "relative", the bar plot will show the percentage of each 
+#' taxon, and non-top taxa will be aggregated into an "Others" category to fill up the bar to 100%.
+#' 
+#' @importFrom phyloseq tax_glom prune_taxa tax_table otu_table sample_data psmelt transform_sample_counts
+#' @importFrom ggplot2 ggplot geom_bar scale_fill_manual theme scale_y_continuous element_text element_line
+#' @importFrom ggplot2 guide_legend guides vars facet_grid element_rect theme_minimal
+#' @importFrom rlang sym
+#' @importFrom dplyr %>%
+#' 
 #' @examples
 #' \dontrun{
-#' # Generate a taxa barplot for the Genus rank with absolute abundance
-#' bp_ab <- taxa_barplot(physeq_16SASV, 
-#'                       target_glom = "Genus",
-#'                       treatment_variable = "Host.species", 
-#'                       abundance_type = "absolute", 
-#'                       x_angle = 90,
-#'                       fill_variable = "Genus", 
-#'                       facet_variable = "Diet", 
-#'                       top_n_taxa = 20, 
-#'                       palette = MG())
-#' 
-#' # Print the barplot for absolute abundance
-#' print(bp_ab$barplot)
-#'
-#' # Generate a taxa barplot for the Genus rank with relative abundance
-#' bp_rel <- taxa_barplot(physeq_16SASV, 
-#'                        target_glom = "Genus", 
-#'                        treatment_variable = "Host.genus", 
-#'                        abundance_type = "relative", 
-#'                        x_angle = 90, 
-#'                        fill_variable = "Genus", 
-#'                        facet_variable = "Diet", 
-#'                        top_n_taxa = 20, 
-#'                        palette = MG())
-#'
-#' # Print the barplot for relative abundance
-#' print(bp_rel$barplot)
+#' # Generate a barplot for the Genus rank with relative abundance
+#' bp_rel <- taxa_barplot(
+#'   physeq = physeq_data,                 # Your phyloseq object
+#'   target_glom = "Genus",                # Taxonomic level to aggregate (e.g., Genus)
+#'   treatment_variable = "Host.species",  # Variable to use on x-axis
+#'   abundance_type = "relative",          # Plot relative abundance
+#'   x_angle = 45,                         # Angle for x-axis labels
+#'   fill_variable = "Genus",              # Fill bars by taxon (Genus)
+#'   facet_variable = "Diet",              # Facet the plot by diet
+#'   top_n_taxa = 20,                      # Show the top 20 taxa
+#'   palette = MG()                        # Use a predefined color palette
+#' )
+#' print(bp_rel$barplot)                   # Print the resulting barplot
 #' }
 #' 
 #' @export
@@ -61,28 +57,67 @@ taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL,
   
   # Taxonomic grouping using tax_glom from phyloseq
   glom <- phyloseq::tax_glom(physeq, taxrank = target_glom)
+  
+  # Remove taxa with zero abundance across all samples
   glom_1 <- phyloseq::prune_taxa(phyloseq::taxa_sums(glom) > 0, glom)
+  
+  # Re-glom at the specified taxonomic level
   glom_C <- phyloseq::tax_glom(glom_1, taxrank = target_glom)
   
   # Select top taxa
   top_taxa <- names(sort(phyloseq::taxa_sums(glom_C), decreasing = TRUE)[1:top_n_taxa])
-  top_taxa_pruned <- phyloseq::prune_taxa(top_taxa, glom_C)
-  top_v5 <- phyloseq::prune_taxa(phyloseq::taxa_sums(top_taxa_pruned) > 0, top_taxa_pruned)
   
-  # Rename taxonomic levels
-  if (!is.null(custom_tax_names)) {
-    colnames(phyloseq::tax_table(top_v5)) <- custom_tax_names
+  # Remove any NA values from the top_taxa
+  top_taxa <- top_taxa[!is.na(top_taxa)]
+  
+  # Extract OTU table and check if top_taxa exists in it
+  otu_matrix <- as(phyloseq::otu_table(glom_C), "matrix")
+  
+  # Ensure that only top_taxa present in OTU matrix are selected
+  top_taxa <- top_taxa[top_taxa %in% rownames(otu_matrix)]
+  
+  # Summing all non-top taxa as "Others" (only if there are remaining taxa)
+  other_taxa <- setdiff(rownames(otu_matrix), top_taxa)
+  
+  # Conditionally add "Others" if there are any non-top taxa
+  if (length(other_taxa) > 0) {
+    others_abundance <- colSums(otu_matrix[other_taxa, , drop = FALSE])
+    
+    # Create a new "Others" taxon and merge it with top taxa
+    others_row <- matrix(others_abundance, nrow = 1, ncol = ncol(otu_matrix))
+    rownames(others_row) <- "Others"
+    otu_top <- otu_matrix[top_taxa, , drop = FALSE]
+    otu_combined <- rbind(otu_top, others_row)
+    
+    # Update the tax_table to include "Others"
+    tax_top <- as(phyloseq::tax_table(glom_C)[top_taxa, ], "matrix")
+    others_tax <- matrix(rep("Others", ncol(tax_top)), nrow = 1, dimnames = list("Others", colnames(tax_top)))
+    tax_combined <- rbind(tax_top, others_tax)
   } else {
-    colnames(phyloseq::tax_table(top_v5)) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", target_glom)
+    # If no "Others", just use the top taxa
+    otu_combined <- otu_matrix[top_taxa, , drop = FALSE]
+    tax_combined <- as(phyloseq::tax_table(glom_C)[top_taxa, ], "matrix")
+  }
+  
+  # Create a new phyloseq object with top taxa + "Others" (if applicable)
+  new_otu_table <- phyloseq::otu_table(otu_combined, taxa_are_rows = TRUE)
+  new_tax_table <- phyloseq::tax_table(tax_combined)
+  physeq_top_others <- phyloseq::phyloseq(new_otu_table, new_tax_table, phyloseq::sample_data(glom_C))
+  
+  # Rename taxonomic levels if custom names are provided
+  if (!is.null(custom_tax_names)) {
+    colnames(phyloseq::tax_table(physeq_top_others)) <- custom_tax_names
+  } else {
+    colnames(phyloseq::tax_table(physeq_top_others)) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", target_glom)
   }
   
   # Normalize sample counts if requested
   if (normalize && abundance_type == "relative") {
-    top_v5 <- phyloseq::transform_sample_counts(top_v5, function(OTU) OTU / sum(OTU))
+    physeq_top_others <- phyloseq::transform_sample_counts(physeq_top_others, function(OTU) OTU / sum(OTU))
   }
   
   # Prepare the data for ggplot
-  pm <- phyloseq::psmelt(top_v5)
+  pm <- phyloseq::psmelt(physeq_top_others)
   
   # Convert dynamic variable names to symbols
   treatment_var <- rlang::sym(treatment_variable)
@@ -92,8 +127,7 @@ taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL,
   if (abundance_type == "relative") {
     p <- ggplot2::ggplot(pm, ggplot2::aes(x = !!treatment_var, y = Abundance, fill = !!fill_var)) +
       ggplot2::geom_bar(stat = "identity", position = "fill") +
-      ggplot2::scale_y_continuous(labels = scales::percent_format(), 
-                                  name = "Relative Abundance (%)")  # Change Y-axis label
+      ggplot2::scale_y_continuous(name = "Relative Abundance")
   } else {
     p <- ggplot2::ggplot(pm, ggplot2::aes(x = !!treatment_var, y = Abundance, fill = !!fill_var)) +
       ggplot2::geom_bar(stat = "identity") +
@@ -102,30 +136,27 @@ taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL,
   
   # Customize the plot with the specified palette and bold font, and add axis lines
   p <- p + 
-    ggplot2::scale_fill_manual(values = palette) + # Custom color palette
-    ggplot2::theme_minimal(base_size = 14) +  # Cleaner theme with larger text
+    ggplot2::scale_fill_manual(values = palette) +  # Custom color palette
+    ggplot2::theme_minimal(base_size = 14) +        # Cleaner theme with larger text
     ggplot2::theme(
-      legend.position = "right",
+      legend.position = "right",             # Place the legend on the right
       legend.title = ggplot2::element_text(size = 12, face = "bold"),
       legend.text = ggplot2::element_text(size = 12),
-      legend.key.height = ggplot2::unit(0.6, "lines"), 
-      legend.key.width = ggplot2::unit(0.6, "lines"),
       axis.text.x = ggplot2::element_text(angle = x_angle, vjust = 0.5, hjust = 1),
       axis.title.y = ggplot2::element_text(size = 12, face = "bold"),
-      axis.title.x = ggplot2::element_blank(),  # Removing x-axis title for cleaner look
-      axis.text = ggplot2::element_text(size = 12),
-      axis.line.x = ggplot2::element_line(color = "black", linewidth = 0.8),  # Add x-axis line
-      axis.line.y = ggplot2::element_line(color = "black", linewidth = 0.8),  # Add y-axis line
-      panel.grid.major.x = ggplot2::element_blank(),  # Remove vertical gridlines
-      panel.grid.minor = ggplot2::element_blank(),
-      strip.text.x = ggplot2::element_text(family = "Arial", size = 12, color = "black", face = "bold"),  # Ensure bold font
-      strip.text.y = ggplot2::element_text(family = "Arial", size = 12, color = "black", face = "bold"),  # Ensure bold font
-      strip.background = ggplot2::element_rect(fill = "gray90", color = NA)  # Light background for facet labels
+      axis.title.x = ggplot2::element_blank(),
+      axis.line.x = ggplot2::element_line(color = "black", linewidth = 0.8), 
+      axis.line.y = ggplot2::element_line(color = "black", linewidth = 0.8),  
+      strip.text.x = ggplot2::element_text(family = "Arial", size = 12, color = "black", face = "bold"),
+      strip.text.y = ggplot2::element_text(family = "Arial", size = 12, color = "black", face = "bold"),
+      strip.background = ggplot2::element_rect(fill = "gray90", color = NA)
     ) +
+    ggplot2::guides(fill = ggplot2::guide_legend(ncol = 1)) +  # Set number of columns to 1
     ggplot2::facet_grid(cols = ggplot2::vars(.data[[facet_variable]]), scales = "free")
   
-  return(list(barplot = p, taxa_data = top_taxa_pruned))
+  return(list(barplot = p, taxa_data = physeq_top_others))
 }
+
 
 #' MG Color Palette
 #'

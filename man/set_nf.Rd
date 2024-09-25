@@ -17,3 +17,10 @@ A phyloseq object with updated sample data.
 \description{
 Set Normalization Factors in the Sample Data of the Phyloseq Object
 }
+\examples{
+\dontrun{
+ps <- phyloseq::GlobalPatterns
+factors <- rep(1, phyloseq::nsamples(ps))
+ps <- set_nf(ps, factors)
+}
+}

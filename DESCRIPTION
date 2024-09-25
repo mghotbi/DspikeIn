@@ -39,7 +39,6 @@ Imports:
     scales,
     magrittr,
     ggpubr,
-    BiocManager,         
     microbiomeutilities, 
     speedyseq            
 Remotes: 
@@ -51,6 +50,7 @@ Suggests:
     testthat (>= 3.0.0),
     devtools,
     dada2,
+    BiocManager, 
     DT,
     data.table,
     preprocessCore,

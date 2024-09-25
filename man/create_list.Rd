@@ -15,3 +15,9 @@ A list containing the DGE list and updated phyloseq object.
 \description{
 Create a List from a Phyloseq Object
 }
+\examples{
+\dontrun{
+ps <- phyloseq::GlobalPatterns
+ps_list <- create_list(ps)
+}
+}
