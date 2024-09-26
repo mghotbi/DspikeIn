@@ -33,10 +33,10 @@ This function filters taxa from a phyloseq object based on custom thresholds for
 \dontrun{
 if (interactive()) {
   # Example usage with custom thresholds
-  FT <- relativized_filtered_taxa(spiked_16S, threshold_percentage = 0.6, 
-    threshold_mean_abundance = 0.0005, 
+  FT <- relativized_filtered_taxa(absolute$physeq_obj, threshold_percentage = 0.001, 
+    threshold_mean_abundance = 1, 
     threshold_count = 5, 
-    threshold_relative_abundance = 0.01)
+    threshold_relative_abundance = 0.001)
 }
 }
 }

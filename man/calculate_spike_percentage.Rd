@@ -2,9 +2,7 @@
 % Please edit documentation in R/calculate_spike_percentage.R
 \name{calculate_spike_percentage}
 \alias{calculate_spike_percentage}
-\title{Declare global variables to avoid check warnings
-utils::globalVariables(c("Total_Reads_total", "Total_Reads_spiked", "Percentage", "Result"))
-Calculate Spike Percentage for Specified Taxa in a Phyloseq Object}
+\title{Calculate Spike Percentage for Specified Taxa in a Phyloseq Object}
 \usage{
 calculate_spike_percentage(
   physeq,
@@ -35,24 +33,12 @@ and saves the results as a DOCX and CSV file.
 }
 \examples{
 \dontrun{
-# Load example data
-data(physeq_16SASV)
-physeq <- physeq_16SASV
-
 # Define the spiked species
 merged_spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
 
 # Calculate spike percentage for the defined spiked species within the range 0.1 to 10
 calculate_spike_percentage(physeq, 
                            merged_spiked_species = merged_spiked_species, 
-                           passed_range = c(0.1, 10))
-
-# Define the spiked hashcodes
-merged_spiked_hashcodes <- c("hashcode1", "hashcode2")
-
-# Calculate spike percentage for the defined spiked hashcodes within the range 0.1 to 10
-calculate_spike_percentage(physeq,
-                           merged_spiked_hashcodes = merged_spiked_hashcodes,
                            passed_range = c(0.1, 10))
 }
 }

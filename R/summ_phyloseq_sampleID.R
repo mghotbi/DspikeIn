@@ -45,4 +45,4 @@ summ_phyloseq_sampleID <- function(physeq) {
 
 # Example usage:
 # Generate summary statistics for a phyloseq object
-# summary_stats <- summ_phyloseq_sampleID(physeq_ITSOTU)
+# summary_stats <- summ_phyloseq_sampleID(absolute$physeq_obj)

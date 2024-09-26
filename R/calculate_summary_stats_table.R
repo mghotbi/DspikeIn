@@ -67,7 +67,6 @@ calculate_summary_stats_table <- function(data, output_path = NULL) {
 }
 
 # Example usage:
-# post_eval_summary <- calculate_summary_stats_table(absolute_counts)
-# print(post_eval_summary)
-# summary_table <- calculate_summary_stats_table(initial_stat_ASV, output_path = "summary.docx")
+# summary_table <- calculate_summary_stats_table(absolute_counts, output_path = "summary.docx")
+# print(summary_table)
 # post_eval_summary <- read.csv("summary.csv")

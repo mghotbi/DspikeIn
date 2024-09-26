@@ -40,7 +40,8 @@ Imports:
     magrittr,
     ggpubr,
     microbiomeutilities, 
-    speedyseq            
+    speedyseq,
+    methods
 Remotes: 
     mikemc/speedyseq,
     microsud/microbiomeutilities
@@ -55,7 +56,6 @@ Suggests:
     data.table,
     preprocessCore,
     Biobase,
-    methods,
     e1071,
     caret,
     qpdf,

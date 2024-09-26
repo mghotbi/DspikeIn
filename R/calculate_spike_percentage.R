@@ -1,6 +1,3 @@
-#' Declare global variables to avoid check warnings
-#' utils::globalVariables(c("Total_Reads_total", "Total_Reads_spiked", "Percentage", "Result"))
-
 #' Calculate Spike Percentage for Specified Taxa in a Phyloseq Object
 #'
 #' This function calculates the percentage of reads from specified spiked species or hashcodes in a phyloseq object.
@@ -15,15 +12,11 @@
 #' @return A data frame containing the percentage of spiked taxa reads and the pass/fail results.
 #' @importFrom phyloseq subset_taxa tax_table ntaxa sample_names sample_sums merge_taxa taxa_names otu_table
 #' @importFrom flextable flextable fontsize font color bold italic save_as_docx
-#' @importFrom dplyr filter mutate pull summarise group_by ungroup desc all_of top_n
+#' @importFrom dplyr filter mutate pull summarise group_by ungroup desc all_of left_join
 #' @importFrom magrittr %>%
 #' @export
 #' @examples
 #' \dontrun{
-#' # Load example data
-#' data(physeq_16SASV)
-#' physeq <- physeq_16SASV
-#'
 #' # Define the spiked species
 #' merged_spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
 #' 
@@ -31,15 +24,8 @@
 #' calculate_spike_percentage(physeq, 
 #'                            merged_spiked_species = merged_spiked_species, 
 #'                            passed_range = c(0.1, 10))
-#'
-#' # Define the spiked hashcodes
-#' merged_spiked_hashcodes <- c("hashcode1", "hashcode2")
-#' 
-#' # Calculate spike percentage for the defined spiked hashcodes within the range 0.1 to 10
-#' calculate_spike_percentage(physeq,
-#'                            merged_spiked_hashcodes = merged_spiked_hashcodes,
-#'                            passed_range = c(0.1, 10))
 #' }
+
 calculate_spike_percentage <- function(physeq, merged_spiked_species = NULL, merged_spiked_hashcodes = NULL, output_path = "merged_data.docx", passed_range = c(0.1, 11)) {
   suppressMessages({
     # Determine the taxonomic identifiers to use
@@ -67,8 +53,12 @@ calculate_spike_percentage <- function(physeq, merged_spiked_species = NULL, mer
     spiked_reads <- data.frame(Sample = phyloseq::sample_names(merged_spiked),
                                Total_Reads = phyloseq::sample_sums(phyloseq::otu_table(merged_spiked)))
     
-    # Merge total reads and spiked reads data frames
-    merged_data <- dplyr::left_join(total_reads, spiked_reads, by = "Sample", suffixes = c("_total", "_spiked"))
+    # Merge total reads and spiked reads data frames (use suffixes if column names overlap)
+    if ("Total_Reads" %in% colnames(total_reads) & "Total_Reads" %in% colnames(spiked_reads)) {
+      merged_data <- dplyr::left_join(total_reads, spiked_reads, by = "Sample", suffix = c("_total", "_spiked"))
+    } else {
+      merged_data <- dplyr::left_join(total_reads, spiked_reads, by = "Sample")
+    }
     
     # Calculate the percentage of spiked taxa reads relative to total reads
     merged_data <- dplyr::mutate(merged_data, Percentage = (Total_Reads_spiked / Total_Reads_total) * 100)
@@ -104,18 +94,22 @@ calculate_spike_percentage <- function(physeq, merged_spiked_species = NULL, mer
   # Return the merged data frame
   return(merged_data)
 }
-
 # Example usage:
 # Define the spiked species
-# physeq_16SOTU<-tidy_phyloseq(physeq_16SOTU)
 # merged_spiked_species <- c("Tetragenococcus_halophilus","Tetragenococcus_sp")
-# calculate_spike_percentage(physeq_ITSOTU, merged_spiked_species, passed_range = c(0.1, 10))
+# calculate_spike_percentage(physeq_ITSOTU, merged_spiked_species, 
+# passed_range = c(0.1, 10))
+
+
+# merged_spiked_species<-"Dekkera_bruxellensis"
+# result <- calculate_spike_percentage(spiked_ITS_OTU_scaled, merged_spiked_species,
+# passed_range = c(0.1, 35))
+# calculate_summary_stats_table(result)
+# result$Percentage
 
 # Define the spiked hashcodes
 # merged_spiked_hashcodes <- c("hashcode1", "hashcode2")
-# calculate_spike_percentage(physeq, merged_spiked_hashcodes = merged_spiked_hashcodes, passed_range = c(0.1, 10))
+# calculate_spike_percentage(physeq, merged_spiked_hashcodes = merged_spiked_hashcodes,
+# passed_range = c(0.1, 10))
 
-# merged_spiked_species<-"Dekkera_bruxellensis"
-# result <- calculate_spike_percentage(spiked_ITS_OTU_scaled, merged_spiked_species, passed_range = c(0.1, 35))
-# calculate_summary_stats_table(result)
-# result$Percentage
+

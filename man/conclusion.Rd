@@ -12,7 +12,7 @@ conclusion(
 )
 }
 \arguments{
-\item{physeq}{A phyloseq object containing the microbial data.}
+\item{physeq}{A `phyloseq::phyloseq` object containing the microbial data.}
 
 \item{merged_spiked_species}{A character vector of spiked species to check in the phyloseq object.}
 
@@ -21,7 +21,7 @@ conclusion(
 \item{output_path}{A character string specifying the path to save the output files. Default is NULL, which saves the report as "spike_success_report.docx".}
 }
 \value{
-A data frame containing the summary statistics of the spike success report.
+A `data.frame` containing the summary statistics of the spike success report.
 }
 \description{
 This function calculates the spike success report for a given phyloseq object, 
@@ -30,21 +30,21 @@ It uses the `flextable` package to create and format the tables in the DOCX file
 }
 \examples{
 \dontrun{
-# Define the parameters
-merged_spiked_species <- c("Tetragenococcus_halophilus") 
+# Example usage:
+merged_spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
 max_passed_range <- 12 
 output_path <- "spike_success_report.docx"
 
-# Convert the phyloseq object to absolute counts using scaling factors
-absolute <- convert_to_absolute_counts(merged_physeq_sum, scaling_factors) 
-absolute_counts <- absolute$absolute_counts 
+# Convert the phyloseq object to absolute counts
+# using scaling factors (example step)
+absolute <- convert_to_absolute_counts(physeq_16SASV, scaling_factors)
 physeq_absolute <- absolute$physeq_obj 
 
 # Subset the phyloseq object to exclude blank samples (optional step)
-physeq_16S_adj_scaled_perc <- phyloseq::subset_samples(physeq_absolute, sample.or.blank != "blank")
+physeq_adjusted <- phyloseq::subset_samples(physeq_absolute, sample.or.blank != "blank")
 
 # Generate the spike success report and calculate summary statistics
-summary_stats <- conclusion(physeq_16S_adj_scaled_perc, 
+summary_stats <- conclusion(physeq_adjusted, 
                             merged_spiked_species, 
                             max_passed_range, 
                             output_path)
