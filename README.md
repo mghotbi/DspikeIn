@@ -8,6 +8,7 @@ The **DspikeIn** package was developed to facilitate:
 - Preprocessing data.
 - Calculating the spike-in scaling factor.
 - Converting relative abundance to absolute abundance.
+- Estimating Acceptable Spiked Species Retrieval %
 - Data transformation, Differential abundance and visualization.
 
 *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples based on our previous studies [WalkerLab](https://walkerlabmtsu.weebly.com/personnel.html).
