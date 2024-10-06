@@ -24,10 +24,10 @@ To install the required packages, use the following script:
 
 ```r
 # Install CRAN packages
-install.packages(c("stats", "dplyr", "ggplot2", "flextable", "randomForest", "ggridges", "ggalluvial","tibble", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"))
+install.packages(c("stats", "dplyr", "ggplot2", "flextable","ggpubr", "randomForest", "ggridges", "ggalluvial","tibble", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"))
 
 # Load CRAN packages
-lapply(c("stats", "dplyr", "ggplot2", "flextable", "randomForest", "ggridges", "ggalluvial","tibble", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"), library, character.only = TRUE)
+lapply(c("stats", "dplyr", "ggplot2", "flextable","ggpubr","randomForest", "ggridges", "ggalluvial","tibble", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"), library, character.only = TRUE)
 
 
 ```
