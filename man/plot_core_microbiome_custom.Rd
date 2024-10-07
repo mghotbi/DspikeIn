@@ -8,50 +8,58 @@ plot_core_microbiome_custom(
   physeq = NULL,
   taxrank = "Genus",
   select_taxa = NULL,
-  prevalences = seq(0.01, 1, 0.01),
-  detections = 10^seq(log10(0.001), log10(0.3), length = 5),
-  min_prevalence = 0.3,
+  detections = list(prevalences = seq(0.03, 1, 0.01), thresholds = 10^seq(log10(0.03),
+    log10(1), length = 10), min_prevalence = 0.2, taxa_order = "descending"),
   output_core_csv = NULL,
   output_core_rds = NULL
 )
 }
 \arguments{
-\item{physeq}{A phyloseq object containing the microbial data.}
+\item{physeq}{A \code{phyloseq} object containing the microbial data.}
 
 \item{taxrank}{A character string specifying the taxonomic rank to glom taxa. Default is "Genus".}
 
-\item{select_taxa}{A character vector of taxa to select. Default is NULL, meaning no specific taxa are selected.}
+\item{select_taxa}{A character vector of taxa to select. Default is \code{NULL}, meaning no specific taxa are selected.}
 
-\item{prevalences}{A numeric vector specifying the prevalence thresholds for plotting. Default is seq(0.01, 1, 0.01).}
+\item{detections}{A list with the following elements:
+\itemize{
+  \item \code{prevalences}: A numeric vector specifying the prevalence thresholds for plotting. Default is \code{seq(0.03, 1, 0.01)}.
+  \item \code{thresholds}: A numeric vector specifying the detection thresholds for plotting. Default is \code{10^seq(log10(3e-2), log10(1), length = 10)}.
+  \item \code{min_prevalence}: A numeric value specifying the minimum prevalence threshold for core microbiome. Default is 0.2.
+  \item \code{taxa_order}: A character string indicating whether to order taxa by "ascending" or "descending" abundance. Default is "descending".
+}}
 
-\item{detections}{A numeric vector specifying the detection thresholds for plotting. Default is 10^seq(log10(1e-3), log10(0.3), length = 5).}
+\item{output_core_csv}{A character string specifying the path to save the core microbiome subset as a CSV file. Default is \code{NULL}, meaning no CSV file is saved.}
 
-\item{min_prevalence}{A numeric value specifying the minimum prevalence threshold for core microbiome. Default is 0.3.}
-
-\item{output_core_csv}{A character string specifying the path to save the core microbiome subset as a CSV file. Default is NULL, meaning no CSV file is saved.}
-
-\item{output_core_rds}{A character string specifying the path to save the core microbiome subset as an RDS file. Default is NULL, meaning no RDS file is saved.}
+\item{output_core_rds}{A character string specifying the path to save the core microbiome subset as an RDS file. Default is \code{NULL}, meaning no RDS file is saved.}
 }
 \value{
-A ggplot2 object representing the core microbiome prevalence heatmap.
+A \code{ggplot2} object representing the core microbiome prevalence heatmap.
 }
 \description{
 This function generates a prevalence heatmap of the core microbiome at a specified taxonomic rank.
-It includes a detection threshold for prevalence, performs glomming, pruning, and proportion transformation,
-and renames taxa with an ASV prefix. The function requires the `phyloseq`, `microbiomeutilities`, `microbiome`, and `ggplot2` packages.
+It allows users to pass custom detection thresholds, prevalence thresholds, and a minimum prevalence 
+filter, and it provides an option to order taxa either in ascending or descending abundance.
+The plot displays a heatmap showing detection thresholds at different prevalence levels.
 }
 \examples{
 \dontrun{
 # Example usage:
-# Specify a custom detection threshold range
-custom_detections <- 10^seq(log10(3e-1), log10(0.5), length = 8)
+custom_detections <- list(
+  prevalences = seq(0.05, 1, 0.01),  # Custom prevalences
+  thresholds = 10^seq(log10(0.05), log10(1), length = 8),  # detection thresholds
+  min_prevalence = 0.4,  # Custom minimum prevalence
+  taxa_order = "ascending"  # Order taxa by ascending/desc abundance
+)
 
-# Plot the core microbiome using the custom detection thresholds
-# and save the results to .rds and .csv files
-plot_result <- plot_core_microbiome_custom(physeq_16SASV, 
+# Create and save the plot
+plot_result <- plot_core_microbiome_custom(physeq = ps, 
                                            detections = custom_detections, 
                                            taxrank = "Family", 
                                            output_core_rds = "core_microbiome.rds", 
                                            output_core_csv = "core_microbiome.csv")
+
+# Print the plot
+print(plot_result)
 }
 }

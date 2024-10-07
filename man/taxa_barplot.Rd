@@ -13,7 +13,7 @@ taxa_barplot(
   abundance_type = "relative",
   x_angle = 25,
   fill_variable = target_glom,
-  facet_variable = "Phylum",
+  facet_variable = NULL,
   top_n_taxa = 20,
   palette = MG()
 )
@@ -35,11 +35,11 @@ taxa_barplot(
 
 \item{fill_variable}{A character string specifying the variable to use for filling the bar colors. Default is the same as `target_glom`.}
 
-\item{facet_variable}{A character string specifying the variable to use for faceting the plot. Default is "Phylum".}
+\item{facet_variable}{A character string specifying the variable to use for faceting the plot. Default is NULL (no faceting).}
 
 \item{top_n_taxa}{A numeric value specifying the number of top taxa to include in the plot. Default is 20.}
 
-\item{palette}{A character vector of color hex codes to use for the fill colors. Default is `MG()`.}
+\item{palette}{Either a function that generates a color palette or a vector of color hex codes. Default is `MG()` from the package.}
 }
 \value{
 A list containing the following components:
@@ -53,10 +53,6 @@ This function creates a bar plot of the relative or absolute abundances of the t
 (OTUs/ASVs) at a specified taxonomic rank. If desired, the function can aggregate 
 non-top taxa into an "Others" category to ensure the bar fills up to 100% in relative abundance plots.
 }
-\details{
-If the `abundance_type` is set to "relative", the bar plot will show the percentage of each 
-taxon, and non-top taxa will be aggregated into an "Others" category to fill up the bar to 100%.
-}
 \examples{
 \dontrun{
 # Generate a barplot for the Genus rank with relative abundance
@@ -67,9 +63,9 @@ bp_rel <- taxa_barplot(
   abundance_type = "relative",          # Plot relative abundance
   x_angle = 45,                         # Angle for x-axis labels
   fill_variable = "Genus",              # Fill bars by taxon (Genus)
-  facet_variable = "Diet",              # Facet the plot by diet
+  facet_variable = "Diet",              # Facet the plot by diet or NULL
   top_n_taxa = 20,                      # Show the top 20 taxa
-  palette = MG()                        # Use a predefined color palette
+  palette = color_palette$MG                       # Use a predefined color palette
 )
 print(bp_rel$barplot)                   # Print the resulting barplot
 }

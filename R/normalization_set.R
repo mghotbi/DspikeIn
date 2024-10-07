@@ -59,29 +59,92 @@ set_nf <- function(ps, scaling.factor) {
 }
 
 # -----------------------------------------------------------
+#' Tidy a Phyloseq Object and Remove Zero/Negative Count Samples
+#'
+#' This function cleans and tidies a phyloseq object by:
+#' - Fixing taxa names
+#' - Setting taxonomic ranks
+#' - Trimming whitespace
+#' - Merging unidentified taxa at a specified rank
+#' - Removing taxa with zero counts
+#' - Removing "Chloroplast" and "Mitochondria" classified taxa
+#' - Removing samples with zero, negative counts, or NA values
+#' - Adding a pseudocount to avoid zero counts
+#'
+#' @param my_phyloseq A phyloseq object.
+#' @param pseudocount A numeric value to add as a pseudocount.
+#' @return A cleaned and tidied phyloseq object.
+#' @importFrom phyloseq tax_table prune_taxa taxa_sums subset_taxa otu_table prune_samples sample_sums
+#' @examples
+#' \dontrun{
+#' # Example usage:
+#' spiked_16S <- tidy_phyloseq(spiked_16S, pseudocount = 1e-6)
+#' }
+#' @export
+tidy_phyloseq <- function(my_phyloseq, pseudocount = 1e-6) {
+  
+  # Fix taxa names by removing any characters followed by '__' and any spaces after '__'
+  for (col in colnames(phyloseq::tax_table(my_phyloseq))) {
+    phyloseq::tax_table(my_phyloseq)[, col] <- gsub("[a-z]__\\s*", "", phyloseq::tax_table(my_phyloseq)[, col])
+  }
+  
+  # Set taxonomic ranks (if all 7 exist)
+  phyloseq::tax_table(my_phyloseq) <- phyloseq::tax_table(my_phyloseq)[, c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")]
+  
+  # Trim leading and trailing whitespace from taxa names
+  for (col in colnames(phyloseq::tax_table(my_phyloseq))) {
+    phyloseq::tax_table(my_phyloseq)[, col] <- trimws(phyloseq::tax_table(my_phyloseq)[, col])
+  }
+  
+  # Replace NA or empty strings in Phylum with "Unidentified_taxa"
+  phyloseq::tax_table(my_phyloseq)[is.na(phyloseq::tax_table(my_phyloseq)[, "Phylum"]) | 
+                                     phyloseq::tax_table(my_phyloseq)[, "Phylum"] == "", "Phylum"] <- "Unidentified_taxa"
+  
+  # Remove taxa with zero counts
+  my_phyloseq <- phyloseq::prune_taxa(phyloseq::taxa_sums(my_phyloseq) > 0, my_phyloseq)
+  
+  # Remove taxa classified as "Chloroplast" at the Class level
+  if ("Class" %in% colnames(phyloseq::tax_table(my_phyloseq))) {
+    my_phyloseq <- phyloseq::subset_taxa(my_phyloseq, Class != "Chloroplast")
+  } else {
+    warning("The taxonomic rank 'Class' is not present in the tax_table. Skipping removal of 'Chloroplast'.")
+  }
+  
+  # Remove taxa classified as "Mitochondria" at the Family level
+  if ("Family" %in% colnames(phyloseq::tax_table(my_phyloseq))) {
+    my_phyloseq <- phyloseq::subset_taxa(my_phyloseq, Family != "Mitochondria")
+  } else {
+    warning("The taxonomic rank 'Family' is not present in the tax_table. Skipping removal of 'Mitochondria'.")
+  }
+  
+  # Remove samples with zero, negative counts, or NA values and add pseudocounts
+  my_phyloseq <- remove_zero_negative_count_samples(my_phyloseq, pseudocount)
+  
+  return(my_phyloseq)
+}
+
 #' Remove Samples with Zero, Negative Counts, or NA Values and Add Pseudocount
 #' 
 #' @param ps A phyloseq object.
 #' @param pseudocount A numeric value to add to avoid zero counts.
 #' @return A phyloseq object with filtered and adjusted OTU table.
-#' @examples
-#' \dontrun{
-#' ps <- phyloseq::GlobalPatterns
-#' ps_clean <- remove_zero_negative_count_samples(ps)
-#' }
 #' @importFrom phyloseq otu_table prune_samples prune_taxa sample_sums
 remove_zero_negative_count_samples <- function(ps, pseudocount = 1e-6) {
   otu <- as(phyloseq::otu_table(ps), "matrix")
   
+  # Identify samples with zero, negative counts, or NA values
   zero_negative_count_samples <- phyloseq::sample_sums(ps) <= 0
   na_count_samples <- apply(otu, 2, function(x) any(is.na(x)))
   samples_to_remove <- zero_negative_count_samples | na_count_samples
+  
+  # Prune the samples that meet the removal criteria
   if (any(samples_to_remove)) {
     cat("Removing", sum(samples_to_remove), "samples with zero, negative counts, or NA values.\n")
     ps <- phyloseq::prune_samples(!samples_to_remove, ps)
     otu <- as(phyloseq::otu_table(ps), "matrix")
   }
   
+  # Remove features with zero counts across all samples
   zero_rows <- rowSums(otu) == 0
   if (any(zero_rows)) {
     cat("Removing", sum(zero_rows), "features with zero counts across all samples.\n")
@@ -89,6 +152,7 @@ remove_zero_negative_count_samples <- function(ps, pseudocount = 1e-6) {
     ps <- phyloseq::prune_taxa(!zero_rows, ps)
   }
   
+  # Add pseudocount to avoid zero counts
   otu <- otu + pseudocount
   otu <- round(otu)
   

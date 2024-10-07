@@ -176,7 +176,7 @@ alluvial_plot <- function(data, axes = NULL, abundance_threshold = 10000, fill_v
       ) +
       ggplot2::scale_x_discrete(limits = axes, expand = c(.1, .1)) +
       ggplot2::scale_fill_manual(values = color_palette, na.translate = FALSE) +  # Ignore NA in legend
-      ggplot2::ylab(if (abundance_type == "relative") "Relative Abundance (%)" else "Abundance") +
+      ggplot2::ylab(if (abundance_type == "relative") "Relative Abundance (%)" else "Absolute Abundance") +
       ggplot2::xlab("") +  # Remove "Factors" from x-axis when axes are NULL
       ggplot2::guides(fill = ggplot2::guide_legend(ncol = legend_ncol))
     

@@ -12,9 +12,9 @@
 #' @param abundance_type A character string specifying whether to plot "relative" or "absolute" abundance. Default is "relative".
 #' @param x_angle A numeric value specifying the angle of the x-axis text labels. Default is 25.
 #' @param fill_variable A character string specifying the variable to use for filling the bar colors. Default is the same as `target_glom`.
-#' @param facet_variable A character string specifying the variable to use for faceting the plot. Default is "Phylum".
+#' @param facet_variable A character string specifying the variable to use for faceting the plot. Default is NULL (no faceting).
 #' @param top_n_taxa A numeric value specifying the number of top taxa to include in the plot. Default is 20.
-#' @param palette A character vector of color hex codes to use for the fill colors. Default is `MG()`.
+#' @param palette Either a function that generates a color palette or a vector of color hex codes. Default is `MG()` from the package.
 #' 
 #' @return A list containing the following components:
 #' \describe{
@@ -22,13 +22,9 @@
 #'   \item{taxa_data}{A phyloseq object containing only the top taxa (and optionally "Others").}
 #' }
 #' 
-#' @details
-#' If the `abundance_type` is set to "relative", the bar plot will show the percentage of each 
-#' taxon, and non-top taxa will be aggregated into an "Others" category to fill up the bar to 100%.
-#' 
 #' @importFrom phyloseq tax_glom prune_taxa tax_table otu_table sample_data psmelt transform_sample_counts
 #' @importFrom ggplot2 ggplot geom_bar scale_fill_manual theme scale_y_continuous element_text element_line
-#' @importFrom ggplot2 guide_legend guides vars facet_grid element_rect theme_minimal
+#' @importFrom ggplot2 guide_legend guides facet_grid element_rect theme_minimal
 #' @importFrom rlang sym
 #' @importFrom dplyr %>%
 #' 
@@ -42,9 +38,9 @@
 #'   abundance_type = "relative",          # Plot relative abundance
 #'   x_angle = 45,                         # Angle for x-axis labels
 #'   fill_variable = "Genus",              # Fill bars by taxon (Genus)
-#'   facet_variable = "Diet",              # Facet the plot by diet
+#'   facet_variable = "Diet",              # Facet the plot by diet or NULL
 #'   top_n_taxa = 20,                      # Show the top 20 taxa
-#'   palette = MG()                        # Use a predefined color palette
+#'   palette = color_palette$MG                       # Use a predefined color palette
 #' )
 #' print(bp_rel$barplot)                   # Print the resulting barplot
 #' }
@@ -53,7 +49,7 @@
 taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL, 
                          normalize = TRUE, treatment_variable = "Treatment", 
                          abundance_type = "relative", x_angle = 25, fill_variable = target_glom, 
-                         facet_variable = "Phylum", top_n_taxa = 20, palette = MG()) {
+                         facet_variable = NULL, top_n_taxa = 20, palette = MG()) {
   
   # Taxonomic grouping using tax_glom from phyloseq
   glom <- phyloseq::tax_glom(physeq, taxrank = target_glom)
@@ -134,25 +130,30 @@ taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL,
       ggplot2::ylab("Absolute Abundance")
   }
   
-  # Customize the plot with the specified palette and bold font, and add axis lines
+  # Use either a color palette function or a color vector
+  colors <- if (is.function(palette)) palette() else palette
+  
+  # Customize the plot with the specified palette and bold font
   p <- p + 
-    ggplot2::scale_fill_manual(values = palette) +  # Custom color palette
+    ggplot2::scale_fill_manual(values = colors) +  # Use custom color palette
     ggplot2::theme_minimal(base_size = 14) +        # Cleaner theme with larger text
     ggplot2::theme(
-      legend.position = "right",             # Place the legend on the right
+      legend.position = "right",             
       legend.title = ggplot2::element_text(size = 12, face = "bold"),
-      legend.text = ggplot2::element_text(size = 12),
+      legend.text = ggplot2::element_text(size = 11),
       axis.text.x = ggplot2::element_text(angle = x_angle, vjust = 0.5, hjust = 1),
       axis.title.y = ggplot2::element_text(size = 12, face = "bold"),
       axis.title.x = ggplot2::element_blank(),
       axis.line.x = ggplot2::element_line(color = "black", linewidth = 0.8), 
-      axis.line.y = ggplot2::element_line(color = "black", linewidth = 0.8),  
-      strip.text.x = ggplot2::element_text(family = "Arial", size = 12, color = "black", face = "bold"),
-      strip.text.y = ggplot2::element_text(family = "Arial", size = 12, color = "black", face = "bold"),
-      strip.background = ggplot2::element_rect(fill = "gray90", color = NA)
+      axis.line.y = ggplot2::element_line(color = "black", linewidth = 0.8)
     ) +
-    ggplot2::guides(fill = ggplot2::guide_legend(ncol = 1)) +  # Set number of columns to 1
-    ggplot2::facet_grid(cols = ggplot2::vars(.data[[facet_variable]]), scales = "free")
+    ggplot2::guides(fill = ggplot2::guide_legend(ncol = 1))  # Set number of columns to 1
+  
+  # Conditionally add faceting if facet_variable is provided
+  if (!is.null(facet_variable)) {
+    facet_var <- rlang::sym(facet_variable)
+    p <- p + ggplot2::facet_grid(cols = ggplot2::vars(!!facet_var), scales = "free")
+  }
   
   return(list(barplot = p, taxa_data = physeq_top_others))
 }
@@ -193,7 +194,6 @@ MG <- function() {
 #                        abundance_type = "relative",     # Plot relative 
 #                        x_angle = 90,                   # Rotate x-axis 
 #                        fill_variable = "Genus",       # Fill bars by Genus
-#                        facet_variable = "Diet",      # Facet the plot by Diet
 #                        top_n_taxa = 20,              # Show the top 20 taxa
 #                        palette = MG())               # Use custom color palette (MG)
 #
@@ -209,6 +209,6 @@ MG <- function() {
 #                       fill_variable = "Genus",            # Fill bars by Genus
 #                       facet_variable = "Diet",            # Facet the plot by Diet
 #                       top_n_taxa = 20,                    # Show the top 20 taxa
-#                       palette = MG())                     # Use custom color palette (MG)
+#                       palette = color_palette$MG)                     # Use custom color palette (MG)
 #
 # print(bp_ab$barplot)                                      # Print the barplot
