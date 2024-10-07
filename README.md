@@ -8,6 +8,7 @@ The **DspikeIn** package was developed to facilitate:
 - Preprocessing data.
 - Calculating the spike-in scaling factor.
 - Converting relative abundance to absolute abundance.
+- Estimating acceptable spiked species retrieval %
 - Data transformation, Differential abundance and visualization.
 
 *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples based on our previous studies [WalkerLab](https://walkerlabmtsu.weebly.com/personnel.html).
@@ -24,10 +25,10 @@ To install the required packages, use the following script:
 
 ```r
 # Install CRAN packages
-install.packages(c("stats", "dplyr", "ggplot2", "flextable", "randomForest", "ggridges", "ggalluvial","tibble", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"))
+install.packages(c("stats", "dplyr", "ggplot2", "flextable","ggpubr", "randomForest", "ggridges", "ggalluvial","tibble", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"))
 
 # Load CRAN packages
-lapply(c("stats", "dplyr", "ggplot2", "flextable", "randomForest", "ggridges", "ggalluvial","tibble", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"), library, character.only = TRUE)
+lapply(c("stats", "dplyr", "ggplot2", "flextable","ggpubr","randomForest", "ggridges", "ggalluvial","tibble", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"), library, character.only = TRUE)
 
 
 ```
