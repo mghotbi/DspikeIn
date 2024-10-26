@@ -164,8 +164,8 @@ plot_core_microbiome_custom <- function(physeq = NULL,
 #custom_detections <- list(
 #  prevalences = seq(0.03, 1, 0.01),  # Custom prevalences
 #  thresholds = 10^seq(log10(0.03), log10(1), length = 10),  # Custom thresholds
-#  min_prevalence = 0.3,  # Custom min prevalence
-#  taxa_order = "ascending"  # Order taxa by ascending/descending abundance)
+#  min_prevalence = 0.3,  
+#  taxa_order = "ascending") # Order taxa by ascending/descending abundance
 
 # Create and save the plot
 #plot_result <- plot_core_microbiome_custom(

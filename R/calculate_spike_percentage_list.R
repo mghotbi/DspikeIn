@@ -2,31 +2,21 @@
 #'
 #' This function calculates the percentage of reads from specified spiked species in a \code{phyloseq} object.
 #' It merges the spiked taxa into one ASV, calculates the percentage of reads, categorizes the results as passed or failed,
-#' and saves the results as a DOCX and CSV file.
+#' and saves the results as DOCX and CSV files.
 #'
 #' @param physeq A \code{phyloseq} object containing microbial data.
-#' @param merged_spiked_species A character vector or list of spiked species to check in the phyloseq object. Default is \code{NULL}.
+#' @param merged_spiked_species A character vector of spiked species to check in the phyloseq object.
 #' @param output_path A character string specifying the path to save the output files. Default is \code{"merged_data.docx"}.
 #' @param passed_range A numeric vector of length 2 specifying the range of percentages to categorize results as "passed". Default is \code{c(0.1, 11)}.
 #' @return A data frame containing the percentage of spiked taxa reads and the pass/fail results.
 #' @examples
 #' \dontrun{
 #' # Example usage:
-#' spiked_species_list <- list(
-#'   c("Pseudomonas aeruginosa"),
-#'   c("Escherichia coli"),
-#'   c("Clostridium difficile")
-#' )
-#'
-#' # Create a mock phyloseq object 
-#' result <- calculate_spike_percentage_list(merged_physeq_sum, 
-#' merged_spiked_species = spiked_species_list, 
-#' passed_range = c(0.1, 10))
-#'
-#' # Print the results
+#' spiked_species_list <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
+#' result <- calculate_spike_percentage_list(physeq, merged_spiked_species = spiked_species_list, passed_range = c(0.1, 10))
 #' print(result)
 #' }
-#' @importFrom phyloseq subset_taxa tax_table sample_names sample_sums otu_table merge_taxa
+#' @importFrom phyloseq tax_table sample_names sample_sums otu_table merge_taxa prune_taxa
 #' @importFrom dplyr left_join
 #' @importFrom flextable flextable fontsize font color bold italic save_as_docx
 #' @importFrom utils write.csv
@@ -37,23 +27,25 @@ calculate_spike_percentage_list <- function(physeq, merged_spiked_species = NULL
   if (!is.numeric(passed_range) || length(passed_range) != 2) {
     stop("passed_range must be a numeric vector of length 2.")
   }
-  
-  # Ensure merged_spiked_species is provided
   if (is.null(merged_spiked_species)) stop("You must provide 'merged_spiked_species'.")
   
-  # Clean the species names (trim white spaces)
-  cleaned_spiked_species <- lapply(merged_spiked_species, trimws)
+  # Clean and flatten the species names
+  cleaned_spiked_species <- trimws(unlist(merged_spiked_species))
   
-  # Subset taxa for spiked species
-  spiked_taxa <- phyloseq::subset_taxa(physeq, phyloseq::tax_table(physeq)[, "Species"] %in% unlist(cleaned_spiked_species))
+  # Extract species names from tax_table and create a logical index for spiked species
+  species_names <- phyloseq::tax_table(physeq)[, "Species"]
+  spiked_taxa_idx <- species_names %in% cleaned_spiked_species
   
-  # Check if there are any spiked taxa in the samples
+  # Subset the phyloseq object for only the spiked taxa
+  spiked_taxa <- phyloseq::prune_taxa(spiked_taxa_idx, physeq)
+  
+  # Check if any spiked taxa are present
   if (phyloseq::ntaxa(spiked_taxa) == 0) stop("No samples contain the specified spiked taxa.")
   
-  # Merge all ASVs for the spiked taxa
+  # Merge ASVs for the spiked taxa
   merged_spiked <- phyloseq::merge_taxa(spiked_taxa, phyloseq::taxa_names(spiked_taxa))
   
-  # Ensure the OTU and taxonomy tables are properly aligned
+  # Align OTU and taxonomy tables
   merged_spiked <- fix_phyloseq_dimensions(merged_spiked)
   
   # Calculate total reads for each sample
@@ -74,11 +66,11 @@ calculate_spike_percentage_list <- function(physeq, merged_spiked_species = NULL
   merged_data$Result <- ifelse(merged_data$Percentage >= passed_range[1] & merged_data$Percentage <= passed_range[2], "passed", "failed")
   
   # Create a formatted table using flextable
-  ft <- flextable::flextable(merged_data) %>% 
-    flextable::fontsize(size = 10) %>% 
-    flextable::font(part = "all", fontname = "Inconsolata") %>% 
-    flextable::color(part = "header", color = "red4") %>% 
-    flextable::bold(part = "header") %>% 
+  ft <- flextable::flextable(merged_data) %>%
+    flextable::fontsize(size = 10) %>%
+    flextable::font(part = "all", fontname = "Inconsolata") %>%
+    flextable::color(part = "header", color = "red4") %>%
+    flextable::bold(part = "header") %>%
     flextable::italic()
   
   # Save the flextable as a Word document
@@ -97,6 +89,7 @@ calculate_spike_percentage_list <- function(physeq, merged_spiked_species = NULL
 }
 
 # Helper function to fix phyloseq table dimensions
+#' @keywords internal
 fix_phyloseq_dimensions <- function(physeq) {
   otu_table_names <- rownames(phyloseq::otu_table(physeq))
   tax_table_names <- rownames(phyloseq::tax_table(physeq))
@@ -108,6 +101,7 @@ fix_phyloseq_dimensions <- function(physeq) {
   
   return(physeq)
 }
+
 
 # Example usage:
 # # Step 1: Create a taxonomy table 
@@ -202,7 +196,7 @@ fix_phyloseq_dimensions <- function(physeq) {
 # )
 # 
 # # Call the function to calculate the spike percentages
-# result <- calculate_spike_percentage_list(merged_physeq_sum, merged_spiked_species = spiked_species_list, passed_range = c(0.1, 50))
+# result <- calculate_spike_percentage_list(merged_physeq_sum, merged_spiked_species = spiked_species_list, passed_range = c(0.1, 20))
 # 
 # # Print the result
 # print(result)

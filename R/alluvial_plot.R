@@ -158,7 +158,7 @@ alluvial_plot <- function(data, axes = NULL, abundance_threshold = 10000, fill_v
       !!!axis_mapping,  # Dynamically map the axes
       fill = !!rlang::sym(fill_variable)
     )) +
-      ggalluvial::geom_alluvium(width = 0.5, alpha = 0.8, decreasing = TRUE) +
+      ggalluvial::geom_alluvium(width = 0.5, alpha = 0.9, decreasing = TRUE) +
       ggalluvial::geom_stratum(alpha = 0.7, width = 0.4, fill = "gray87", color = "gray50") +
       ggplot2::geom_text(stat = ggalluvial::StatStratum, ggplot2::aes(label = ggplot2::after_stat(stratum)), size = text_size, color = "black") +
       ggplot2::theme_minimal(base_size = 14) +
@@ -186,7 +186,7 @@ alluvial_plot <- function(data, axes = NULL, abundance_threshold = 10000, fill_v
       y = !!rlang::sym(abundance_column),
       fill = !!rlang::sym(fill_variable)
     )) +
-      ggalluvial::geom_alluvium(width = 0.5, alpha = 0.8, decreasing = TRUE) +
+      ggalluvial::geom_alluvium(width = 0.5, alpha = 0.9, decreasing = TRUE) +
       ggalluvial::geom_stratum(alpha = 0.7, width = 0.4, fill = "gray80", color = "gray50") +
       ggplot2::geom_text(stat = ggalluvial::StatStratum, ggplot2::aes(label = ggplot2::after_stat(stratum)), size = text_size, color = "black") +
       ggplot2::theme_minimal(base_size = 14) +

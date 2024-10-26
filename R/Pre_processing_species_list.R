@@ -90,8 +90,8 @@ Pre_processing_species_list <- function(physeq, spiked_species, merge_method = c
   return(physeq)
 }
 
-# Example usage:
-# Step 1: Create a taxonomy table
+# # Example usage:
+# #Step 1: Create a taxonomy table
 # taxa_data <- data.frame(
 #   OTUID = c("ASV1", "ASV2", "ASV3",
 #             "ASV4", "ASV5", "ASV6",

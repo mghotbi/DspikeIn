@@ -5,24 +5,26 @@
 \alias{color_palette}
 \title{Original and Extended Color Palette Sequence}
 \format{
-A list with two elements: 
+A list with three elements: 
 \describe{
   \item{MG}{A character vector of original color codes.}
   \item{extended_palette}{A character vector of extended color codes, combining the original palette with the rainbow palette.}
+  \item{light_MG}{A character vector of chic palette color codes.}
 }
 }
 \usage{
 color_palette
 }
 \description{
-This object provides an original color palette sequence (MG) and an extended palette using the rainbow function.
-The extended palette can be used for plotting in ggplot2 or other plotting systems.
+This object provides an original color palette sequence (MG), an extended palette using the rainbow function,
+and an additional chic palette named light_MG.
+These palettes can be used for plotting in ggplot2 or other plotting systems.
 }
 \examples{
-# Use the extended palette for your plot
+# Use the light_MG palette for your plot
 # ggplot2 example:
 # ggplot(data, aes(x, y, color = group)) +
 #   geom_point() +
-#   scale_color_manual(values = color_palette$extended_palette)
+#   scale_color_manual(values = color_palette$light_MG)
 }
 \keyword{datasets}
