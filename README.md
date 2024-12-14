@@ -15,6 +15,20 @@ The **DspikeIn** package was developed to facilitate:
 
 ---
 
+## GCN Normalization with QIIME2 Plugin
+
+Use the `q2-gcn-norm` plugin to normalize data by gene copy number (GCN). For more details, visit the [q2-gcn-norm GitHub repository](https://github.com/Jiung-Wen/q2-gcn-norm).
+
+### Command Example
+
+```bash
+qiime gcn-norm copy-num-normalize \
+  --i-table table-dada2.qza \
+  --i-taxonomy taxonomy.qza \
+  --o-gcn-norm-table table-normalized.qza
+```
+
+---
 *If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:*
 
 ## Step 1: Install Required Packages
