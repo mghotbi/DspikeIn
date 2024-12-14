@@ -17,8 +17,8 @@ The **DspikeIn** package was developed to facilitate:
 
 ## GCN Normalization with QIIME2 Plugin
 
-Use the `q2-gcn-norm` plugin to normalize data by gene copy number (GCN). For more details, visit the [q2-gcn-norm GitHub repository](https://github.com/Jiung-Wen/q2-gcn-norm).
-Similar to the debate on the application of OTUs vs. ASVs, which has many contrasting views on their benefits and drawbacks (Callahan et al., 2017; Schloss et al., 2021), there are positive (Schirrmeister et al., 2012; Stoddard et al., 2015) and opposing (Louca et al., 2018; Gao and Wu et al., 2023) opinions on gene copy number correction for the 16S rRNA marker. Meanwhile, several novelties and modifications have been added to copy number correction to improve accuracy (Perisin et al., 2016; Gao and Wu, 2023). For ITS Systematic Evaluation of Methods for ITS Copy Number Correction is advised (Lofgren et al., 2018).
+Opinions on gene copy number (GCN) correction for the 16S rRNA marker vary, with proponents citing improved accuracy and critics noting limitations. While GCN correction is not included in the DspikeIn package, it can be performed using tools like the `q2-gcn-norm` plugin in Qiime2 (rrnDB v5.7) or methods outlined by [Louca et al., 2018](https://link.springer.com/content/pdf/10.1186/s40168-018-0420-9). Due to variability in rDNA copy numbers, GCN correction was not applied to ITS data.
+We used the `q2-gcn-norm` plugin to normalize data by gene copy number (GCN). For more details, visit the [q2-gcn-norm GitHub repository](https://github.com/Jiung-Wen/q2-gcn-norm).
 
 ### Command Example
 
