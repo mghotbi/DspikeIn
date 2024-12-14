@@ -502,7 +502,6 @@ ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
 # group_var <- "Animal.ecomode"  
 
 # Normalization Methods:
-# result_DESeq <- normalization_set(ps, method = "DESeq", groups = "group_var")
 # result_TMM <- normalization_set(ps, method = "TMM", groups = "group_var")
 # result_CLR <- normalization_set(ps, method = "clr")
 # result_UQ <- normalization_set(ps, method = "UQ", groups = group_var)
