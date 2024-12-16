@@ -195,13 +195,6 @@ This section demonstrates how to use various functions from the package to plot 
 # We first read DNA sequences from a FASTA file, to perform multiple sequence alignment and compute a distance matrix using the maximum likelihood method, then we construct a phylogenetic tree
 # Use the Neighbor-Joining method  based on a Jukes-Cantor distance matrix and plot the tree with bootstrap values.
 # we compare the Sanger read of Tetragenococcus halophilus with the FASTA sequence of Tetragenococcus halophilus from our phyloseq object.
-# Load required libraries
-  library(Biostrings)
-  library(msa)
-  library(phangorn)
-  library(ape)
-  library(speedyseq)
-  library(ggtree)
 
 # Subset the phyloseq object to include only Tetragenococcus species first
 Tetra <- subset_taxa(Tetra, !is.na(taxa_names(Tetra)) & taxa_names(Tetra) != "")
@@ -489,11 +482,6 @@ saveRDS(physeq_absolute_16S_OTU, "physeq_absolute_16S_OTU.rds")
 # Risso, D., Ngai, J., Speed, T.P. and Dudoit, S., 2014. Normalization of RNA-seq data using factor analysis of control genes or samples. Nature biotechnology, 32(9), pp.896-902.
 # Gagnon-Bartsch, J.A., Jacob, L. and Speed, T.P., 2013. Removing unwanted variation from high dimensional data with negative controls. Berkeley: Tech Reports from Dep Stat Univ California, pp.1-112.
 
-# Load required libraries
-library(phyloseq)
-library(DESeq2)
-library(edgeR)
-library(BiocGenerics)
 
 #ps is a phyloseq object without spiked species counts
 ps <- physeq_absolute_16S_OTU
