@@ -503,16 +503,18 @@ ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
 
 # Normalization Methods:
 # result_TMM <- normalization_set(ps, method = "TMM", groups = "group_var")
-# result_CLR <- normalization_set(ps, method = "clr")
+
 # result_UQ <- normalization_set(ps, method = "UQ", groups = group_var)
 # result_med <- normalization_set(ps, method = "med", groups = group_var)
-# result_Poisson <- normalization_set(ps, method = "Poisson", groups = "group_var")
-# result_UQ <- normalization_set(ps, method = "UQ", groups = "group_var")
+# result_Pois <- normalization_set(ps, method = "Poisson", groups = "group_var")
+# result_DES <- normalization_set(ps, method = "DESeq", groups = "group_var")
 # result_med <- normalization_set(ps, method = "med", groups = "group_var")
 # result_rle <- normalization_set(ps, method = "rle")
 # result_css <- normalization_set(ps, method = "CSS")
 # result_tss <- normalization_set(ps, method = "tss")
 # result_rar <- normalization_set(ps, method = "rar")
+# result_CLR <- normalization_set(ps, method = "clr")
+
 
 # Customized filtering and transformations
 # Proportion adjustment
