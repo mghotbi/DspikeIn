@@ -28,12 +28,6 @@ Welcome to the DspikeIn R package repository!
 
 ---
 
-## Installation
-
-To install the DspikeIn package, follow these steps...
-
----
-
 ### DspikeIn Package
 The **DspikeIn** package was developed to facilitate:
 - Verifying the phylogenetic distances of ASVs/OTUs resulting from spiked species.
@@ -60,6 +54,11 @@ qiime gcn-norm copy-num-normalize \
   --i-taxonomy taxonomy.qza \
   --o-gcn-norm-table table-normalized.qza
 ```
+---
+
+## Installation
+
+To install the DspikeIn package, follow these steps...
 
 ---
 *If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:*
