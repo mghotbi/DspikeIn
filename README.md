@@ -2,6 +2,37 @@
 ![CheatSheetDspikeIn](https://github.com/user-attachments/assets/1d4958ea-775a-455b-846d-0f968c88ae92)
 
 ---
+# DspikeIn
+
+Welcome to the DspikeIn R package repository!
+
+## Table of Contents
+
+- [Installation](#Installation)
+- [GCN correction](#GCN)
+- [Acknowledgement](#Acknowledgement)
+- [Data preparation](#Subsetting)
+- [Preprocessing](#Preprocessing)
+- [Validation](#Plot_phylogenetic)
+- [Estimating Scaling factor](#Estimating_Scaling_factor)
+- [Convert Relative Counts](#Convert_Relative_Counts)
+- [conclusion](#conclusion)
+- [Normalization](#Normalization)
+- [Visualization and Differential abundance ](#Visualization_and_Differential_abundance )
+- [Citing DspikeIn](#citing-dspikein)
+
+
+
+  
+
+
+---
+
+## Installation
+
+To install the DspikeIn package, follow these steps...
+
+---
 
 ### DspikeIn Package
 The **DspikeIn** package was developed to facilitate:
@@ -442,7 +473,7 @@ print(post_eval_summary)
 
 
 ## Let's check the conclusion and get the report table of spiked species success or failure.
-
+# conclusion
 
 
 ```r
