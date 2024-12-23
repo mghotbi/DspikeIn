@@ -8,6 +8,7 @@ Welcome to the DspikeIn R package repository!
 
 ## Table of Contents
 
+
 - [Installation](#installation)
 - [GCN correction](#gcn-normalization-with-qiime2-plugin)
 - [Acknowledgement](#acknowledgement)
@@ -19,7 +20,25 @@ Welcome to the DspikeIn R package repository!
 - [Calculate the spiked species retrieval percentage](#calculate_the_spiked_species_retrieval_percentage)
 - [Scaling Factors for one spiked species](#scaling_factors_for_one_spiked_species)
 - [Scaling factor for list of spiked species](#scaling_factor_for_list_of_spiked_species)
-- [System-specific spiked species retrieval](#System-specific_spiked_species_retrieval)
+- [System specific spiked species retrieval](#system-specific-spiked-species-retrieval)
+- [Convert Relative To Absolute Counts](#convert-relative-counts-to-absolute-counts-and-create-a-new-phyloseq-object)
+- [Conclusion](#conclusion)
+- [Normalization](#normalization-and-bias-correction)
+- [Customized filtering](#customized-filtering)
+- [Visualization and Differential Abundance](#visualization-and-differential-abundance)
+- [Citing DspikeIn](#citing-dspikein)
+- [Installation](#installation)
+- [GCN correction](#gcn-normalization-with-qiime2-plugin)
+- [Acknowledgement](#acknowledgement)
+- [Validation](#validation-using-phylogenetic-tree)
+- [Prepare the Required Information for Our Protocol](#prepare-the-required-information-for-our-protocol)
+- [Prepare the Required Information for the Synthetic Community](#prepare-the-required-information-for-the-synthetic-community)
+- [Preprocessing one Species Scaling Factor](#preprocessing-for-0ne_species-scaling-factor-calculation)
+- [Preprocessing List of Species Scaling Factor](#preprocessing-list-of-species-scaling-factor-calculation)
+- [Calculate the spiked species retrieval percentage](#calculate_the_spiked_species_retrieval_percentage)
+- [Scaling Factors for one spiked species](#scaling_factors_for_one_spiked_species)
+- [Scaling factor for list of spiked species](#scaling_factor_for_list_of_spiked_species)
+- [System-specific spiked species retrieval](#System_specific_spiked_species_retrieval)
 - [Convert Relative To Absolute Counts](#convert-relative-counts-to-absolute-counts-and-create-a-new-phyloseq-object)
 - [Conclusion](#conclusion)
 - [Normalization](#normalization-and-bias-correction)
@@ -606,7 +625,8 @@ physeq_min <- adjusted_prevalence(ps, method = "min")
 ```
 
 ### Estimating the system-specific optimal range of spiked species retrieval using biological metrics
-### System-specific spiked species retrieval
+### System specific spiked species retrieval
+---
 
 ```r
 
@@ -739,7 +759,7 @@ core.microbiome <- readRDS("core.microbiome.rds")
 # Alluvial plot accepts facet
 
 alluvial_plot_abs <- alluvial_plot( data = pps_Abs,
-axes = c("Env.broad.scale", "Host.genus", "Diet"),
+axes = c("Ecoregion.III", "Host.genus", "Diet"),
 abundance_threshold = 10000,
 fill_variable = "Family",
 silent = TRUE,
@@ -755,7 +775,7 @@ custom_colors = DspikeIn::color_palette$light_MG)  # Use the extended palette fr
 total_reads <- sum(pps_Rel$Abundance)
 
 alluvial_plot_rel <- alluvial_plot(data = pps_rel,
-axes = c("Env.broad.scale", "Host.genus", "Diet"),
+axes = c("Ecoregion.III", "Host.genus", "Diet"),
 abundance_threshold = 0.1,
 fill_variable = "Family",
 silent = TRUE,
