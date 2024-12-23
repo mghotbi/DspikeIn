@@ -20,12 +20,13 @@ Welcome to the DspikeIn R package repository!
    - [Preparation for the Synthetic Community](#prepare-the-required-information-for-the-synthetic-community)
 
 3. **Processing**
-   - [Preprocessing One Species Scaling Factor](#preprocessing-for-one_species-scaling-factor-calculation)
-   - [Preprocessing List of Species Scaling Factor](#preprocessing-list-of-species-scaling-factor-calculation)
-   - [Calculate Spiked Species Retrieval %](#calculate_the_spiked_species_retrieval_percentage)
-   - [Scaling Factors for One Spiked Species](#scaling_factors_for_one_spiked_species)
-   - [Scaling Factors for a List of Spiked Species](#scaling_factor_for_list_of_spiked_species)
+   - [Preprocessing One Species Scaling Factor](#preprocessing-one-species-scaling-factor)
+   - [Preprocessing List of Species Scaling Factor](#preprocessing-list-of-species-scaling-factor)
+   - [Calculate Spiked Species Retrieval %](#calculate-spiked-species-retrieval)
+   - [Scaling Factors for One Spiked Species](#scaling-factors-for-one-spiked-species)
+   - [Scaling Factors for a List of Spiked Species](#scaling-factors-for-a-list-of-spiked-species)
    - [Conclusion](#conclusion)
+
 
 4. **Bias Correction**
    - [System-Specific Spiked Species Retrieval](#system-specific-spiked-species-retrieval)
@@ -368,8 +369,8 @@ summ_count_phyloseq(red16S)
 ```
 
 ## Preprocessing for Scaling Factor Calculation  
-### preprocessing one species scaling factor calculation 
-
+### Preprocessing One Species Scaling Factor
+ 
 If the spiked species appear in several OTUs/ASVs, check their phylogenetic distances and compare them to the reference sequences of your positive control.
 
 
@@ -410,7 +411,7 @@ Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_sum_scaled)
 
 ```
 
-### Calculate the spiked species retrieval percentage.
+### Calculate Spiked Species Retrieval %
 
 ```r
 
@@ -452,7 +453,8 @@ passed_physeq <- prune_samples(
 
 ```
 
-### preprocessing list of species scaling factor calculation  
+
+### Preprocessing List of Species Scaling Factor  
 
 ```r
 
@@ -462,7 +464,7 @@ merged_physeq_sum <- Pre_processing_species_list(physeq, spiked_species, merge_m
 ```
 ## Estimating Scaling Factors After Pre-Processing
 
-### Scaling factor for one spiked species
+### Scaling Factors for One Spiked Species
 
 To estimate scaling factors, ensure you have the `merged_spiked_species` data, which contains the merged species derived from the spiking process.
 *As we have already merged either hashcodes or spiked species and are aware of the contents of the taxa table, we can proceed from here with merged_spiked_species.*
@@ -483,7 +485,7 @@ spiked_species_reads <- result$spiked_species_reads
 
 ```
 
-### Scaling factor for list of spiked species
+### Scaling Factors for a List of Spiked Species
 
 This example demonstrates how to calculate scaling factors after merging redundant spike-in species.
 
@@ -527,7 +529,7 @@ print(post_eval_summary)
 
 ## Let's check the conclusion and get the report table of spiked species success or failure.
 
-## Conclusion
+### Conclusion
 
 
 ```r
