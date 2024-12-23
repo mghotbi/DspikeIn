@@ -133,7 +133,6 @@ library(microbiomeutilities)
 ## Step 2: Install DspikeIn Package
 
 
-
 ```r
 
 # Installation
@@ -305,15 +304,14 @@ DNAStringSet object of length 5:
 
 We selected the OTU approach using de novo robust clustering algorithms at a 97% similarity threshold, following the methods outlined by [Westcott and Schloss (2015)](https://doi.org/10.7717/peerj.1487).
 
-Retrieved spiked species are correlated with abundance, richness, and beta diversity, and their recovery can therefore vary depending on the system under study. Our results indicate that the acceptable range of retrieved spiked species can be expanded to 35% in our model system. This contrasts with the findings of [Roa et al., 2021](https://www.nature.com/articles/s41586-021-03241-8), who reported an acceptable range of 0.1% to 10%.
 
 ---
 
 
 
-| ASVs Or OTUs | Acceptable range|
-|:----------:|:---------:|
-| ![Desired range of spiked sp](https://github.com/mghotbi/DspikeIn/assets/29090547/2f949616-6493-4445-8f1e-7ac9c9dd844f) | ![Acceptable range](https://github.com/mghotbi/DspikeIn/assets/29090547/8674f3de-ba24-4857-9cd7-d1b6dc15c669) |
+| ASVs Or OTUs |
+|:----------:|
+| ![ASVvs.OTU](https://github.com/user-attachments/assets/a58aec5b-cd67-498b-9b69-b9cdb23abbbc) | 
 
 
 
@@ -633,7 +631,7 @@ physeq_min <- adjusted_prevalence(ps, method = "min")
 ---
 ### system specific spiked species retrieval
 
-
+Previously, [Roa et al., 2021](https://www.nature.com/articles/s41586-021-03241-8) reported an acceptable range of 0.1% to 10% for spiked species retrieval. Here, we demonstrate that retrieved spiked species are correlated with biological metrics such as abundance, richness, evenness, and beta dispersion, indicating that the acceptable range is system-dependent and can be changed based on system specifications.
 
 ```r
 
