@@ -22,7 +22,8 @@ Welcome to the DspikeIn R package repository!
 3. **Processing**
    - [Preprocessing One Species Scaling Factor](#preprocessing-one-species-scaling-factor)
    - [Preprocessing List of Species Scaling Factor](#preprocessing-list-of-species-scaling-factor)
-   - [Calculate Spiked Species Retrieval %](#calculate-spiked-species-retrieval)
+   - [Calculate Spiked Species Retrieval % for One Species](#calculate-spiked-species-retrieval--for-one-species)
+   - [Calculate Spiked Species Retrieval % for List of Species](#calculate-spiked-species-retrieval--for-list-of-species)
    - [Scaling Factors for One Spiked Species](#scaling-factors-for-one-spiked-species)
    - [Scaling Factors for a List of Spiked Species](#scaling-factors-for-a-list-of-spiked-species)
    - [System-Specific Spiked Species Retrieval](#system-specific-spiked-species-retrieval)
@@ -411,7 +412,8 @@ Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_sum_scaled)
 
 ```
 
-### Calculate Spiked Species Retrieval %
+### Spiked Species Retrieval %
+### Calculate Spiked Species Retrieval % for One Species
 
 ```r
 
@@ -452,8 +454,15 @@ passed_physeq <- prune_samples(
   Spiked_16S_OTU_scaled)
 
 ```
+### Calculate Spiked Species Retrieval % for List of Species
 
+```r
+#ps= is phyloseq obj
+spiked_species_list <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
+result <- calculate_spike_percentage_list(ps, merged_spiked_species = spiked_species_list, passed_range = c(0.1, 10)) #change the range based on your system specifications
+print(result)
 
+```
 ### Preprocessing List of Species Scaling Factor  
 
 ```r
