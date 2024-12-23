@@ -11,13 +11,16 @@ Welcome to the DspikeIn R package repository!
 - [Installation](#Installation)
 - [GCN correction](#GCN)
 - [Acknowledgement](#Acknowledgement)
-- [Data preparation](#Subsetting)
-- [Preprocessing](#Preprocessing)
-- [Validation](#Plot_phylogenetic)
-- [Estimating Scaling factor](#Estimating_Scaling_factor)
-- [Convert Relative Counts](#Convert_Relative_Counts)
+- [Validation](#Validation_using_phylogenetic_tree)
+- [Prepare the required information for our Protocol](#Prepare_the_required_information_for_our_Protocol)
+- [ Prepare the Required Information for the Synthetic Community](#Prepare_the_Required_Information_for_the_Synthetic_Community)
+- [Preprocessing for one species scaling factor](#Preprocessing_for_Scaling_Factor_Calculation)
+- [Preprocessing for list of species scaling factor](#Preprocessing_for_list_of_speicies_Scaling_Factor_Calculation)
+- [Estimating Scaling Factors After Pre-Processing](#Estimating_Scaling_Factors_After_Pre-Processing)
+- [Estimating Scaling Factors After Pre-Processing](#Estimating_Scaling_Factors_After_Pre-Processing)
+- [Convert Relative Counts](#Convert_Relative_Counts_to_Absolute_Counts_and_Create_a_New_Phyloseq_Object)
 - [conclusion](#conclusion)
-- [Normalization](#Normalization)
+- [Normalization](#Normalization_and_bias_correction)
 - [Visualization and Differential abundance ](#Visualization_and_Differential_abundance )
 - [Citing DspikeIn](#citing-dspikein)
 
@@ -214,7 +217,7 @@ spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium d
 spiked_cells_list <- c(10000, 20000, 15000) # or equal number of copies-> spiked_cells_list <- c(200, 200, 200)
 
 ```
-
+## Validation using phylogenetic tree
 ## Plot phylogenetic tree with Bootstrap Values
 This step will be helpful for handling ASVs with/without Gene Copy Number Correction
 This section demonstrates how to use various functions from the package to plot and analyze phylogenetic trees.
