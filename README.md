@@ -214,7 +214,7 @@ spiked_cells_list <- c(10000, 20000, 15000) # or equal number of copies-> spiked
 
 ```
 ## Validation using phylogenetic tree
-## Plot phylogenetic tree with Bootstrap Values
+### Plot phylogenetic tree with Bootstrap Values
 This step will be helpful for handling ASVs with/without Gene Copy Number Correction
 This section demonstrates how to use various functions from the package to plot and analyze phylogenetic trees.
 
