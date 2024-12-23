@@ -19,7 +19,7 @@ Welcome to the DspikeIn R package repository!
 - [Calculate the spiked species retrieval percentage](#calculate_the_spiked_species_retrieval_percentage)
 - [Scaling Factors for one spiked species](#scaling_factors_for_one_spiked_species)
 - [Scaling factor for list of spiked species](#scaling_factor_for_list_of_spiked_species)
-- [System-specific spiked species retrieval](#system-specific_spiked_species_retrieval)
+- [System-specific spiked species retrieval](#System-specific_spiked_species_retrieval)
 - [Convert Relative To Absolute Counts](#convert-relative-counts-to-absolute-counts-and-create-a-new-phyloseq-object)
 - [Conclusion](#conclusion)
 - [Normalization](#normalization-and-bias-correction)
