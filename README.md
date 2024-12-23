@@ -14,9 +14,12 @@ Welcome to the DspikeIn R package repository!
 - [Validation](#validation-using-phylogenetic-tree)
 - [Prepare the Required Information for Our Protocol](#prepare-the-required-information-for-our-protocol)
 - [Prepare the Required Information for the Synthetic Community](#prepare-the-required-information-for-the-synthetic-community)
-- [Preprocessing for One Species Scaling Factor](#preprocessing-for-scaling-factor-calculation)
-- [Preprocessing for List of Species Scaling Factor](#preprocessing-for-list-of-species-scaling-factor-calculation)
-- [Estimating Scaling Factors After Pre-Processing](#estimating-scaling-factors-after-pre-processing)
+- [Preprocessing one Species Scaling Factor](#preprocessing-for-0ne_species-scaling-factor-calculation)
+- [Preprocessing List of Species Scaling Factor](#preprocessing-list-of-species-scaling-factor-calculation)
+- [Calculate the spiked species retrieval percentage](#Calculate_the_spiked_species_retrieval_percentage)
+- [Scaling Factors for one spiked species](#Scaling_Factors_for_one_spiked_species)
+- [Scaling factor for list of spiked species](#Scaling_factor_for_list_of_spiked_species)
+- [system-specific spiked species retrieval](#system-specific_spiked_species_retrieval)
 - [Convert Relative To Absolute Counts](#convert-relative-counts-to-absolute-counts-and-create-a-new-phyloseq-object)
 - [Conclusion](#conclusion)
 - [Normalization](#normalization-and-bias-correction)
@@ -199,10 +202,9 @@ hashcodes <- row.names(phyloseq::tax_table(Dekkera))
 ---
 
 ## Prepare the Required Information for the Synthetic Community
-#### Pre-process a List of Spiked-in Species
+#### Pre-process List of Spiked-in Species
 
 ---
-
 
 ```r
 
@@ -354,6 +356,7 @@ summ_count_phyloseq(red16S)
 
 
 ## Preprocessing for Scaling Factor Calculation  
+### preprocessing 0ne species scaling factor calculation 
 
 If the spiked species appear in several OTUs/ASVs, check their phylogenetic distances and compare them to the reference sequences of your positive control.
 
@@ -390,7 +393,15 @@ summ_count_phyloseq(Spiked_16S_sum_scaled)
 # Tidy phyloseq object
 Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_sum_scaled)
 
-# Now calculate the spiked species retrieval percentage.
+
+# Customize the passed_range and merged_spiked_species/merged_spiked_hashcodes based on your preferences.
+
+```
+
+### Calculate the spiked species retrieval percentage.
+
+```r
+
 # Customize the passed_range and merged_spiked_species/merged_spiked_hashcodes based on your preferences.
 # passed_range = "c(0.1, 11)": threshold of acceptable spiked species %
 # Select either merged_spiked_species or merged_spiked_hashcodes
@@ -412,6 +423,7 @@ result <- calculate_spike_percentage(
   Spiked_16S_OTU_scaled,  
   merged_spiked_hashcodes, 
   passed_range = c(0.1, 11))
+
 calculate_summary_stats_table(result)
 
 # If you decide to remove the failed reads and go forward with passed reads, here is what you need to do
@@ -428,8 +440,16 @@ passed_physeq <- prune_samples(
 
 ```
 
+### preprocessing list of species scaling factor calculation  
 
+```r
+
+spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
+merged_physeq_sum <- Pre_processing_species_list(physeq, spiked_species, merge_method = "sum")
+
+```
 ### Estimating Scaling Factors After Pre-Processing
+## Scaling factor for one spiked species
 
 To estimate scaling factors, ensure you have the `merged_spiked_species` data, which contains the merged species derived from the spiking process.
 *As we have already merged either hashcodes or spiked species and are aware of the contents of the taxa table, we can proceed from here with merged_spiked_species.*
@@ -450,6 +470,28 @@ spiked_species_reads <- result$spiked_species_reads
 
 ```
 
+## Scaling factor for list of spiked species
+
+This example demonstrates how to calculate scaling factors after merging redundant spike-in species.
+
+```r
+
+# Define spiked-in species and their corresponding cell counts
+spiked_species_list <- list(
+  c("Pseudomonas aeruginosa"),
+  c("Escherichia coli"),
+  c("Clostridium difficile"))
+
+spiked_cells_list <- c(10000, 20000, 15000)
+
+scaling_factors <- calculate_list_average_scaling_factors(
+  merged_physeq_sum,
+  spiked_species_list,
+  spiked_cells_list,
+  merge_method = "sum" ) # or max
+
+
+```
 
 ## Convert Relative Counts to Absolute Counts and Create a New Phyloseq Object
 
@@ -517,9 +559,9 @@ saveRDS(physeq_absolute_16S_OTU, "physeq_absolute_16S_OTU.rds")
 ps <- physeq_absolute_16S_OTU
 ps <- remove_zero_negative_count_samples(physeq_absolute_abundance_16S_OTU)
 ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
-# group_var <- "Animal.ecomode"  
 
 # Normalization Methods:
+# group_var <- "Animal.ecomode"  
 # result_TMM <- normalization_set(ps, method = "TMM", groups = "group_var")
 # result_UQ <- normalization_set(ps, method = "UQ", groups = group_var)
 # result_med <- normalization_set(ps, method = "med", groups = group_var)
@@ -562,6 +604,19 @@ physeq_min <- adjusted_prevalence(ps, method = "min")
 
 ```
 
+## Estimating the system-specific optimal range of spiked species retrieval using biological metrics
+### system-specific spiked species retrieval 
+```r
+
+plot_object <- regression_plot(data = metadata,
+x_var = "Richness.x",  #  metadata needs to be in data frame format
+y_var = "Total_Reads_spiked",
+ custom_range = c(0.1, 15, 30, 50, 75, 100),  # ranges of percentage 
+ plot_title = NULL)  # title/ either NULL or you add it
+
+print(plot_object)
+
+```
 
 ---
 
@@ -573,8 +628,30 @@ physeq_min <- adjusted_prevalence(ps, method = "min")
 
 # taxa barplot
 #abundance_type = "absolute"/"relative"
-bp_ab <- taxa_barplot(physeq_absolute_16S_OTU, target_glom = "Genus", treatment_variable = "Host.genus", abundance_type = "absolute", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20)
+#ps= phyloseq object
+
+bp_ab <- taxa_barplot(ps_ABS,
+                      target_glom = "Genus",              # Taxonomic level to glom
+                      treatment_variable = "Host.genus", # Variable on x-axis
+                      abundance_type = "absolute",         
+                      x_angle = 90,                       
+                      fill_variable = "Genus",            # Fill bars by Genus
+                      facet_variable = "Diet",            # Facet by Diet
+                      top_n_taxa = 20,                    # the top 20 taxa
+                      palette = color_palette$MG)                     # This is DspikeIn custom color palette (MG)
+
 print(bp_ab$barplot)
+
+bp_rel <- taxa_barplot(ps_Rel,
+                       target_glom = "Genus",           
+                       treatment_variable = "Host.genus", 
+                       abundance_type = "relative",     # Plot relative
+                       x_angle = 90,                   
+                       fill_variable = "Genus",       
+                       top_n_taxa = 20,             
+                       palette = color_palette$MG)              
+
+print(bp_rel$barplot)
 
 # original relative count -> spiked_16S_OTU
 bp_rel <- taxa_barplot(spiked_16S_OTU, target_glom = "Genus", treatment_variable = "Host.genus", abundance_type = "relative", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20)
@@ -592,19 +669,9 @@ print(bp_rel$barplot)
 
 ```r
 
-# simple barplot of taxonomy abundance
-# Plot relativized abundance
-plot <- plotbar_abundance(physeq_absolute_16S_OTU, level = "Family", group = "Env.broad.scale.x", top = 10, x_size = 10, y_size = 10, legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = TRUE, output_prefix = "relativized_abundance_plot")
-print(plot)
-
-# Plot non-relativized (absolute) abundance
-plot_absolute <- plotbar_abundance(spiked_16S_OTU, level = "Family", group = "Env.broad.scale.x", top = 10, x_size = 10, y_size = 10, legend_key_size = 2, legend_text_size = 14, legend_nrow = 10, relativize = FALSE, output_prefix = "non_relativized_abundance_plot")
-print(plot_absolute)
-
-
 # Check abundance distribution via Ridge Plots before and after converting to absolute abundance
 ridgeP_before <- ridge_plot_it(spiked_16S_OTU, taxrank = "Family", top_n = 10)
-ridgeP_after <- ridge_plot_it(physeq_absolute_16S_OTU, taxrank = "Family", top_n = 10)
+ridgeP_after <- ridge_plot_it(physeq_absolute_16S_OTU, taxrank = "Family", top_n = 10)+ my_custom_theme() #custome theme embedded in DspikeIn
 
 
 ```
@@ -618,12 +685,31 @@ ridgeP_after <- ridge_plot_it(physeq_absolute_16S_OTU, taxrank = "Family", top_n
 ```r
 
 # core_microbiome
-custom_detections <- 10^seq(log10(3e-1), log10(0.5), length = 5)
-PCM_rel <- plot_core_microbiome_custom(spiked_16S_OTU, detections = custom_detections, taxrank = "Family", output_core_rds = "core_microbiome.rds", output_core_csv = "core_microbiome.csv")
+#ps_ABS=absolute count
+#ps_Rel=relative count
 
-PCM_Abs <- plot_core_microbiome_custom(physeq_absolute_16S_OTU, detections = custom_detections, taxrank = "Family", output_core_rds = "core_microbiome.rds", output_core_csv = "core_microbiome.csv")
+custom_detections <- list(
+  prevalences = seq(0.05, 1, 0.01),  # Custom prevalences
+  thresholds = 10^seq(log10(0.05), log10(1), length = 8),  # detection thresholds
+  min_prevalence = 0.4,  # Custom minimum prevalence
+  taxa_order = "ascending")  # Order taxa by ascending/desc abundance
 
-# core.microbiome is automatically saved in your working directory so yoou can go ahead and barplot it
+
+# Create and save the plot
+plot_result <- plot_core_microbiome_custom(physeq = ps_ABS, 
+                                           detections = custom_detections, 
+                                           taxrank = "Family", 
+                                           output_core_rds = "core_microbiome.rds", 
+                                           output_core_csv = "core_microbiome.csv")
+print(plot_result)
+
+plot_result <- plot_core_microbiome_custom(physeq = ps_Rel, 
+                                           detections = custom_detections, 
+                                           taxrank = "Family", 
+                                           output_core_rds = "core_microbiome.rds", 
+                                           output_core_csv = "core_microbiome.csv")
+
+# core.microbiome is automatically saved in your working directory so you can go ahead and plot it in any way you prefer
 core.microbiome <- readRDS("core.microbiome.rds")
 
 ```
@@ -634,21 +720,49 @@ core.microbiome <- readRDS("core.microbiome.rds")
 | ![Abs core](https://github.com/mghotbi/DspikeIn/assets/29090547/9f32f799-4421-4842-a4cf-a1eee1a768e1) | ![Rel core](https://github.com/mghotbi/DspikeIn/assets/29090547/5fb4055a-33f5-48ec-bb0c-a9a9ab446429) |
 
 
+### Visualization Core microbiome distribution
+
+
 ```r
 
 # shift to long-format data frame and plot the abundance of taxa across the factor of your interest
 # Generate alluvial plot
-ps_physeq_absolute_16S_OTU <- psmelt(physeq_absolute_16S_OTU)
+# Convert a phyloseq object to a long-format data frame
+# pps_Abs <- phyloseq::psmelt(ps_ABS)
 
-# Define total reads for relative abundance calculation
-total_reads <- sum(ps_physeq_absolute_16S_OTU$Abundance)  
-# Generate alluvial plot for absolute abundance
-alluvial_plot_abs <- alluvial_plot(data = ps_physeq_absolute_16S_OTU,
-                                   axes = c("Host.genus", "Ecoregion.III"),
-                                   abundance_threshold = 1000, fill_variable = "Family",
-                                   silent = TRUE, abundance_type = "absolute",
-                                   top_taxa = 10, facet_vars = c("Diet"))
+# Example of total reads calculation for relative abundance
+# total_reads <- sum(pps_Abs$Abundance)
 
+# Generate an alluvial plot
+# Alluvial plot accepts facet
+
+alluvial_plot_abs <- alluvial_plot( data = pps_Abs,
+axes = c("Env.broad.scale", "Host.genus", "Diet"),
+abundance_threshold = 10000,
+fill_variable = "Family",
+silent = TRUE,
+abundance_type = "absolute",
+top_taxa = 20,
+text_size = 4,
+legend_ncol = 1,
+custom_colors = DspikeIn::color_palette$light_MG)  # Use the extended palette from your package
+
+
+# Generate alluvial plot for relative abundance
+ pps_Rel <- phyloseq::psmelt(ps_Rel)
+total_reads <- sum(pps_Rel$Abundance)
+
+alluvial_plot_rel <- alluvial_plot(data = pps_rel,
+axes = c("Env.broad.scale", "Host.genus", "Diet"),
+abundance_threshold = 0.1,
+fill_variable = "Family",
+silent = TRUE,
+abundance_type = "relative",
+total_reads = total_reads,
+top_taxa = 20,
+ text_size = 4,
+ legend_ncol = 1,
+custom_colors = DspikeIn::color_palette$light_MG)
 
 
 ```
