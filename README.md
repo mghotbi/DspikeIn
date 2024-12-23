@@ -605,8 +605,8 @@ physeq_min <- adjusted_prevalence(ps, method = "min")
 
 ```
 
-## Estimating the system-specific optimal range of spiked species retrieval using biological metrics
-### system-specific spiked species retrieval
+### Estimating the system-specific optimal range of spiked species retrieval using biological metrics
+### System-specific spiked species retrieval
 
 ```r
 
