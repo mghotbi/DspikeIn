@@ -15,7 +15,7 @@ Welcome to the DspikeIn R package repository!
 - [Validation](#validation-using-phylogenetic-tree)
 - [Prepare the Required Information for Our Protocol](#prepare-the-required-information-for-our-protocol)
 - [Prepare the Required Information for the Synthetic Community](#prepare-the-required-information-for-the-synthetic-community)
-- [Preprocessing one Species Scaling Factor](#preprocessing-for-0ne_species-scaling-factor-calculation)
+- [Preprocessing one Species Scaling Factor](#preprocessing-for-one_species-scaling-factor-calculation)
 - [Preprocessing List of Species Scaling Factor](#preprocessing-list-of-species-scaling-factor-calculation)
 - [Calculate the spiked species retrieval percentage](#calculate_the_spiked_species_retrieval_percentage)
 - [Scaling Factors for one spiked species](#scaling_factors_for_one_spiked_species)
@@ -357,9 +357,8 @@ summ_count_phyloseq(red16S)
 
 ```
 
-
 ## Preprocessing for Scaling Factor Calculation  
-### preprocessing 0ne species scaling factor calculation 
+### preprocessing one species scaling factor calculation 
 
 If the spiked species appear in several OTUs/ASVs, check their phylogenetic distances and compare them to the reference sequences of your positive control.
 
@@ -452,6 +451,7 @@ merged_physeq_sum <- Pre_processing_species_list(physeq, spiked_species, merge_m
 
 ```
 ## Estimating Scaling Factors After Pre-Processing
+
 ### Scaling factor for one spiked species
 
 To estimate scaling factors, ensure you have the `merged_spiked_species` data, which contains the merged species derived from the spiking process.
