@@ -21,7 +21,7 @@ Welcome to the DspikeIn R package repository!
 - [Scaling factor for list of spiked species](#Scaling_factor_for_list_of_spiked_species)
 - [system-specific spiked species retrieval](#system-specific_spiked_species_retrieval)
 - [Convert Relative To Absolute Counts](#convert-relative-counts-to-absolute-counts-and-create-a-new-phyloseq-object)
-- [Conclusion](#conclusion)
+- [Conclusion](#Conclusion)
 - [Normalization](#normalization-and-bias-correction)
 - [Customized filtering](#customized-filtering)
 - [Visualization and Differential Abundance](#visualization-and-differential-abundance)
@@ -448,8 +448,8 @@ spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium d
 merged_physeq_sum <- Pre_processing_species_list(physeq, spiked_species, merge_method = "sum")
 
 ```
-### Estimating Scaling Factors After Pre-Processing
-## Scaling factor for one spiked species
+## Estimating Scaling Factors After Pre-Processing
+### Scaling factor for one spiked species
 
 To estimate scaling factors, ensure you have the `merged_spiked_species` data, which contains the merged species derived from the spiking process.
 *As we have already merged either hashcodes or spiked species and are aware of the contents of the taxa table, we can proceed from here with merged_spiked_species.*
@@ -470,7 +470,7 @@ spiked_species_reads <- result$spiked_species_reads
 
 ```
 
-## Scaling factor for list of spiked species
+### Scaling factor for list of spiked species
 
 This example demonstrates how to calculate scaling factors after merging redundant spike-in species.
 
@@ -513,7 +513,8 @@ print(post_eval_summary)
 
 
 ## Let's check the conclusion and get the report table of spiked species success or failure.
-# conclusion
+
+## Conclusion
 
 
 ```r
