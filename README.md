@@ -770,12 +770,12 @@ core.microbiome <- readRDS("core.microbiome.rds")
 # Alluvial plot accepts facet
 
 alluvial_plot_abs <- alluvial_plot( data = pps_Abs,
-axes = c("Ecoregion.III", "Host.genus", "Diet"),
+axes = c("Clade.Order","Animal.ecomode","Ecoregion.III", "Diet", "Reproduction","Metamorphosis"),
 abundance_threshold = 10000,
-fill_variable = "Family",
+fill_variable = "Genus",
 silent = TRUE,
 abundance_type = "absolute",
-top_taxa = 20,
+top_taxa = 23,
 text_size = 4,
 legend_ncol = 1,
 custom_colors = DspikeIn::color_palette$light_MG)  # Use the extended palette from your package
@@ -786,13 +786,13 @@ custom_colors = DspikeIn::color_palette$light_MG)  # Use the extended palette fr
 total_reads <- sum(pps_Rel$Abundance)
 
 alluvial_plot_rel <- alluvial_plot(data = pps_rel,
-axes = c("Ecoregion.III", "Host.genus", "Diet"),
+axes = c("Clade.Order","Animal.ecomode","Ecoregion.III", "Diet", "Reproduction","Metamorphosis"),
 abundance_threshold = 0.1,
-fill_variable = "Family",
+fill_variable = "Genus",
 silent = TRUE,
 abundance_type = "relative",
 total_reads = total_reads,
-top_taxa = 20,
+top_taxa = 23,
  text_size = 4,
  legend_ncol = 1,
 custom_colors = DspikeIn::color_palette$light_MG)
@@ -803,7 +803,7 @@ custom_colors = DspikeIn::color_palette$light_MG)
 
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
-| ![Abs Alluv](https://github.com/mghotbi/DspikeIn/assets/29090547/2f187727-db7b-41a2-82be-73162423ce25) | ![Rel Alluv](https://github.com/mghotbi/DspikeIn/assets/29090547/bc6ed255-97d3-4e24-ad22-12890b747e79) |
+| ![Absolute](https://github.com/user-attachments/assets/3e7b0ade-c119-4c64-9d96-5638fc7c2296) | ![Relative](https://github.com/user-attachments/assets/a6e75fec-8590-4b58-87f7-aa12a348002a) |
 
 
 ```r
