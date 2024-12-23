@@ -646,7 +646,11 @@ y_var = "Total_Reads_spiked",
 print(plot_object)
 
 ```
-![BetaDis16S](https://github.com/user-attachments/assets/23178086-e7d3-4b0c-873d-5aefe0a12a8d) ![Evenness16S](https://github.com/user-attachments/assets/3fc63f6f-50ea-4832-983f-68cd8cdf25a8)
+
+| Beta Diversity (16S) | Evenness (16S) |
+|:---------------------:|:--------------:|
+| ![BetaDis16S](https://github.com/user-attachments/assets/23178086-e7d3-4b0c-873d-5aefe0a12a8d) | ![Evenness16S](https://github.com/user-attachments/assets/3fc63f6f-50ea-4832-983f-68cd8cdf25a8) |
+
 
 ---
 
@@ -693,7 +697,6 @@ print(bp_rel$barplot)
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
 | ![Rel AbsSal taxa barplot](https://github.com/mghotbi/DspikeIn/assets/29090547/643fca2a-6087-49f1-b3ee-5759d2fcb36f) | ![Rel abun Sal taxa barplot](https://github.com/mghotbi/DspikeIn/assets/29090547/2040830e-1ce1-46c9-8dfe-3c18f77a85bf) |
-
 
 
 
