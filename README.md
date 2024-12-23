@@ -539,7 +539,9 @@ ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
 
 
 ```
+
 ## Customized filtering
+
 
 ```r
 
