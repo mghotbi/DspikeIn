@@ -20,13 +20,9 @@ Welcome to the DspikeIn R package repository!
 - [Convert Relative To Absolute Counts](#convert-relative-counts-to-absolute-counts-and-create-a-new-phyloseq-object)
 - [Conclusion](#conclusion)
 - [Normalization](#normalization-and-bias-correction)
-- [Customized filtering](#Customized_filtering)
+- [Customized filtering](#customized-filtering)
 - [Visualization and Differential Abundance](#visualization-and-differential-abundance)
 - [Citing DspikeIn](#citing-dspikein)
-
-
-
-  
 
 
 ---
