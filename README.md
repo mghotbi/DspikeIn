@@ -307,14 +307,6 @@ We selected the OTU approach using de novo robust clustering algorithms at a 97%
 
 ---
 
-
-
-| ASVs Or OTUs |
-|:----------:|
-| ![ASVvs.OTU](https://github.com/user-attachments/assets/a58aec5b-cd67-498b-9b69-b9cdb23abbbc) | 
-
-
-
 ## Subsetting and Preprocessing Spiked Data
 
 
