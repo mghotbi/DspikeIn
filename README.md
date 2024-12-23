@@ -629,7 +629,7 @@ physeq_min <- adjusted_prevalence(ps, method = "min")
 ```r
 
 plot_object <- regression_plot(data = metadata,
-x_var = "Richness.x",  #  metadata needs to be in data frame format
+x_var = "Richness",  #  metadata needs to be in data frame format
 y_var = "Total_Reads_spiked",
  custom_range = c(0.1, 15, 30, 50, 75, 100),  # ranges of percentage 
  plot_title = NULL)  # title/ either NULL or you add it
