@@ -647,7 +647,7 @@ print(plot_object)
 
 ```
 
-| Beta Diversity (16S) | Evenness (16S) |
+| Beta Dispersion  (16S) | Evenness (16S) |
 |:---------------------:|:--------------:|
 | ![BetaDis16S](https://github.com/user-attachments/assets/23178086-e7d3-4b0c-873d-5aefe0a12a8d) | ![Evenness16S](https://github.com/user-attachments/assets/3fc63f6f-50ea-4832-983f-68cd8cdf25a8) |
 
