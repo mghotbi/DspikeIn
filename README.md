@@ -20,6 +20,7 @@ Welcome to the DspikeIn R package repository!
 - [Convert Relative To Absolute Counts](#convert-relative-counts-to-absolute-counts-and-create-a-new-phyloseq-object)
 - [Conclusion](#conclusion)
 - [Normalization](#normalization-and-bias-correction)
+- [Customized filtering](#Customized_filtering)
 - [Visualization and Differential Abundance](#visualization-and-differential-abundance)
 - [Citing DspikeIn](#citing-dspikein)
 
@@ -536,7 +537,13 @@ ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
 # result_CLR <- normalization_set(ps, method = "clr")
 
 
-# Customized filtering and transformations
+
+```
+## Customized filtering
+
+```r
+
+
 # Proportion adjustment
 normalized_physeq <- proportion_adj(ps, output_file = "proportion_adjusted_physeq.rds")
 summ_count_phyloseq(normalized_16S)
