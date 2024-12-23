@@ -17,7 +17,7 @@ Welcome to the DspikeIn R package repository!
 - [Preprocessing for One Species Scaling Factor](#preprocessing-for-scaling-factor-calculation)
 - [Preprocessing for List of Species Scaling Factor](#preprocessing-for-list-of-species-scaling-factor-calculation)
 - [Estimating Scaling Factors After Pre-Processing](#estimating-scaling-factors-after-pre-processing)
-- [Convert Relative Counts](#convert-relative-counts-to-absolute-counts-and-create-a-new-phyloseq-object)
+- [Convert Relative To Absolute Counts](#convert-relative-counts-to-absolute-counts-and-create-a-new-phyloseq-object)
 - [Conclusion](#conclusion)
 - [Normalization](#normalization-and-bias-correction)
 - [Visualization and Differential Abundance](#visualization-and-differential-abundance)
