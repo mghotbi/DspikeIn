@@ -8,20 +8,19 @@ Welcome to the DspikeIn R package repository!
 
 ## Table of Contents
 
-- [Installation](#Installation)
-- [GCN correction](#GCN)
-- [Acknowledgement](#Acknowledgement)
-- [Validation](#Validation_using_phylogenetic_tree)
-- [Prepare the required information for our Protocol](#Prepare_the_required_information_for_our_Protocol)
-- [ Prepare the Required Information for the Synthetic Community](#Prepare_the_Required_Information_for_the_Synthetic_Community)
-- [Preprocessing for one species scaling factor](#Preprocessing_for_Scaling_Factor_Calculation)
-- [Preprocessing for list of species scaling factor](#Preprocessing_for_list_of_speicies_Scaling_Factor_Calculation)
-- [Estimating Scaling Factors After Pre-Processing](#Estimating_Scaling_Factors_After_Pre-Processing)
-- [Estimating Scaling Factors After Pre-Processing](#Estimating_Scaling_Factors_After_Pre-Processing)
-- [Convert Relative Counts](#Convert_Relative_Counts_to_Absolute_Counts_and_Create_a_New_Phyloseq_Object)
-- [conclusion](#conclusion)
-- [Normalization](#Normalization_and_bias_correction)
-- [Visualization and Differential abundance ](#Visualization_and_Differential_abundance )
+- [Installation](#installation)
+- [GCN correction](#gcn-normalization-with-qiime2-plugin)
+- [Acknowledgement](#acknowledgement)
+- [Validation](#validation-using-phylogenetic-tree)
+- [Prepare the Required Information for Our Protocol](#prepare-the-required-information-for-our-protocol)
+- [Prepare the Required Information for the Synthetic Community](#prepare-the-required-information-for-the-synthetic-community)
+- [Preprocessing for One Species Scaling Factor](#preprocessing-for-scaling-factor-calculation)
+- [Preprocessing for List of Species Scaling Factor](#preprocessing-for-list-of-species-scaling-factor-calculation)
+- [Estimating Scaling Factors After Pre-Processing](#estimating-scaling-factors-after-pre-processing)
+- [Convert Relative Counts](#convert-relative-counts-to-absolute-counts-and-create-a-new-phyloseq-object)
+- [Conclusion](#conclusion)
+- [Normalization](#normalization-and-bias-correction)
+- [Visualization and Differential Abundance](#visualization-and-differential-abundance)
 - [Citing DspikeIn](#citing-dspikein)
 
 
