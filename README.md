@@ -19,7 +19,7 @@ Welcome to the DspikeIn R package repository!
 - [Calculate the spiked species retrieval percentage](#Calculate_the_spiked_species_retrieval_percentage)
 - [Scaling Factors for one spiked species](#Scaling_Factors_for_one_spiked_species)
 - [Scaling factor for list of spiked species](#Scaling_factor_for_list_of_spiked_species)
-- [system-specific spiked species retrieval](#system-specific_spiked_species_retrieval)
+- [System-specific spiked species retrieval](#system-specific_spiked_species_retrieval)
 - [Convert Relative To Absolute Counts](#convert-relative-counts-to-absolute-counts-and-create-a-new-phyloseq-object)
 - [Conclusion](#Conclusion)
 - [Normalization](#normalization-and-bias-correction)
@@ -606,7 +606,8 @@ physeq_min <- adjusted_prevalence(ps, method = "min")
 ```
 
 ## Estimating the system-specific optimal range of spiked species retrieval using biological metrics
-### system-specific spiked species retrieval 
+### system-specific spiked species retrieval
+
 ```r
 
 plot_object <- regression_plot(data = metadata,
