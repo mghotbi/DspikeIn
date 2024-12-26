@@ -806,7 +806,7 @@ RP+facet_wrap(~Diet)
 
 ```
 
-## detect common ASVs/OTUs
+## detect common ASVs-OTUs
 ### DspikeIn includes a feature for detecting common taxa that are dominant or essential across multiple methods.
 
 ```r
