@@ -37,7 +37,7 @@ Welcome to the DspikeIn R package repository!
 
 5. **Visualization**
    - [Visualization and Differential Abundance](#visualization-and-differential-abundance)
-   - [Detect common ASVs/OTUs](#detect-common-asvs-otus)
+   - [Detect common ASVs/OTUs](#Detect-common-asvs-otus)
 
 6. **Credits**
    - [Acknowledgement](#acknowledgement)
@@ -806,7 +806,7 @@ RP+facet_wrap(~Diet)
 
 ```
 
-## detect common ASVs-OTUs
+## Detect common ASVs-OTUs
 ### DspikeIn includes a feature for detecting common taxa that are dominant or essential across multiple methods.
 
 ```r
