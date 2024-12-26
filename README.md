@@ -37,11 +37,11 @@ Welcome to the DspikeIn R package repository!
 
 5. **Visualization**
    - [Visualization and Differential Abundance](#visualization-and-differential-abundance)
+   - [Detect common ASVs/OTUs](#detect-common-ASVs/OTUs)
 
 6. **Credits**
    - [Acknowledgement](#acknowledgement)
    - [Citing DspikeIn](#citing-dspikein)
-
 
 ---
 
@@ -804,7 +804,12 @@ rf_physeq <- RandomForest_selected_ASVs(ps_physeq_absolute_16S_OTU, response_var
 RP=ridge_plot_it(rf_physeq)
 RP+facet_wrap(~Diet)
 
+```
 
+## detect common ASVs/OTUs
+### DspikeIn includes a feature for detecting common taxa that are dominant or essential across multiple methods.
+
+```r
 #detect common ASVs/OTUs
 # The input is the list of phyloseq objects
 results <- detect_common_asvs_taxa(list(rf_physeq, FTspiked_16S , core.microbiome), 
