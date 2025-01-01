@@ -157,9 +157,10 @@ DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phylo
 
 ---
 
-## Dataset for DspikeIn Package
+## Dataset for practicing DspikeIn Package
 You can download the dataset to practice the DspikeIn package [Dataset](https://drive.google.com/file/d/1OKJ1nGVgfeB9MWiR_Ot_AM0k-2E21goH/view?usp=sharing).
 
+---
 
 ```r
 # Make a new directory and set it as your working directory
