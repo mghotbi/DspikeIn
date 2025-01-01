@@ -13,7 +13,7 @@ Welcome to the DspikeIn R package repository!
 1. **Getting Started**
    - [Installation](#installation)
    - [GCN Correction](#gcn-normalization-with-qiime2-plugin)
-   - [Dataset for practice](#dataset-for-practicing-dspikein-package)
+   - [Dataset for training](#dataset-for-practicing-dspikein-package)
 
 
 2. **Data Preparation**
