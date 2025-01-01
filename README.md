@@ -13,6 +13,7 @@ Welcome to the DspikeIn R package repository!
 1. **Getting Started**
    - [Installation](#installation)
    - [GCN Correction](#gcn-normalization-with-qiime2-plugin)
+   - [Dataset](##Dataset-for-DspikeIn-Package)
 
 2. **Data Preparation**
    - [Validation Using Phylogenetic Tree](#validation-using-phylogenetic-tree)
@@ -156,6 +157,8 @@ DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phylo
 
 ---
 
+## Dataset for DspikeIn Package
+You can download the dataset to practice the DspikeIn package [Dataset](https://drive.google.com/file/d/1OKJ1nGVgfeB9MWiR_Ot_AM0k-2E21goH/view?usp=sharing).
 
 
 ```r
