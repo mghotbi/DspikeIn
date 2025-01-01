@@ -839,6 +839,7 @@ plotbar_abundance(common_taxa_phyloseq, level = "Family", group = "Env.broad.sca
 
 [Citing DspikeIn](https://www.biorxiv.org/content/10.1101/2024.12.27.630554v1)
 
+![Thank You](https://img.shields.io/badge/Thank-You-brightgreen?style=for-the-badge)
+
 ---
 
-![Thank You](https://img.shields.io/badge/Thank-You-brightgreen?style=for-the-badge)
