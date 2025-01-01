@@ -43,7 +43,7 @@ Welcome to the DspikeIn R package repository!
 
 6. **Credits**
    - [Acknowledgement](#acknowledgement)
-   - [Citing DspikeIn](#citing-dspikein)
+   - [Citing DspikeIn](#Support-Us)
 
 ---
 
@@ -158,8 +158,11 @@ DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phylo
 
 ---
 
-## Dataset for practicing DspikeIn Package
-You can download the dataset to practice the DspikeIn package [Dataset](https://drive.google.com/drive/folders/164_K7MaFLCf5T8F9fsPAb1AndQ8mJOOP?usp=sharing).
+## Dataset for practicing DspikeIn Package 📊
+
+You can download the practice dataset for the DspikeIn package by clicking the link below:  
+👉 [Download Dataset](https://drive.google.com/drive/folders/164_K7MaFLCf5T8F9fsPAb1AndQ8mJOOP?usp=sharing)
+
 
 ---
 
@@ -826,3 +829,16 @@ common_taxa_phyloseq <- results$common_taxa_phyloseq
 plotbar_abundance(common_taxa_phyloseq, level = "Family", group = "Env.broad.scale", top = 10, return = TRUE)
 
 ```
+
+---
+
+### Support Us  
+If you use this package and find it useful:
+- ⭐ **Give us stars on GitHub!**
+- 🖋️ **Cite us using the link below:**
+
+[Citing DspikeIn](https://www.biorxiv.org/content/10.1101/2024.12.27.630554v1)
+
+---
+
+![Thank You](https://img.shields.io/badge/Thank-You-brightgreen?style=for-the-badge)
