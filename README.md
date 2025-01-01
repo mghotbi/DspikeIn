@@ -13,7 +13,8 @@ Welcome to the DspikeIn R package repository!
 1. **Getting Started**
    - [Installation](#installation)
    - [GCN Correction](#gcn-normalization-with-qiime2-plugin)
-   - [Dataset Section](#dataset-for-dspikein-package)
+   - [Dataset Section](#dataset-for-practicing-dspikein-package)
+
 
 2. **Data Preparation**
    - [Validation Using Phylogenetic Tree](#validation-using-phylogenetic-tree)
