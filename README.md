@@ -43,7 +43,7 @@ Welcome to the DspikeIn R package repository!
 
 6. **Credits**
    - [Acknowledgement](#acknowledgement)
-   - [Citing DspikeIn](#Support-Us)
+   - [Citing DspikeIn](#If-you-use-this-package-and-find-it-useful)
 
 ---
 
@@ -832,8 +832,8 @@ plotbar_abundance(common_taxa_phyloseq, level = "Family", group = "Env.broad.sca
 
 ---
 
-### Support Us  
-If you use this package and find it useful:
+## If you use this package and find it useful:
+
 - ⭐ **Give us stars on GitHub!**
 - 🖋️ **Cite us using the link below:**
 
