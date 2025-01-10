@@ -156,6 +156,8 @@ library(DspikeIn)
 
 DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phyloseq) package.
 
+DspikeIn works with a phyloseq object containing 7 taxonomic ranks. To estimate absolute abundance, the spiked.volume column in the metadata is required.
+
 ---
 
 ## Dataset for practicing DspikeIn Package 📊
