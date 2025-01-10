@@ -1,5 +1,5 @@
 # DspikeIn
-![CheatSheetDspikeIn](https://github.com/user-attachments/assets/601b5dd0-be05-4e5b-9771-10927427a15c)
+![CheatSheetDspikeIn](https://github.com/user-attachments/assets/92c2bd32-ddbe-4c07-b1a1-ab2a686f8e5b)
 
 
 ---
