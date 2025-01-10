@@ -163,7 +163,7 @@ DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phylo
 
 DspikeIn works with a phyloseq object containing 7 taxonomic ranks. To estimate absolute abundance, the spiked.volume column in the metadata is required.
 
-## To remove strain from the taxonomic ranks
+### To remove strain from the taxonomic ranks
 
 ```r
 
@@ -203,7 +203,7 @@ print(head(tax_table(ps)))  # Display the first few rows
 
 ```
 
-## To add species rank to the taxonomic ranks
+### To add species rank to the taxonomic ranks
 
 ```r
 
