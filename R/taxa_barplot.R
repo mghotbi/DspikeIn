@@ -122,7 +122,7 @@ taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL,
       legend.position = "right",
       legend.title = ggplot2::element_text(size = 12),
       legend.text = ggplot2::element_text(size = legend_size),
-      legend.key.size = ggplot2::unit(0.6, "cm"), # Smaller legend symbols
+      legend.key.size = ggplot2::unit(0.5, "cm"), # Smaller legend symbols
       axis.text.x = ggplot2::element_text(angle = x_angle, vjust = 0.5, hjust = 1),
       axis.line.x = ggplot2::element_line(color = "black", linewidth = 0.8), 
       axis.line.y = ggplot2::element_line(color = "black", linewidth = 0.8)
@@ -196,7 +196,7 @@ taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL,
 #   legend_columns = 2,
 #   palette = color_palette$MG)
 # print(bp_fix$barplot)
-# 
+
 # 
 # Example with free x-axis scale
 # bp_free <- taxa_barplot(
