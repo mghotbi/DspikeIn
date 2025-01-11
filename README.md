@@ -168,37 +168,26 @@ DspikeIn works with a phyloseq object containing 7 taxonomic ranks. To estimate 
 
 ```r
 
-# Load required library
 library(phyloseq)
-
 # Function to remove strain information from taxonomy columns
 remove_strain_info <- function(tax_table) {
   # Define the regex pattern for common strain identifiers
   pattern <- "Strain.*|strain.*|\\s*\\[.*\\]|\\s*\\(.*\\)"  # Adjust the regex to match specific strain formats
-  
   # Apply the pattern to each column of the taxonomy table
-  for (col in colnames(tax_table)) {
+  for (col in colnames(tax_table)) { 
     tax_table[, col] <- gsub(pattern, "", tax_table[, col])  # Remove strain info
-    tax_table[, col] <- trimws(tax_table[, col])  # Trim leading or trailing whitespace
+    tax_table[, col] <- trimws(tax_table[, col])  # Trim trailing whitespace
   }
-  
-  return(tax_table)
-}
-
+    return(tax_table)}
 # Step 1: Extract the taxonomy table
 taxonomy <- tax_table(ps)
-
 # Step 2: Remove strain information (including the `Strain` column)
 cleaned_taxonomy <- remove_strain_info(taxonomy)
-
 # Remove the `Strain` column if it exists
 if ("Strain" %in% colnames(cleaned_taxonomy)) {
-  cleaned_taxonomy <- cleaned_taxonomy[, colnames(cleaned_taxonomy) != "Strain"]
-}
-
+  cleaned_taxonomy <- cleaned_taxonomy[, colnames(cleaned_taxonomy) != "Strain"]}
 # Step 3: Update the taxonomy table in the phyloseq object
 tax_table(ps) <- cleaned_taxonomy
-
 # Step 4: Verify the changes
 print(head(tax_table(ps)))  # Display the first few rows
 
@@ -208,18 +197,13 @@ print(head(tax_table(ps)))  # Display the first few rows
 
 ```r
 
-# Load the required library
 library(phyloseq)
-
 # Step 1: Extract the taxonomy table from the phyloseq object
 taxonomy <- tax_table(ps)
-
 # Step 2: Add a `species` column based on the Genus column and unique identifiers
 taxonomy[, "species"] <- paste0(taxonomy[, "Genus"], "_OTU", seq_len(nrow(taxonomy)))
-
 # Step 3: Update the taxonomy table in the phyloseq object
 tax_table(ps) <- taxonomy
-
 # Step 4: Verify the changes
 print(head(tax_table(ps)))  # Display the first few rows to confirm
 
