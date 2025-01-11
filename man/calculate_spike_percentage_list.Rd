@@ -32,7 +32,8 @@ and saves the results as DOCX and CSV files.
 \dontrun{
 # Example usage:
 spiked_species_list <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
-result <- calculate_spike_percentage_list(physeq, merged_spiked_species = spiked_species_list, passed_range = c(0.1, 10))
+result <- calculate_spike_percentage_list(physeq, merged_spiked_species = spiked_species_list, 
+passed_range = c(0.1, 10))
 print(result)
 }
 }

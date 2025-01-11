@@ -2,23 +2,10 @@
 % Please edit documentation in R/microbiome_differential_abundance.R
 \name{perform_edgeR}
 \alias{perform_edgeR}
-\title{Perform Pairwise Comparisons with edgeR}
+\title{Perform edgeR Analysis}
 \usage{
 perform_edgeR(ps, group_var, contrast, significance_level = 0.05)
 }
-\arguments{
-\item{ps}{A phyloseq object containing microbiome data.}
-
-\item{group_var}{A string specifying the grouping variable in sample data.}
-
-\item{contrast}{A vector specifying the levels to compare (e.g., c("level1", "level2")).}
-
-\item{significance_level}{A numeric value specifying the significance level for filtering significant OTUs. Default is 0.05.}
-}
-\value{
-A data frame containing the differential abundance results.
-}
 \description{
-This function performs pairwise comparisons for differential abundance analysis using edgeR.
-It filters out NA values from the results before returning the data frame.
+Perform edgeR Analysis
 }

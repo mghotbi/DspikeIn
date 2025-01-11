@@ -13,7 +13,8 @@
 #' \dontrun{
 #' # Example usage:
 #' spiked_species_list <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
-#' result <- calculate_spike_percentage_list(physeq, merged_spiked_species = spiked_species_list, passed_range = c(0.1, 10))
+#' result <- calculate_spike_percentage_list(physeq, merged_spiked_species = spiked_species_list, 
+#' passed_range = c(0.1, 10))
 #' print(result)
 #' }
 #' @importFrom phyloseq tax_table sample_names sample_sums otu_table merge_taxa prune_taxa
@@ -196,7 +197,8 @@ fix_phyloseq_dimensions <- function(physeq) {
 # )
 # 
 # # Call the function to calculate the spike percentages
-# result <- calculate_spike_percentage_list(merged_physeq_sum, merged_spiked_species = spiked_species_list, passed_range = c(0.1, 20))
+# result <- calculate_spike_percentage_list(merged_physeq_sum, 
+# merged_spiked_species = spiked_species_list, passed_range = c(0.1, 20))
 # 
 # # Print the result
 # print(result)
