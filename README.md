@@ -636,7 +636,7 @@ ps <- remove_zero_negative_count_samples(physeq_absolute_abundance_16S_OTU)
 ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
 
 # Normalization Methods:
-# group_var <- "Animal.ecomode"  
+# group_var <- "Diet"  
 # result_TMM <- normalization_set(ps, method = "TMM", groups = "group_var")
 # result_UQ <- normalization_set(ps, method = "UQ", groups = group_var)
 # result_med <- normalization_set(ps, method = "med", groups = group_var)
@@ -666,9 +666,9 @@ ps_sig<- results_edgeR$ps_significant # extract significant taxa in phyloseq obj
 
 results_DESeq2 <- perform_and_visualize_DA(
   ps = ps,
-  method = "DESeq2",
-  group_var = "Treatment",
-  contrast = c("Control", "Diet"),
+  method = "DESeq2",                # method
+  group_var = "Treatment",          # factor
+  contrast = c("Control", "Diet"),  # levels of contrast
   output_csv_path = "DA_DESeq2.csv",
   target_glom = "Genus",
   significance_level = 0.05
