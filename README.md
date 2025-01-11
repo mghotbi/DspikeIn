@@ -728,34 +728,40 @@ print(plot_object)
 
 # taxa barplot
 #abundance_type = "absolute"/"relative"
-#ps= phyloseq object
+#ps_ABS= phyloseq object with absolute counts
 
-bp_ab <- taxa_barplot(ps_ABS,
-                      target_glom = "Genus",              # Taxonomic level to glom
-                      treatment_variable = "Host.genus", # Variable on x-axis
-                      abundance_type = "absolute",         
-                      x_angle = 90,                       
-                      fill_variable = "Genus",            # Fill bars by Genus
-                      facet_variable = "Diet",            # Facet by Diet
-                      top_n_taxa = 20,                    # the top 20 taxa
-                      palette = color_palette$MG)                     # This is DspikeIn custom color palette (MG)
 
-print(bp_ab$barplot)
+bp_free <- taxa_barplot( physeq = ps_ABS,
+  target_glom = "Genus",
+  treatment_variable = "Host.genus",
+  fill_variable = "Genus",      # Fill bars by Genus
+  abundance_type = "absolute",
+  facet_variable = "Diet",      # Facet by Diet
+  x_scale = "free",
+  legend_size = 10,
+  top_n_taxa = 30,             # the top 30 taxa
+  legend_columns = 1,
+  palette = color_palette$MG)  # This is DspikeIn custom color palette (MG)
+print(bp_free$barplot)
 
-bp_rel <- taxa_barplot(ps_Rel,
-                       target_glom = "Genus",           
-                       treatment_variable = "Host.genus", 
-                       abundance_type = "relative",     # Plot relative
-                       x_angle = 90,                   
-                       fill_variable = "Genus",       
-                       top_n_taxa = 20,             
-                       palette = color_palette$MG)              
+#ps_rel= phyloseq object with relative counts
+# x_scale = "fixed" or "free" 
 
-print(bp_rel$barplot)
+bp_fix <- taxa_barplot(physeq = ps_rel,
+  target_glom = "Genus",
+  treatment_variable = "Genotype",
+  abundance_type = "relative",
+  facet_variable = "Diet",
+  fill_variable = "Genus",
+  x_scale = "fixed", 
+  legend_size = 10,
+  top_n_taxa = 30,
+  xlab=NULL,
+  legend_columns = 1,    # legend col
+  palette = color_palette$MG)
+print(bp_fix$barplot)
 
-# original relative count -> spiked_16S_OTU
-bp_rel <- taxa_barplot(spiked_16S_OTU, target_glom = "Genus", treatment_variable = "Host.genus", abundance_type = "relative", x_angle = 90, fill_variable = "Genus", facet_variable = "Diet", top_n_taxa = 20)
-print(bp_rel$barplot)
+
 
 ```
 
