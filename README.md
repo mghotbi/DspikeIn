@@ -36,11 +36,11 @@ Welcome to the DspikeIn R package repository!
 
 4. **Bias Correction**
    - [Convert Relative to Absolute Counts](#convert-relative-counts-to-absolute-counts-and-create-a-new-phyloseq-object)
-   - [Normalization and Bias Correction](#normalization-and-bias-correction)
+   - [Normalization and Differential Abundance](#normalization-and-Normalization-and-Differential-Abundance)
    - [Customized Filtering](#customized-filtering)
 
 5. **Visualization**
-   - [Visualization and Differential Abundance](#visualization-and-differential-abundance)
+   - [Visualization](#visualization)
    - [Detect common ASVs/OTUs](#Detect-common-asvs-otus)
 
 6. **Credits**
@@ -620,7 +620,7 @@ physeq_absolute_16S_OTU <- tidy_phyloseq(physeq_absolute_abundance_16S_OTU_perc)
 saveRDS(physeq_absolute_16S_OTU, "physeq_absolute_16S_OTU.rds")
 
 ```
-## Normalization and bias correction 
+## Normalization and Differential Abundance
 
 
 ```r
@@ -650,6 +650,33 @@ ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
 # result_CLR <- normalization_set(ps, method = "clr")
 
 
+results_edgeR <- perform_and_visualize_DA(
+  ps = ps,
+  method = "edgeR",
+  group_var = "Treatment",
+  contrast = c("Control", "Diet"),
+  output_csv_path = "DA_edgeR.csv",
+  target_glom = "Genus",
+  significance_level = 0.05
+)
+
+print(results_edgeR$plot)
+head(results_edgeR$results)  # View significant taxa
+ps_sig<- results_edgeR$ps_significant # extract significant taxa in phyloseq obj for plotting
+
+results_DESeq2 <- perform_and_visualize_DA(
+  ps = ps,
+  method = "DESeq2",
+  group_var = "Treatment",
+  contrast = c("Control", "Diet"),
+  output_csv_path = "DA_DESeq2.csv",
+  target_glom = "Genus",
+  significance_level = 0.05
+)
+
+print(results_DESeq2$plot)
+head(results_DESeq2$results)  # View significant taxa
+ps_sig<- results_DESeq2$ps_significant # extract significant taxa in phyloseq obj for plotting
 
 ```
 
@@ -704,7 +731,7 @@ print(plot_object)
 
 ---
 
-## Visualization and Differential abundance 
+## Visualization
 
 
 ```r
