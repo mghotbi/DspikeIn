@@ -1,7 +1,4 @@
 # DspikeIn
-
----
-
 Welcome to the DspikeIn R package repository!
 
 ![CheatSheetDspikeIn](https://github.com/user-attachments/assets/118b0732-4311-4919-b4d6-3532786ff3ba)
