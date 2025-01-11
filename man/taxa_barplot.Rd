@@ -15,7 +15,11 @@ taxa_barplot(
   fill_variable = target_glom,
   facet_variable = NULL,
   top_n_taxa = 20,
-  palette = MG()
+  palette = color_palette$MG,
+  legend_size = 11,
+  legend_columns = 1,
+  x_scale = "fixed",
+  xlab = NULL
 )
 }
 \arguments{
@@ -39,7 +43,15 @@ taxa_barplot(
 
 \item{top_n_taxa}{A numeric value specifying the number of top taxa to include in the plot. Default is 20.}
 
-\item{palette}{Either a function that generates a color palette or a vector of color hex codes. Default is `MG()` from the package.}
+\item{palette}{A character vector of color codes or a function generating such a palette. Default is `color_palette$MG`.}
+
+\item{legend_size}{A numeric value specifying the size of the legend text. Default is 11.}
+
+\item{legend_columns}{A numeric value specifying the number of columns for the legend. Default is 1.}
+
+\item{x_scale}{A character string specifying the x-axis scale in facets. Options are `"free"` or `"fixed"`. Default is `"fixed"`.}
+
+\item{xlab}{A character string specifying the x-axis label. Default is `NULL` (no label).}
 }
 \value{
 A list containing the following components:
@@ -65,7 +77,11 @@ bp_rel <- taxa_barplot(
   fill_variable = "Genus",              # Fill bars by taxon (Genus)
   facet_variable = "Diet",              # Facet the plot by diet or NULL
   top_n_taxa = 20,                      # Show the top 20 taxa
-  palette = color_palette$MG                       # Use a predefined color palette
+  palette = color_palette$MG,           # Use the predefined MG color palette
+  legend_size = 12,                     # Customize legend text size
+  legend_columns = 2,                   # Split legend into 2 columns
+  x_scale = "free",                     # Free x-axis levels across facets
+  xlab = "Sample Groups"                # Add a custom x-axis label
 )
 print(bp_rel$barplot)                   # Print the resulting barplot
 }

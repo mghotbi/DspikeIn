@@ -91,11 +91,11 @@ regression_plot <- function(data, x_var, y_var, custom_range = c(0.1, 15, 30, 50
 }
 
 # Example usage;
-#plot_object <- regression_plot(
-#data = metadata, 
+# plot_object <- regression_plot(
+# data = metadata,
 # x_var = "Richness.x",  #  metadata is a data frame fromat
-# y_var = "Total_Reads_spiked",  
+# y_var = "Total_Reads_spiked",
 #  custom_range = c(0.1, 15, 30, 50, 75, 100),  # Define percentage ranges
 #  plot_title = NULL  # No title by default
-#)
+# )
 # print(plot_object)

@@ -217,14 +217,6 @@ alluvial_plot <- function(data, axes = NULL, abundance_threshold = 10000, fill_v
 
 
 # Example:
-# Load necessary libraries
-# library(phyloseq)
-# library(ggplot2)
-# library(dplyr)
-# library(ggalluvial)
-
-# Assuming `color_palette` is already defined in your package with MG and extended_palette
-
 # Convert a phyloseq object to a long-format data frame
 # pps_Abs <- phyloseq::psmelt(physeq_16SOTU)
 
@@ -233,15 +225,15 @@ alluvial_plot <- function(data, axes = NULL, abundance_threshold = 10000, fill_v
 
 # Generate an alluvial plot using the extended palette from your package
 # alluvial_plot_abs <- alluvial_plot(
-#   data = pps_Abs, 
-#   axes = c("Env.broad.scale", "Host.genus", "Diet"), 
-#   abundance_threshold = 10000, 
-#   fill_variable = "Phylum", 
-#   silent = TRUE, 
-#   abundance_type = "absolute", 
-#   top_taxa = 10, 
-#   text_size = 4, 
-#   legend_ncol = 1, 
+#   data = pps_Abs,
+#   axes = c("Env.broad.scale", "Host.genus", "Diet"),
+#   abundance_threshold = 10000,
+#   fill_variable = "Phylum",
+#   silent = TRUE,
+#   abundance_type = "absolute",
+#   top_taxa = 10,
+#   text_size = 4,
+#   legend_ncol = 1,
 #   custom_colors = color_palette$extended_palette  # Use the extended palette from your package
 # )
 
