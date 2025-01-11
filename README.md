@@ -727,48 +727,50 @@ print(plot_object)
 
 
 # taxa barplot
-#abundance_type = "absolute"/"relative"
-#ps_ABS= phyloseq object with absolute counts
-
-
-bp_free <- taxa_barplot( physeq = ps_ABS,
-  target_glom = "Genus",
-  treatment_variable = "Host.genus",
-  fill_variable = "Genus",      # Fill bars by Genus
-  abundance_type = "absolute",
-  facet_variable = "Diet",      # Facet by Diet
-  x_scale = "free",
-  legend_size = 10,
-  top_n_taxa = 30,             # the top 30 taxa
-  legend_columns = 1,
-  palette = color_palette$MG)  # This is DspikeIn custom color palette (MG)
-print(bp_free$barplot)
-
-#ps_rel= phyloseq object with relative counts
-# x_scale = "fixed" or "free" 
-
-bp_fix <- taxa_barplot(physeq = ps_rel,
-  target_glom = "Genus",
-  treatment_variable = "Genotype",
-  abundance_type = "relative",
-  facet_variable = "Diet",
-  fill_variable = "Genus",
-  x_scale = "fixed", 
-  legend_size = 10,
-  top_n_taxa = 30,
-  xlab=NULL,
-  legend_columns = 1,    # legend col
-  palette = color_palette$MG)
-print(bp_fix$barplot)
-
-
-
+# taxa barplot
+ #abundance_type = "absolute"/"relative"
+ #ps_ABS= phyloseq object with absolute counts
+ 
+ 
+ bp_free <- taxa_barplot( physeq = ps_ABS,
+                          target_glom = "Genus",
+                          treatment_variable = "Genotype",
+                          fill_variable = "Genus",           # Fill bars by Genus
+                          abundance_type = "absolute",
+                          facet_variable = "Treatment",      # Facet by Treatment 
+                          x_scale = "free",
+                          legend_size = 10,
+                          top_n_taxa = 30,  
+                          xlab=NULL,                          # the top 30 taxa
+                          legend_columns = 1,
+                          palette = color_palette$MG)  # This is DspikeIn custom color palette (MG)
+ print(bp_free$barplot)
+ 
+ #ps_rel= phyloseq object with relative counts
+ # x_scale = "fixed" or "free" 
+ 
+ bp_fix <- taxa_barplot(physeq = ps_rel,
+                        target_glom = "Genus",
+                        treatment_variable = "Genotype",
+                        abundance_type = "relative",
+                        facet_variable = "Treatment",
+                        fill_variable = "Genus",
+                        x_scale = "free", 
+                        legend_size = 10,
+                        top_n_taxa = 30,
+                        xlab=NULL,
+                        legend_columns = 1,    # legend col
+                        palette = color_palette$MG)
+ print(bp_fix$barplot)
+ 
+ 
+ 
 ```
 
 
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
-| ![Rel AbsSal taxa barplot](https://github.com/mghotbi/DspikeIn/assets/29090547/643fca2a-6087-49f1-b3ee-5759d2fcb36f) | ![Rel abun Sal taxa barplot](https://github.com/mghotbi/DspikeIn/assets/29090547/2040830e-1ce1-46c9-8dfe-3c18f77a85bf) |
+| ![Absolute taxa barplot](https://github.com/user-attachments/assets/aec4bcf6-3c77-4b0b-ac33-c073ac74faa6) | ![Relative taxa barplot](https://github.com/user-attachments/assets/d4111895-dbbf-408e-9b93-3b9ec24acd73) |
 
 
 
