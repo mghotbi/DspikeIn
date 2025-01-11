@@ -36,7 +36,7 @@ Welcome to the DspikeIn R package repository!
 
 4. **Bias Correction**
    - [Convert Relative to Absolute Counts](#convert-relative-counts-to-absolute-counts-and-create-a-new-phyloseq-object)
-   - [Normalization and Differential Abundance](#normalization-and-Normalization-and-Differential-Abundance)
+   - [Normalization and Differential Abundance](#normalization-and-differential-abundance)
    - [Customized Filtering](#customized-filtering)
 
 5. **Visualization**
