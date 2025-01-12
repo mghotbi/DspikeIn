@@ -746,10 +746,10 @@ print(plot_object)
                           fill_variable = "Genus",           # Fill bars by Genus
                           abundance_type = "absolute",
                           facet_variable = "Treatment",      # Facet by Treatment 
-                          x_scale = "free",
-                          legend_size = 10,
-                          top_n_taxa = 30,  
-                          xlab=NULL,                          # the top 30 taxa
+                          x_scale = "free",                  # can be "fixed"
+                          legend_size = 10,                
+                          top_n_taxa = 30,                   # the top 30 taxa
+                          xlab=NULL,                          
                           legend_columns = 1,
                           palette = color_palette$MG)  # This is DspikeIn custom color palette (MG)
  print(bp_free$barplot)
