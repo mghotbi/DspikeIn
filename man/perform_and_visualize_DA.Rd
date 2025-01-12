@@ -18,36 +18,46 @@ perform_and_visualize_DA(
 )
 }
 \arguments{
-\item{ps}{A `phyloseq` object containing microbiome data.}
+\item{ps}{A `phyloseq` object containing microbiome data, including an OTU table and sample metadata.}
 
-\item{method}{A character string specifying the method to use: "edgeR" or "DESeq2".}
+\item{method}{A character string specifying the method to use: \code{"edgeR"} or \code{"DESeq2"}.}
 
-\item{group_var}{A string specifying the grouping variable in sample data.}
+\item{group_var}{A string specifying the grouping variable in the sample metadata of the `phyloseq` object.}
 
-\item{contrast}{A vector specifying the levels to compare (e.g., c("Control", "Treated")).}
+\item{contrast}{A character vector specifying the levels to compare in the grouping variable (e.g., \code{c("Control", "Treated")}).}
 
-\item{pseudocount}{A numeric value for pseudocount addition to handle zeros. Default is 1.}
+\item{pseudocount}{A numeric value for pseudocount addition to handle zeros in count data. Default is \code{1}.}
 
-\item{significance_level}{A numeric value specifying the significance threshold (FDR). Default is 0.05.}
+\item{significance_level}{A numeric value specifying the significance threshold for adjusted p-values (FDR). Default is \code{0.05}.}
 
-\item{output_csv_path}{Path to save the results as a CSV file. Default is "DA_results.csv".}
+\item{output_csv_path}{A string specifying the path to save the results as a CSV file. Default is \code{"DA_results.csv"}.}
 
-\item{point_size}{A numeric value specifying the size of points in the volcano plot. Default is 3.}
+\item{point_size}{A numeric value specifying the size of points in the volcano plot. Default is \code{3}.}
 
-\item{target_glom}{A string specifying the taxonomic rank to aggregate taxa. Default is "Genus".}
+\item{target_glom}{A string specifying the taxonomic rank to aggregate taxa for analysis. Default is \code{"Genus"}.}
 
-\item{palette}{A character vector of color hex codes for plotting. Default is `color_palette$extended_palette`.}
+\item{palette}{A character vector of color hex codes for plotting. Default is \code{color_palette$extended_palette}.}
 }
 \value{
-A list containing the analysis results, a phyloseq object with significant OTUs/ASVs, and a volcano plot.
+A list with three components:
+\itemize{
+  \item \code{results}: A data frame containing differential abundance analysis results, including \code{logFC}, \code{pvalue}, \code{FDR}, \code{diff_abn}, and \code{treatment}.
+  \item \code{ps_significant}: A `phyloseq` object containing only the significant OTUs/ASVs.
+  \item \code{plot}: A ggplot2 object representing the volcano plot of the differential abundance results.
+}
 }
 \description{
-This function performs differential abundance analysis using either edgeR or DESeq2 
+This function performs differential abundance analysis using either edgeR or DESeq2, preprocesses the data,
 and generates a volcano plot based on microbiome data.
+}
+\details{
+This function preprocesses microbiome count data, performs differential abundance analysis using 
+edgeR or DESeq2, and visualizes the results as a volcano plot. Significant OTUs/ASVs are filtered 
+based on the specified FDR threshold and included in the returned phyloseq object.
 }
 \examples{
 \dontrun{
-# Using edgeR
+# Example with edgeR
 results_edgeR <- perform_and_visualize_DA(
   ps = ps,
   method = "edgeR",
@@ -57,8 +67,9 @@ results_edgeR <- perform_and_visualize_DA(
   target_glom = "Genus",
   significance_level = 0.05
 )
+print(results_edgeR$plot)
 
-# Using DESeq2
+# Example with DESeq2
 results_DESeq2 <- perform_and_visualize_DA(
   ps = ps,
   method = "DESeq2",
@@ -68,11 +79,11 @@ results_DESeq2 <- perform_and_visualize_DA(
   target_glom = "Genus",
   significance_level = 0.05
 )
-
-# Visualize Volcano Plot
-print(results_edgeR$plot)
-ps_sig <-results_edgeR$ps_significant
 print(results_DESeq2$plot)
+
+# Access significant taxa
+significant_ps <- results_edgeR$ps_significant
+head(results_edgeR$results)  # View significant taxa
 }
 
 }

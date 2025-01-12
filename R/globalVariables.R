@@ -33,7 +33,7 @@
 #' @importFrom limma makeContrasts
 #' @importFrom ggpubr stat_regline_equation stat_cor
 utils::globalVariables(c(
-  ".data", "taxa_sums","diff_abn", "Class","..eq.label..", "..rr.label..", "..p.label..","Sample" ,"Family", "Species", "Abundance", "otu_table<-", "taxa_names<-","visualize_differential_abundance",
+  ".data", "taxa_sums","perform_edgeR","perform_DESeq2","diff_abn","glom_taxa_at_rank","Class","..eq.label..", "..rr.label..", "..p.label..","Sample" ,"Family", "Species", "Abundance", "otu_table<-", "taxa_names<-","visualize_differential_abundance",
   "final_results", "group_var", "point_size", "palette","StatStratum","makeContrasts","treatment","padj",
   "DESeq", "DESeqDataSetFromMatrix", "DGEList", "FDR", "MeanDecreaseGini","Total_Reads_total","pseudocount",
   "OTU", "PValue", "Percentage", "Result", "TotalAbundance", "Total_Reads_spiked",

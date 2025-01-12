@@ -1,4 +1,4 @@
-#' Tidy a Phyloseq Object
+#' Tidy a Phyloseq Object with steps below
 #'
 #' This function cleans and tidies a phyloseq object by performing the following steps:
 #' - Fixes taxa names by removing any characters followed by '__' and any spaces after '__'

@@ -18,72 +18,89 @@ taxa_barplot(
   palette = color_palette$MG,
   legend_size = 11,
   legend_columns = 1,
-  x_scale = "fixed",
+  x_scale = "free",
   xlab = NULL
 )
 }
 \arguments{
-\item{physeq}{A phyloseq object containing microbiome data.}
+\item{physeq}{A `phyloseq` object containing microbiome data.}
 
 \item{target_glom}{A character string specifying the taxonomic rank to plot (e.g., "Genus").}
 
-\item{custom_tax_names}{A character vector specifying custom taxonomic names for the levels. Default is NULL.}
+\item{custom_tax_names}{A character vector specifying custom taxonomic names for the levels. Default is `NULL`.}
 
-\item{normalize}{A logical value indicating whether to normalize the sample counts to relative abundances. Default is TRUE.}
+\item{normalize}{A logical value indicating whether to normalize sample counts to relative abundances. Default is `TRUE`.}
 
-\item{treatment_variable}{A character string specifying the treatment variable to use for the x-axis. Default is "Treatment".}
+\item{treatment_variable}{A character string specifying the treatment variable for the x-axis (e.g., "Treatment"). Default is `"Treatment"`.}
 
-\item{abundance_type}{A character string specifying whether to plot "relative" or "absolute" abundance. Default is "relative".}
+\item{abundance_type}{A character string specifying whether to plot `"relative"` or `"absolute"` abundance. Default is `"relative"`.}
 
-\item{x_angle}{A numeric value specifying the angle of the x-axis text labels. Default is 25.}
+\item{x_angle}{A numeric value specifying the angle of x-axis text labels. Default is `25`.}
 
-\item{fill_variable}{A character string specifying the variable to use for filling the bar colors. Default is the same as `target_glom`.}
+\item{fill_variable}{A character string specifying the variable to use for filling bar colors. Default is the same as `target_glom`.}
 
-\item{facet_variable}{A character string specifying the variable to use for faceting the plot. Default is NULL (no faceting).}
+\item{facet_variable}{A character string specifying the variable to use for faceting the plot. Default is `NULL` (no faceting).}
 
-\item{top_n_taxa}{A numeric value specifying the number of top taxa to include in the plot. Default is 20.}
+\item{top_n_taxa}{A numeric value specifying the number of top taxa to include in the plot. Default is `20`.}
 
 \item{palette}{A character vector of color codes or a function generating such a palette. Default is `color_palette$MG`.}
 
-\item{legend_size}{A numeric value specifying the size of the legend text. Default is 11.}
+\item{legend_size}{A numeric value specifying the size of the legend text. Default is `11`.}
 
-\item{legend_columns}{A numeric value specifying the number of columns for the legend. Default is 1.}
+\item{legend_columns}{A numeric value specifying the number of columns for the legend. Default is `1`.}
 
-\item{x_scale}{A character string specifying the x-axis scale in facets. Options are `"free"` or `"fixed"`. Default is `"fixed"`.}
+\item{x_scale}{A character string specifying the x-axis scale in facets. Options are `"free"` or `"fixed"`. Default is `"free"`.}
 
 \item{xlab}{A character string specifying the x-axis label. Default is `NULL` (no label).}
 }
 \value{
 A list containing the following components:
 \describe{
-  \item{barplot}{A ggplot2 object representing the taxa barplot.}
-  \item{taxa_data}{A phyloseq object containing only the top taxa (and optionally "Others").}
+  \item{barplot}{A `ggplot2` object representing the taxa barplot.}
+  \item{taxa_data}{A `phyloseq` object containing the top taxa and aggregated "Others" taxa.}
 }
 }
 \description{
 This function creates a bar plot of the relative or absolute abundances of the top `n` taxa 
-(OTUs/ASVs) at a specified taxonomic rank. If desired, the function can aggregate 
-non-top taxa into an "Others" category to ensure the bar fills up to 100% in relative abundance plots.
+(OTUs/ASVs) at a specified taxonomic rank. Non-top taxa are aggregated into an "Others" 
+category, which is always displayed at the top for clarity. The function supports 
+normalization, faceting, and customization of plot aesthetics. The plot is built using 
+`ggplot2`, and the taxa are ordered with "Others" appearing first.
 }
 \examples{
 \dontrun{
-# Generate a barplot for the Genus rank with relative abundance
+# Example 1: Relative abundance barplot for Genus
 bp_rel <- taxa_barplot(
-  physeq = physeq_data,                 # Your phyloseq object
-  target_glom = "Genus",                # Taxonomic level to aggregate (e.g., Genus)
-  treatment_variable = "Host.species",  # Variable to use on x-axis
-  abundance_type = "relative",          # Plot relative abundance
-  x_angle = 45,                         # Angle for x-axis labels
-  fill_variable = "Genus",              # Fill bars by taxon (Genus)
-  facet_variable = "Diet",              # Facet the plot by diet or NULL
-  top_n_taxa = 20,                      # Show the top 20 taxa
-  palette = color_palette$MG,           # Use the predefined MG color palette
-  legend_size = 12,                     # Customize legend text size
-  legend_columns = 2,                   # Split legend into 2 columns
-  x_scale = "free",                     # Free x-axis levels across facets
-  xlab = "Sample Groups"                # Add a custom x-axis label
+  physeq = physeq_data, 
+  target_glom = "Genus", 
+  fill_variable = "Family", 
+  treatment_variable = "Treatment", 
+  abundance_type = "relative", 
+  top_n_taxa = 20, 
+  legend_size = 10, 
+  x_scale = "free",
+  legend_columns = 1,
+  palette = color_palette$MG
+  )
+print(bp_rel$barplot)
+
+# Example 2: Absolute abundance barplot for Family with faceting
+bp_abs <- taxa_barplot(
+  physeq = physeq_data, 
+  target_glom = "Family", 
+  treatment_variable = "Host.species", 
+  abundance_type = "absolute", 
+  fill_variable = "Family", 
+  facet_variable = "Diet", 
+  top_n_taxa = 10, 
+  x_scale = "fixed",
+  xlab = NULL, 
+  legend_columns = 1,
+  x_angle = 25,
+  palette = color_palette$MG,
+  legend_size = 12
 )
-print(bp_rel$barplot)                   # Print the resulting barplot
+print(bp_abs$barplot)
 }
 
 }
