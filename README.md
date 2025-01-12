@@ -627,11 +627,6 @@ saveRDS(physeq_absolute_16S_OTU, "physeq_absolute_16S_OTU.rds")
 # Gagnon-Bartsch, J.A., Jacob, L. and Speed, T.P., 2013. Removing unwanted variation from high dimensional data with negative controls. Berkeley: Tech Reports from Dep Stat Univ California, pp.1-112.
 
 
-#ps is a phyloseq object without spiked species counts
-ps <- physeq_absolute_16S_OTU
-ps <- remove_zero_negative_count_samples(physeq_absolute_abundance_16S_OTU)
-ps <- convert_categorical_to_factors(physeq_absolute_abundance_16S_OTU)
-
 # Normalization Methods:
 # group_var <- "Diet"  
 # result_TMM <- normalization_set(ps, method = "TMM", groups = "group_var")
