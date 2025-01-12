@@ -778,7 +778,7 @@ print(plot_object)
 
 | Absolute Abundance | Relative Abundance |
 |:----------:|:---------:|
-| ![Absolute taxa barplot](https://github.com/user-attachments/assets/aec4bcf6-3c77-4b0b-ac33-c073ac74faa6) | ![Relative taxa barplot](https://github.com/user-attachments/assets/d4111895-dbbf-408e-9b93-3b9ec24acd73) |
+| ![Absolute taxa barplot](https://github.com/user-attachments/assets/6d32562f-783e-4462-bd86-5ea1466b5797) | ![Relative taxa barplot](https://github.com/user-attachments/assets/c8a237e9-f707-4dd9-aca6-60cf3c5a6aef) |
 
 
 
