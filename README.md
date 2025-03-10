@@ -13,20 +13,22 @@
 ## 📚 Table of Contents
 
 1. **Getting Started**
-   - [Installation](#installation)
-   - [Requirements](#Requirements)
-   - [GCN Correction](#gcn-normalization-with-qiime2-plugin)
+   DspikeIn Package
+   - [DspikeIn](#DspikeIn-Package)
+   - [Installation](#Installation)
+   - [Requirements](#To-Meet-Taxonomic-Ranks-Requirements)
+   - [GCN Correction](#GCN-Normalization-with-QIIME2-Plugin)
    - [Dataset for training](#dataset-for-practicing-dspikein-package)
 
 
-2. **Data Preparation**
-   - [Validation Using Phylogenetic Tree](#validation-using-phylogenetic-tree)
-   - [Preparation for Our Protocol](#prepare-the-required-information-for-our-protocol)
-   - [Preparation for the Synthetic Community](#prepare-the-required-information-for-the-synthetic-community)
+3. **Data Preparation**
+   - [Validation Using Phylogenetic Tree](#Validation-using-phylogenetic-tree)
+   - [Preparation for Our Protocol](#Prepare-the-required-information-for-our-protocol)
+   - [Preparation for the Synthetic Community](#Prepare-the-Required-Information-for-the-Synthetic-community)
 
-3. **Processing**
-   - [Preprocessing One Species Scaling Factor](#preprocessing-one-species-scaling-factor)
-   - [Preprocessing List of Species Scaling Factor](#preprocessing-list-of-species-scaling-factor)
+4. **Processing**
+   - [Preprocessing One Species Scaling Factor](#Preprocessing-One-Species-Scaling-Factor)
+   - [Preprocessing List of Species Scaling Factor](#Preprocessing-List-of-Species-Scaling-Factor)
    - [Calculate Spiked Species Retrieval % for One Species](#calculate-spiked-species-retrieval--for-one-species)
    - [Calculate Spiked Species Retrieval % for List of Species](#calculate-spiked-species-retrieval--for-list-of-species)
    - [Scaling Factors for One Spiked Species](#scaling-factors-for-one-spiked-species)
@@ -35,37 +37,45 @@
    - [Conclusion](#conclusion)
 
 
-4. **Bias Correction**
+5. **Bias Correction**
    - [Convert Relative to Absolute Counts](#convert-relative-counts-to-absolute-counts-and-create-a-new-phyloseq-object)
    - [Normalization and Differential Abundance](#normalization-and-differential-abundance)
    - [Customized Filtering](#customized-filtering)
 
-5. **Visualization**
+6. **Visualization**
    - [Visualization](#visualization)
    - [Detect common ASVs/OTUs](#Detect-common-asvs-otus)
 
-6. **Credits**
-   - [Acknowledgement](#acknowledgement)
+7. **Credits**
+   - [Acknowledgement](#Acknowledgement)
    - [Citing DspikeIn](#if-you-use-this-package-and-find-it-useful)
 
 ---
 
 ### DspikeIn Package
 
-DspikeIn is designed for microbiome data analysis, seamlessly integrating with **phyloseq** (for marker-gene microbiome data) and **TreeSummarizedExperiment** (TSE) (for hierarchical biological data, including microbiomes). These objects must include seven taxonomic ranks.
+DspikeIn is designed for microbiome data analysis, seamlessly integrating with **phyloseq** (for marker-gene microbiome data) and **TreeSummarizedExperiment (TSE)** (for hierarchical biological data, including microbiomes). These objects must include seven taxonomic ranks.  
+For absolute abundance estimation, the metadata must contain **spiked.volume**.  
 
-For absolute abundance estimation, the metadata must contain **spiked.volume**.
+## Features of DspikeIn  
+The DspikeIn package provides functions for:  
 
-Features of DspikeIn
-The DspikeIn package facilitates:
+- Verifying the phylogenetic distances of ASVs/OTUs derived from spiked species.  
+- Preprocessing microbiome data.  
+- Calculating spike-in scaling factors.  
+- Converting relative abundance to absolute abundance.  
+- Estimating acceptable retrieval percentages of spiked species.  
+- Performing data transformation, differential abundance analysis, and visualization.  
 
--Verifying the phylogenetic distances of ASVs/OTUs derived from spiked species.
--Preprocessing microbiome data.
--Calculating the spike-in scaling factor.
--Converting relative abundance to absolute abundance.
--Estimating acceptable retrieval percentages of spiked species.
--Performing data transformation, differential abundance analysis, and visualization.
+### To get detailed examples and guidance, please use:
+browseVignettes("DspikeIn")
 
+### Data availability
+The DspikeIn package provides example datasets located in the data/ folder and inst/extdata/ folder. You can list the available datasets using the following commands:
+data(package = "DspikeIn")
+list.files(system.file("extdata", package = "DspikeIn"))
+
+**Whole-Cell Spike-In Protocol,**
 *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples based on our previous studies [WalkerLab](https://walkerlabmtsu.weebly.com/personnel.html).
 
 ---
@@ -83,7 +93,6 @@ qiime gcn-norm copy-num-normalize \
   --o-gcn-norm-table table-normalized.qza
 
 ```
-
 
 ## Installation
 
@@ -185,6 +194,8 @@ DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phylo
 Requirements
 
 
+### To Meet Taxonomic Ranks Requirements
+
 ```r
 
 ### To remove strain from the taxonomic ranks
@@ -231,19 +242,27 @@ print(head(tax_table(ps)))
 
 ```
 
-
-## Dataset for practicing DspikeIn Package 
+## Dataset for practicing DspikeIn Package
 
 You can download the practice dataset for the DspikeIn package by clicking the link below:  
 👉 [Download Dataset](https://drive.google.com/drive/folders/164_K7MaFLCf5T8F9fsPAb1AndQ8mJOOP?usp=sharing)
 
+### OR You can directly use the datasets provided in the DspikeIn package to practice and test the functions. These datasets include phyloseq objects for different marker-gene microbiome analyses:
 
 ```r
+# Load 16S rRNA OTU dataset
+data("physeq_16SOTU", package = "DspikeIn")  
 
-# Make a new directory and set it as your working directory
+# Load ITS OTU dataset (for fungal microbiome analysis)
+data("physeq_ITSOTU", package = "DspikeIn")
+
+```
+
+#### Make a new directory and set it as your working directory
+```r
+
 create_directory("DspikeIn_16S_OTU", set_working_dir = TRUE)
 getwd()
-
 
 # Therefore, please start by creating a phyloseq object and follow the instructions.
 # To create your phyloseq object, please refer to the phyloseq tutorial (https://joey711.github.io/phyloseq).
@@ -294,7 +313,7 @@ hashcodes <- row.names(phyloseq::tax_table(Dekkera))
 
 ```
 
- Prepare the Required Information for the Synthetic Community
+## Prepare the Required Information for the Synthetic Community
  Pre-process List of Spiked-in Species
 
 ```r
