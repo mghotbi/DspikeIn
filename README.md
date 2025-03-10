@@ -628,36 +628,66 @@ saveRDS(physeq_absolute_16S_OTU, "physeq_absolute_16S_OTU.rds")
 # result_rar <- normalization_set(ps, method = "rar")
 # result_CLR <- normalization_set(ps, method = "clr")
 
-
-results_edgeR <- perform_and_visualize_DA(
-  obj = ps,
-  method = "edgeR",
-  group_var = "Treatment",
-  contrast = c("Control", "Diet"),
-  output_csv_path = "DA_edgeR.csv",
-  target_glom = "Genus",
-  significance_level = 0.05
-)
-
-print(results_edgeR$plot)
-head(results_edgeR$results)  # View significant taxa
-ps_sig<- results_edgeR$ps_significant # extract significant taxa in phyloseq obj for plotting
+# lets subset samples we need from absolute data
+# Absolute count
+absolute_Des <- physeq_absolute %>%
+  phyloseq::subset_taxa(Genus != "Tetragenococcus") %>%
+  phyloseq::subset_samples(Clade.Order == "Caudate") %>%
+  phyloseq::subset_samples(Host.genus %in% c("Desmognathus", "Plethodon", "Eurycea")) %>%
+  phyloseq::subset_samples(Ecoregion.III == "Blue Ridge") %>%
+  phyloseq::subset_samples(Host.genus == "Desmognathus")
 
 results_DESeq2 <- perform_and_visualize_DA(
-  obj = ps,
-  method = "DESeq2",                # method
-  group_var = "Treatment",          # factor
-  contrast = c("Control", "Diet"),  # levels of contrast
+  obj = absolute_Des,
+  method = "DESeq2",
+  group_var = "Host.taxon",
+  contrast = c("Desmognathus monticola", "Desmognathus imitator"),
   output_csv_path = "DA_DESeq2.csv",
   target_glom = "Genus",
   significance_level = 0.05
 )
-
+# Visualization
 print(results_DESeq2$plot)
-head(results_DESeq2$results)  # View significant taxa
-ps_sig<- results_DESeq2$ps_significant # extract significant taxa in phyloseq obj for plotting
+# Significant taxa table
+head(results_DESeq2$results)
+# Filtered phyloseq object with significant taxa
+results_DESeq2$obj_significant
+
+
+# Relative 
+data("physeq_16SOTU", package = "DspikeIn")
+
+relative_Des <- physeq_16SOTU %>%
+  phyloseq::subset_taxa(Genus != "Tetragenococcus") %>%
+  phyloseq::subset_samples(Clade.Order == "Caudate") %>%
+  phyloseq::subset_samples(Host.genus %in% c("Desmognathus", "Plethodon", "Eurycea")) %>%
+  phyloseq::subset_samples(Ecoregion.III == "Blue Ridge") %>%
+  phyloseq::subset_samples(Host.genus == "Desmognathus")
+
+
+results_DESeq2_rel <- perform_and_visualize_DA(
+  obj = relative_Des,
+  method = "DESeq2",
+  group_var = "Host.taxon",
+  contrast = c("Desmognathus monticola", "Desmognathus imitator"),
+  output_csv_path = "DA_DESeq2_rel.csv",
+  target_glom = "Genus",
+  significance_level = 0.05
+)
+
+print(results_DESeq2_rel$plot)
+head(results_DESeq2_rel$results)
+results_DESeq2_rel$obj_significant
+
 
 ```
+
+| Absolute FDR | Relative FDR |
+|:---------------------:|:--------------:|
+| !![Absolute FDR](https://github.com/user-attachments/assets/37c3d8e2-a807-460f-8b6a-9d2c13f0ffc9) | ![Relative FDR](https://github.com/user-attachments/assets/0afd03bb-6ee8-450f-aae5-b9146ae522ac) |
+
+
+---
 
 ### Customized filtering
 
