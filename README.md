@@ -147,9 +147,9 @@ library(microbiomeutilities)
 
 
 ```
+## Step 2: Install DspikeIn Package
 
 ```r
-## Step 2: Install DspikeIn Package
 
 # Installation
 #Instructions for how to install the DspikeIn package.
