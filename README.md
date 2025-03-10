@@ -48,7 +48,7 @@
    - [Acknowledgement](#acknowledgement)
    - [Citing DspikeIn](#if-you-use-this-package-and-find-it-useful)
 
-```
+---
 
 ### DspikeIn Package
 The **DspikeIn** package was developed to facilitate:
@@ -66,6 +66,7 @@ The **DspikeIn** package was developed to facilitate:
 
 Opinions on gene copy number (GCN) correction for the 16S rRNA marker vary, with proponents citing improved accuracy and critics noting limitations. While GCN correction is not included in the DspikeIn package, it can be applied to relative abundance counts using tools like the `q2-gcn-norm` plugin in Qiime2 (rrnDB v5.7) or methods outlined by [Louca et al., 2018](https://link.springer.com/content/pdf/10.1186/s40168-018-0420-9),including PICRUSt, CopyRighter, and PAPRICA. Due to variability in rDNA gene copy numbers ([Lavrinienko et al., 2021](https://doi.org/10.1186/s42523-021-00134-z)), GCN corrections were not applied. However, targeted adjustments can be made to prevent overestimating specific fungal taxa.
 
+---
 
 # GCN Normalization with QIIME2 Plugin
 ### Command Example
@@ -79,19 +80,15 @@ qiime gcn-norm copy-num-normalize \
 ```
 
 
-```
-
 ## Installation
 
 To install the DspikeIn package, follow these steps...
-
 *If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:*
 
 ## Step 1: Install Required Packages
-
 To install the required packages, use the following script:
 
-```
+---
 #### CRAN packages
 
 ```r
