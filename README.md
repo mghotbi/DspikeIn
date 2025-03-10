@@ -72,8 +72,14 @@ browseVignettes("DspikeIn")
 
 ### Data availability
 The DspikeIn package provides example datasets located in the data/ folder and inst/extdata/ folder. You can list the available datasets using the following commands:
+
+```r
+# List datasets available in the DspikeIn package
 data(package = "DspikeIn")
+
+# List files in the extdata folder
 list.files(system.file("extdata", package = "DspikeIn"))
+```
 
 **Whole-Cell Spike-In Protocol,**
 *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples based on our previous studies [WalkerLab](https://walkerlabmtsu.weebly.com/personnel.html).
