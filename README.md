@@ -1,5 +1,4 @@
 ## Welcome to the DspikeIn R package repository!
-### DspikeIn is an R package designed for analyzing **whole-cell spike-in protocols** efficiently.
 
 **Author:** Mitra Ghotbi  
  **Version:** 1.2.3  
