@@ -90,11 +90,19 @@ To install the required packages, use the following script:
 #### CRAN packages
 
 ```r
-# Install CRAN packages
-install.packages(c("stats", "dplyr", "ggplot2", "flextable","ggpubr", "randomForest", "ggridges", "ggalluvial","tibble", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"))
+# Install missing CRAN packages
+install.packages(setdiff(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", 
+                           "randomForest", "ggridges", "ggalluvial", "tibble", 
+                           "matrixStats", "RColorBrewer", "ape", "rlang", 
+                           "scales", "magrittr", "phangorn", "igraph", "tidyr", 
+                           "xml2", "data.table", "reshape2","vegan", "patchwork", "officer"), 
+                         installed.packages()[,"Package"]))
 
 # Load CRAN packages
-lapply(c("stats", "dplyr", "ggplot2", "flextable","ggpubr","randomForest", "ggridges", "ggalluvial","tibble", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"), library, character.only = TRUE)
+lapply(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", "randomForest", 
+         "ggridges", "ggalluvial", "tibble", "matrixStats", "RColorBrewer", 
+         "ape", "rlang", "scales", "magrittr", "phangorn", "igraph", "tidyr", 
+         "xml2", "data.table", "reshape2","vegan", "patchwork", "officer"), library, character.only = TRUE)
 
 ```
 #### Bioconductor Packages
@@ -104,11 +112,16 @@ lapply(c("stats", "dplyr", "ggplot2", "flextable","ggpubr","randomForest", "ggri
 # Install BiocManager if not installed
 if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 
-# Install Bioconductor packages
-BiocManager::install(c("phyloseq", "msa", "DESeq2","ggtree", "edgeR", "Biostrings", "DECIPHER", "microbiome"))
+# Install missing Bioconductor packages
+BiocManager::install(setdiff(c("phyloseq", "msa", "DESeq2", "ggtree", "edgeR", 
+                               "Biostrings", "DECIPHER", "microbiome", "limma", 
+                               "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
+                             installed.packages()[,"Package"]))
 
 # Load Bioconductor packages
-lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings","ggtree", "DECIPHER", "microbiome"), library, character.only = TRUE)
+lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings", "ggtree", "DECIPHER", 
+         "microbiome", "limma", "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
+       library, character.only = TRUE)
 
 ```
 #### GitHub Packages
@@ -116,15 +129,23 @@ lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings","ggtree", "DECIPHER"
 ```r
 
 # Install remotes if not installed
-install.packages("remotes")
+if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
+library(remotes)
 
-# Install GitHub packages
+# Install missing GitHub packages
 remotes::install_github("mikemc/speedyseq")
 remotes::install_github("microsud/microbiomeutilities")
+# Optional
+#devtools::install_github("briatte/ggnet")
+#devtools::install_github("zdk123/SpiecEasi")
 
 # Load GitHub packages
 library(speedyseq)
 library(microbiomeutilities)
+#library(SpiecEasi)
+#library(ggnet)
+
+
 ```
 
 ```r
@@ -143,8 +164,10 @@ install.packages("remotes")
 remotes::install_github("mghotbi/DspikeIn")
 library(DspikeIn)
 
-remotes::install_github("mghotbi/DspikeIn", build_vignettes = TRUE)
-
+# To access the DspikeIn vignette for a detailed tutorial, use vignette("DspikeIn"), or browse all available vignettes with browseVignettes("DspikeIn").
+devtools::install_github("mghotbi/DspikeIn", build_vignettes = TRUE, dependencies = TRUE)
+browseVignettes("DspikeIn")
+vignette("DspikeIn")
 
 ```
 
@@ -185,8 +208,8 @@ print(head(tax_table(ps)))  # Display the first few rows
 
 ```
 
-
 To add species rank to the taxonomic ranks
+
 
 ```r
 library(phyloseq)
@@ -197,7 +220,8 @@ taxonomy[, "species"] <- paste0(taxonomy[, "Genus"], "_OTU", seq_len(nrow(taxono
 # Step 3: Update the taxonomy table in the phyloseq object
 tax_table(ps) <- taxonomy
 # Step 4: Verify the changes
-print(head(tax_table(ps)))  # Display the first few rows to confirm
+print(head(tax_table(ps)))  
+
 
 ```
 
@@ -222,13 +246,13 @@ getwd()
 
 # Note: DspikeIn requires 'spiked.volume'; any other format is not readable."¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯"
 
-# We are going to work with a subset of the dataset for both ASVs and OTUs
-# approaches to accelerate this workshop.
+# We will work with a subset of the dataset for both ASV and OTU approaches to accelerate this workshop. However, the full dataset with the OTU approach is available
+# in DspikeIn via data("physeq_16SOTU", package = "DspikeIn") and data("physeq_ITSOTU", package = "DspikeIn").
 
 physeq_16SOTU <-readRDS("Relative16SOTU.rds")
 physeq_ITSOTU <-readRDS("RelativeITSOTU.rds")
 
-physeq_16SOTU <- tidy_phyloseq(physeq_16SOTU)
+physeq_16SOTU <- tidy_phyloseq_tse(physeq_16SOTU)
 
 # Ensure your metadata contains spiked volumes:
 physeq_16SOTU@sam_data$spiked.volume
@@ -299,7 +323,7 @@ Tetra_control_sequences <- Biostrings::readDNAStringSet("~/Tetra_Ju.fasta")
 
 # combine the Tetragenococcus FASTA files (from your dataset and the Sanger fasta of Tetragenococcus, positive control)
 combined_sequences <- c(ref_sequences_Tetra, Tetra_control_sequences)
-writeXStringSet(combined_sequences, filepath = "~/combined_fasta_file")
+writeXStringSet(combined_sequences, filepath = "~/combined_fasta_file") # existed in inst/exdata of DspikeIn
 combined_sequences <- Biostrings::readDNAStringSet("~/combined_fasta_file")
 
 # Plot Neighbor-Joining tree with bootstrap values to compare Tetragenococcus in your dataset with your positive control
@@ -424,7 +448,7 @@ Spiked_16S_sum_scaled <- Pre_processing_hashcodes(
 summ_count_phyloseq(Spiked_16S_sum_scaled)
 
 # Tidy phyloseq object
-Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_sum_scaled)
+Spiked_16S_OTU_scaled <- tidy_phyloseq_tse(Spiked_16S_sum_scaled)
 
 
 # Customize the passed_range and merged_spiked_species/merged_spiked_hashcodes based on your preferences.
@@ -511,10 +535,6 @@ result <- calculate_spikeIn_factors(Spiked_16S_OTU_scaled, spiked_cells, merged_
 
 # Check the outputs
 scaling_factors <- result$scaling_factors
-physeq_no_spiked <- result$physeq_no_spiked
-spiked_16S_total_reads <- result$spiked_16S_total_reads
-spiked_species_reads <- result$spiked_species_reads
-
 
 ```
 
@@ -545,8 +565,9 @@ scaling_factors <- calculate_list_average_scaling_factors(
 # Convert relative counts data to absolute counts
 absolute <- convert_to_absolute_counts(Spiked_16S_OTU_scaled, scaling_factors)
 absolute_counts <- absolute$absolute_counts
-physeq_absolute_abundance_16S_OTU <- absolute$physeq_obj
+physeq_absolute_abundance_16S_OTU <- absolute$obj_adj
 
+physeq_absolute <- physeq_absolute_abundance_16S_OTU
 
 # summary statistics 
 post_eval_summary <- calculate_summary_stats_table(absolute_counts)
@@ -579,7 +600,7 @@ Here is an example of a success or failure report:
 
 #Save your file for later. Please stay tuned for the rest: Comparisons and several visualization methods to show how important it is to convert relative to absolute abundance in the context of microbial ecology.
 
-physeq_absolute_16S_OTU <- tidy_phyloseq(physeq_absolute_abundance_16S_OTU_perc)
+physeq_absolute_16S_OTU <- tidy_phyloseq_tse(physeq_absolute_abundance_16S_OTU_perc)
 saveRDS(physeq_absolute_16S_OTU, "physeq_absolute_16S_OTU.rds")
 
 ```
@@ -609,7 +630,7 @@ saveRDS(physeq_absolute_16S_OTU, "physeq_absolute_16S_OTU.rds")
 
 
 results_edgeR <- perform_and_visualize_DA(
-  ps = ps,
+  obj = ps,
   method = "edgeR",
   group_var = "Treatment",
   contrast = c("Control", "Diet"),
@@ -623,7 +644,7 @@ head(results_edgeR$results)  # View significant taxa
 ps_sig<- results_edgeR$ps_significant # extract significant taxa in phyloseq obj for plotting
 
 results_DESeq2 <- perform_and_visualize_DA(
-  ps = ps,
+  obj = ps,
   method = "DESeq2",                # method
   group_var = "Treatment",          # factor
   contrast = c("Control", "Diet"),  # levels of contrast
@@ -856,9 +877,6 @@ RP+facet_wrap(~Diet)
 results <- detect_common_asvs_taxa(list(rf_physeq, FTspiked_16S , core.microbiome), 
                                     output_common_asvs_rds = "common_asvs.rds", 
                                     output_common_taxa_rds = "common_taxa.rds")
-
-common_asvs_phyloseq <- results$common_asvs_phyloseq
-common_taxa_phyloseq <- results$common_taxa_phyloseq
 
 
 ```
