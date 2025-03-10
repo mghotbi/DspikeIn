@@ -51,13 +51,20 @@
 ---
 
 ### DspikeIn Package
-The **DspikeIn** package was developed to facilitate:
-- Verifying the phylogenetic distances of ASVs/OTUs resulting from spiked species.
-- Preprocessing data.
-- Calculating the spike-in scaling factor.
-- Converting relative abundance to absolute abundance.
-- Estimating acceptable spiked species retrieval %
-- Data transformation, Differential abundance and visualization.
+
+DspikeIn is designed for microbiome data analysis, seamlessly integrating with **phyloseq** (for marker-gene microbiome data) and **TreeSummarizedExperiment** (TSE) (for hierarchical biological data, including microbiomes). These objects must include seven taxonomic ranks.
+
+For absolute abundance estimation, the metadata must contain **spiked.volume**.
+
+Features of DspikeIn
+The DspikeIn package facilitates:
+
+-Verifying the phylogenetic distances of ASVs/OTUs derived from spiked species.
+-Preprocessing microbiome data.
+-Calculating the spike-in scaling factor.
+-Converting relative abundance to absolute abundance.
+-Estimating acceptable retrieval percentages of spiked species.
+-Performing data transformation, differential abundance analysis, and visualization.
 
 *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples based on our previous studies [WalkerLab](https://walkerlabmtsu.weebly.com/personnel.html).
 
@@ -177,7 +184,6 @@ vignette("DspikeIn")
 DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phyloseq) package.
 Requirements
 
-DspikeIn works with a phyloseq object containing 7 taxonomic ranks. To estimate absolute abundance, the spiked.volume column in the metadata is required.
 
 ```r
 
@@ -312,6 +318,11 @@ This section demonstrates how to use various functions from the package to plot 
 # We first read DNA sequences from a FASTA file, to perform multiple sequence alignment and compute a distance matrix using the maximum likelihood method, then we construct a phylogenetic tree
 # Use the Neighbor-Joining method  based on a Jukes-Cantor distance matrix and plot the tree with bootstrap values.
 # we compare the Sanger read of Tetragenococcus halophilus with the FASTA sequence of Tetragenococcus halophilus from our phyloseq object.
+
+# Get path to external data folder
+extdata_path <- system.file("extdata", package = "DspikeIn")
+list.files(extdata_path)
+
 
 # Subset the phyloseq object to include only Tetragenococcus species first
 Tetra <- subset_taxa(Tetra, !is.na(taxa_names(Tetra)) & taxa_names(Tetra) != "")
