@@ -1,16 +1,12 @@
 ---
-title: "DspikeIn1.2.3"
-author: "Mitra Ghotbi"
-date: "2025-03-08"
-output: html_document
----
+# Welcome to the DspikeIn R package repository!
+# DspikeIn is an R package designed for analyzing **whole-cell spike-in protocols** efficiently.
 
-```{r setup, include=FALSE}
-# DspikeIn
-Welcome to the DspikeIn R package repository!
+**Author:** Mitra Ghotbi  
+ **Version:** 1.2.3  
+ **Date:** March 8, 2025  
 
 ![CheatSheetDspikeIn](https://github.com/user-attachments/assets/19523496-bf0a-4611-9068-13f1aeffe05c)
-
 
 ---
 
@@ -85,21 +81,17 @@ qiime gcn-norm copy-num-normalize \
 
 ```
 
-
-
-```{r }
-
 ## Installation
 
 To install the DspikeIn package, follow these steps...
 
----
 *If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:*
 
 ## Step 1: Install Required Packages
 
 To install the required packages, use the following script:
 
+```
 #### CRAN packages
 
 ```r
@@ -109,7 +101,11 @@ install.packages(c("stats", "dplyr", "ggplot2", "flextable","ggpubr", "randomFor
 # Load CRAN packages
 lapply(c("stats", "dplyr", "ggplot2", "flextable","ggpubr","randomForest", "ggridges", "ggalluvial","tibble", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"), library, character.only = TRUE)
 
+```
 #### Bioconductor Packages
+
+```r 
+
 # Install BiocManager if not installed
 if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 
@@ -119,8 +115,11 @@ BiocManager::install(c("phyloseq", "msa", "DESeq2","ggtree", "edgeR", "Biostring
 # Load Bioconductor packages
 lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings","ggtree", "DECIPHER", "microbiome"), library, character.only = TRUE)
 
-
+```
 #### GitHub Packages
+
+```r
+
 
 
 # Install remotes if not installed
@@ -133,8 +132,9 @@ remotes::install_github("microsud/microbiomeutilities")
 # Load GitHub packages
 library(speedyseq)
 library(microbiomeutilities)
+```
 
-
+```r
 ## Step 2: Install DspikeIn Package
 
 # Installation
@@ -150,7 +150,7 @@ install.packages("remotes")
 remotes::install_github("mghotbi/DspikeIn")
 library(DspikeIn)
 
-
+remotes::install_github("mghotbi/DspikeIn", build_vignettes = TRUE)
 
 
 ```
