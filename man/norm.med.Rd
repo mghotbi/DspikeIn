@@ -4,10 +4,10 @@
 \alias{norm.med}
 \title{Median Normalization}
 \usage{
-norm.med(ps, groups)
+norm.med(obj, groups)
 }
 \arguments{
-\item{ps}{A phyloseq object.}
+\item{obj}{A phyloseq object.}
 
 \item{groups}{A string specifying the grouping variable in sample data.}
 }
@@ -16,10 +16,4 @@ A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
 Median Normalization
-}
-\examples{
-\dontrun{
-ps <- phyloseq::GlobalPatterns
-result <- norm.med(ps, "SampleType")
-}
 }

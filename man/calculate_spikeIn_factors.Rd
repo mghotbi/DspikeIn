@@ -2,51 +2,74 @@
 % Please edit documentation in R/calculate_spikeIn_factors.R
 \name{calculate_spikeIn_factors}
 \alias{calculate_spikeIn_factors}
-\title{Calculate Scaling Factors for Spiked Species in Phyloseq Object}
+\title{Calculate Scaling Factors for Spiked Species in Phyloseq or TSE Object}
 \usage{
 calculate_spikeIn_factors(
-  physeq,
+  obj,
   spiked_cells,
   merged_spiked_species,
-  output_path = NULL
+  output_path = "spikeIn_factors_output"
 )
 }
 \arguments{
-\item{physeq}{A phyloseq object containing the microbial data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing microbiome data.}
 
 \item{spiked_cells}{A numeric value specifying the number of spiked cells.}
 
-\item{merged_spiked_species}{A character vector of spiked species to merge in the phyloseq object.}
+\item{merged_spiked_species}{A character vector of spiked species to merge in the object.}
 
-\item{output_path}{A character string specifying the path to save the DOCX output file. Default is NULL, which saves the report as "spikeIn_factors_summary.docx".}
+\item{output_path}{A character string specifying the path to save the DOCX output file.
+Default is \code{NULL}, which saves the report as \code{"spikeIn_factors_summary.docx"}.}
 }
 \value{
-A list containing the scaling factors and other related outputs.
+A list containing:
+\item{scaling_factors}{A numeric vector of calculated scaling factors, with a default factor of 1 for samples where no spiked species were detected (to prevent division by zero).}
+\item{filtered_obj}{Filtered \code{phyloseq} or \code{TreeSummarizedExperiment} object with spiked species removed.}
+\item{spiked_16S_total_reads}{A data frame containing total reads per sample.}
+\item{spiked_species}{The extracted spiked species from the input object.}
+\item{spiked_species_merged}{A merged version of the spiked species.}
+\item{spiked_species_reads}{A data frame with read counts for merged spiked species.}
+\item{absolute_counts}{The bias-corrected OTU table converted from relative to absolute counts.}
+\item{normalized_obj}{The corrected \code{phyloseq} or \code{TreeSummarizedExperiment} object with all original components intact.}
 }
 \description{
-This function calculates the scaling factors for specified spiked species in a phyloseq object.
-It excludes the spiked species, merges the spiked species into one ASV, calculates the scaling factors,
-and saves the results as RDS, CSV, and DOCX files.
+This function calculates scaling factors for specified spiked species
+in a \code{phyloseq} or \code{TreeSummarizedExperiment (TSE)} object.
+It removes spiked species, merges them, computes scaling factors,
+applies them to the OTU table, and returns bias-corrected absolute counts along with relevant outputs.
 }
 \details{
-Note: The metadata in the phyloseq object must contain a column named 'spiked.volume' with the appropriate values.
+\itemize{
+\item The metadata must contain a column named \code{"spiked.volume"} with appropriate values.
+\item \strong{If no spiked species are detected in a sample, a default scaling factor of 1 is applied} (to prevent division by zero).
+\item If \code{TreeSummarizedExperiment} is entered and \code{rowTree(obj)} is invalid, the tree will be omitted.
+}
 }
 \examples{
-\dontrun{
-# Example usage:
+\donttest{
+  data("physeq_16SOTU", package = "DspikeIn")
+  spiked_cells <- 1847
+  species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
+  merged_spiked_species <- "Tetragenococcus_halophilus"
 
-# Define the spiked species
-merged_spiked_species <- c("Tetragenococcus_halophilus")
+  # Subset the phyloseq object based on spiked.volume
+  spiked_16S_OTU <- phyloseq::subset_samples(physeq_16SOTU, spiked.volume \%in\% c("2", "1"))
 
-# Calculate scaling factors and generate the report
-result <- calculate_spikeIn_factors(merged_physeq_sum, 1874, merged_spiked_species)
+  # Pre-process species data by merging using the sum method
+  merged_physeq_sum <- Pre_processing_species(
+    spiked_16S_OTU,
+    species_name = merged_spiked_species,
+    merge_method = "sum",
+    output_file = "merged_physeq_sum.rds"
+  )
 
-# Access the results from the calculation
-scaling_factors <- result$scaling_factors        # The calculated scaling factors
-physeq_no_spiked <- result$physeq_no_spiked      # Phyloseq object with no spiked species
-spiked_16S_total_reads <- result$spiked_16S_total_reads  # Total reads of the spiked 16S species
-spiked_species <- result$spiked_species          # List of spiked species
-spiked_species_merged <- result$spiked_species_merged  # Merged spiked species
-spiked_species_reads <- result$spiked_species_reads    # Reads associated with the spiked species
+  # Calculate spike-in factors for phyloseq object
+  result_physeq <- calculate_spikeIn_factors(
+  merged_physeq_sum,
+  spiked_cells = 1874,
+  merged_spiked_species = merged_spiked_species
+  )
+  scaling_factors_physeq <- result_physeq$scaling_factors
+  print(scaling_factors_physeq)
 }
 }

@@ -2,38 +2,44 @@
 % Please edit documentation in R/Pre_processing_species_list.R
 \name{Pre_processing_species_list}
 \alias{Pre_processing_species_list}
-\title{Pre-process a list of spiked-in species in a phyloseq object}
+\title{Pre-process a list of spiked-in species in a phyloseq or TSE object}
 \usage{
 Pre_processing_species_list(
-  physeq,
+  obj,
   spiked_species,
   merge_method = c("sum", "max"),
   output_file = NULL
 )
 }
 \arguments{
-\item{physeq}{A \code{phyloseq} object containing the microbiome data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
 
-\item{spiked_species}{A character vector of spiked-in species names to be processed. Species names should match the \code{Genus Species} format in the phyloseq object (e.g., "Pseudomonas aeruginosa").}
+\item{spiked_species}{A character vector of species names to be processed (Genus Species format).}
 
-\item{merge_method}{A character string specifying the method to use for merging ASVs. Either \code{"sum"} to sum the counts, or \code{"max"} to keep the maximum abundance ASV. Default is \code{"sum"}.}
+\item{merge_method}{Either \code{"sum"} (sum counts) or \code{"max"} (keep max abundance ASV). Default is \code{"sum"}.}
 
-\item{output_file}{Optional. A file path to save the merged phyloseq object. If provided, the merged object will be saved as an \code{.rds} file.}
+\item{output_file}{Optional: File path to save the merged object as an \code{.rds} file.}
 }
 \value{
-A \code{phyloseq} object with the spiked-in species pre-processed.
+A \code{phyloseq} or \code{TreeSummarizedExperiment} object with merged species.
 }
 \description{
-This function pre-processes a list of spiked-in species in a phyloseq object
-by merging ASVs based on a specified method (sum or max). It retains the Genus
-and Species information for the merged taxa as a single entry in the taxonomy table.
+Merges ASVs based on a specified method while preserving all metadata
+(taxonomy, sample data, phylogenetic tree, and reference sequences, if available).
 }
 \examples{
 \dontrun{
-# Example usage
+library(phyloseq)
+library(TreeSummarizedExperiment)
+
+data("tse", package = "DspikeIn")
+data("physeq", package = "DspikeIn")
+
+# Define spiked species for merging
 spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
-merged_physeq_sum <- Pre_processing_species_list(physeq, spiked_species, merge_method = "sum")
-merged_physeq_sum@tax_table
-merged_physeq_sum@otu_table
+
+# Process the dataset and merge ASVs
+merged_TSE <- Pre_processing_species_list(tse, spiked_species, merge_method = "sum")
+merged_physeq <- Pre_processing_species_list(physeq, spiked_species, merge_method = "sum")
 }
 }

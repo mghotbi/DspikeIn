@@ -2,43 +2,73 @@
 % Please edit documentation in R/convert_to_absolute_counts.R
 \name{convert_to_absolute_counts}
 \alias{convert_to_absolute_counts}
-\title{Convert Relative ASV Counts to Absolute Counts}
+\title{Convert Relative ASV/OTU Counts to Absolute Counts}
 \usage{
-convert_to_absolute_counts(physeq, scaling_factors, output_dir = NULL)
+convert_to_absolute_counts(obj, scaling_factors, output_dir = NULL)
 }
 \arguments{
-\item{physeq}{A phyloseq object containing the microbial data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing microbial data.}
 
-\item{scaling_factors}{A numeric vector of scaling factors to convert relative counts to absolute counts.}
+\item{scaling_factors}{A named numeric vector of scaling factors for each sample.}
 
-\item{output_dir}{A character string specifying the directory to save the output file. Default is NULL, which uses the current working directory.}
+\item{output_dir}{A character string specifying the directory to save the output file (default: \code{NULL}).}
 }
 \value{
-A list containing the data frame of absolute counts and the modified phyloseq object.
+A list containing:
+\itemize{
+\item \code{absolute_counts}: A data frame of absolute counts.
+\item \code{obj_adj}: The modified \code{phyloseq} or \code{TreeSummarizedExperiment} object.
+}
 }
 \description{
-This function converts the relative ASV counts in a phyloseq object to absolute counts by multiplying 
-the ASV counts by provided scaling factors. The resulting absolute counts are saved as a CSV file and 
-also returned as a list containing both the data frame of absolute counts and the modified phyloseq object. 
-Taxa with NA or empty values in the taxonomic table are removed.
+Converts relative ASV counts in a \code{phyloseq} or \code{TreeSummarizedExperiment} (TSE) object
+to absolute counts by multiplying ASV counts by provided scaling factors.
+Ensures phylogenetic tree (\code{rowTree}) and reference sequences (\code{refseq}) are \strong{retained} if possible.
 }
 \examples{
-\dontrun{
-# Example usage:
-#' # Assume `merged_physeq_sum` is a phyloseq object with one ASV/OTU 
-# resulting from spiked species, and `scaling_factors` is a 
-# numeric vector of scaling factors.
-merged_spiked_species <- c("Tetragenococcus_halophilus")
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("physeq_16SOTU", package = "DspikeIn")
+  # Scaling factors calculated from `calculate_spikeIn_factors()`
 
-# Calculate scaling factors and generate a report
-result <- calculate_spikeIn_factors(merged_physeq_sum, 1874, merged_spiked_species)
+  spiked_cells <- 1847
+  species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
+  merged_spiked_species <- "Tetragenococcus_halophilus"
 
-# Convert the phyloseq object to absolute counts using scaling factors
-absolute <- convert_to_absolute_counts(merged_physeq_sum, scaling_factors)
-absolute_counts <- absolute$absolute_counts
-physeq_obj <- absolute$physeq_obj
+  spiked_16S_OTU <- phyloseq::subset_samples(physeq_16SOTU,
+    spiked.volume \%in\% c("2", "1"))
+  Spiked_16S_sum_scaled <- Pre_processing_species(
+    spiked_16S_OTU,
+    species_name,
+    merge_method = "sum",
+    output_file = "merged_physeq_sum.rds"
+  )
 
-# The 'absolute_counts' variable contains the converted counts, and 'physeq_obj' 
-#is the updated phyloseq object
+  result <- calculate_spikeIn_factors(Spiked_16S_sum_scaled,
+    spiked_cells, merged_spiked_species)
+  scaling_factors <- result$scaling_factors
+
+  result_physeq <- convert_to_absolute_counts(Spiked_16S_sum_scaled, scaling_factors)
+  abs_counts_physeq <- result_physeq$absolute_counts
+  physeq_adj <- result_physeq$obj_adj
+
+  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+  spiked_16S_OTU_TSE <- tse_16SOTU[, tse_16SOTU$spiked.volume \%in\% c("2", "1")]
+
+  Spiked_16S_sum_tse_scaled <- Pre_processing_species(
+    spiked_16S_OTU_TSE,
+    species_name,
+    merge_method = "sum",
+    output_file = "merged_physeq_sum.rds"
+  )
+
+  result <- calculate_spikeIn_factors(Spiked_16S_sum_tse_scaled,
+    spiked_cells, merged_spiked_species)
+  scaling_factors <- result$scaling_factors
+
+  result_tse <- convert_to_absolute_counts(spiked_16S_OTU_TSE, scaling_factors)
+  abs_counts_tse <- result_tse$absolute_counts
+  tse_adj <- result_tse$obj_adj
+}
 }
 }

@@ -2,16 +2,16 @@
 % Please edit documentation in R/zzz.R
 \name{.onAttach}
 \alias{.onAttach}
-\title{Startup message for DspikeIn package}
+\title{Package Startup Message}
 \usage{
 .onAttach(libname, pkgname)
 }
 \arguments{
-\item{libname}{The library name.}
+\item{libname}{The library name (automatically passed by R).}
 
-\item{pkgname}{The package name.}
+\item{pkgname}{The package name (automatically passed by R).}
 }
 \description{
-This function displays a startup message when the DspikeIn package is loaded.
+Displays a message when the DspikeIn package is loaded.
 }
 \keyword{internal}

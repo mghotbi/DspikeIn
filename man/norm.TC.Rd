@@ -4,10 +4,10 @@
 \alias{norm.TC}
 \title{TC Normalization (Total Count Scaling)}
 \usage{
-norm.TC(ps, groups)
+norm.TC(obj, groups)
 }
 \arguments{
-\item{ps}{A phyloseq object.}
+\item{obj}{A phyloseq object.}
 
 \item{groups}{A string specifying the grouping variable in sample data.}
 }
@@ -16,10 +16,4 @@ A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
 TC Normalization (Total Count Scaling)
-}
-\examples{
-\dontrun{
-ps <- phyloseq::GlobalPatterns
-result <- norm.TC(ps, "SampleType")
-}
 }

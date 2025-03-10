@@ -2,27 +2,28 @@
 % Please edit documentation in R/normalization_set.R
 \name{norm.DESeq}
 \alias{norm.DESeq}
-\title{DESeq Normalization}
+\title{DESeq Normalization with Pseudocount and Integer Conversion}
 \usage{
-norm.DESeq(ps, groups, pseudocount = 1)
+norm.DESeq(obj, groups, pseudocount = 1)
 }
 \arguments{
-\item{ps}{A phyloseq object.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
 
 \item{groups}{A string specifying the grouping variable in sample data.}
 
 \item{pseudocount}{A numeric value added to avoid zeros in the dataset.}
 }
 \value{
-A list containing the normalized phyloseq object and scaling factors.
+A list containing the normalized object (same format as input) and scaling factors.
 }
 \description{
-DESeq Normalization with Pseudocount and Integer Conversion
+DESeq Normalization
 }
 \examples{
-\dontrun{
-result_DESeq <- normalization_set(ps, method = "DESeq", groups = "SampleType")
-normalized_ps_DESeq <- result_DESeq$dat.normed
-scaling_factors_DESeq <- result_DESeq$scaling.factor
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("physeq_16SOTU", package = "DspikeIn")
+  result_DESeq <- norm.DESeq(physeq_16SOTU, groups = "Animal.type", pseudocount = 1)
+}
 }
 }

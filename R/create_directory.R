@@ -1,6 +1,6 @@
-#' Create a Directory and Optionally Set as Working Directory
+#' @title Create a Directory and Optionally Set as Working Directory
 #'
-#' This function checks if a specified directory exists and creates it if it doesn't.
+#' @description This function checks if a specified directory exists and creates it if it doesn't.
 #' Optionally, it can also set the newly created or existing directory as the working directory.
 #'
 #' @param directory_path A character string specifying the path of the directory to create.
@@ -17,15 +17,15 @@ create_directory <- function(directory_path, set_working_dir = FALSE) {
     if (!base::dir.exists(directory_path)) {
       # If it doesn't exist, create the directory
       base::dir.create(directory_path)
-      cat("Directory created successfully.\n")
+      cat("\U0001F5C2 Directory created successfully.\n")
     } else {
       cat("Directory already exists.\n")
     }
-    
+
     # Optionally set the working directory
     if (set_working_dir) {
       setwd(directory_path)
-      cat("Working directory set to:", directory_path, "\n")
+      cat("\U0001F4DD Working directory set to:", directory_path, "\n")
     }
   })
 }

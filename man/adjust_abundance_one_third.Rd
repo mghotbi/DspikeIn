@@ -4,27 +4,36 @@
 \alias{adjust_abundance_one_third}
 \title{Adjust Abundance by One-Third}
 \usage{
-adjust_abundance_one_third(physeq, factor = 3, output_file = NULL)
+adjust_abundance_one_third(obj, factor = 3, output_file = NULL)
 }
 \arguments{
-\item{physeq}{A phyloseq object containing the microbiome data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing microbiome data.}
 
 \item{factor}{A numeric value specifying the factor by which to divide the abundance data. Default is 3.}
 
-\item{output_file}{A character string specifying the output file name for the adjusted phyloseq object. Default is NULL.}
+\item{output_file}{A character string specifying the output file name for the adjusted object. Default is NULL.}
 }
 \value{
-A phyloseq object with the adjusted abundance data.
+A modified object of the same class (\code{phyloseq} or \code{TreeSummarizedExperiment}) with adjusted abundances.
 }
 \description{
-This function normalizes the abundance data in a phyloseq object by dividing each value by a specified factor.
-The normalization process is based on the volume of DNA processed for sequencing, such as 16S rRNA amplicons.
+This function normalizes the abundance data in a \code{phyloseq} or \code{TreeSummarizedExperiment}
+object by dividing each value by a specified factor.
+}
+\details{
+This function extracts the OTU table (or assay in \code{TSE}), normalizes it by dividing by \code{factor},
+and updates the original object while maintaining its structure.
 }
 \examples{
-\dontrun{
-if(interactive()){
-  # Adjust the abundance data by dividing each value by 3
-  adjusted_physeq <- adjust_abundance_one_third(physeq16S, factor = 3)
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("physeq_16SOTU", package = "DspikeIn")
+  adjusted_physeq <- adjust_abundance_one_third(physeq_16SOTU, factor = 3)
+
+  # Example with a TreeSummarizedExperiment object
+  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+  adjusted_tse <- adjust_abundance_one_third(tse_16SOTU, factor = 3)
 }
 }
+
 }

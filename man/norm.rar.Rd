@@ -4,21 +4,14 @@
 \alias{norm.rar}
 \title{Rarefying}
 \usage{
-norm.rar(ps)
+norm.rar(obj)
 }
 \arguments{
-\item{ps}{A phyloseq object.}
+\item{obj}{A phyloseq object.}
 }
 \value{
 A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
 Rarefying
-}
-\examples{
-\dontrun{
-ps <- phyloseq::GlobalPatterns
-result_rar <- norm.rar(ps)
-normalized_ps_rar <- result_rar$dat.normed
-}
 }

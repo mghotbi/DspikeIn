@@ -4,24 +4,41 @@
 \alias{plot_tree_nj}
 \title{Plot a Neighbor-Joining Phylogenetic Tree with Bootstrap Values}
 \usage{
-plot_tree_nj(fasta_file, output_file = "neighbor_joining_tree.png")
+plot_tree_nj(obj, output_file = "neighbor_joining_tree.png")
 }
 \arguments{
-\item{fasta_file}{A character string specifying the path to the FASTA file containing DNA sequences.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing reference sequences,
+or a \strong{FASTA file} path (\code{character}) containing DNA sequences.}
 
-\item{output_file}{A character string specifying the output file path for the plot. Default is "neighbor_joining_tree.png".}
+\item{output_file}{A character string specifying the output file for the tree plot.
+Default is \code{"neighbor_joining_tree.png"}.}
 }
 \value{
-NULL. The function saves the plot to the specified output file and displays it.
+\code{NULL}. The function saves the tree plot with bootstrap values to the specified output file.
 }
 \description{
-This function reads DNA sequences from a FASTA file, constructs a Neighbor-Joining phylogenetic tree,
-generates bootstrap values, and plots the tree.
+Constructs a \strong{Neighbor-Joining (NJ) tree} with \strong{bootstrap values},
+extracted from a \code{phyloseq} or \code{TreeSummarizedExperiment} object, or directly from a FASTA file.
+}
+\details{
+\itemize{
+\item Extracts \strong{reference sequences} from the object (or reads from a FASTA file).
+\item Performs \strong{multiple sequence alignment (MSA)} for proper tree reconstruction.
+\item Constructs a \strong{Neighbor-Joining (NJ) tree} with \strong{bootstrap support values}.
+\item Uses \strong{polished aesthetics} for a \strong{publication-ready tree plot}.
+}
 }
 \examples{
 \dontrun{
-# Plot the Neighbor-Joining tree from the "tetra.fasta" file
-# The output will be saved as "neighbor_joining_tree_with_bootstrap.png"
-plot_tree_nj("tetra.fasta", output_file = "neighbor_joining_tree_with_bootstrap.png")
+data("physeq_16SOTU", package = "DspikeIn")
+plot_tree_nj(physeq_16SOTU, output_file = "nj_tree_physeq.png")
+
+tse_obj <-convert_phyloseq_to_tse(physeq_16SOTU)
+plot_tree_nj(tse_obj, output_file = "nj_tree_tse.png")
+
+# Example usage with your *FASTA* file:
+sequences <- load_fasta("combined.fasta")
+plot_tree_nj("sequences", output_file = "nj_tree_fasta.png")
 }
+
 }

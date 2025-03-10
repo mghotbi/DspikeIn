@@ -2,44 +2,49 @@
 % Please edit documentation in R/detect_common_asvs_taxa.R
 \name{detect_common_asvs_taxa}
 \alias{detect_common_asvs_taxa}
-\title{Detect Common ASVs and Taxa from Multiple Phyloseq Objects}
+\title{Detect Common ASVs and Taxa from Multiple Phyloseq or TSE Objects}
 \usage{
 detect_common_asvs_taxa(
-  phyloseq_list,
-  output_common_asvs_csv = "common_asvs.csv",
-  output_common_asvs_rds = "common_asvs.rds",
-  output_common_taxa_csv = "common_taxa.csv",
-  output_common_taxa_rds = "common_taxa.rds",
+  obj_list,
+  output_common_csv = "common_asvs_taxa.csv",
+  output_common_rds = "common_asvs_taxa.rds",
   return_as_df = FALSE
 )
 }
 \arguments{
-\item{phyloseq_list}{A list of phyloseq objects.}
+\item{obj_list}{A list of \code{phyloseq} or \code{TreeSummarizedExperiment} objects.
+All objects in the list must be of the same class.}
 
-\item{output_common_asvs_csv}{A character string specifying the path to save the common ASVs as a CSV file. Default is "common_asvs.csv".}
+\item{output_common_csv}{A character string specifying the path to save the pruned ASV/Taxa
+object as a CSV file. Default is \code{"common_asvs_taxa.csv"}. Set to \code{NULL} to disable saving.}
 
-\item{output_common_asvs_rds}{A character string specifying the path to save the common ASVs as an RDS file. Default is "common_asvs.rds".}
+\item{output_common_rds}{A character string specifying the path to save the pruned ASV/Taxa
+object as an RDS file. Default is \code{"common_asvs_taxa.rds"}. Set to \code{NULL} to disable saving.}
 
-\item{output_common_taxa_csv}{A character string specifying the path to save the common taxa as a CSV file. Default is "common_taxa.csv".}
-
-\item{output_common_taxa_rds}{A character string specifying the path to save the common taxa as an RDS file. Default is "common_taxa.rds".}
-
-\item{return_as_df}{A logical indicating whether to return the results as data frames. Default is FALSE, meaning the results are returned as phyloseq objects.}
+\item{return_as_df}{A logical indicating whether to return the results as a data frame (\code{TRUE})
+or as the original \code{phyloseq}/\code{TSE} object (\code{FALSE}). Default is \code{FALSE}.}
 }
 \value{
-A list containing the phyloseq objects or data frames of common ASVs and common taxa.
+A pruned \code{phyloseq} or \code{TreeSummarizedExperiment} object containing only common ASVs and taxa.
+If \code{return_as_df = TRUE}, a data frame with common ASVs/taxa is returned instead.
 }
 \description{
-This function identifies the common ASVs (Amplicon Sequence Variants) and common taxa detected across multiple phyloseq objects.
-It extracts ASVs and taxa from the provided phyloseq objects, finds the common ones, and optionally saves the results to CSV and RDS files.
+This function identifies the common Amplicon Sequence Variants (ASVs) and
+common taxa detected across multiple \code{phyloseq} or \code{TreeSummarizedExperiment} (TSE) objects.
+It extracts ASVs and taxa using the package's accessor functions, finds the common ones,
+and returns a pruned object containing only the shared features.
+}
+\details{
+Optionally, the results can be saved to CSV and RDS files.
 }
 \examples{
 \dontrun{
-if (interactive()) {
-  # Example usage:
-  # results <- detect_common_asvs_taxa(list(physeq1, physeq2, physeq3), return_as_df = TRUE)
-  # common_asvs_df <- results$common_asvs
-  # common_taxa_df <- results$common_taxa
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  # Example with phyloseq objects
+  common_physeq <- detect_common_asvs_taxa(list(physeq1, physeq2, physeq3))
+
+  # Example with TreeSummarizedExperiment objects
+  common_tse <- detect_common_asvs_taxa(list(tse1, tse2, tse3))
 }
 }
 }

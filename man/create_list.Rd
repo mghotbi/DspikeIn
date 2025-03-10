@@ -2,22 +2,16 @@
 % Please edit documentation in R/normalization_set.R
 \name{create_list}
 \alias{create_list}
-\title{Create a List from a Phyloseq Object}
+\title{Create a List from a Phyloseq or TSE Object}
 \usage{
-create_list(physeq)
+create_list(obj)
 }
 \arguments{
-\item{physeq}{A phyloseq object.}
+\item{obj}{A phyloseq or TreeSummarizedExperiment object.}
 }
 \value{
 A list containing the DGE list and updated phyloseq object.
 }
 \description{
-Create a List from a Phyloseq Object
-}
-\examples{
-\dontrun{
-ps <- phyloseq::GlobalPatterns
-ps_list <- create_list(ps)
-}
+Create a List from a Phyloseq or TSE Object
 }

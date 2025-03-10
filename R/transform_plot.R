@@ -1,235 +1,115 @@
-#' Generate and Save Boxplots with Statistical Tests
+#' @title Generate and Save Boxplots with Statistical Tests
 #'
-#' This function generates boxplots for multiple y variables and performs statistical tests (Kruskal-Wallis or ANOVA) to compare groups. It also generates individual boxplots for Y variables and performs statistical tests (Kruskal-Wallis or Wilcoxon) to compare groups, and saves the plots as PNG and PDF files.
+#' @description This function generates boxplots for multiple y variables and performs statistical
+#' tests (Kruskal-Wallis or ANOVA) to compare groups. It also performs pairwise comparisons when
+#' needed and saves the plots in PNG and PDF formats.
 #'
-#' @param X A numeric vector of data values.
-#' @param Y A factor or character vector of grouping variables.
 #' @param data A data frame containing the data to plot.
 #' @param x_var A character string specifying the column name for the x variable (categorical/factor).
 #' @param y_vars A character vector specifying the column names for the y variables.
 #' @param methods_var A character string specifying the column name for the grouping variable.
-#' @param color_palette A character vector specifying the colors for the boxplots. Default is MG.
-#' @param adjustment A character string specifying the method for p-value adjustment. Default is "holm".
-#' @param output_prefix A character string specifying the prefix for the output file names. Default is "plot".
-#' @param width A numeric value specifying the width of the output plot. Default is 15.
-#' @param height A numeric value specifying the height of the output plot. Default is 13.
-#' @param stat_test A character string specifying the statistical test to use ("kruskal.test" or "anova"). Default is "kruskal.test".
-#' @param main A character string specifying the main title of the plot. Default is NULL.
-#' @param xlab A character string specifying the x-axis label. Default is NULL.
-#' @param ylab A character string specifying the y-axis label. Default is NULL.
-#' @param bcol A character string specifying the box color. Default is "pink".
-#' @param p.adj A character string specifying the method for p-value adjustment. Default is "none".
-#' @param cexy A numeric value specifying the text size for axis labels and titles. Default is 1.5.
-#' @param varwidth A logical value specifying whether the boxes should have variable widths. Default is TRUE.
-#' @param las An integer specifying the orientation of axis labels. Default is 1.
-#' @param paired A logical value specifying whether the data are paired. Default is FALSE.
-#' @return A list containing the ggplot2 boxplot objects and the comparison results, or the comparison results and p-value for individual boxplots.
+#' @param color_palette A character string for the color palette from `DspikeIn::color_palette$cool_MG`.
+#' @param output_prefix A character string specifying the prefix for the output file names. Default is `"plot"`.
+#' @param width A numeric value specifying the width of the output plot. Default is `15`.
+#' @param height A numeric value specifying the height of the output plot. Default is `13`.
+#' @param stat_test A character string specifying the statistical test to use (`"kruskal.test"` or `"anova"`). Default is `"kruskal.test"`.
+#' @return A list containing the ggplot2 boxplot objects and the statistical comparison results.
+#'
+#' @examples
+#' \donttest{
+#' if (requireNamespace("DspikeIn", quietly = TRUE)) {
+#'   data("methods", package = "DspikeIn")
+#'
+#'   # Define variables for the y-axis
+#'   y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
+#'
+#'   # Generate and save boxplots with Kruskal-Wallis test
+#'   plot_output <- transform_plot(
+#'     data = methods,
+#'     x_var = "Methods",
+#'     y_vars = y_vars,
+#'     methods_var = "Methods",  # Ensure this parameter is needed
+#'     color_palette = DspikeIn::color_palette$cool_MG,
+#'     stat_test = "kruskal.test"
+#'   )
+#'
+#'   # Print the output plot
+#'   print(plot_output)
+#' }
+#' }
 #' @importFrom ggplot2 ggplot aes geom_boxplot scale_fill_manual labs theme_minimal element_text ggsave
 #' @importFrom ggpubr stat_compare_means
 #' @importFrom dplyr mutate filter across
 #' @importFrom stats kruskal.test wilcox.test
-#' @importFrom graphics mtext boxplot
-#' @examples
-#' if (interactive()) {
-#' file_path <- system.file("extdata", "methods.rds", package = "DspikeIn")
-#' if (nzchar(file_path) && file.exists(file_path)) {
-#'   methods <- readRDS(file_path)
-#'   
-#'   # Ensure numeric conversion for specified columns
-#'   methods <- methods %>%
-#'     dplyr::mutate(
-#'       Total.reads = as.numeric(Total.reads),
-#'       Spike.reads = as.numeric(Spike.reads),
-#'       Spike.percentage = as.numeric(Spike.percentage)
-#'     )
-#'   
-#'   # Remove rows with NA values
-#'   methods <- methods %>%
-#'     dplyr::filter(
-#'       !is.na(Total.reads),
-#'       !is.na(Spike.reads),
-#'       !is.na(Spike.percentage)
-#'     )
-#'   
-#'   # Scale the specified columns
-#'   scaled <- methods %>%
-#'     dplyr::mutate(across(c("Total.reads", "Spike.reads", 
-#'     "Spike.percentage"), ~ scale(.) %>% as.vector))
-#'   
-#'   # Define variables for transformation plot
-#'   y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
-#'   x_vars <- "Methods"
-#'   
-#'   # Create transformation plots
-#'   transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars,
-#'     methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
-#'   
-#'   transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars,
-#'     methods_var = "Methods", color_palette = MG, stat_test = "anova")
-#' } else {
-#'   message("Data file not found. Please ensure the package is properly installed.")
-#' }
-#' }
+#' @export
 #' @export
 transform_plot <- function(
-    data = NULL,
-    x_var = NULL,
-    y_vars = NULL,
-    methods_var = NULL,
-    color_palette = MG,
-    adjustment = "holm",
+    data,
+    x_var,
+    y_vars,
+    methods_var,
+    color_palette = DspikeIn::color_palette$cool_MG,
     output_prefix = "plot",
     width = 15,
     height = 13,
-    stat_test = "kruskal.test",
-    X = NULL,
-    Y = NULL,
-    main = NULL,
-    xlab = NULL,
-    ylab = NULL,
-    bcol = "pink",
-    p.adj = "none",
-    cexy = 1.5,
-    varwidth = TRUE,
-    las = 1,
-    paired = FALSE
+    stat_test = "kruskal.test"
 ) {
-  
-  if (!is.null(data) && !is.null(x_var) && !is.null(y_vars) && !is.null(methods_var)) {
-    # Ensure x_var is a factor
-    data[[x_var]] <- as.factor(data[[x_var]])
-    
-    # Suffix for file names based on stat_test
-    test_suffix <- ifelse(stat_test == "kruskal.test", "Kruskal", "ANOVA")
-    
-    # Function to create individual boxplots
-    create_boxplot <- function(y_var) {
-      ggplot2::ggplot(data, ggplot2::aes(x = .data[[x_var]], y = .data[[y_var]], fill = .data[[x_var]])) +
-        ggplot2::geom_boxplot() +
-        ggplot2::scale_fill_manual(values = color_palette) +
-        ggplot2::labs(x = xlab, y = y_var, title = y_var) +
-        ggplot2::theme_minimal() +
-        ggplot2::theme(
-          ggplot2::element_text(size = 20, angle = 90, hjust = 1),
-          ggplot2::element_text(size = 22),
-          ggplot2::element_text(size = 24),
-          ggplot2::element_text(size = 20),
-          ggplot2::element_text(size = 22)
-        ) +
-        ggpubr::stat_compare_means(method = stat_test, label = "p.signif", size = 8)
-    }
-    
-    # Create and save plots
-    for (y_var in y_vars) {
-      plot <- create_boxplot(y_var)
-      print(plot)
-      
-      png_filename <- paste0(output_prefix, "_", y_var, "_", test_suffix, ".png")
-      pdf_filename <- paste0(output_prefix, "_", y_var, "_", test_suffix, ".pdf")
-      
-      # Save PDF
-      ggplot2::ggsave(pdf_filename, plot = plot, width = width, height = height, units = "in")
-      # Save PNG with explicit DPI to ensure text size is consistent
-      ggplot2::ggsave(png_filename, plot = plot, width = width, height = height, units = "in", dpi = 500)
-      
-      cat("Plots saved as:", png_filename, "and", pdf_filename, "\n")
-    }
+
+  # Ensure x_var is a factor
+  data[[x_var]] <- as.factor(data[[x_var]])
+
+  # Ensure numeric conversion for y_vars (avoid coercion errors)
+  data <- data %>%
+    mutate(across(all_of(y_vars), ~ suppressWarnings(as.numeric(gsub("[^0-9.]", "", .)))))
+
+  # Remove rows with NA values
+  data <- data %>%
+    filter(complete.cases(across(all_of(y_vars))))
+
+  # Define test suffix
+  test_suffix <- ifelse(stat_test == "kruskal.test", "Kruskal", "ANOVA")
+
+  # Function to create individual boxplots
+  create_boxplot <- function(y_var) {
+    ggplot(data, aes(x = .data[[x_var]], y = .data[[y_var]], fill = .data[[x_var]])) +
+      geom_boxplot() +
+      scale_fill_manual(values = color_palette) +
+      labs(x = x_var, y = y_var, title = paste(y_var, "by", x_var)) +
+      theme_minimal() +
+      theme(
+        axis.text.x = element_text(size = 14, angle = 30, hjust = 1, face = "bold"),
+        axis.text.y = element_text(size = 14, face = "bold"),
+        axis.title.x = element_text(size = 16, face = "bold"),
+        axis.title.y = element_text(size = 16, face = "bold"),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14, face = "bold")
+      ) +
+      ggpubr::stat_compare_means(method = stat_test, label = "p.signif", size = 6)
   }
-  
-  if (!is.null(X) && !is.null(Y)) {
-    aa <- levels(as.factor(Y))
-    an <- as.character(c(1:length(aa)))
-    tt1 <- matrix(nrow = length(aa), ncol = 7)
-    
-    for (i in 1:length(aa)) {
-      temp <- X[Y == aa[i]]
-      tt1[i, 1] <- mean(temp, na.rm = TRUE)
-      tt1[i, 2] <- sd(temp, na.rm = TRUE) / sqrt(length(temp))
-      tt1[i, 3] <- sd(temp, na.rm = TRUE)
-      tt1[i, 4] <- min(temp, na.rm = TRUE)
-      tt1[i, 5] <- max(temp, na.rm = TRUE)
-      tt1[i, 6] <- median(temp, na.rm = TRUE)
-      tt1[i, 7] <- length(temp)
-    }
-    
-    tt1 <- as.data.frame(tt1)
-    row.names(tt1) <- aa
-    colnames(tt1) <- c("mean", "se", "sd", "min", "max", "median", "n")
-    
-    graphics::boxplot(
-      X ~ Y,
-      main = main,
-      xlab = xlab,
-      ylab = ylab,
-      las = las,
-      col = bcol,
-      cex.axis = cexy,
-      cex.lab = cexy,
-      varwidth = varwidth,
-      cex.main = cexy + 0.5
-    )
-    
-    Yn <- factor(Y, labels = an)
-    comp <- stats::kruskal.test(X ~ Yn)
-    sig <- "ns"
-    
-    if (paired == TRUE & length(aa) == 2) {
-      coms <- stats::wilcox.test(X ~ Yn, paired = TRUE)
-      pp <- coms$p.value
-    } else {
-      pp <- comp$statistic
-    }
-    
-    if (pp <= 0.1) sig <- "."
-    if (pp <= 0.05) sig <- "*"
-    if (pp <= 0.01) sig <- "**"
-    if (pp <= 0.001) sig <- "***"
-    
-    tt1$group <- sig
-    graphics::mtext(
-      sig,
-      side = 3,
-      line = 1,
-      adj = 0,
-      cex = 3,
-      font = 1
-    )
-    
-    if (pp <= 0.1) {
-      graphics::mtext(
-        tt1$group,
-        side = 3,
-        at = c(1:length(aa)),
-        line = 1,
-        cex = 2,
-        font = 4
-      )
-    }
-    
-    return(list(comparison = tt1, p.value = pp))
+
+  # Create and save plots
+  plots <- list()
+
+  for (y_var in y_vars) {
+    plot <- create_boxplot(y_var)
+    print(plot)
+
+    # File names
+    png_filename <- paste0(output_prefix, "_", y_var, "_", test_suffix, ".png")
+    pdf_filename <- paste0(output_prefix, "_", y_var, "_", test_suffix, ".pdf")
+
+    # Save plots
+    ggsave(pdf_filename, plot = plot, width = width, height = height, units = "in")
+    ggsave(png_filename, plot = plot, width = width, height = height, units = "in", dpi = 500)
+
+    cat("Plots saved as:", png_filename, "and", pdf_filename, "\n")
+    plots[[y_var]] <- plot
   }
+
+  return(plots)
 }
 
-# Example y_vars
+#  **Example Usage**
 # y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
-# #Ensure the columns are numeric
-# methods <- methods %>%   dplyr::mutate(Total.reads = as.numeric(Total.reads), 
-# Spike.reads = as.numeric(Spike.reads),
-# Spike.percentage = as.numeric(Spike.percentage)  )
-# # Remove rows with NA values
-# methods <- methods %>%   dplyr::filter(!is.na(Total.reads),  
-# !is.na(Spike.reads),  !is.na(Spike.percentage)  )
-# 
-# # Scale the specified columns
-# scaled <- methods %>%   dplyr::mutate_at( c("Total.reads", 
-# "Spike.reads", "Spike.percentage"),    ~ scale(.) %>% as.vector  )
-# 
-# # Perform Kruskal-Wallis test with MG color palette
-# transform_plot(data = scaled, x_var = "Methods", 
-# y_vars = y_vars, methods_var = "Methods", 
-# color_palette$MG, stat_test = "kruskal.test")
-# 
-# # Perform one-way ANOVA with MG color palette
-# transform_plot(data = scaled, x_var = "Methods",
-# y_vars = y_vars, methods_var = "Methods",
-# color_palette$MG, stat_test = "anova")
+# transform_plot(data = methods, x_var = "Methods", y_vars = y_vars, methods_var = "Methods",
+# color_palette = DspikeIn::color_palette$cool_MG, stat_test = "kruskal.test")

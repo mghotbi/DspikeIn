@@ -4,21 +4,14 @@
 \alias{norm.clr}
 \title{CLR Normalization (Centered Log-Ratio Transformation)}
 \usage{
-norm.clr(ps)
+norm.clr(obj)
 }
 \arguments{
-\item{ps}{A phyloseq object.}
+\item{obj}{A phyloseq object.}
 }
 \value{
 A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
 CLR Normalization (Centered Log-Ratio Transformation)
-}
-\examples{
-\dontrun{
-ps <- phyloseq::GlobalPatterns
-result_clr <- norm.clr(ps)
-normalized_ps_clr <- result_clr$dat.normed
-}
 }

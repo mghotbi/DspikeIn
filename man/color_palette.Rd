@@ -5,26 +5,41 @@
 \alias{color_palette}
 \title{Original and Extended Color Palette Sequence}
 \format{
-A list with three elements: 
+A list with seven elements:
 \describe{
-  \item{MG}{A character vector of original color codes.}
-  \item{extended_palette}{A character vector of extended color codes, combining the original palette with the rainbow palette.}
-  \item{light_MG}{A character vector of chic palette color codes.}
+\item{MG}{A character vector of original color codes.}
+\item{extended_palette}{A character vector of extended color codes, combining the original palette with the rainbow palette.}
+\item{light_MG}{A character vector of chic pastel color codes.}
+\item{MG_Awesome}{A vibrant 50-color palette for high-quality visualizations.}
+\item{cool_MG}{A sophisticated and modern 50-color palette with oceanic, earthy, and high-contrast tones.}
+\item{mix_MG}{A fully combined and randomly mixed unique palette.}
+\item{vivid_MG}{A vivid and bright 50-color palette.}
 }
 }
 \usage{
 color_palette
 }
 \description{
-This object provides an original color palette sequence (MG), an extended palette using the rainbow function,
-and an additional chic palette named light_MG.
-These palettes can be used for plotting in ggplot2 or other plotting systems.
+This object provides multiple color palettes:
+\itemize{
+\item MG: The original palette
+\item extended_palette: MG combined with rainbow colors
+\item light_MG: A chic pastel palette
+\item MG_Awesome: A vibrant and unique 50-color palette for visualization
+\item cool_MG: A sophisticated, modern 50-color palette
+\item mix_MG: A randomly mixed unique palette
+\item vivid_MG: A vivid and bright 50-color palette
+}
+}
+\details{
+These palettes can be used in ggplot2 or other plotting systems.
 }
 \examples{
-# Use the light_MG palette for your plot
-# ggplot2 example:
-# ggplot(data, aes(x, y, color = group)) +
-#   geom_point() +
-#   scale_color_manual(values = color_palette$light_MG)
+# Use mix_MG palette in ggplot2
+ggplot2::ggplot(mtcars, ggplot2::aes(x = wt, y = mpg, color = factor(cyl))) +
+  ggplot2::geom_point(size = 4) +
+  ggplot2::scale_color_manual(values = color_palette$mix_MG) +
+  ggplot2::theme_minimal()
+
 }
 \keyword{datasets}

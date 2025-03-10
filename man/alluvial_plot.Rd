@@ -2,7 +2,7 @@
 % Please edit documentation in R/alluvial_plot.R
 \name{alluvial_plot}
 \alias{alluvial_plot}
-\title{Generate an Alluvial Plot from a Long-Format Data Frame}
+\title{Generate an Alluvial Plot}
 \usage{
 alluvial_plot(
   data,
@@ -21,68 +21,88 @@ alluvial_plot(
 )
 }
 \arguments{
-\item{data}{A data frame containing microbial data, including abundance and categorical variables.}
+\item{data}{A data frame containing abundance and categorical variables.}
 
-\item{axes}{A character vector specifying the axes (columns) to include in the alluvial plot. If \code{NULL}, no axes will be shown on the x-axis.}
+\item{axes}{A character vector specifying the categorical variables for the x-axis.}
 
-\item{abundance_threshold}{A numeric value specifying the minimum abundance threshold for including samples. Default is 10000 for absolute abundance and a relative threshold for relative abundance (e.g., 0.001 for 0.1\%).}
+\item{abundance_threshold}{A numeric value specifying the minimum abundance
+required for an entity to be included in the plot. Default is \code{10000}.}
 
-\item{fill_variable}{A character string specifying the variable to use for the fill color in the alluvial plot. Default is "Phylum".}
+\item{fill_variable}{A string specifying the variable to be used for fill colors. Default is \code{"Phylum"}.}
 
-\item{silent}{A logical indicating whether to suppress messages from \code{ggalluvial::is_alluvia_form}. Default is \code{TRUE}.}
+\item{silent}{Logical. If \code{TRUE}, suppresses warnings. Default is \code{TRUE}.}
 
-\item{abundance_type}{A character string specifying whether to plot "relative" or "absolute" abundance. Default is "absolute".}
+\item{abundance_type}{A string specifying the type of abundance: \code{"absolute"} or \code{"relative"}.}
 
-\item{total_reads}{A numeric value specifying the total number of reads for relative abundance calculation. Default is \code{NULL}.}
+\item{total_reads}{Numeric, total number of reads for relative abundance calculation. Default is \code{NULL}.}
 
-\item{top_taxa}{An integer specifying the number of top taxa to display. Default is \code{NULL}, meaning all taxa will be displayed.}
+\item{top_taxa}{Integer. The number of top abundant taxa to retain. Default is \code{NULL}.}
 
-\item{facet_vars}{A character vector specifying variables for faceting. Default is \code{NULL} (no faceting).}
+\item{facet_vars}{A character vector specifying variables to facet by. Default is \code{NULL}.}
 
-\item{text_size}{A numeric value specifying the size of the text labels inside the plot. Default is 4.}
+\item{text_size}{Numeric, size of text labels. Default is \code{4}.}
 
-\item{legend_ncol}{An integer specifying the number of columns for the legend. Default is 1.}
+\item{legend_ncol}{Integer, number of columns for the legend. Default is \code{1}.}
 
-\item{custom_colors}{A character vector specifying custom colors for the fill variable. Can use \code{color_palette$MG} or \code{color_palette$extended_palette}. Default is \code{color_palette$MG}.}
+\item{custom_colors}{A named vector specifying colors for taxa. Default is \code{color_palette$MG}.}
 
-\item{color_mapping}{A named character vector specifying specific colors for taxa. Default is \code{NULL}.}
+\item{color_mapping}{A named vector of colors for taxa, overriding \code{custom_colors}. Default is \code{NULL}.}
 }
 \value{
-A \code{ggplot2} object representing the alluvial plot.
+A \code{ggplot2} object representing an alluvial plot.
 }
 \description{
-This function generates an alluvial plot using a long-format data frame where microbial abundances are plotted across categorical variables (axes).
-It supports both relative and absolute abundance types, filters based on abundance thresholds, and allows for displaying the top taxa.
-Additional customization options include faceting, custom colors, and setting the legend.
-The function supports displaying multiple axes or plotting without axes when \code{axes = NULL}.
-}
-\details{
-The function uses the \code{ggalluvial} package to construct the plot and relies on \code{ggplot2} for customization.
+This function creates an alluvial plot based on input data, which can be
+either absolute or relative abundance data.
 }
 \examples{
-\dontrun{
-# Example data
-data(physeq_16SOTU)  # Replace with actual data loading
-pps_Abs <- phyloseq::psmelt(physeq_16SOTU)
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("physeq_16SOTU", package = "DspikeIn")
 
-# Example of total reads calculation for relative abundance
-total_reads <- sum(pps_Abs$Abundance)
+  # Convert phyloseq object to long format
+  pps_Abs <- get_long_format_data(physeq_16SOTU)
 
-# Generate an alluvial plot using the extended palette
-alluvial_plot_abs <- alluvial_plot(
-  data = pps_Abs, 
-  axes = c("Env.broad.scale", "Host.genus", "Diet"), 
-  abundance_threshold = 10000, 
-  fill_variable = "Phylum", 
-  silent = TRUE, 
-  abundance_type = "absolute", 
-  top_taxa = 10, 
-  text_size = 4, 
-  legend_ncol = 1, 
-  custom_colors = color_palette$extended_palette  # Use the extended palette from your package
-)
+  # Example of total reads calculation for relative abundance
+  total_reads <- sum(pps_Abs$Abundance)
+  print(paste("Total reads:", total_reads))
 
-# Print the alluvial plot for absolute abundance
-print(alluvial_plot_abs)
+  # Generate an alluvial plot for relative abundance using the extended palette
+  alluvial_plot_rel <- alluvial_plot(
+    data = pps_Abs,
+    axes = c("Env.broad.scale", "Host.genus", "Diet"),
+    abundance_threshold = 0.01,
+    fill_variable = "Phylum",
+    silent = TRUE,
+    abundance_type = "relative",
+    top_taxa = 10,
+    text_size = 4,
+    legend_ncol = 1,
+    custom_colors = DspikeIn::color_palette$cool_MG  # Extended color palette
+  )
+
+  print(alluvial_plot_rel)
+
+  # Convert phyloseq object to TreeSummarizedExperiment (TSE)
+  tse_data <- convert_phyloseq_to_tse(physeq_16SOTU)
+  tse_long <- get_long_format_data(tse_data)
+
+  # Generate an alluvial plot for absolute abundance
+  alluvial_plot_abs <- alluvial_plot(
+    data = tse_long,
+    axes = c("Env.broad.scale", "Host.genus", "Diet"),
+    abundance_threshold = 8000,
+    fill_variable = "Phylum",
+    silent = TRUE,
+    abundance_type = "absolute",
+    top_taxa = 10,
+    text_size = 4,
+    legend_ncol = 1,
+    custom_colors = DspikeIn::color_palette$cool_MG
+  )
+
+  print(alluvial_plot_abs)
 }
+}
+
 }

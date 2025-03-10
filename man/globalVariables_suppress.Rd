@@ -2,8 +2,8 @@
 % Please edit documentation in R/globalVariables.R
 \name{globalVariables_suppress}
 \alias{globalVariables_suppress}
-\title{Suppress R CMD check warnings for global variables}
+\title{title Suppress R CMD check warnings for global variables}
 \description{
-This file uses `utils::globalVariables()` to declare global variables in order to suppress warnings
+This file uses \code{utils::globalVariables()} to declare global variables in order to suppress warnings
 from R CMD check about undefined global variables used in non-standard evaluation (NSE).
 }

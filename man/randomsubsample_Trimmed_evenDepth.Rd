@@ -5,33 +5,39 @@
 \title{Subsampling to an Equal Sequencing Depth}
 \usage{
 randomsubsample_Trimmed_evenDepth(
-  physeq,
+  obj,
   smalltrim = 0.001,
   replace = TRUE,
   output_file = "randomsubsample_Trimmed_evenDepth.rds"
 )
 }
 \arguments{
-\item{physeq}{A phyloseq object containing the microbial data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing microbiome data.}
 
 \item{smalltrim}{A numeric value specifying the trimming percentage to exclude very low abundant taxa. Default is 0.001.}
 
 \item{replace}{A logical value indicating whether to sample with replacement. Default is TRUE.}
 
-\item{output_file}{A character string specifying the output file name for the subsampled phyloseq object. Default is "randomsubsample_Trimmed_evenDepth.rds".}
+\item{output_file}{A character string specifying the output file name for the subsampled object. Default is "randomsubsample_Trimmed_evenDepth.rds".}
 }
 \value{
-A phyloseq object with subsampled sequencing depths.
+A \code{phyloseq} or \code{TreeSummarizedExperiment} object with subsampled sequencing depths.
 }
 \description{
-This function performs subsampling to an equal sequencing depth, determined by the sample with the lowest sequencing depth after excluding very low abundant taxa.
-It rounds down the result to the nearest integer (floor). Caution: you might lose samples.
+Performs subsampling to an equal sequencing depth, determined by the sample with
+the lowest sequencing depth after excluding very low abundant taxa. It rounds down the result
+to the nearest integer (floor). Caution: you might lose samples.
 }
 \examples{
-\dontrun{
-if (interactive()) {
-  # Perform subsampling
-  spiked_ITS_evenDepth <- randomsubsample_Trimmed_evenDepth(spiked_ITS, smalltrim = 0.001)
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("physeq_ITSOTU", package = "DspikeIn")
+
+  # Convert phyloseq to TreeSummarizedExperiment (TSE)
+  tse_ITSOTU <- convert_phyloseq_to_tse(physeq_ITSOTU)
+
+  # Perform random subsampling with trimmed even depth
+  ITS_evenDepth <- randomsubsample_Trimmed_evenDepth(tse_ITSOTU, smalltrim = 0.001)
 }
 }
 }

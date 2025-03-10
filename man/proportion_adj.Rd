@@ -4,26 +4,43 @@
 \alias{proportion_adj}
 \title{Proportionally Adjust Abundance}
 \usage{
-proportion_adj(physeq, output_file = "proportion_adjusted_physeq.rds")
+proportion_adj(obj, output_file = "proportion_adjusted.rds")
 }
 \arguments{
-\item{physeq}{A phyloseq object containing the microbiome data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing microbiome data.}
 
-\item{output_file}{A character string specifying the output file name for the adjusted phyloseq object. Default is "proportion_adjusted_physeq.rds".}
+\item{output_file}{A character string specifying the output file name for the adjusted object. Default is "proportion_adjusted.rds".}
 }
 \value{
-A phyloseq object with the proportionally adjusted and rounded abundance data.
+A modified object of the same class (\code{phyloseq} or \code{TreeSummarizedExperiment}) with proportionally adjusted and rounded abundance data.
 }
 \description{
-This function normalizes the abundance data in a phyloseq object by adjusting each sample's counts
-based on a total value, typically the maximum total sequence count across all samples. The adjusted
-counts are then rounded to the nearest integer.
+This function normalizes the abundance data in a \code{phyloseq} or \code{TreeSummarizedExperiment}
+object by adjusting each sample's counts based on a total value, typically the maximum total
+sequence count across all samples. The adjusted counts are then rounded to the nearest integer.
+}
+\details{
+This function extracts the OTU table (or assay in \code{TSE}), normalizes it based on the sample sums,
+and updates the original object while maintaining its structure.
 }
 \examples{
-\dontrun{
-if (interactive()) {
-  # Proportionally adjust the abundance data
-  normalized_physeq <- proportion_adj(physeq, output_file = "proportion_adjusted_physeq.rds")
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  # Load phyloseq object
+  data("physeq_16SOTU", package = "DspikeIn")
+  normalized_physeq <- proportion_adj(
+    physeq_16SOTU,
+    output_file = "proportion_adjusted_physeq.rds"
+  )
+  print(normalized_physeq)
+  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+  # Example with a TreeSummarizedExperiment (TSE) object
+  data("tse_16SOTU", package = "DspikeIn")
+  normalized_tse <- proportion_adj(
+    tse_16SOTU,
+    output_file = "proportion_adjusted_tse.rds"
+  )
+  print(normalized_tse)
 }
 }
 }

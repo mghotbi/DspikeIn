@@ -4,21 +4,14 @@
 \alias{norm.tss}
 \title{TSS Normalization (Total Sum Scaling)}
 \usage{
-norm.tss(ps)
+norm.tss(obj)
 }
 \arguments{
-\item{ps}{A phyloseq object.}
+\item{obj}{A phyloseq object.}
 }
 \value{
 A list containing the normalized phyloseq object and scaling factor
 }
 \description{
 TSS Normalization (Total Sum Scaling)
-}
-\examples{
-\dontrun{
-ps <- phyloseq::GlobalPatterns
-result_tss <- norm.tss(ps)
-normalized_ps_tss <- result_tss$dat.normed
-}ctors.
 }

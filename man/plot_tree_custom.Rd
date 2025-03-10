@@ -2,47 +2,60 @@
 % Please edit documentation in R/plot_tree_custom.R
 \name{plot_tree_custom}
 \alias{plot_tree_custom}
-\title{Plot and Save a Phylogenetic Tree}
+\title{Plot and Save a Phylogenetic Tree (phyloseq/TSE)}
 \usage{
 plot_tree_custom(
-  physeq,
+  obj,
   output_prefix = "phy_tree",
   width = 10,
   height = 10,
-  layout = "rectangular",
+  layout = "circular",
+  tip_labels = TRUE,
+  metadata_column = NULL,
   print_plot = TRUE
 )
 }
 \arguments{
-\item{physeq}{A phyloseq object containing the phylogenetic data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing phylogenetic data.}
 
-\item{output_prefix}{A character string specifying the prefix for the output files. Default is "phy_tree".}
+\item{output_prefix}{A character string specifying the prefix for the output files. Default is \code{"phy_tree"}.}
 
-\item{width}{A numeric value specifying the width of the output plot. Default is 10.}
+\item{width}{A numeric value specifying the width of the output plot (in inches). Default is \code{10}.}
 
-\item{height}{A numeric value specifying the height of the output plot. Default is 10.}
+\item{height}{A numeric value specifying the height of the output plot (in inches). Default is \code{10}.}
 
-\item{layout}{A character string specifying the layout of the tree. Options are "rectangular", "circular", "fan", and "radial". Default is "rectangular".}
+\item{layout}{A character string specifying the tree layout. Options are \code{"rectangular"}, \code{"circular"}, \code{"fan"}, and \code{"radial"}. Default is \code{"circular"}.}
 
-\item{print_plot}{A logical value specifying whether to print the plot. Default is TRUE.}
+\item{tip_labels}{A logical indicating whether to display tip labels. Default is \code{TRUE}.}
+
+\item{metadata_column}{A string specifying a column from \code{colData(obj)} (TSE) or \code{sample_data(obj)} (phyloseq) to annotate the tree nodes. Default is \code{NULL}.}
+
+\item{print_plot}{A logical indicating whether to print the plot to the console. Default is \code{TRUE}.}
 }
 \value{
-NULL. The function saves the plot to the specified output file.
+NULL. Saves the tree plot as PNG and PDF files.
 }
 \description{
-This function plots a phylogenetic tree from a phyloseq object and saves the plot to a specified file.
+Plots a phylogenetic tree from either a \code{phyloseq} or \code{TreeSummarizedExperiment} object.
+If the tree is missing in a TSE, it converts the object to \code{phyloseq} before plotting.
 }
 \examples{
 \dontrun{
-  # Plot and save the phylogenetic tree
-  # Available layout options: "rectangular", "circular", "fan", and "radial"
-  
-  # Example: Plot the phylogenetic tree with a circular 
-  # layout and save it as an output file
-  plot_tree_custom(Tetragenococcus, 
-                   output_prefix = "p0",  # Prefix of file
-                   width = 18,            # Width of image
-                   height = 18,           # Height 
-                   layout = "circular")   # Layout type (e.g., circular)
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("physeq_16SOTU", package = "DspikeIn")
+
+  # Plot tree for phyloseq object
+  plot_tree_custom(physeq_16SOTU, output_prefix = "phylo_plot", layout = "circular")
+
+  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+
+  # Example with a TreeSummarizedExperiment object and metadata annotation
+  plot_tree_custom(
+    tse_16SOTU,
+    output_prefix = "tse_plot",
+    layout = "fan",
+    metadata_column = "SampleType"
+  )
+}
 }
 }

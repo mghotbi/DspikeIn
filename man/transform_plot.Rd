@@ -5,27 +5,15 @@
 \title{Generate and Save Boxplots with Statistical Tests}
 \usage{
 transform_plot(
-  data = NULL,
-  x_var = NULL,
-  y_vars = NULL,
-  methods_var = NULL,
-  color_palette = MG,
-  adjustment = "holm",
+  data,
+  x_var,
+  y_vars,
+  methods_var,
+  color_palette = DspikeIn::color_palette$cool_MG,
   output_prefix = "plot",
   width = 15,
   height = 13,
-  stat_test = "kruskal.test",
-  X = NULL,
-  Y = NULL,
-  main = NULL,
-  xlab = NULL,
-  ylab = NULL,
-  bcol = "pink",
-  p.adj = "none",
-  cexy = 1.5,
-  varwidth = TRUE,
-  las = 1,
-  paired = FALSE
+  stat_test = "kruskal.test"
 )
 }
 \arguments{
@@ -37,85 +25,44 @@ transform_plot(
 
 \item{methods_var}{A character string specifying the column name for the grouping variable.}
 
-\item{color_palette}{A character vector specifying the colors for the boxplots. Default is MG.}
+\item{color_palette}{A character string for the color palette from \code{DspikeIn::color_palette$cool_MG}.}
 
-\item{adjustment}{A character string specifying the method for p-value adjustment. Default is "holm".}
+\item{output_prefix}{A character string specifying the prefix for the output file names. Default is \code{"plot"}.}
 
-\item{output_prefix}{A character string specifying the prefix for the output file names. Default is "plot".}
+\item{width}{A numeric value specifying the width of the output plot. Default is \code{15}.}
 
-\item{width}{A numeric value specifying the width of the output plot. Default is 15.}
+\item{height}{A numeric value specifying the height of the output plot. Default is \code{13}.}
 
-\item{height}{A numeric value specifying the height of the output plot. Default is 13.}
-
-\item{stat_test}{A character string specifying the statistical test to use ("kruskal.test" or "anova"). Default is "kruskal.test".}
-
-\item{X}{A numeric vector of data values.}
-
-\item{Y}{A factor or character vector of grouping variables.}
-
-\item{main}{A character string specifying the main title of the plot. Default is NULL.}
-
-\item{xlab}{A character string specifying the x-axis label. Default is NULL.}
-
-\item{ylab}{A character string specifying the y-axis label. Default is NULL.}
-
-\item{bcol}{A character string specifying the box color. Default is "pink".}
-
-\item{p.adj}{A character string specifying the method for p-value adjustment. Default is "none".}
-
-\item{cexy}{A numeric value specifying the text size for axis labels and titles. Default is 1.5.}
-
-\item{varwidth}{A logical value specifying whether the boxes should have variable widths. Default is TRUE.}
-
-\item{las}{An integer specifying the orientation of axis labels. Default is 1.}
-
-\item{paired}{A logical value specifying whether the data are paired. Default is FALSE.}
+\item{stat_test}{A character string specifying the statistical test to use (\code{"kruskal.test"} or \code{"anova"}). Default is \code{"kruskal.test"}.}
 }
 \value{
-A list containing the ggplot2 boxplot objects and the comparison results, or the comparison results and p-value for individual boxplots.
+A list containing the ggplot2 boxplot objects and the statistical comparison results.
 }
 \description{
-This function generates boxplots for multiple y variables and performs statistical tests (Kruskal-Wallis or ANOVA) to compare groups. It also generates individual boxplots for Y variables and performs statistical tests (Kruskal-Wallis or Wilcoxon) to compare groups, and saves the plots as PNG and PDF files.
+This function generates boxplots for multiple y variables and performs statistical
+tests (Kruskal-Wallis or ANOVA) to compare groups. It also performs pairwise comparisons when
+needed and saves the plots in PNG and PDF formats.
 }
 \examples{
-if (interactive()) {
-file_path <- system.file("extdata", "methods.rds", package = "DspikeIn")
-if (nzchar(file_path) && file.exists(file_path)) {
-  methods <- readRDS(file_path)
-  
-  # Ensure numeric conversion for specified columns
-  methods <- methods \%>\%
-    dplyr::mutate(
-      Total.reads = as.numeric(Total.reads),
-      Spike.reads = as.numeric(Spike.reads),
-      Spike.percentage = as.numeric(Spike.percentage)
-    )
-  
-  # Remove rows with NA values
-  methods <- methods \%>\%
-    dplyr::filter(
-      !is.na(Total.reads),
-      !is.na(Spike.reads),
-      !is.na(Spike.percentage)
-    )
-  
-  # Scale the specified columns
-  scaled <- methods \%>\%
-    dplyr::mutate(across(c("Total.reads", "Spike.reads", 
-    "Spike.percentage"), ~ scale(.) \%>\% as.vector))
-  
-  # Define variables for transformation plot
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("methods", package = "DspikeIn")
+
+  # Define variables for the y-axis
   y_vars <- c("Spike.percentage", "Total.reads", "Spike.reads")
-  x_vars <- "Methods"
-  
-  # Create transformation plots
-  transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars,
-    methods_var = "Methods", color_palette = MG, stat_test = "kruskal.test")
-  
-  transform_plot(data = scaled, x_var = "Methods", y_vars = y_vars,
-    methods_var = "Methods", color_palette = MG, stat_test = "anova")
-} else {
-  message("Data file not found. Please ensure the package is properly installed.")
+
+  # Generate and save boxplots with Kruskal-Wallis test
+  plot_output <- transform_plot(
+    data = methods,
+    x_var = "Methods",
+    y_vars = y_vars,
+    methods_var = "Methods",  # Ensure this parameter is needed
+    color_palette = DspikeIn::color_palette$cool_MG,
+    stat_test = "kruskal.test"
+  )
+
+  # Print the output plot
+  print(plot_output)
 }
 }
 }

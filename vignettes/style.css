@@ -1,0 +1,84 @@
+writeLines(
+/* General document styling */
+body {
+  font-family: "Arial", sans-serif;
+  font-size: 16px;  /* Larger base font */
+  line-height: 1.8; /* Better spacing */
+  background-color: #f9f9f9; /* Light gray background */
+  color: #333; /* Darker text for readability */
+  max-width: 95%;  /* Expand content width */
+  margin: auto; /* Center content */
+}
+
+/* Headings */
+h1 {
+  color: #003366;
+  font-size: 28px; /* Bigger title */
+  font-weight: bold;
+  text-align: center; /* Center main title */
+  padding: 10px;
+}
+
+h2 {
+  color: #005599;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 8px;
+}
+
+h3 {
+  color: #0077AA;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 5px;
+}
+
+/* Tables */
+table {
+  border-collapse: collapse;
+  width: 100%; /* Expand tables */
+  background-color: #fff;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+th {
+  background-color: #005599;
+  color: white;
+}
+
+/* Code Blocks */
+pre {
+  background-color: #f4f4f4;
+  border-left: 4px solid #005599;
+  padding: 10px;
+  overflow-x: auto;
+  font-size: 14px;
+}
+
+code {
+  background-color: #e8e8e8;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+/* Figure Styling */
+img, figure {
+  max-width: 90%; /* Prevent squeezing */
+  height: auto; /* Maintain aspect ratio */
+  display: block;
+  margin: auto; /* Center figures */
+}
+
+/* Additional Formatting */
+blockquote {
+  font-style: italic;
+  color: #555;
+  border-left: 5px solid #005599;
+  padding-left: 10px;
+  margin-left: 20px;
+}
+)

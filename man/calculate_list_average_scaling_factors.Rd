@@ -5,45 +5,59 @@
 \title{Calculate Average Scaling Factors for Multiple Spiked Species}
 \usage{
 calculate_list_average_scaling_factors(
-  physeq,
+  obj,
   spiked_species_list,
   spiked_cells_list,
   merge_method = c("sum", "max")
 )
 }
 \arguments{
-\item{physeq}{A \code{phyloseq} object containing microbial abundance data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} (TSE) object containing microbial abundance data.}
 
 \item{spiked_species_list}{A list of character vectors. Each vector contains the spiked species
 (by taxon names) to be merged for calculating scaling factors for each group.}
 
-\item{spiked_cells_list}{A numeric vector specifying the number of spiked cells corresponding to each group in `spiked_species_list`.}
+\item{spiked_cells_list}{A numeric vector specifying the number of spiked cells corresponding to each group in \code{spiked_species_list}.}
 
 \item{merge_method}{A character string specifying how to merge ASVs/OTUs for each group of spiked species.
 Accepted values are \code{"sum"} or \code{"max"}. Default is \code{"sum"}.}
 }
 \value{
-A numeric vector of averaged and rounded scaling factors for each OTU in the \code{phyloseq} object.
+A numeric vector of averaged and rounded scaling factors for each OTU in the object.
 OTUs not associated with any spiked species are assigned a default scaling factor of 1.
 }
 \description{
-This function calculates scaling factors for multiple spiked species in a \code{phyloseq} object.
-It merges ASVs/OTUs for each species if necessary, averages the scaling factors, and returns
-the averaged scaling factors for each OTU. Different spiked cell counts can be provided for each set of spiked species.
+This function calculates scaling factors for multiple spiked species in a \code{phyloseq} or
+\code{TreeSummarizedExperiment} (TSE) object. It merges ASVs/OTUs for each species if necessary,
+averages the scaling factors, and returns the averaged scaling factors for each OTU.
+Different spiked cell counts can be provided for each set of spiked species.
 If an OTU is not associated with any spiked species, a default scaling factor (1) is assigned.
 Scaling factors are rounded to the specified number of decimal places.
 }
 \examples{
-\dontrun{
-# Example usage:
-spiked_species_list <- list(
-  c("Pseudomonas aeruginosa"),
-  c("Escherichia coli"),
-  c("Clostridium difficile")
-)
-spiked_cells_list <- c(10000, 20000, 15000)
-scaling_factors <- calculate_list_average_scaling_factors(physeq, spiked_species_list, 
-spiked_cells_list, merge_method = "sum")
-print(scaling_factors)
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("physeq", package = "DspikeIn")
+
+  # Step 1: Define the spiked species list and corresponding cell counts
+  spiked_species_list <- list(
+    c("Pseudomonas aeruginosa"),
+    c("Escherichia coli"),
+    c("Clostridium difficile")
+  )
+
+  spiked_cells_list <- c(10000, 20000, 15000)
+
+  # Step 2: Apply the function to a phyloseq object
+  scaling_factors <- calculate_list_average_scaling_factors(
+    physeq,
+    spiked_species_list,
+    spiked_cells_list,
+    merge_method = "sum"
+  )
+
+  # Step 3: Print the results
+  print(scaling_factors)
+}
 }
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Shapiro_Wilk_test.R
 \name{Shapiro_Wilk_test}
 \alias{Shapiro_Wilk_test}
-\title{Perform Shapiro-Wilk Test for Normality of Residuals with Multiple Transformations}
+\title{Perform Shapiro-Wilk Test for Normality with Transformations}
 \usage{
 Shapiro_Wilk_test(data, grouping_var)
 }
@@ -15,19 +15,14 @@ Shapiro_Wilk_test(data, grouping_var)
 NULL. The function prints the Shapiro-Wilk test results for each variable and transformation.
 }
 \description{
-This function performs the Shapiro-Wilk test for normality of residuals on numeric variables
-within a data frame, using specified transformations. It prints the p-value for each variable
-and transformation combination.
+This function performs the Shapiro-Wilk test for normality of residuals
+on numeric variables within a data frame, using different transformations.
 }
 \examples{
-\dontrun{
-if (interactive()) {
-  # Example usage:
-  # Retrieve the methods.rds file in the extdata folder of DspikeIn package
-  file_path <- system.file("extdata", "methods.rds", package = "DspikeIn")
-  methods <- readRDS(file_path)
-  
-  # Perform the Shapiro-Wilk test on the methods data, using the "Methods" column for grouping
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("methods", package = "DspikeIn")
+  # Perform the Shapiro-Wilk test on the dataset
   Shapiro_Wilk_test(methods, "Methods")
 }
 }

@@ -2,10 +2,10 @@
 % Please edit documentation in R/calculate_spike_percentage.R
 \name{calculate_spike_percentage}
 \alias{calculate_spike_percentage}
-\title{Calculate Spike Percentage for Specified Taxa in a Phyloseq Object}
+\title{Calculate Spike Percentage for Specified Taxa in a Phyloseq or TSE Object}
 \usage{
 calculate_spike_percentage(
-  physeq,
+  obj,
   merged_spiked_species = NULL,
   merged_spiked_hashcodes = NULL,
   output_path = "merged_data.docx",
@@ -13,11 +13,11 @@ calculate_spike_percentage(
 )
 }
 \arguments{
-\item{physeq}{A phyloseq object containing the microbial data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} (TSE) object containing the microbial data.}
 
-\item{merged_spiked_species}{A character vector of spiked species to check in the phyloseq object. Default is NULL.}
+\item{merged_spiked_species}{A character vector of spiked species to check in the dataset. Default is NULL.}
 
-\item{merged_spiked_hashcodes}{A character vector of spiked hashcodes to check in the phyloseq object. Default is NULL.}
+\item{merged_spiked_hashcodes}{A character vector of spiked hashcodes to check in the dataset. Default is NULL.}
 
 \item{output_path}{A character string specifying the path to save the output files. Default is "merged_data.docx".}
 
@@ -27,18 +27,27 @@ calculate_spike_percentage(
 A data frame containing the percentage of spiked taxa reads and the pass/fail results.
 }
 \description{
-This function calculates the percentage of reads from specified spiked species or hashcodes in a phyloseq object.
+This function calculates the percentage of reads from specified spiked species or hashcodes in a microbiome dataset.
 It merges the spiked taxa into one ASV, calculates the percentage of reads, categorizes the results as passed or failed,
 and saves the results as a DOCX and CSV file.
 }
 \examples{
-\dontrun{
-# Define the spiked species
-merged_spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
+\donttest{
+  spiked_cells <- 1847
+  species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
+  merged_spiked_species <- "Tetragenococcus_halophilus"
 
-# Calculate spike percentage for the defined spiked species within the range 0.1 to 10
-calculate_spike_percentage(physeq, 
-                           merged_spiked_species = merged_spiked_species, 
-                           passed_range = c(0.1, 10))
+  # Load phyloseq object from the DspikeIn package
+  data("physeq_16SOTU", package = "DspikeIn")
+
+  # Pre-process species data by merging using the sum method
+  merged_sum <- Pre_processing_species(physeq_16SOTU,
+                                       species_name = species_name,
+                                       merge_method = "sum")
+
+  # Calculate spike percentage within the specified range
+  calculate_spike_percentage(merged_sum,
+                             merged_spiked_species = merged_spiked_species,
+                             passed_range = c(0.1, 20))
 }
 }

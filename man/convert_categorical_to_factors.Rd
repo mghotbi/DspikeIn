@@ -4,10 +4,10 @@
 \alias{convert_categorical_to_factors}
 \title{Convert Categorical Columns to Factors in Sample Data}
 \usage{
-convert_categorical_to_factors(ps)
+convert_categorical_to_factors(obj)
 }
 \arguments{
-\item{ps}{A phy#'}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing microbial data.}
 }
 \value{
 A phyloseq object with updated sample data.
@@ -17,7 +17,7 @@ Convert Categorical Columns to Factors in Sample Data
 }
 \examples{
 \dontrun{
-ps <- phyloseq::GlobalPatterns
-ps_factor <- convert_categorical_to_factors(ps)
-}loseq object.
+data("physeq_16SOTU", package= "DspikeIn")
+ps_factor <- convert_categorical_to_factors(physeq_16SOTU)
+}
 }

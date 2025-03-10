@@ -1,83 +1,207 @@
-#' Convert Relative ASV Counts to Absolute Counts
+#' @title Convert Relative ASV/OTU Counts to Absolute Counts
 #'
-#' This function converts the relative ASV counts in a phyloseq object to absolute counts by multiplying 
-#' the ASV counts by provided scaling factors. The resulting absolute counts are saved as a CSV file and 
-#' also returned as a list containing both the data frame of absolute counts and the modified phyloseq object. 
-#' Taxa with NA or empty values in the taxonomic table are removed.
+#' @description Converts relative ASV counts in a `phyloseq` or `TreeSummarizedExperiment` (TSE) object
+#' to absolute counts by multiplying ASV counts by provided scaling factors.
+#' Ensures phylogenetic tree (`rowTree`) and reference sequences (`refseq`) are **retained** if possible.
 #'
-#' @param physeq A phyloseq object containing the microbial data.
-#' @param scaling_factors A numeric vector of scaling factors to convert relative counts to absolute counts.
-#' @param output_dir A character string specifying the directory to save the output file. Default is NULL, which uses the current working directory.
-#' @return A list containing the data frame of absolute counts and the modified phyloseq object.
-#' @importFrom phyloseq subset_taxa tax_table otu_table
+#' @param obj A `phyloseq` or `TreeSummarizedExperiment` object containing microbial data.
+#' @param scaling_factors A named numeric vector of scaling factors for each sample.
+#' @param output_dir A character string specifying the directory to save the output file (default: `NULL`).
+#' @return A list containing:
+#'  - `absolute_counts`: A data frame of absolute counts.
+#'  - `obj_adj`: The modified `phyloseq` or `TreeSummarizedExperiment` object.
+#'
+#' @importFrom phyloseq phyloseq otu_table tax_table sample_data phy_tree refseq
+#' @importFrom TreeSummarizedExperiment TreeSummarizedExperiment rowTree
+#' @importFrom SummarizedExperiment assay rowData colData
+#' @importFrom S4Vectors metadata
+#' @importFrom ape drop.tip
 #' @importFrom utils write.csv
 #' @examples
-#' \dontrun{
-#' # Example usage:
-#' #' # Assume `merged_physeq_sum` is a phyloseq object with one ASV/OTU 
-#' # resulting from spiked species, and `scaling_factors` is a 
-#' # numeric vector of scaling factors.
-#' merged_spiked_species <- c("Tetragenococcus_halophilus")
-#' 
-#' # Calculate scaling factors and generate a report
-#' result <- calculate_spikeIn_factors(merged_physeq_sum, 1874, merged_spiked_species)
-#' 
-#' # Convert the phyloseq object to absolute counts using scaling factors
-#' absolute <- convert_to_absolute_counts(merged_physeq_sum, scaling_factors)
-#' absolute_counts <- absolute$absolute_counts
-#' physeq_obj <- absolute$physeq_obj
-#' 
-#' # The 'absolute_counts' variable contains the converted counts, and 'physeq_obj' 
-#' #is the updated phyloseq object
+#' \donttest{
+#' if (requireNamespace("DspikeIn", quietly = TRUE)) {
+#'   data("physeq_16SOTU", package = "DspikeIn")
+#'   # Scaling factors calculated from `calculate_spikeIn_factors()`
+#'
+#'   spiked_cells <- 1847
+#'   species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
+#'   merged_spiked_species <- "Tetragenococcus_halophilus"
+#'
+#'   spiked_16S_OTU <- phyloseq::subset_samples(physeq_16SOTU,
+#'     spiked.volume %in% c("2", "1"))
+#'   Spiked_16S_sum_scaled <- Pre_processing_species(
+#'     spiked_16S_OTU,
+#'     species_name,
+#'     merge_method = "sum",
+#'     output_file = "merged_physeq_sum.rds"
+#'   )
+#'
+#'   result <- calculate_spikeIn_factors(Spiked_16S_sum_scaled,
+#'     spiked_cells, merged_spiked_species)
+#'   scaling_factors <- result$scaling_factors
+#'
+#'   result_physeq <- convert_to_absolute_counts(Spiked_16S_sum_scaled, scaling_factors)
+#'   abs_counts_physeq <- result_physeq$absolute_counts
+#'   physeq_adj <- result_physeq$obj_adj
+#'
+#'   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+#'   spiked_16S_OTU_TSE <- tse_16SOTU[, tse_16SOTU$spiked.volume %in% c("2", "1")]
+#'
+#'   Spiked_16S_sum_tse_scaled <- Pre_processing_species(
+#'     spiked_16S_OTU_TSE,
+#'     species_name,
+#'     merge_method = "sum",
+#'     output_file = "merged_physeq_sum.rds"
+#'   )
+#'
+#'   result <- calculate_spikeIn_factors(Spiked_16S_sum_tse_scaled,
+#'     spiked_cells, merged_spiked_species)
+#'   scaling_factors <- result$scaling_factors
+#'
+#'   result_tse <- convert_to_absolute_counts(spiked_16S_OTU_TSE, scaling_factors)
+#'   abs_counts_tse <- result_tse$absolute_counts
+#'   tse_adj <- result_tse$obj_adj
+#' }
 #' }
 #' @export
-convert_to_absolute_counts <- function(physeq, scaling_factors, output_dir = NULL) {
+convert_to_absolute_counts <- function(obj, scaling_factors, output_dir = NULL) {
   suppressMessages({
-    # Ensure necessary libraries are available
-    if (!requireNamespace("phyloseq", quietly = TRUE)) {
-      stop("Package 'phyloseq' is required but not installed.")
+
+    # ==============================
+    # Validate Object Type
+    # ==============================
+    is_physeq <- inherits(obj, "phyloseq")
+    is_tse <- inherits(obj, "TreeSummarizedExperiment")
+
+    if (!is_physeq && !is_tse) {
+      stop("\U0000274C Input must be a `phyloseq` or `TreeSummarizedExperiment` object.")
     }
-    
-    # Remove taxa with NA or empty values in the taxonomic table
-    physeq <- phyloseq::subset_taxa(physeq, apply(phyloseq::tax_table(physeq), 1, function(x) all(x != "" & !is.na(x))))
-    
-    # Change zeros in scaling factors to 1
+
+    message("\U0001F504 Extracting OTU Table...")
+    otu_table_data <- get_otu_table(obj)
+
+    message("\U0001F50D Extracting Taxonomy Table...")
+    tax_data <- get_tax_table(obj)
+
+    message("\U0001F9EE Extracting Sample Metadata...")
+    sample_metadata <- get_sample_data(obj)
+
+    message("\U0001F333 Extracting Phylogenetic Tree (if available)...")
+    phy_tree <- tryCatch(if (is_physeq) phyloseq::phy_tree(obj) else TreeSummarizedExperiment::rowTree(obj), error = function(e) NULL)
+
+    message("\U0001F9F0 Extracting Reference Sequences (if available)...")
+    ref_sequences <- tryCatch(if (is_physeq) phyloseq::refseq(obj) else S4Vectors::metadata(obj)$refseq, error = function(e) NULL)
+
+    # ==============================
+    # Ensure Sample Names Match Scaling Factors
+    # ==============================
+    otu_sample_names <- colnames(otu_table_data)
+
+    if (!all(names(scaling_factors) %in% otu_sample_names)) {
+      stop("\U0000274C Error: Some sample names in scaling_factors do not match OTU table sample names.")
+    }
+
+    # Ensure correct order of scaling factors
+    scaling_factors <- scaling_factors[otu_sample_names]
+
+    # ==============================
+    # Convert to Absolute Counts
+    # ==============================
+    message("\U0001F9EE Converting to Absolute Counts...")
+
+    # Ensure scaling factors are non-zero (replace 0s with 1)
     scaling_factors[scaling_factors == 0] <- 1
-    
-    # Convert ASV counts to absolute counts by multiplying ASVs by scaling_factors and rounding the result
-    physeq_count <- round(phyloseq::otu_table(physeq) * scaling_factors)
-    
-    # Check for negative or NA values and replace them with 0
-    physeq_count[physeq_count < 0 | is.na(physeq_count)] <- 0
-    
-    # Set the OTU table in the phyloseq object with the absolute counts
-    phyloseq::otu_table(physeq) <- phyloseq::otu_table(physeq_count)
-    
-    # Set the default output directory to the current working directory if not provided
+
+    # Multiply each OTU count by the correct scaling factor
+    otu_table_abs <- sweep(otu_table_data, 2, scaling_factors, "*")
+    otu_table_abs <- round(otu_table_abs)
+
+    # Ensure non-negative counts
+    otu_table_abs[otu_table_abs < 0 | is.na(otu_table_abs)] <- 0
+
+    # ==============================
+    # Prune Phylogenetic Tree to Match Remaining Taxa
+    # ==============================
+    if (!is.null(phy_tree)) {
+      common_tips <- intersect(phy_tree$tip.label, rownames(otu_table_abs))
+      if (length(common_tips) < length(phy_tree$tip.label)) {
+        if (length(common_tips) > 1) {
+          phy_tree <- ape::drop.tip(phy_tree, setdiff(phy_tree$tip.label, common_tips))
+          message("\U00002705 Pruned phylogenetic tree to match taxa.")
+        } else {
+          warning("\U000026A0 Too few taxa left in the tree after pruning. Removing tree.")
+          phy_tree <- NULL
+        }
+      }
+    }
+
+    # ==============================
+    # Prune Reference Sequences to Match Remaining Taxa
+    # ==============================
+    if (!is.null(ref_sequences)) {
+      common_seqs <- intersect(names(ref_sequences), rownames(otu_table_abs))
+      if (length(common_seqs) < length(ref_sequences)) {
+        if (length(common_seqs) > 1) {
+          ref_sequences <- ref_sequences[common_seqs]
+          message("\U00002705 Pruned reference sequences to match taxa.")
+        } else {
+          warning("\U000026A0 Too few reference sequences left after pruning. Removing refseq.")
+          ref_sequences <- NULL
+        }
+      }
+    }
+
+    # ==============================
+    # Reconstruct Object with Absolute Counts
+    # ==============================
+    message("\U0001F500 Reconstructing Object...")
+
+    if (is_physeq) {
+      obj_adj <- phyloseq::phyloseq(
+        phyloseq::otu_table(otu_table_abs, taxa_are_rows = TRUE),
+        if (!is.null(tax_data)) phyloseq::tax_table(as.matrix(tax_data)) else NULL,
+        if (!is.null(sample_metadata)) phyloseq::sample_data(sample_metadata) else NULL,
+        if (!is.null(phy_tree)) phy_tree else NULL,
+        if (!is.null(ref_sequences)) phyloseq::refseq(ref_sequences) else NULL
+      )
+    } else if (is_tse) {
+      obj_adj <- TreeSummarizedExperiment::TreeSummarizedExperiment(
+        assays = list(counts = otu_table_abs),
+        rowData = if (!is.null(tax_data)) tax_data else NULL,
+        colData = if (!is.null(sample_metadata)) sample_metadata else NULL,
+        rowTree = if (!is.null(phy_tree)) phy_tree else NULL,
+        metadata = if (!is.null(ref_sequences)) list(refseq = ref_sequences) else list()
+      )
+    }
+
+    # ==============================
+    # Save Absolute Counts
+    # ==============================
     if (is.null(output_dir)) {
       output_dir <- getwd()
     }
-    
-    # Get the file name
-    output_file <- file.path(output_dir, "physeq_adj_scaled_AbsoluteCount.csv")
-    
-    # Save the absolute counts as a CSV file
-    utils::write.csv(phyloseq::otu_table(physeq), file = output_file, row.names = TRUE)
-    cat("Absolute count data saved to:", output_file, "\n")
-    
-    # Return a list containing the data frame of absolute counts and the modified phyloseq object
+
+    output_file <- file.path(output_dir, "absolute_counts.csv")
+    utils::write.csv(otu_table_abs, file = output_file, row.names = TRUE)
+    message("\U0001F4BE Absolute count data saved to: ", output_file)
+
+    # ==============================
+    # Return Absolute Counts & Modified Object
+    # ==============================
     return(list(
-      absolute_counts = as.data.frame(phyloseq::otu_table(physeq)),
-      physeq_obj = physeq
+      absolute_counts = as.data.frame(otu_table_abs),
+      obj_adj = obj_adj
     ))
   })
 }
 
-# Example:
-# merged_spiked_species <- c("Tetragenococcus_halophilus")
-# # Calculate scaling factors and generate the report
-# result <- calculate_spikeIn_factors(merged_physeq_sum, 1874, merged_spiked_species)
-# scaling_factors <- result$scaling_factors
-# absolute <- convert_to_absolute_counts(merged_physeq_sum, scaling_factors)
-# absolute_counts <- absolute$absolute_counts
-# physeq_absolute <- absolute$physeq_obj
+# Example usage with phyloseq object
+# result_physeq <- convert_to_absolute_counts(physeq_16SOTU, scaling_factors)
+# abs_counts_physeq <- result_physeq$absolute_counts
+# physeq_adj <- result_physeq$obj_adj
+
+# Example usage with TreeSummarizedExperiment object
+# tse_obj <- convert_phyloseq_to_tse(physeq_16SOTU)
+# result_tse <- convert_to_absolute_counts(tse_obj, scaling_factors)
+# abs_counts_tse <- result_tse$absolute_counts
+# tse_adj <- result_tse$obj_adj

@@ -5,31 +5,59 @@
 \title{Plot a Phylogenetic Tree with Multiple Sequence Alignment}
 \usage{
 plot_tree_with_alignment(
-  physeq,
+  obj,
   output_prefix = "physeq_tree_alignment",
   width = 15,
   height = 15
 )
 }
 \arguments{
-\item{physeq}{A phyloseq object containing the phylogenetic data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing the phylogenetic data.}
 
-\item{output_prefix}{A character string specifying the prefix for the output files. Default is "physeq_tree_alignment".}
+\item{output_prefix}{A character string specifying the prefix for the output files. Default is \code{"physeq_tree_alignment"}.}
 
-\item{width}{A numeric value specifying the width of the output plot. Default is 15.}
+\item{width}{A numeric value specifying the width of the output plot. Default is \code{15}.}
 
-\item{height}{A numeric value specifying the height of the output plot. Default is 15.}
+\item{height}{A numeric value specifying the height of the output plot. Default is \code{15}.}
 }
 \value{
-NULL. The function saves the plots to the specified output files.
+\code{NULL}. The function saves the plots as PNG and PDF files.
 }
 \description{
-This function generates a phylogenetic tree plot with an additional plot of the multiple sequence alignment.
+Generates a phylogenetic tree plot with an additional multiple sequence alignment (MSA) visualization.
+Supports both \code{phyloseq} and \code{TreeSummarizedExperiment} (TSE) objects.
+}
+\details{
+\itemize{
+\item Extracts the \strong{phylogenetic tree} and \strong{reference sequences} from the input object.
+\item Performs \strong{multiple sequence alignment (MSA)} on the reference sequences.
+\item Plots the tree and \strong{aligns it with the MSA} using \code{ggtree::msaplot()}.
+\item Saves the output as \strong{PNG and PDF files}.
+}
 }
 \examples{
-if (interactive()) {
-  # Plot the phylogenetic tree with multiple sequence alignment
-  plot_tree_with_alignment(Tetragenococcus, 
-  output_prefix = "tree_alignment", width = 15, height = 15)
+\dontrun{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("physeq_16SOTU", package = "DspikeIn")
+
+  # Generate and save a tree plot with alignment
+  plot_tree_with_alignment(
+    physeq_16SOTU,
+    output_prefix = "tree_alignment",
+    width = 15,
+    height = 15
+  )
+
+  # Example usage with a TreeSummarizedExperiment (TSE) object:
+  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+
+  plot_tree_with_alignment(
+    tse_16SOTU,
+    output_prefix = "tse_tree_alignment",
+    width = 15,
+    height = 15
+  )
 }
+}
+
 }

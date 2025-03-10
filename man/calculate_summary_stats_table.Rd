@@ -19,17 +19,22 @@ This function calculates summary statistics (mean, standard deviation, standard 
 creates a flextable for formatted output, and saves the table in a Word document and CSV file.
 }
 \examples{
-\dontrun{
-# Calculate summary statistics and save the table to a Word document
-summary_table <- calculate_summary_stats_table(initial_stat_ASV, output_path = "summary.docx")
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE) &&
+ requireNamespace("microbiome", quietly = TRUE)) {
+  # Load necessary libraries
+  library(microbiome)
 
-# Read a post-evaluation summary from a CSV file
-post_eval_summary <- read.csv("post_eval_summary.csv")
+  data("physeq_16SOTU", package = "DspikeIn")
 
-# Print the calculated summary table
-print(summary_table)
+  # Extract absolute counts using the microbiome package
+  absolute_count <- microbiome::meta(physeq_16SOTU)
 
-# Preview the post-evaluation summary
-head(post_eval_summary)
+  # Calculate summary statistics and save the table to a Word document
+  summary_table <- calculate_summary_stats_table(absolute_count, output_path = "summary.docx")
+
+  # Print the calculated summary table
+  print(summary_table)
+}
 }
 }

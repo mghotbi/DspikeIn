@@ -26,13 +26,11 @@ within a data frame, using specified transformations. It prints the p-value for 
 and transformation combination.
 }
 \examples{
-\dontrun{
-# Example usage:
-# Assume `methods` is a data frame with a column "Methods" for grouping
-# and other numeric columns to test.
-# file_path <- system.file("extdata", "methods.rds", package = "DspikeIn")
-methods <- readRDS(file_path)
-print(methods)
-Bartlett_test(methods, "Methods")
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("methods", package = "DspikeIn")
+  # `methods` is a data frame with a column "Methods" for grouping
+  Bartlett_test(methods, "Methods")
+}
 }
 }

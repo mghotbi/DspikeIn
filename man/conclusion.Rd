@@ -2,54 +2,42 @@
 % Please edit documentation in R/conclusion.R
 \name{conclusion}
 \alias{conclusion}
-\title{Generate Spike Success Report and Summary Statistics}
+\title{Compute Summary Statistics for Spiked Species}
 \usage{
 conclusion(
-  physeq,
+  obj,
   merged_spiked_species,
   max_passed_range = 11,
-  output_path = NULL
+  output_path = "merged_data.docx"
 )
 }
 \arguments{
-\item{physeq}{A `phyloseq::phyloseq` object containing the microbial data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing microbiome data.}
 
-\item{merged_spiked_species}{A character vector of spiked species to check in the phyloseq object.}
+\item{merged_spiked_species}{A character vector of spiked species names.}
 
-\item{max_passed_range}{A numeric value specifying the maximum acceptable spike percentage. Default is 11.}
+\item{max_passed_range}{Numeric, maximum threshold for passing spike percentage.}
 
-\item{output_path}{A character string specifying the path to save the output files. Default is NULL, which saves the report as "spike_success_report.docx".}
+\item{output_path}{Character, file path for the \code{.docx} output from \code{calculate_spike_percentage()}.}
 }
 \value{
-A `data.frame` containing the summary statistics of the spike success report.
+A list containing:
+\item{summary_stats}{A \code{flextable} summary of the spike statistics.}
+\item{full_report}{The full spiked species report as a \code{data.frame}.}
+\item{phy_tree}{The phylogenetic tree (if available).}
 }
 \description{
-This function calculates the spike success report for a given phyloseq object, 
-summarizes the results, and saves the summary statistics in both DOCX and CSV formats.
-It uses the `flextable` package to create and format the tables in the DOCX file.
+Processes a phylogenetic dataset, extracts components,
+calculates spiked species statistics, and generates summary statistics in \code{flextable} format.
 }
 \examples{
-\dontrun{
-# Example usage:
-merged_spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
-max_passed_range <- 12 
-output_path <- "spike_success_report.docx"
-
-# Convert the phyloseq object to absolute counts
-# using scaling factors (example step)
-absolute <- convert_to_absolute_counts(physeq_16SASV, scaling_factors)
-physeq_absolute <- absolute$physeq_obj 
-
-# Subset the phyloseq object to exclude blank samples (optional step)
-physeq_adjusted <- phyloseq::subset_samples(physeq_absolute, sample.or.blank != "blank")
-
-# Generate the spike success report and calculate summary statistics
-summary_stats <- conclusion(physeq_adjusted, 
-                            merged_spiked_species, 
-                            max_passed_range, 
-                            output_path)
-
-# Print the summary statistics
-print(summary_stats)
+\donttest{
+  data("physeq_16SOTU", package="DspikeIn")
+  species_name <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
+  merged_spiked_species <- c("Tetragenococcus_halophilus")
+  merged_sum <- Pre_processing_species(physeq_16SOTU, species_name, merge_method = "sum")
+  max_passed_range <- 20
+  results <- conclusion(merged_sum, merged_spiked_species, max_passed_range)
+  results$summary_stats
 }
 }

@@ -1,0 +1,928 @@
+---
+title: "Getting Started with DspikeIn"
+author: "Mitra Ghotbi"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    highlight: tango
+    df_print: tibble
+    css: "style.css"
+vignette: >
+  %\VignetteIndexEntry{Getting Started with DspikeIn}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+
+
+---
+
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,      
+  message = FALSE,  
+  warning = FALSE  
+)
+
+```
+
+
+
+```{r figure_setup, include=FALSE}
+
+knitr::opts_chunk$set(
+  fig.width = 8, fig.height = 6,  
+  fig.align = "center",          
+  dpi = 600,                      
+  out.width = "95%",              
+  cache = TRUE,                   
+  dev = "png"                      
+)
+
+```
+
+
+#                Required Packages
+
+
+```{r, eval=FALSE}
+
+# ============================================================================
+#                         INSTALL CRAN PACKAGES
+# ============================================================================
+
+# Install missing CRAN packages
+install.packages(setdiff(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", 
+                           "randomForest", "ggridges", "ggalluvial", "tibble", 
+                           "matrixStats", "RColorBrewer", "ape", "rlang", 
+                           "scales", "magrittr", "phangorn", "igraph", "tidyr", 
+                           "xml2", "data.table", "reshape2","vegan", "patchwork", "officer"), 
+                         installed.packages()[,"Package"]))
+
+# Load CRAN packages
+lapply(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", "randomForest", 
+         "ggridges", "ggalluvial", "tibble", "matrixStats", "RColorBrewer", 
+         "ape", "rlang", "scales", "magrittr", "phangorn", "igraph", "tidyr", 
+         "xml2", "data.table", "reshape2","vegan", "patchwork", "officer"), library, character.only = TRUE)
+
+# ============================================================================
+#                         INSTALL BIOCONDUCTOR PACKAGES
+# ============================================================================
+
+# Install BiocManager if not installed
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+
+# Install missing Bioconductor packages
+BiocManager::install(setdiff(c("phyloseq", "msa", "DESeq2", "ggtree", "edgeR", 
+                               "Biostrings", "DECIPHER", "microbiome", "limma", 
+                               "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
+                             installed.packages()[,"Package"]))
+
+# Load Bioconductor packages
+lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings", "ggtree", "DECIPHER", 
+         "microbiome", "limma", "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
+       library, character.only = TRUE)
+
+# ============================================================================
+#                         INSTALL GITHUB PACKAGES
+# ============================================================================
+
+# Install remotes if not installed
+if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
+library(remotes)
+
+# Install missing GitHub packages
+remotes::install_github("mikemc/speedyseq")
+remotes::install_github("microsud/microbiomeutilities")
+# Optional
+#devtools::install_github("briatte/ggnet")
+#devtools::install_github("zdk123/SpiecEasi")
+
+# Load GitHub packages
+library(speedyseq)
+library(microbiomeutilities)
+#library(SpiecEasi)
+#library(ggnet)
+
+# ============================================================================
+#                         INSTALL DspikeIn FROM GITHUB
+# ============================================================================
+
+if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools")
+devtools::install_github("mghotbi/DspikeIn")
+
+# Load DspikeIn only if installed
+if ("DspikeIn" %in% installed.packages()[, "Package"]) {
+  library(DspikeIn)
+} else {
+  stop("DspikeIn installation failed. Check errors above.")
+}
+
+```
+
+
+#                Pre_processing
+
+
+```{r}
+# merges ASVs/OTUs**
+
+#The function Pre_processing_species() merges ASVs of a species using "sum" or "max" methods, preserving #taxonomic, phylogenetic, and sequencing data.
+
+# =====================================================================
+#                      Load the phyloseq objs/ TSE obj
+# =====================================================================
+
+library(phyloseq)
+library(DspikeIn)
+library(TreeSummarizedExperiment)
+library(SummarizedExperiment)
+
+data("physeq_16SOTU", package = "DspikeIn")
+# tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+# physeq_16SOTU <- convert_tse_to_phyloseq(tse_16SOTU)
+
+physeq_16SOTU <- DspikeIn::tidy_phyloseq_tse(physeq_16SOTU)  # make it tidy 
+
+# Check if metadata contains spiked volumes 
+physeq_16SOTU@sam_data$spiked.volume
+
+```
+
+
+#          Spiked species and related parameters
+
+
+```{r}
+
+# =====================================================================
+#                      PREREQUISITE FOR 16S & CALCULATE SPIKED %
+# =====================================================================
+# Define spiked species and related parameters**
+
+library(flextable)
+
+spiked_cells <- 1847
+species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
+merged_spiked_species <- "Tetragenococcus_halophilus"
+
+ 
+# Subset taxa for spiked species
+Tetra <- phyloseq::subset_taxa(
+  physeq_16SOTU, 
+  Species %in% species_name)
+hashcodes <- row.names(phyloseq::tax_table(Tetra))
+
+# Subset samples based on spiked volume 
+spiked_16S_OTU_spiked <- phyloseq::subset_samples(physeq_16SOTU, spiked.volume %in% c("2", "1"))
+
+# if TSE format
+# spiked_16S_OTU_TSE <- tse_16SOTU[, tse_16SOTU$spiked.volume %in% c("2", "1")]
+
+# Merge OTUs derived from spiking into one
+# Note: how many taxa have changed to xx 
+
+?DspikeIn::Pre_processing_species
+Spiked_16S_sum_scaled <- Pre_processing_species(
+  spiked_16S_OTU_spiked, 
+  species_name, 
+  merge_method = "sum", 
+  output_file = "merged_physeq_sum.rds"
+)
+
+# ?calculate_spike_percentage
+
+Perc <- calculate_spike_percentage(
+  Spiked_16S_sum_scaled, 
+  merged_spiked_species, 
+  passed_range = c(0.1, 20)
+)
+
+```
+
+
+#         Calculating Scaling Factors
+
+
+```{r}
+#
+# =====================================================================
+#                      CALCULATE SCALING FACTORS 
+# =====================================================================
+# Calculate scaling factors
+  
+result <- calculate_spikeIn_factors(Spiked_16S_sum_scaled, spiked_cells, merged_spiked_species)
+result$spiked_species_merged
+result$spiked_species_reads
+scaling_factors <- result$scaling_factors
+scaling_factors
+str(scaling_factors)
+
+
+```
+
+
+
+#                Convert relative counts to absolute counts
+
+
+```{r}
+# =====================================================================
+#             Convert relative counts to absolute counts
+# =====================================================================
+#**Absolute Read Count=Relative Read Count×Scaling Factor**
+
+# Convert to absolute counts
+absolute <- convert_to_absolute_counts(Spiked_16S_sum_scaled, scaling_factors)
+
+# Extract processed data
+absolute_counts <- absolute$absolute_counts
+physeq_absolute <- absolute$obj_adj
+
+# View absolute count data
+head(absolute_counts)
+
+
+```
+
+
+#     Summary Stat
+
+
+```{r}
+
+# =====================================================================
+#                      CALCULATE SPIKE PERCENTAGE & summary stat
+# =====================================================================
+
+#**Calculate spike percentage & Generate summary statistics for absolute counts**
+
+# Generate summary statistics for absolute counts
+post_eval_summary <- calculate_summary_stats_table(absolute_counts)
+print(post_eval_summary)
+
+# Back normal  
+# the scaling factor was computed based on spiked species reads and fixed cell count.
+# Multiplying the spiked species read count by this scaling factor restores the exact spiked cell count.
+# lets check it
+# BackNormal <- calculate_spike_percentage(
+#  physeq_absolute, 
+#  merged_spiked_species, 
+#  passed_range = c(0.1, 20)
+# )
+
+
+```
+
+
+#        Filter out unsuccessful spiked samples
+
+
+```{r}
+
+#**Time to filter out unsuccessful spiked samples**
+
+library(phyloseq)
+library(dplyr)
+library(tibble)
+library(microbiome)
+
+filtered_sample_data <- microbiome::meta(physeq_absolute) %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column(var = "Sample") %>%  
+  dplyr::mutate(Sample = as.character(Sample)) %>%
+  dplyr::left_join(Perc, by = "Sample")
+
+filtered_sample_data <- tibble::column_to_rownames(filtered_sample_data, "Sample")
+
+filtered_sample_data <- sample_data(as.data.frame(filtered_sample_data))
+
+# Assign back to phyloseq obj
+sample_data(physeq_absolute) <- filtered_sample_data
+
+```
+
+
+#           spiked species retrieval is system-dependent
+
+
+```{r }
+
+#**The acceptable range of spiked species retrieval is system-dependent**
+# Spiked species become centroid of the community (Distance to Centroid)
+# Spiked species become dominant and imbalance the community (Evenness)
+
+# What range of spiked species retrieval is appropriate for your system?
+  
+# Calculate Pielou's Evenness using Shannon index and species richness (Observed)
+# Load required libraries
+library(vegan)
+
+# Calculate Pielou's Evenness using Shannon index and species richness (Observed)
+alphab <- estimate_richness(physeq_absolute, measures = c("Observed", "Shannon"))
+alphab$Pielou_evenness <- alphab$Shannon / alphab$Observed
+
+# Normalize values
+alphab <- alphab %>%
+  mutate(across(c("Observed", "Shannon", "Pielou_evenness"), ~ as.numeric(scale(.))))
+
+metadata <- as.data.frame(microbiome::meta(physeq_absolute))
+
+metadata$Sample <- rownames(metadata)
+alphab$Sample <- rownames(alphab)
+
+# Merge alpha diversity metrics into metadata
+metadata <- dplyr::left_join(metadata, alphab[, c("Sample", "Observed", "Shannon", "Pielou_evenness")], by = "Sample")
+
+metadata <- metadata %>%
+  column_to_rownames(var = "Sample")
+
+# Updated metadata back to the phyloseq obj
+sample_data(physeq_absolute) <- sample_data(metadata)
+
+if (!"Spiked_Reads" %in% colnames(metadata)) {
+  stop("Column 'Spiked_Reads' not found in metadata.")
+}
+
+# Generate regression plot
+plot_object <- regression_plot(
+  data = metadata,
+  x_var = "Pielou_evenness",
+  y_var = "Spiked_Reads",
+  custom_range = c(0.1, 20, 30, 50, 100),
+  plot_title = NULL
+)
+
+plot_object
+
+
+```
+
+
+#            Calculate the percentage of spiked species retrieval
+
+
+```{r}
+
+#*Calculate the percentage of spiked species retrieval per sample***
+
+absolute_abundance_16S_OTU_perc <- phyloseq::subset_samples(physeq_absolute, sample.or.blank != "blank")
+
+# Adjust the threshold range as needed based on system specifications
+
+result_perc <- calculate_spike_percentage(
+  absolute_abundance_16S_OTU_perc, 
+  merged_spiked_species, 
+  passed_range = c(0.1, 20)
+)
+
+conclusion(absolute_abundance_16S_OTU_perc, 
+  merged_spiked_species, 
+  max_passed_range=20, 
+  output_path)
+
+```
+```{r, eval=FALSE}
+ physeq_absolute <- absolute$obj_adj
+ pps_Abs <- get_long_format_data(physeq_absolute)
+
+ # calculation for relative abundance needs sum of total reads
+ # total_reads <- sum(pps_Abs$Abundance)
+
+ # Generate an alluvial plot using the extended palette
+ alluvial_plot_abs <- alluvial_plot(
+   data = pps_Abs,
+   axes = c( "Host.genus","Ecoregion.III", "Diet"),
+   abundance_threshold = 10000,
+   fill_variable = "Family",
+   silent = TRUE,
+   abundance_type = "absolute",
+   top_taxa = 15,
+   text_size = 4,
+   legend_ncol = 1,
+   custom_colors = DspikeIn::color_palette$light_MG  # Use the extended palette from your package
+ )
+ alluvial_plot_abs
+
+```
+
+#                 Data transform
+
+you may select to transform your data befor moving forward with Differential Abundance
+
+
+```{r, eval=FALSE}
+
+ ps <- physeq_16SOTU
+
+  # TC Normalization
+  result_TC <- normalization_set(ps, method = "TC", groups = "Host.species")
+  normalized_ps_TC <- result_TC$dat.normed
+  scaling_factors_TC <- result_TC$scaling.factor
+
+  # UQ Normalization
+  data("physeq_16SOTU", package = "DspikeIn")
+  ps <- physeq_16SOTU
+  result_UQ <- normalization_set(ps, method = "UQ", groups = "Host.species")
+  normalized_ps_UQ <- result_UQ$dat.normed
+  scaling_factors_UQ <- result_UQ$scaling.factor
+
+  # Median Normalization
+  data("physeq_16SOTU", package = "DspikeIn")
+  ps <- physeq_16SOTU
+  result_med <- normalization_set(ps, method = "med", groups = "Host.species")
+  normalized_ps_med <- result_med$dat.normed
+  scaling_factors_med <- result_med$scaling.factor
+
+  # DESeq Normalization
+  data("physeq_16SOTU", package = "DspikeIn")
+  ps <- physeq_16SOTU
+  ps_n <- remove_zero_negative_count_samples(ps)
+  result_DESeq <- normalization_set(ps_n, method = "DESeq", groups = "Animal.type")
+  normalized_ps_DESeq <- result_DESeq$dat.normed
+  scaling_factors_DESeq <- result_DESeq$scaling.factor
+
+  # Poisson Normalization
+  data("physeq_16SOTU", package = "DspikeIn")
+  ps <- physeq_16SOTU
+  result_Poisson <- normalization_set(ps, method = "Poisson", groups = "Host.genus")
+  normalized_ps_Poisson <- result_Poisson$dat.normed
+  scaling_factors_Poisson <- result_Poisson$scaling.factor
+
+  # Quantile Normalization
+  data("physeq_16SOTU", package = "DspikeIn")
+  ps <- physeq_16SOTU
+  result_QN <- normalization_set(ps, method = "QN")
+  normalized_ps_QN <- result_QN$dat.normed
+  scaling_factors_QN <- result_QN$scaling.factor
+
+  # TMM Normalization
+  data("physeq_16SOTU", package = "DspikeIn")
+  ps <- physeq_16SOTU
+  result_TMM <- normalization_set(ps, method = "TMM", groups = "Animal.type")
+  normalized_ps_TMM <- result_TMM$dat.normed
+  scaling_factors_TMM <- result_TMM$scaling.factor
+
+  # CLR Normalization
+  data("physeq_16SOTU", package = "DspikeIn")
+  ps <- physeq_16SOTU
+  result_clr <- normalization_set(ps, method = "clr")
+  normalized_ps_clr <- result_clr$dat.normed
+  scaling_factors_clr <- result_clr$scaling.factor
+
+  # Rarefying
+  data("physeq_16SOTU", package = "DspikeIn")
+  ps <- physeq_16SOTU
+  result_rar <- normalization_set(ps, method = "rar")
+  normalized_ps_rar <- result_rar$dat.normed
+  scaling_factors_rar <- result_rar$scaling.factor
+
+  # CSS Normalization
+  data("physeq_16SOTU", package = "DspikeIn")
+  ps <- physeq_16SOTU
+  result_css <- normalization_set(ps, method = "css")
+  normalized_ps_css <- result_css$dat.normed
+  scaling_factors_css <- result_css$scaling.factor
+
+  # TSS Normalization
+  data("physeq_16SOTU", package = "DspikeIn")
+  ps <- physeq_16SOTU
+  result_tss <- normalization_set(ps, method = "tss")
+  normalized_ps_tss <- result_tss$dat.normed
+  scaling_factors_tss <- result_tss$scaling.factor
+
+  # RLE Normalization
+  data("physeq_16SOTU", package = "DspikeIn")
+  ps <- physeq_16SOTU
+  result_rle <- normalization_set(ps, method = "rle")
+  normalized_ps_rle <- result_rle$dat.normed
+  scaling_factors_rle <- result_rle$scaling.factor
+
+```
+
+#                  Further analysis
+
+remove the spike-in sp before further analysis
+
+```{r, eval=FALSE}
+
+absolute <- phyloseq::subset_taxa(physeq_absolute, Genus!="Tetragenococcus")
+Caudate_abs <- phyloseq::subset_samples(absolute, Clade.Order == "Caudate"  )
+Three_Genara_abs <- phyloseq::subset_samples(Caudate_abs, Host.genus %in% c("Desmognathus", "Plethodon", "Eurycea"))
+Three_Genara_abs_BlueRidge<- phyloseq::subset_samples(Three_Genara_abs,Ecoregion.III=="Blue Ridge" )
+Desmog_Blue_Ins_16_abs<- phyloseq::subset_samples(Three_Genara_abs_BlueRidge,Host.genus=="Desmognathus")
+
+ results_DESeq2 <- perform_and_visualize_DA(
+   obj = Desmog_Blue_Ins_16_abs,
+   method = "DESeq2",
+   group_var = "Host.taxon",
+   contrast = c("Desmognathus monticola", "Desmognathus imitator" ),
+   output_csv_path = "DA_DESeq2.csv",
+   target_glom = "Genus",
+   significance_level = 0.05
+ )
+
+results_DESeq2$plot
+head(results_DESeq2$results)  
+results_DESeq2$obj_significant
+
+
+# Relative abundance
+data("physeq_16SOTU",package = "DspikeIn")
+relative <- phyloseq::subset_taxa(physeq_16SOTU, Genus!="Tetragenococcus")
+Caudate_rel <- phyloseq::subset_samples(relative, Clade.Order == "Caudate"  )
+Three_Genara_rel <- phyloseq::subset_samples(Caudate_rel, Host.genus %in% c("Desmognathus", "Plethodon", "Eurycea"))
+Three_Genara_rel_BlueRidge<- phyloseq::subset_samples(Three_Genara_rel,Ecoregion.III=="Blue Ridge" )
+Desmog_Blue_Ins_16_rel<- phyloseq::subset_samples(Three_Genara_rel_BlueRidge,Host.genus=="Desmognathus")
+
+ results_DESeq2_rel <- perform_and_visualize_DA(
+   obj = Desmog_Blue_Ins_16_rel,
+   method = "DESeq2",
+   group_var = "Host.taxon",
+   contrast = c("Desmognathus monticola", "Desmognathus imitator" ),
+   output_csv_path = "DA_DESeq2.csv",
+   target_glom = "Genus",
+   significance_level = 0.05
+ )
+print(results_DESeq2_rel$plot)
+head(results_DESeq2_rel$results)  #  sig taxa
+results_DESeq2_rel$obj_significant
+
+```
+
+
+
+#                     Visualization
+
+
+```{r}
+# ===========================================================
+#  Visualization of community composition 
+# ===========================================================
+
+Rel <- phyloseq::subset_taxa(physeq_16SOTU, Genus!="Tetragenococcus")
+Prok_OTU_spiked <- phyloseq::subset_samples(Rel, spiked.volume %in% c("2", "1"))
+Prok_OTU_spiked <- phyloseq::subset_samples(Prok_OTU_spiked, sample.or.blank != "blank")
+Prok_OTU_sal <- phyloseq::subset_samples(Prok_OTU_spiked, Animal.type == "Salamander")
+
+taxa_barplot(
+  Prok_OTU_sal,
+  target_glom = "Genus",
+  custom_tax_names = NULL,
+  normalize = TRUE,
+  treatment_variable = "Habitat",
+  abundance_type = "relative",
+  x_angle = 25,
+  fill_variable = "Family",
+  facet_variable = "Diet",
+  top_n_taxa = 20,
+  palette = DspikeIn::color_palette$MG,
+  legend_size = 11,
+  legend_columns = 1,
+  x_scale = "free",
+  xlab = NULL
+)
+
+```
+
+
+#                 NetWork comparision
+
+```{r}
+
+# ===========================================================
+# 1. Initialization and loading NetWorks for Comparision
+# ===========================================================
+
+#library(SpiecEasi)
+#library(ggnet)
+library(igraph)
+library(tidyr)
+library(dplyr)
+library(ggpubr)
+
+# To create a microbial co-occurrence network, you can refer to the SpiecEasi package available at:
+# SpiecEasi GitHub Repository  https://github.com/zdk123/SpiecEasi 
+
+# herp.Bas.rel.f is a merged phyloseq object for both bacterial and fungal domains
+# herp.spiec <- spiec.easi(herp.Bas.rel.f, method='mb', lambda.min.ratio=1e-3, nlambda=250,pulsar.select=TRUE )
+# write_graph(herp.spiec, "Complete.graphml", "graphml")
+
+Complete <- load_graphml("Complete.graphml")
+NoBasid <- load_graphml("NoBasid.graphml")
+NoHubs <- load_graphml("NoHubs.graphml")
+
+```
+
+
+#            Network Topological Metrics
+
+
+```{r}
+
+# ===========================================================
+# 2. Metrics Calculation
+# ===========================================================
+? node_level_metrics
+
+result_Complete <- node_level_metrics(Complete)
+result_NoHubs <- node_level_metrics(NoHubs)
+result_NoBasid <- node_level_metrics(NoBasid)
+
+Complete_metrics<-result_Complete$metrics
+Nohub_metrics<-result_NoHubs$metrics
+Nobasid_metrics<-result_NoBasid$metrics
+
+Complete_metrics <- data.frame(lapply(Complete_metrics, as.character), stringsAsFactors = FALSE)
+Nohub_metrics <- data.frame(lapply(Nohub_metrics, as.character), stringsAsFactors = FALSE)
+Nobasid_metrics <- data.frame(lapply(Nobasid_metrics, as.character), stringsAsFactors = FALSE)
+
+
+print(vcount(Complete))  # Number of nodes
+print(ecount(Complete))  # Number of edges
+
+print(vcount(NoBasid))
+print(ecount(NoBasid))
+
+print(vcount(NoHubs))
+print(ecount(NoHubs))
+
+
+metrics_scaled <- bind_rows(
+  Complete_metrics %>% mutate(Network = "Complete"),
+  Nohub_metrics %>% mutate(Network = "NoHubs"),
+  Nobasid_metrics %>% mutate(Network = "NoBasid")
+) %>%
+dplyr::mutate(dplyr::across(where(is.numeric), scale))
+
+metrics_long_scaled <- metrics_scaled %>%
+  tidyr::pivot_longer(cols = -c(Node, Network), names_to = "Metric", values_to = "Value")
+
+
+```
+
+
+
+bind the metrics to plot them
+
+```{r}
+# ===========================================================
+# 3. Visualization
+# ===========================================================
+
+# Remove missing values 
+metrics_long_scaled <- na.omit(metrics_long_scaled)
+
+# We visualize only six metrics 
+selected_metrics <- c("Degree", "Closeness", "Betweenness", 
+                      "EigenvectorCentrality", "PageRank", "Transitivity")
+
+metrics_long_filtered <- metrics_long_scaled %>%
+  filter(Metric %in% selected_metrics) %>%
+  mutate(
+    Value = as.numeric(as.character(Value)),
+    Network = recode(Network, 
+                     "Complete" = "Complete Network",
+                     "NoHubs" = "Network & Module Hubs Removed",
+                     "NoBasid" = "Basidiobolus Subnetwork Removed") ) %>%
+  na.omit()  # Remove any NA 
+
+metrics_long_filtered$Network <- factor(metrics_long_filtered$Network, 
+                                        levels = c("Complete Network", 
+                                                   "Network & Module Hubs Removed", 
+                                                  "Basidiobolus Subnetwork Removed"))
+
+# DspikeIn::color_palette$light_MG
+network_colors <- c(
+  "Complete Network" = "#F1E0C5", 
+  "Network & Module Hubs Removed" = "#D2A5A1", 
+  "Basidiobolus Subnetwork Removed" = "#B2C3A8"
+)
+
+# statistical comparisons a vs b
+comparisons <- list(
+  c("Complete Network", "Network & Module Hubs Removed"),
+  c("Complete Network", "Basidiobolus Subnetwork Removed"),
+  c("Network & Module Hubs Removed", "Basidiobolus Subnetwork Removed")
+)
+
+networks_in_data <- unique(metrics_long_filtered$Network)
+comparisons <- comparisons[sapply(comparisons, function(pair) all(pair %in% networks_in_data))]
+
+ggplot(metrics_long_filtered, aes(x = Network, y = Value, fill = Network)) +
+  geom_boxplot(outlier.shape = NA) +  
+  geom_jitter(aes(color = Network), 
+              position = position_jitter(0.2), alpha = 0.2, size = 1.5) +  
+  scale_fill_manual(values = network_colors) +
+  scale_color_manual(values = network_colors) +  
+  facet_wrap(~ Metric, scales = "free_y", labeller = label_wrap_gen(width = 20)) +
+  ggpubr::stat_compare_means(method = "wilcox.test", label = "p.signif", comparisons = comparisons) +
+  theme_minimal() +
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x = element_text(size = 10, angle = 25, hjust = 0.9),
+    strip.text = element_text(size = 12),
+    legend.position = "top",
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 14, face = "bold"),
+    plot.title = element_text(size = 14, face = "bold")
+  ) +
+  labs(title = "Selected Node Metrics Across Networks", fill = "Network Type", color = "Network Type")
+
+
+```
+
+
+#          To find first and second neighbors your target node  
+
+
+```{r}
+
+ Complete <- load_graphml("Complete.graphml")
+ result2 <- extract_neighbors(graph = Complete,
+ target_node = "OTU69:Basidiobolus_sp", mode = "all")
+ print(result2$summary)
+
+```
+
+
+#                 Compute Node-Level Metrics
+
+
+```{r}
+# Load required libraries
+library(igraph)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggrepel)
+
+# Compute Node-Level Metrics
+completeMetrics <- node_level_metrics(Complete)
+NoHubsMetrics <- node_level_metrics(NoHubs)
+NoBasidMetrics <- node_level_metrics(NoBasid)
+
+# Ensure each dataset has a "Network" column before combining
+completeMetrics$metrics <- completeMetrics$metrics %>% mutate(Network = "Complete Network")
+NoHubsMetrics$metrics <- NoHubsMetrics$metrics %>% mutate(Network = "Network & Module Hubs Removed")
+NoBasidMetrics$metrics <- NoBasidMetrics$metrics %>% mutate(Network = "Basidiobolus Subnetwork Removed")
+
+# Combine All Data
+combined_data <- bind_rows(
+  completeMetrics$metrics, 
+  NoHubsMetrics$metrics, 
+  NoBasidMetrics$metrics
+)
+
+
+# Add Node Identifier if missing
+if (!"Node" %in% colnames(combined_data)) {
+  combined_data <- combined_data %>% mutate(Node = rownames(.))
+}
+
+# Convert `Network` into Factor
+combined_data$Network <- factor(combined_data$Network, levels = c(
+  "Complete Network", 
+  "Network & Module Hubs Removed", 
+  "Basidiobolus Subnetwork Removed"
+))
+
+# Convert Data to Long Format
+metrics_long <- combined_data %>%
+  pivot_longer(cols = c("Redundancy", "Efficiency", "Betweenness"),
+               names_to = "Metric", values_to = "Value")
+
+# Define Custom Colors and Shapes
+network_colors <- c(
+  "Complete Network" = "#F1E0C5",
+  "Network & Module Hubs Removed" = "#D2A5A1",
+  "Basidiobolus Subnetwork Removed" = "#B2C3A8"
+)
+
+network_shapes <- c(
+  "Complete Network" = 21,  # Circle
+  "Network & Module Hubs Removed" = 22,  # Square
+  "Basidiobolus Subnetwork Removed" = 23  # Diamond
+)
+
+# Determine Top 30% of Nodes to Label/Optional
+metrics_long <- metrics_long %>%
+  group_by(Network, Metric) %>%
+  mutate(Label = ifelse(rank(-Value, ties.method = "random") / n() <= 0.3, Node, NA))
+
+#?quadrant_plot() can creat plot for indivisual network
+# plot <- quadrant_plot(metrics, x_metric = "Degree", y_metric = "Efficiency")
+
+# Create comparision Plots  
+create_metric_plot <- function(metric_name, data, title) {
+  data_filtered <- data %>% filter(Metric == metric_name)
+  median_degree <- median(data_filtered$Degree, na.rm = TRUE)
+  median_value <- median(data_filtered$Value, na.rm = TRUE)
+  
+  ggplot(data_filtered, aes(x = Degree, y = Value, fill = Network)) +
+    geom_point(aes(shape = Network), size = 3, stroke = 1, color = "black") +
+    geom_text_repel(aes(label = Label), size = 3, max.overlaps = 50) +
+    scale_fill_manual(values = network_colors) +
+    scale_shape_manual(values = network_shapes) +
+    geom_vline(xintercept = median_degree, linetype = "dashed", color = "black", size = 1) +
+    geom_hline(yintercept = median_value, linetype = "dashed", color = "black", size = 1) +
+    labs(
+      title = title,
+      x = "Degree",
+      y = metric_name,
+      fill = "Network",
+      shape = "Network"
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+      axis.title = element_text(size = 14, face = "bold"),
+      legend.position = "top",
+      legend.title = element_text(size = 14, face = "bold"),
+      legend.text = element_text(size = 12)
+    )
+}
+
+# Generate Plots
+plot_redundancy <- create_metric_plot("Redundancy", metrics_long, "Redundancy vs. Degree Across Networks")
+plot_efficiency <- create_metric_plot("Efficiency", metrics_long, "Efficiency vs. Degree Across Networks")
+plot_betweenness <- create_metric_plot("Betweenness", metrics_long, "Betweenness vs. Degree Across Networks")
+
+# Save Plots
+#ggsave("plot_redundancy_20percent.png", plot_redundancy, width = 8, height = 6)
+#ggsave("plot_efficiency_20percent.png", plot_efficiency, width = 8, height = 6)
+#ggsave("plot_betweenness_20percent.png", plot_betweenness, width = 8, height = 6)
+
+# Print Plots
+print(plot_redundancy)
+print(plot_efficiency)
+print(plot_betweenness)
+
+```
+
+
+#            Compute degree metrics and visualize the network
+
+
+```{r, eval=FALSE}
+
+  # Compute degree metrics and visualize the network  
+  # Options: `"stress"` (default), `"graphopt"`, `"fr"`
+
+  result <- degree_network(graph_path = Complete, save_metrics = TRUE)
+  print(result$metrics)
+  print(result$plot)
+
+
+ # Compute network weights for different graph structures
+NH <- weight_Network(graph_path = "NoHubs.graphml")
+NB <- weight_Network(graph_path = "NoBasid.graphml")
+C <- weight_Network(graph_path = "Complete.graphml")
+
+# Extract metrics from the computed network weights
+CompleteM <- C$metrics
+NoHubsM <- NH$metrics
+NoBasidM <- NB$metrics
+
+# Combine metrics into a single dataframe for comparison
+df <- bind_rows(
+  CompleteM %>% mutate(Group = "CompleteM"),
+  NoHubsM %>% mutate(Group = "NoHubsM"),
+  NoBasidM %>% mutate(Group = "NoBasidM")
+) %>%
+  pivot_longer(cols = -Group, names_to = "Metric", values_to = "Value")
+
+# Aggregate the total values by metric and group
+df_bar <- df %>%
+  group_by(Metric, Group) %>%
+  summarise(Total_Value = sum(Value), .groups = "drop")
+
+# Plot the metrics comparison
+ggplot(df_bar, aes(x = Metric, y = log1p(Total_Value), fill = Group)) +
+  geom_bar(stat = "identity", position = "dodge", alpha = 0.8) +  
+  theme_minimal(base_size = 14) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("#F1E0C5", "#D2A5A1", "#B2C3A8")) +  
+  labs(title = "Total Network Metrics Comparison",
+       x = "Metric",
+       y = "Total Value (log-scaled)",
+       fill = "Group") 
+
+
+```
+
+#         DspikeIn spike-in volume protocol
+
+Spike-in volume Protocol; To get support for the whole-cell spike-in protocol, please contact Donnald Walker at Donald.Walker@mtsu.edu.
+
+The species Tetragenococcus halophilus (bacterial spike; ATCC33315) and Dekkera bruxellensis (fungal spike; WLP4642-White Labs) were selected as taxa to spike into gut microbiome samples as they were not found in an extensive collection of wildlife skin (GenBank BioProjects: PRJNA1114724, PRJNA 1114659) or gut microbiome samples. Stock cell suspensions of both microbes were grown in either static tryptic soy broth (T. halophilus) or potato dextrose broth (D. bruxellensis) for 72 hours then serially diluted and optical density (OD600) determined on a ClarioStar plate reader. Cell suspensions with an optical density of 1.0, 0.1, 0.01, 0.001 were DNA extracted using the Qiagen DNeasy Powersoil Pro Kit. These DNA isolations were used as standards to determine the proper spike in volume of cells to represent 0.1-10% of a sample (Rao et al., 2021b) Fecal pellets (3.1 ± 1.6 mg; range = 1 – 5.1 mg) from an ongoing live animal study using wood frogs (Lithobates sylvaticus) were used to standardize the input material for the development of this protocol. A total of (n=9) samples were used to validate the spike in protocol. Each fecal sample was homogenized in 1mL of sterile molecular grade water then 250uL of fecal slurry was DNA extracted as above with and without spiked cells. 
+Two approaches were used to evaluate the target spike-in of 0.1-10%, the range of effective spike-in percentage described in (Rao et al., 2021b), including 1) an expected increase of qPCR cycle threshold (Ct) value that is proportional to the amount of spiked cells and 2) the expected increase in copy number of T. halophilus and D. bruxellensis in spiked vs. unspiked samples. A standard curve was generated using a synthetic fragment of DNA for the 16S-V4 rRNA and ITS1 rDNA regions of T. halophilus and D. bruxellensis, respectively. The standard curve was used to convert Ct values into log copy number for statistical analyses (detailed approach in[2, 3]) using the formula y = -0.2426x + 10.584 for T. halophilus and y = -0.3071x + 10.349 for D. bruxellensis, where x is the average Ct for each unknown sample.
+Quantitative PCR (qPCR) was used to compare known copy numbers from synthetic DNA sequences of T. halophilus and D. bruxellensis to DNA extractions of T. halophilus and D. bruxellensis independently, and wood frog fecal samples with and without spiked cells. SYBR qPCR assays were run at 20ul total volume including 10ul 2X Quantabio PerfeCTa SYBR Green Fastmix, 1ul of 10uM forward and reverse primers, 1ul of ArcticEnzymes dsDNAse master mix clean up kit, and either 1ul of DNA for D. bruxellensis or 3ul for T. halophilus. Different volumes of DNA were chosen for amplification of bacteria and fungi due to previous optimization of library preparation and sequencing steps [3]. The 515F [4] and 806R [5] primers were chosen to amplify bacteria and ITS1FI2 [6] and ITS2 for fungi, as these are the same primers used during amplicon library preparation and sequencing. Cycling conditions on an Agilent AriaMX consisted of 95 C for 3 mins followed by 40 cycles of 95 C for 15 sec, 60 C for 30 sec and 72 C for 30 sec. Following amplification, a melt curve was generated under the following conditions including 95 C for 30 sec, and a melt from 60 C to 90 C increasing in resolution of 0.5 C in increments of a 5 sec soak time. To validate the spike in protocol we selected two sets of fecal samples including 360 samples from a diverse species pool of frogs, lizards, salamanders and snakes and a more targeted approach of 122 fecal samples from three genera of salamanders from the Plethodontidae. (Supplemental Table #). FFecal samples were not weighed in the field, rather, a complete fecal pellet was diluted in an equal volume of sterile water and standardized volume of fecal slurry (250µL) extracted for independent samples.. A volume of 1ul T. halophilus (1847 copies) and 1ul D. bruxellensis (733 copies) were spiked into each fecal sample then DNA was extracted as above, libraries constructed, and amplicon sequenced on an Illumina MiSeq as in [7] .
+
+<https://github.com/mghotbi/DspikeIn>

@@ -1,11 +1,11 @@
-#' Plot Core Microbiome Prevalence Heatmap
+#' Plot Core Microbiome Prevalence Heatmap (Phyloseq & TSE Compatible)
 #'
 #' This function generates a prevalence heatmap of the core microbiome at a specified taxonomic rank.
-#' It allows users to pass custom detection thresholds, prevalence thresholds, and a minimum prevalence 
+#' It allows users to pass custom detection thresholds, prevalence thresholds, and a minimum prevalence
 #' filter, and it provides an option to order taxa either in ascending or descending abundance.
 #' The plot displays a heatmap showing detection thresholds at different prevalence levels.
 #'
-#' @param physeq A \code{phyloseq} object containing the microbial data.
+#' @param obj A \code{phyloseq} or \code{TreeSummarizedExperiment} (TSE) object containing microbiome data.
 #' @param taxrank A character string specifying the taxonomic rank to glom taxa. Default is "Genus".
 #' @param select_taxa A character vector of taxa to select. Default is \code{NULL}, meaning no specific taxa are selected.
 #' @param detections A list with the following elements:
@@ -18,162 +18,146 @@
 #' @param output_core_csv A character string specifying the path to save the core microbiome subset as a CSV file. Default is \code{NULL}, meaning no CSV file is saved.
 #' @param output_core_rds A character string specifying the path to save the core microbiome subset as an RDS file. Default is \code{NULL}, meaning no RDS file is saved.
 #' @return A \code{ggplot2} object representing the core microbiome prevalence heatmap.
+#' @examples
+#' \donttest{
+#' if (requireNamespace("DspikeIn", quietly = TRUE)) {
+#'   data("physeq_16SOTU", package = "DspikeIn")
+#'
+#'   # Define custom detection parameters
+#'   custom_detections <- list(
+#'     prevalences = seq(0.03, 1, 0.01),
+#'     thresholds = 10^seq(log10(0.03), log10(1), length = 10),
+#'     min_prevalence = 0.3,
+#'     taxa_order = "ascending"
+#'   )
+#'
+#'   # Generate a core microbiome plot with custom settings
+#'   plot_result <- plot_core_microbiome_custom(
+#'     obj = physeq_16SOTU,
+#'     detections = custom_detections,
+#'     taxrank = "Genus",
+#'     output_core_rds = "core_microbiome.rds",
+#'     output_core_csv = "core_microbiome.csv"
+#'   )
+#'
+#'   # Print the resulting plot
+#'   print(plot_result)
+#' }
+#' }
 #' @importFrom phyloseq tax_glom prune_taxa subset_taxa transform_sample_counts taxa_names psmelt
+#' @importFrom SummarizedExperiment assay rowData colData
 #' @importFrom microbiomeutilities format_to_besthit
 #' @importFrom microbiome plot_core
 #' @importFrom ggplot2 ggplot theme xlab element_text element_blank element_line element_rect scale_x_discrete
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom utils write.csv
-#' @examples
-#' \dontrun{
-#' # Example usage:
-#' custom_detections <- list(
-#'   prevalences = seq(0.05, 1, 0.01),  # Custom prevalences
-#'   thresholds = 10^seq(log10(0.05), log10(1), length = 8),  # detection thresholds
-#'   min_prevalence = 0.4,  # Custom minimum prevalence
-#'   taxa_order = "ascending"  # Order taxa by ascending/desc abundance
-#' )
 #'
-#' # Create and save the plot
-#' plot_result <- plot_core_microbiome_custom(physeq = ps, 
-#'                                            detections = custom_detections, 
-#'                                            taxrank = "Family", 
-#'                                            output_core_rds = "core_microbiome.rds", 
-#'                                            output_core_csv = "core_microbiome.csv")
-#'
-#' # Print the plot
-#' print(plot_result)
-#' }
 #' @export
-plot_core_microbiome_custom <- function(physeq = NULL, 
-                                        taxrank = "Genus", 
-                                        select_taxa = NULL, 
-                                        detections = list(prevalences = seq(0.03, 1, 0.01), 
+plot_core_microbiome_custom <- function(obj,
+                                        taxrank = "Genus",
+                                        select_taxa = NULL,
+                                        detections = list(prevalences = seq(0.03, 1, 0.01),
                                                           thresholds = 10^seq(log10(3e-2), log10(1), length = 10),
-                                                          min_prevalence = 0.2,  # Default 20%
-                                                          taxa_order = "descending"),  # Default order
-                                        output_core_csv = NULL, 
+                                                          min_prevalence = 0.2,
+                                                          taxa_order = "descending"),
+                                        output_core_csv = NULL,
                                         output_core_rds = NULL) {
-  
-  # Check for required input
-  if (is.null(physeq)) {
-    stop("Error: 'physeq' argument is required.")
+
+  # Validate input
+  if (!inherits(obj, c("phyloseq", "TreeSummarizedExperiment"))) {
+    stop("Error: 'obj' must be a phyloseq or TreeSummarizedExperiment (TSE) object.")
   }
-  
-  # Provide default values for custom_detections if they are not specified by the user
-  detections <- utils::modifyList(list(
-    prevalences = seq(0.03, 1, 0.01),  # Default prevalence thresholds
-    thresholds = 10^seq(log10(3e-2), log10(1), length = 10),  # Default detection thresholds
-    min_prevalence = 0.2,  # Default minimum prevalence (20%)
-    taxa_order = "descending"  # Default order of taxa
-  ), detections)
-  
-  # Extract components from the detections list
-  prevalences <- detections$prevalences
-  thresholds <- detections$thresholds
-  min_prevalence <- detections$min_prevalence
-  taxa_order <- detections$taxa_order  # Order taxa by ascending/descending
-  
-  # Glom taxa at specified taxonomic rank
-  glom_phy <- phyloseq::tax_glom(physeq, taxrank = taxrank)
-  
-  # Prune taxa if specific taxa are selected
+
+  # Convert TSE to phyloseq using the internal function from your package
+  if (inherits(obj, "TreeSummarizedExperiment")) {
+    obj <- convert_tse_to_phyloseq(obj)  # Using your package's function
+  }
+
+  # Check if tax_table exists before proceeding
+  if (is.null(tax_table(obj, errorIfNULL = FALSE))) {
+    stop("Error: The phyloseq object must contain a taxonomy table for tax_glom().")
+  }
+
+  # Aggregate taxa at the selected rank
+  glommed_obj <- tax_glom(obj, taxrank = taxrank)
+
+  # Prune taxa if select_taxa is provided
   if (!is.null(select_taxa)) {
-    glom_phy <- phyloseq::prune_taxa(select_taxa, glom_phy)
+    glommed_obj <- prune_taxa(select_taxa, glommed_obj)
   }
-  
-  # Exclude the species level/Sp
-  glom_phy <- phyloseq::subset_taxa(glom_phy, select = -Species)
-  
-  # Transform counts to relative abundance/"plot_core of microbiome requirement"
-  glom_phy <- phyloseq::transform_sample_counts(glom_phy, function(x) 100 * x / sum(x))
-  
-  # Rename taxa with ASV prefix
-  phyloseq::taxa_names(glom_phy) <- paste0("ASV", seq(phyloseq::ntaxa(glom_phy)))
-  
-  # Format phyloseq obj for besthit, its more informative
-  phy_rel_f <- microbiomeutilities::format_to_besthit(glom_phy)
-  
-  # Filter out rows with NA values in critical columns
-  pm_core <- phyloseq::psmelt(phy_rel_f) %>%
-    dplyr::filter(!is.na(Abundance), !is.na(OTU), !is.na(Sample))
-  
-  # Filter based on detection thresholds and min_prevalence
-  pm_core <- dplyr::filter(pm_core, Abundance >= min(thresholds) & Abundance <= max(thresholds)) %>%  # Filter taxa based on detection thresholds
+
+  # Transform counts to relative abundance
+  rel_abund_obj <- transform_sample_counts(glommed_obj, function(x) 100 * x / sum(x))
+
+  # Apply best-hit formatting for taxon names
+  rel_abund_obj <- microbiomeutilities::format_to_besthit(rel_abund_obj)
+
+  # Convert to long format
+  pm_core <- psmelt(rel_abund_obj) %>%
+    dplyr::filter(!is.na(Abundance), !is.na(OTU), !is.na(Sample)) %>%
     dplyr::group_by(OTU) %>%
-    dplyr::filter(mean(Abundance > 0) >= min_prevalence)  # Filter taxa based on min_prevalence
-  
-  # Order taxa by abundance or other criteria/dplyr
-  if (taxa_order == "descending") {
-    pm_core <- dplyr::arrange(pm_core, dplyr::desc(Abundance))  # Order by descending abundance
+    dplyr::filter(mean(Abundance > 0) >= detections$min_prevalence)
+
+  # Order taxa by abundance if requested
+  pm_core <- if (detections$taxa_order == "descending") {
+    dplyr::arrange(pm_core, dplyr::desc(Abundance))
   } else {
-    pm_core <- dplyr::arrange(pm_core, Abundance)  # Order by ascending abundance
+    dplyr::arrange(pm_core, Abundance)
   }
-  
-  # Check if there's any taxa left after processing
+
+  # Ensure at least one taxa is left after filtering
   if (nrow(pm_core) == 0) {
     stop("Error: No taxa remaining after filtering based on detection thresholds and prevalence.")
   }
-  
-  # Save core microbiome as CSV file if output_core_csv is provided
+
+  # Save results if output paths are provided
   if (!is.null(output_core_csv)) {
     utils::write.csv(pm_core, output_core_csv, row.names = FALSE)
     cat("Core microbiome saved as CSV to:", output_core_csv, "\n")
   }
-  
-  # Save core microbiome as RDS file if output_core_rds is provided
   if (!is.null(output_core_rds)) {
-    saveRDS(phy_rel_f, file = output_core_rds)
+    saveRDS(rel_abund_obj, file = output_core_rds)
     cat("Core microbiome saved as RDS to:", output_core_rds, "\n")
   }
-  
-  # Suppress messages and warnings from plot_core
-  p.core <- tryCatch({
-    suppressWarnings(suppressMessages(
-      microbiome::plot_core(phy_rel_f, 
-                            plot.type = "heatmap", 
-                            colours = rev(RColorBrewer::brewer.pal(5, "Spectral")),
-                            prevalences = prevalences, 
-                            detections = thresholds,  # Use the custom detection thresholds
-                            min.prevalence = min_prevalence)
-    )) +  # Use min.prevalence to zoom in
-      ggplot2::xlab("Detection Threshold (Relative Abundance)") +  # X-axis label
-      ggplot2::scale_x_discrete(labels = function(x) sprintf("%.2f", as.numeric(x))) +  # Format x-axis labels to 2 decimal places
-      ggplot2::theme(
-        panel.background = ggplot2::element_blank(),  # Remove background
-        panel.border = ggplot2::element_blank(),  # Remove border
-        panel.grid = ggplot2::element_blank(),  # Remove grid lines
-        axis.line = ggplot2::element_line(colour = "black"),  # Keep axis lines
-        axis.title.x = ggplot2::element_text(size = 12, face = "bold"),  # Bold X-axis title
-        axis.title.y = ggplot2::element_blank(),  # Remove Y-axis title
-        axis.text.x = ggplot2::element_text(size = 11, face = "bold", angle = 25, hjust = 1),  # Bold X-axis text rotated 45 degrees
-        axis.text.y = ggplot2::element_text(size = 11, face = "bold"),  # Bold Y-axis text
-        legend.text = ggplot2::element_text(size = 12, face = "bold"),  # Bold legend text
-        legend.title = ggplot2::element_text(size = 13, face = "bold"),  # Bold legend title
-        legend.key.size = ggplot2::unit(1, 'cm')  # Adjust legend key size
-      )
-  }, error = function(e) {
-    message("Plotting failed: ", e)
-    NULL
-  })
-  
+
+  # Generate heatmap plot
+  p.core <- suppressWarnings(suppressMessages(
+    microbiome::plot_core(rel_abund_obj,
+                          plot.type = "heatmap",
+                          colours = rev(RColorBrewer::brewer.pal(5, "Spectral")),
+                          prevalences = detections$prevalences,
+                          detections = detections$thresholds,
+                          min.prevalence = detections$min_prevalence)
+  )) +
+    ggplot2::theme_minimal() +
+    ggplot2::xlab("Detection Threshold (Relative Abundance)") +
+    ggplot2::ylab(NULL) +  # Removes Y-axis label but keeps tick marks
+    ggplot2::scale_x_discrete(labels = function(x) sprintf("%.2f", as.numeric(x))) +
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(size = 11, angle = 25, hjust = 1, face = "bold"),  # Enlarged X-axis text
+      axis.text.y = ggplot2::element_text(size = 10, face = "bold"),  # Keeps Y-axis text small
+      legend.text = ggplot2::element_text(size = 11),  # Increases legend text size
+      legend.title = ggplot2::element_text(size = 14, face = "bold"),  # Increases legend title size
+      legend.key.size = ggplot2::unit(1, 'cm')  # Adjusts legend box size
+    )
+
   return(p.core)
 }
 
 
-#custom_detections <- list(
+#  custom_detections <- list(
 #  prevalences = seq(0.03, 1, 0.01),  # Custom prevalences
 #  thresholds = 10^seq(log10(0.03), log10(1), length = 10),  # Custom thresholds
-#  min_prevalence = 0.3,  
-#  taxa_order = "ascending") # Order taxa by ascending/descending abundance
+#  min_prevalence = 0.3,
+# taxa_order = "ascending") # Order taxa by ascending/descending abundance
 
 # Create and save the plot
-#plot_result <- plot_core_microbiome_custom(
-#  physeq = ps, 
-#  detections = custom_detections, 
-# taxrank = "Family", 
-#output_core_rds = "core_microbiome.rds", 
-#output_core_csv = "core_microbiome.csv")
+# plot_result <- plot_core_microbiome_custom(
+# obj = phy_M_M_ps,
+# detections = custom_detections,
+# taxrank = "Genus",
+# output_core_rds = "core_microbiome.rds",
+# output_core_csv = "core_microbiome.csv")
 
 # Print the plot
-#print(plot_result)
+# print(plot_result)

@@ -4,10 +4,10 @@
 \alias{norm.Poisson}
 \title{Poisson Normalization and Differential Abundance Function}
 \usage{
-norm.Poisson(ps, group_var = NULL, pseudocount = 1e-06)
+norm.Poisson(obj, group_var = NULL, pseudocount = 1e-06)
 }
 \arguments{
-\item{ps}{A phyloseq object or matrix of raw counts.}
+\item{obj}{A phyloseq object or matrix of raw counts.}
 
 \item{group_var}{A string specifying the grouping variable in sample data (if phyloseq object).}
 
@@ -18,12 +18,4 @@ A list containing the normalized data, scaling factor, and differential abundanc
 }
 \description{
 Poisson Normalization and Differential Abundance Function
-}
-\examples{
-\dontrun{
-ps <- phyloseq::GlobalPatterns
-result_Poisson <- norm.Poisson(ps, group_var = "SampleType")
-normalized_ps_Poisson <- result_Poisson$dat.normed
-diff_abund_Poisson <- result_Poisson$differential_abundance
-}
 }

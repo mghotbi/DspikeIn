@@ -4,10 +4,10 @@
 \alias{norm.QN}
 \title{Quantile Normalization (QN) for phyloseq object}
 \usage{
-norm.QN(ps, filter = FALSE)
+norm.QN(obj, filter = FALSE)
 }
 \arguments{
-\item{ps}{A phyloseq object.}
+\item{obj}{A phyloseq object.}
 
 \item{filter}{Logical, whether to filter low counts.}
 }
@@ -16,11 +16,4 @@ A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
 Quantile Normalization (QN) for phyloseq object
-}
-\examples{
-\dontrun{
-ps <- phyloseq::GlobalPatterns
-result_QN <- norm.QN(ps)
-normalized_ps_QN <- result_QN$dat.normed
-}
 }

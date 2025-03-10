@@ -2,8 +2,7 @@
 % Please edit documentation in R/normalization_set.R
 \name{gm_mean}
 \alias{gm_mean}
-\title{-----------------------------------------------------------
-Calculate Geometric Mean}
+\title{Calculate Geometric Mean}
 \usage{
 gm_mean(x, na.rm = TRUE)
 }
@@ -16,10 +15,30 @@ gm_mean(x, na.rm = TRUE)
 Geometric mean of x, or NA if no valid values are present.
 }
 \description{
+This documentation provides an overview of normalization methods used for microbiome analysis.
+\itemize{
+\item \strong{For Differential Abundance Analysis}: \code{DESeq}, \code{TMM}, or \code{CSS} normalization methods handle compositional biases and library size differences.
+\item \strong{For Compositional Data}: \code{CLR} normalization accounts for compositional structure by transforming the data into log-ratio format.
+\item \strong{For Simplicity and Ease of Use}: \code{TC}, \code{UQ}, or \code{Median} normalization methods are quick but may not be as robust.
+}
+
 This function calculates the geometric mean of a numeric vector.
 It removes non-positive and NA values by default.
 }
+\details{
+Overview of Normalization Methods
+}
+\section{These normalization methods are commonly used in microbiome analysis to ensure fair comparisons across samples.}{
+NA
+}
+
 \examples{
+\dontrun{
 vec <- c(1, 10, 100, 1000)
 gm_mean(vec)
 }
+}
+\keyword{-----------------------------------------------------------}
+\keyword{NULL}
+\keyword{microbiome}
+\keyword{normalization}

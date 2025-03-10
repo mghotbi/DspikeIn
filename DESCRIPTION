@@ -1,74 +1,101 @@
 Package: DspikeIn
 Type: Package
 Title: Quantifying Absolute Abundance to Enhance Microbial Dynamics Assessment
-Version: 0.0.0.9000
-Author: Mitra Ghotbi
+Version: 1.2.3
+Authors@R: 
+    person(given = "Mitra", family = "Ghotbi", role = c("aut", "cre"), 
+           email = "mitra.ghotbi@gmail.com")
 Maintainer: Mitra Ghotbi <mitra.ghotbi@gmail.com>
-Description: The DspikeIn package enables the quantification of absolute microbial abundance, improving the evaluation of microbial dynamics — a critical aspect in microbial ecology research. It extends the functionality of the phyloseq package and integrates enhanced or modified functions from several key packages, including dplyr, stats, ggplot2, edgeR, ggtree, flextable, DESeq2, microbiomeutilities, DECIPHER, and speedyseq.
-Acknowledgements: DspikeIn is built upon the phyloseq package and utilizes additional functionality from dplyr, ggtree, flextable, DESeq2, edgeR, microbiomeutilities, DECIPHER, and speedyseq, among others.
-URL: https://github.com/mghotbi/DspikeIn
-BugReports: https://github.com/mghotbi/DspikeIn/issues
-License: GPL-3
+Description: 
+    The DspikeIn package facilitates the quantification of absolute microbial 
+    abundance, improving the evaluation of microbial dynamics—a critical aspect 
+    of microbial ecology research. It extends the functionality of the phyloseq 
+    package and incorporates enhanced functions from several key packages, 
+    including dplyr, stats, ggplot2, edgeR, ggtree, flextable, DESeq2, 
+    microbiomeutilities, DECIPHER, and speedyseq. 
+    It provides tools for data integration, visualization, and statistical 
+    analysis, leveraging TreeSummarizedExperiment and other Bioconductor 
+    infrastructure.
+biocViews: Microbiome, Software, DataImport, StatisticalMethod, Visualization
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+LazyDataCompression: xz
 Depends: 
     R (>= 3.5.0)
 Imports:
-    tibble,
-    limma,
-    phyloseq,
-    msa,
-    stats,
-    DESeq2,
-    edgeR,
+    ape,
     dplyr,
-    ggplot2,
-    ggtree,
-    flextable,
+    ggalluvial,
+    ggrepel,
+    phangorn,
+    xml2,
+    tidyr,
+    tidytree,
+    igraph,
+    ggraph,
+    scales,
     Biostrings,
     DECIPHER,
-    randomForest,
-    ggridges,
-    phangorn,
-    ggalluvial,
-    microbiome,
-    matrixStats,
-    RColorBrewer,
-    ape,
-    rlang,
-    scales,
-    magrittr,
+    DESeq2,
+    edgeR,
+    flextable,
+    ggplot2,
     ggpubr,
-    microbiomeutilities, 
-    speedyseq,
-    methods
-Remotes: 
-    mikemc/speedyseq,
-    microsud/microbiomeutilities
-Suggests:
-    ShortRead,
-    agricolae,
-    testthat (>= 3.0.0),
-    devtools,
-    dada2,
-    BiocManager, 
-    DT,
+    ggridges,
+    ggtree,
     data.table,
-    preprocessCore,
-    Biobase,
-    e1071,
-    caret,
-    qpdf,
-    optparse,
-    foreach,
-    viridis,
-    plyr,
-    reshape2,
     grid,
+    limma,
+    magrittr,
+    matrixStats,
+    microbiome,
+    microbiomeutilities,
+    msa,
+    phyloseq,
+    randomForest,
+    RColorBrewer,
+    rlang,
+    S4Vectors,
+    speedyseq,
+    stats,
+    SummarizedExperiment,
+    tibble,
+    reshape2,
+    patchwork,
+    officer,
+    TreeSummarizedExperiment
+Remotes: 
+    github::mikemc/speedyseq,
+    github::microsud/microbiomeutilities
+Suggests:
+    knitr,
+    rmarkdown,
+    agricolae,
+    Biobase,
+    BiocManager,
+    vegan,
     cluster,
+    dada2,
+    devtools,
+    DT,
+    e1071,
+    foreach,
+    grDevices,
     intergraph,
-    ggtext,
-    remotes
+    optparse,
+    plyr,
+    preprocessCore,
+    qpdf,
+    remotes,
+    ShortRead,
+    testthat (>= 3.0.0),
+    viridis,
+    ggtext
+URL: https://github.com/mghotbi/DspikeIn
+BugReports: https://github.com/mghotbi/DspikeIn/issues
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+VignetteBuilder: knitr
 Packaged: 2024-07-28 21:21:56 UTC; mghotbi
 NeedsCompilation: no

@@ -5,7 +5,7 @@
 \title{RLE Normalization (Relative Log Expression)}
 \usage{
 norm.rle(
-  ps,
+  obj,
   locfunc = stats::median,
   type = c("poscounts", "ratio"),
   geo_means = NULL,
@@ -13,7 +13,7 @@ norm.rle(
 )
 }
 \arguments{
-\item{ps}{A phyloseq object.}
+\item{obj}{A phyloseq object.}
 
 \item{locfunc}{A function to compute the location statistic (default is median).}
 
@@ -28,11 +28,4 @@ A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
 RLE Normalization (Relative Log Expression)
-}
-\examples{
-\dontrun{
-ps <- phyloseq::GlobalPatterns
-result_rle <- norm.rle(ps)
-normalized_ps_rle <- result_rle$dat.normed
-}
 }

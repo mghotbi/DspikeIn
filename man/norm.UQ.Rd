@@ -4,10 +4,10 @@
 \alias{norm.UQ}
 \title{UQ Normalization (Upper Quartile)}
 \usage{
-norm.UQ(ps, groups)
+norm.UQ(obj, groups)
 }
 \arguments{
-\item{ps}{A phyloseq object.}
+\item{obj}{A phyloseq object.}
 
 \item{groups}{A string specifying the grouping variable in sample data.}
 }
@@ -16,10 +16,4 @@ A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
 UQ Normalization (Upper Quartile)
-}
-\examples{
-\dontrun{
-ps <- phyloseq::GlobalPatterns
-result <- norm.UQ(ps, "SampleType")
-}
 }

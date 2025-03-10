@@ -2,27 +2,37 @@
 % Please edit documentation in R/summ_phyloseq_sampleID.R
 \name{summ_phyloseq_sampleID}
 \alias{summ_phyloseq_sampleID}
-\title{Generate Summary Statistics for Each Sample in a Phyloseq Object}
+\title{Generate Summary Statistics for Each Sample}
 \usage{
-summ_phyloseq_sampleID(physeq)
+summ_phyloseq_sampleID(obj)
 }
 \arguments{
-\item{physeq}{A phyloseq object containing the microbial data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing microbial data.}
 }
 \value{
-A data frame containing the summary statistics for each sample, with columns for Sample_ID, mean, median, standard deviation, standard error, and quartiles (Q25, Q50, Q75).
+A data frame containing summary statistics per sample, with columns:
+Sample_ID, Mean, Median, Standard Deviation, Standard Error, Q25, Q50, Q75.
 }
 \description{
-This function calculates summary statistics (mean, median, standard deviation, standard error, and quartiles) for each sample in a phyloseq object.
+Calculates summary statistics (mean, median, standard deviation, standard error, and quartiles)
+for each sample in a \code{phyloseq} or \code{TreeSummarizedExperiment} object.
 }
 \examples{
-\dontrun{
-# Example usage:
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("physeq_16SOTU", package = "DspikeIn")
 
-# Generate summary statistics for a phyloseq object based on sample IDs
-summary_stats <- summ_phyloseq_sampleID(physeq_ITSOTU)
+  # Summarize the phyloseq object by sample ID
+  summary_stats_physeq <- summ_phyloseq_sampleID(physeq_16SOTU)
+  print(summary_stats_physeq)
 
-# Print the summary statistics
-print(summary_stats)
+  # Convert phyloseq object to a TreeSummarizedExperiment (TSE)
+  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+
+  # Summarize the TSE object by sample ID
+  summary_stats_tse <- summ_phyloseq_sampleID(tse_16SOTU)
+  print(summary_stats_tse)
 }
+}
+
 }

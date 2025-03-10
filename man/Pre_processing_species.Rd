@@ -2,48 +2,51 @@
 % Please edit documentation in R/Pre_processing_species.R
 \name{Pre_processing_species}
 \alias{Pre_processing_species}
-\title{Pre-process species in a phyloseq object by merging ASVs}
+\title{Pre-process species in a phyloseq or TSE object by merging ASVs/OTUs}
 \usage{
 Pre_processing_species(
-  physeq,
+  obj,
   species_name,
   merge_method = c("sum", "max"),
   output_file = NULL
 )
 }
 \arguments{
-\item{physeq}{A `phyloseq::phyloseq` object containing the microbiome data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
 
-\item{species_name}{A character vector of species names to be processed.}
+\item{species_name}{A character vector of species names to merge.}
 
-\item{merge_method}{The method to use for merging ASVs: `"sum"` or `"max"`. Default is `"sum"`.}
+\item{merge_method}{\code{"sum"} (default) or \code{"max"}: method for merging ASV counts.}
 
-\item{output_file}{Optional. A file path to save the merged phyloseq object.}
+\item{output_file}{Optional file path to save the processed object.}
 }
 \value{
-A `phyloseq::phyloseq` object with the specified species pre-processed.
+A processed \code{phyloseq} or \code{TreeSummarizedExperiment} object.
 }
 \description{
-This function pre-processes species in a phyloseq object by merging ASVs based on a specified method (sum or max).
-It retains the Genus and Species information for the merged taxa.
+Merges ASVs/OTUs while ensuring the phylogenetic tree and reference sequences remain intact.
+If tree or refseq become mismatched, they are pruned or removed safely.
 }
 \examples{
 \dontrun{
-# Example for 16S rRNA data:
-# ps is a phyloseq object
-species_name <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp")
+library(DspikeIn)
+data("physeq_16SOTU", package = "DspikeIn")
+ spiked_cells <- 1847
+ species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
 
-# Merging species by summing or taking max ASV abundances
-merged_physeq_sum <- Pre_processing_species(ps, species_name, 
-merge_method = "sum", output_file = "merged_physeq_sum.rds")
+ merged_sum <- Pre_processing_species(physeq_16SOTU, species_name, merge_method = "sum")
 
-# Example for ITS rDNA data:
-# Subsetting Dekkera species
-Dekkera <- phyloseq::subset_taxa(ps, Species == "Dekkera_bruxellensis")
-species_name <- "Dekkera_bruxellensis"
+# Convert phyloseq to TSE format
+tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 
-# Merging species by summing ASV abundances
-merged_physeq_sum_ITS <- Pre_processing_species(Dekkera, species_name, 
-merge_method = "sum", output_file = "merged_physeq_sum_ITS.rds")
+species_name <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp." )
+
+# Merge species in TSE format
+merged_TSE_sum <- Pre_processing_species(
+    tse_16SOTU,
+    species_name,
+    merge_method = "sum",
+    output_file = "merged_TSE_sum.rds"
+)
 }
 }

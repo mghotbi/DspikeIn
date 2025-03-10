@@ -14,30 +14,30 @@ plot_glommed_tree(
 )
 }
 \arguments{
-\item{physeq}{A phyloseq object containing the phylogenetic data.}
+\item{physeq}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing the phylogenetic data.}
 
 \item{resolution}{A numeric value specifying the resolution for glomming the OTUs.}
 
-\item{output_prefix}{A character string specifying the prefix for the output files. Default is "glommed_tree".}
+\item{output_prefix}{A character string specifying the prefix for the output files. Default is \code{"glommed_tree"}.}
 
-\item{width}{A numeric value specifying the width of the output plot. Default is 18.}
+\item{width}{A numeric value specifying the width of the output plot. Default is \code{20}.}
 
-\item{height}{A numeric value specifying the height of the output plot. Default is 18.}
+\item{height}{A numeric value specifying the height of the output plot. Default is \code{18}.}
 
-\item{print_plot}{A logical value specifying whether to print the plot. Default is TRUE.}
+\item{print_plot}{A logical value specifying whether to print the plot. Default is \code{TRUE}.}
 }
 \value{
-NULL. The function saves the plot to the specified output file.
+\code{NULL}. The function saves the plot to the specified output file.
 }
 \description{
-This function gloms the OTUs in the phyloseq object at the specified resolution and plots the tree.
+This function gloms the OTUs in a \code{phyloseq} object at the specified resolution and plots the phylogenetic tree.
+If a \code{TreeSummarizedExperiment} (TSE) object is provided, it is first converted to \code{phyloseq}.
 }
 \examples{
 \dontrun{
-if (interactive()) {
-  # Plot the tree with glommed OTUs
-  plot_glommed_tree(Tetragenococcus, resolution = 0.2, 
-  output_prefix = "top", width = 18, height = 18)
-}
+plot_glommed_tree(Tetragenococcus_tse, resolution = 0.2, output_prefix = "top",
+ width = 18, height = 18, print_plot = TRUE)
+
+plot_glommed_tree(Tetragenococcus, resolution = 0.3, output_prefix = "tse_tree")
 }
 }

@@ -4,10 +4,10 @@
 \alias{remove_zero_negative_count_samples}
 \title{Remove Samples with Zero, Negative Counts, or NA Values and Add Pseudocount}
 \usage{
-remove_zero_negative_count_samples(ps, pseudocount = 1e-06)
+remove_zero_negative_count_samples(obj, pseudocount = 1e-06)
 }
 \arguments{
-\item{ps}{A phyloseq object.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing microbial data.}
 
 \item{pseudocount}{A numeric value to add to avoid zero counts.}
 }

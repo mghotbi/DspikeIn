@@ -2,7 +2,7 @@
 % Please edit documentation in R/RandomForest_selected_ASVs.R
 \name{RandomForest_selected_ASVs}
 \alias{RandomForest_selected_ASVs}
-\title{Select ASVs Using Random Forest}
+\title{Select Important ASVs/OTUs Using Random Forest}
 \usage{
 RandomForest_selected_ASVs(
   physeq,
@@ -10,40 +10,60 @@ RandomForest_selected_ASVs(
   minlib = 15000,
   prunescale = 1e-04,
   ntree = 100,
-  n_top_predictors = 50,
-  output_csv = "randomforest_results.csv",
+  n_top_predictors = 100,
+  output_csv = NULL,
   na_vars = NULL
 )
 }
 \arguments{
-\item{physeq}{A phyloseq object containing the microbiome data.}
+\item{physeq}{A \code{phyloseq} or \code{TreeSummarizedExperiment (TSE)} object containing microbiome data.}
 
-\item{response_var}{A character string specifying the response variable from the sample data.}
+\item{response_var}{A character string specifying the response variable from the sample metadata.}
 
-\item{minlib}{A numeric value specifying the minimum library size. Default is 15000.}
+\item{minlib}{A numeric value specifying the minimum library size for filtering low-abundance taxa. Default is \code{15000}.}
 
-\item{prunescale}{A numeric value specifying the pruning scale for rare OTUs. Default is 0.0001.}
+\item{prunescale}{A numeric value specifying the relative abundance threshold for pruning rare OTUs. Default is \code{0.0001}.}
 
-\item{ntree}{An integer specifying the number of trees to grow in the Random Forest. Default is 100.}
+\item{ntree}{An integer specifying the number of trees to grow in the Random Forest model. Default is \code{100}.}
 
-\item{n_top_predictors}{An integer specifying the number of top predictors to select. Default is 50.}
+\item{n_top_predictors}{An integer specifying the number of top ASVs/OTUs to select based on feature importance. Default is \code{50}.}
 
-\item{output_csv}{A character string specifying the output CSV file name. Default is "randomforest_results.csv".}
+\item{output_csv}{An optional character string specifying the output CSV file name. If \code{NULL}, no file is saved. Default is \code{NULL}.}
 
-\item{na_vars}{A character vector specifying the sample data variables to check for NA values. Default is NULL.}
+\item{na_vars}{A character vector specifying metadata variables to check for missing values (\code{NA}). If \code{NULL}, only \code{response_var} is checked.}
 }
 \value{
-A pruned phyloseq object containing the selected ASVs.
+Returns a pruned \code{phyloseq} or \code{TreeSummarizedExperiment (TSE)} object containing only the selected ASVs/OTUs.
+If the input is \code{TSE}, the output is converted back to \code{TSE}.
 }
 \description{
-This function selects the most important ASVs (Amplicon Sequence Variants) based on a Random Forest model.
-The selected ASVs are saved to a CSV file.
+This function selects the most important Amplicon Sequence Variants (ASVs) or Operational Taxonomic Units (OTUs)
+based on a Random Forest model. If a \code{TreeSummarizedExperiment (TSE)} is provided, it is first converted to \code{phyloseq}.
+The function allows filtering and pruning of taxa before selecting the most important features.
+Optionally, the selected ASVs/OTUs can be saved as a CSV file.
 }
 \examples{
-if (interactive()) {
-  # Ensure you have a phyloseq object `physeq`
-  # Use the name of the column in sample_data for response_var
-  rf_physeq <- RandomForest_selected_ASVs(physeq_16SOTU, response_var = "Host.genus",
-    na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet"))
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("physeq_16SOTU", package = "DspikeIn")
+
+  # Perform Random Forest feature selection
+  rf_physeq <- RandomForest_selected_ASVs(
+    physeq_16SOTU,
+    response_var = "Host.genus",
+    na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet")
+  )
+
+  # Load TreeSummarizedExperiment (TSE) object
+  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+
+  # Perform Random Forest feature selection on TSE object
+  rf_tse <- RandomForest_selected_ASVs(
+    tse_16SOTU,
+    response_var = "Host.genus",
+    na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet")
+  )
 }
+}
+
 }

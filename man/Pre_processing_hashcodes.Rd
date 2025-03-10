@@ -2,41 +2,74 @@
 % Please edit documentation in R/Pre_processing_hashcodes.R
 \name{Pre_processing_hashcodes}
 \alias{Pre_processing_hashcodes}
-\title{Pre-process phyloseq object based on hashcodes}
+\title{Pre-process phyloseq or TSE object based on hashcodes}
 \usage{
 Pre_processing_hashcodes(
-  spiked_16S,
+  obj,
   hashcodes,
   merge_method = c("sum", "max"),
   output_prefix = "merged_physeq"
 )
 }
 \arguments{
-\item{spiked_16S}{A phyloseq object containing the spiked dataset.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
 
-\item{hashcodes}{A character vector of hashcodes (row names of the OTU table) to be processed.}
+\item{hashcodes}{A character vector of taxon hashcodes (OTU row names).}
 
-\item{merge_method}{The method to use for merging taxa: "sum" or "max".}
+\item{merge_method}{The method to merge taxa: "sum" or "max".}
 
-\item{output_prefix}{A character string to be used as a prefix for the output file names.}
+\item{output_prefix}{A prefix for the output file names.}
 }
 \value{
-A phyloseq object with the processed data.
+A processed phyloseq or TSE object.
 }
 \description{
-This function pre-processes a phyloseq object by subsetting, merging, and saving taxa
-based on specified hashcodes and a merge method (sum or max). It retains the taxa 
-information and creates various intermediate and final datasets for further processing.
+Subsets, merges, and saves taxa based on hashcodes and a specified merge method ("sum" or "max").
+This function pre-processes a \code{phyloseq} or \code{TreeSummarizedExperiment} (TSE) object by subsetting, merging,
+and saving taxa based on provided hashcodes. It retains taxonomic information and creates intermediate datasets
+for further downstream analysis.
 }
 \examples{
-\dontrun{
-Tetragenococcus <- phyloseq::subset_taxa(physeq_16SASV, 
-  Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp")
-hashcodes <- row.names(phyloseq::otu_table(Tetragenococcus))
-processed_data_sum <- Pre_processing_hashcodes(physeq_16SASV, hashcodes, 
-  merge_method = "sum", output_prefix = "merged_physeq_sum")
-processed_data_max <- Pre_processing_hashcodes(physeq_16SASV, hashcodes, 
-  merge_method = "max", output_prefix = "merged_physeq_max")
-summ_count_phyloseq(processed_data_sum)
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("physeq_16SOTU", package = "DspikeIn")
+
+  # Subset phyloseq object to include only Tetragenococcus species
+  Tetragenococcus <- phyloseq::subset_taxa(
+    physeq_16SOTU,
+    Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp."
+  )
+
+  # Extract hashcodes (OTU IDs)
+  hashcodes <- row.names(phyloseq::otu_table(Tetragenococcus))
+
+  # Process data using the "sum" merging method
+  processed_data_sum <- Pre_processing_hashcodes(
+    physeq_16SOTU,
+    hashcodes,
+    merge_method = "sum",
+    output_prefix = "merged_physeq_sum"
+  )
+
+  # Convert to TreeSummarizedExperiment (TSE)
+  Tetragenococcus_TSE <- convert_phyloseq_to_tse(Tetragenococcus)
+
+  # Extract hashcodes for TSE
+  hashcodes <- rownames(get_otu_table(Tetragenococcus_TSE))
+
+  # Convert full phyloseq object to TSE format
+  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+
+  # Alternatively, load the precomputed TSE object
+  data("tse_16SOTU", package = "DspikeIn")
+
+  # Process data using the "max" merging method
+  processed_data_max <- Pre_processing_hashcodes(
+    tse_16SOTU,
+    hashcodes,
+    merge_method = "max",
+    output_prefix = "merged_physeq_max"
+  )
+}
 }
 }

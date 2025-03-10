@@ -2,10 +2,10 @@
 % Please edit documentation in R/relativized_filtered_taxa.R
 \name{relativized_filtered_taxa}
 \alias{relativized_filtered_taxa}
-\title{Filter Taxa from a Phyloseq Object Based on Custom Thresholds}
+\title{Filter Taxa from a Phyloseq or TSE Object Based on Custom Thresholds}
 \usage{
 relativized_filtered_taxa(
-  physeq,
+  obj,
   threshold_percentage = 0.5,
   threshold_mean_abundance = 0.001,
   threshold_count = 10,
@@ -13,30 +13,40 @@ relativized_filtered_taxa(
 )
 }
 \arguments{
-\item{physeq}{A phyloseq object containing the microbial data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
 
-\item{threshold_percentage}{A numeric value specifying the minimum percentage of samples in which a taxon must be present to be retained. Default is 0.5.}
+\item{threshold_percentage}{A numeric value specifying the minimum percentage of samples in which
+a taxon must be present to be retained. Default is 0.5.}
 
-\item{threshold_mean_abundance}{A numeric value specifying the minimum mean abundance of a taxon to be retained. Default is 0.001.}
+\item{threshold_mean_abundance}{A numeric value specifying the minimum mean abundance of a taxon
+to be retained. Default is 0.001.}
 
-\item{threshold_count}{A numeric value specifying the minimum count of a taxon in a sample to be considered present. Default is 10.}
+\item{threshold_count}{A numeric value specifying the minimum count of a taxon in a sample
+to be considered present. Default is 10.}
 
-\item{threshold_relative_abundance}{A numeric value specifying the minimum relative abundance of a taxon to be retained. Default is NULL.}
+\item{threshold_relative_abundance}{A numeric value specifying the minimum relative abundance of a
+taxon to be retained. Default is NULL.}
 }
 \value{
-A phyloseq object containing only the taxa that meet the specified thresholds.
+A filtered phyloseq or TSE object containing only the taxa that meet the specified thresholds.
 }
 \description{
-This function filters taxa from a phyloseq object based on custom thresholds for percentage of samples, mean abundance, count, and relative abundance.
+This function filters taxa from a phyloseq or TreeSummarizedExperiment (TSE) object based on
+custom thresholds for percentage of samples, mean abundance, count, and relative abundance.
 }
 \examples{
-\dontrun{
-if (interactive()) {
-  # Example usage with custom thresholds
-  FT <- relativized_filtered_taxa(absolute$physeq_obj, threshold_percentage = 0.001, 
-    threshold_mean_abundance = 1, 
-    threshold_count = 5, 
-    threshold_relative_abundance = 0.001)
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("physeq_16SOTU", package = "DspikeIn")
+
+  # Apply relative filtering on taxa
+  FT <- relativized_filtered_taxa(
+    physeq_16SOTU,
+    threshold_percentage = 0.001,
+    threshold_mean_abundance = 1,
+    threshold_count = 5,
+    threshold_relative_abundance = 0.001
+  )
 }
 }
 }

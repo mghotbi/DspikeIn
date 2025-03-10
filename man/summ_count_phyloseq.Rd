@@ -2,25 +2,34 @@
 % Please edit documentation in R/summ_count_phyloseq.R
 \name{summ_count_phyloseq}
 \alias{summ_count_phyloseq}
-\title{Summary Statistics of a Phyloseq Object}
+\title{Summary Statistics of a Phyloseq or TSE Object}
 \usage{
-summ_count_phyloseq(physeq)
+summ_count_phyloseq(obj)
 }
 \arguments{
-\item{physeq}{A phyloseq object containing the taxonomic and abundance data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing taxonomic and abundance data.}
 }
 \value{
 A data frame with overall summary statistics.
 }
 \description{
-This function computes overall summary statistics (mean, median, standard deviation, standard error, and quantiles) for the OTU table in a phyloseq object.
+Computes overall summary statistics (mean, median, standard deviation, standard error, and quantiles)
+for the OTU table in a \code{phyloseq} or \code{TreeSummarizedExperiment} (TSE) object.
 }
 \examples{
-\dontrun{
-if (interactive()) {
-  # Example usage:
-  summary_stats <- summ_count_phyloseq(spiked_ITS)
-  summary_stats <- summ_count_phyloseq(processed_data)
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("physeq_16SOTU", package = "DspikeIn")
+
+  # Summarize counts for the phyloseq object
+  summary_stats_physeq <- summ_count_phyloseq(physeq_16SOTU)
+
+  # Convert phyloseq object to a TreeSummarizedExperiment (TSE)
+  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+
+  # Summarize counts for the TSE object
+  summary_stats_tse <- summ_count_phyloseq(tse_16SOTU)
 }
 }
+
 }

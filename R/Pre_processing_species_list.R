@@ -1,182 +1,162 @@
-#' Pre-process a list of spiked-in species in a phyloseq object
+#' @title Pre-process a list of spiked-in species in a phyloseq or TSE object
+#' @description Merges ASVs based on a specified method while preserving all metadata
+#' (taxonomy, sample data, phylogenetic tree, and reference sequences, if available).
 #'
-#' This function pre-processes a list of spiked-in species in a phyloseq object
-#' by merging ASVs based on a specified method (sum or max). It retains the Genus
-#' and Species information for the merged taxa as a single entry in the taxonomy table.
+#' @param obj A `phyloseq` or `TreeSummarizedExperiment` object.
+#' @param spiked_species A character vector of species names to be processed (Genus Species format).
+#' @param merge_method Either `"sum"` (sum counts) or `"max"` (keep max abundance ASV). Default is `"sum"`.
+#' @param output_file Optional: File path to save the merged object as an `.rds` file.
+#' @return A `phyloseq` or `TreeSummarizedExperiment` object with merged species.
 #'
-#' @param physeq A \code{phyloseq} object containing the microbiome data.
-#' @param spiked_species A character vector of spiked-in species names to be processed. Species names should match the \code{Genus Species} format in the phyloseq object (e.g., "Pseudomonas aeruginosa").
-#' @param merge_method A character string specifying the method to use for merging ASVs. Either \code{"sum"} to sum the counts, or \code{"max"} to keep the maximum abundance ASV. Default is \code{"sum"}.
-#' @param output_file Optional. A file path to save the merged phyloseq object. If provided, the merged object will be saved as an \code{.rds} file.
-#' @return A \code{phyloseq} object with the spiked-in species pre-processed.
+#' @importFrom phyloseq otu_table tax_table phy_tree refseq sample_data prune_taxa
+#' @importFrom TreeSummarizedExperiment TreeSummarizedExperiment rowTree
+#' @importFrom SummarizedExperiment assay rowData assays colData
+#' @importFrom S4Vectors DataFrame metadata
+#' @importFrom ape is.rooted drop.tip
+#'
 #' @examples
 #' \dontrun{
-#' # Example usage
+#' library(phyloseq)
+#' library(TreeSummarizedExperiment)
+#'
+#' data("tse", package = "DspikeIn")
+#' data("physeq", package = "DspikeIn")
+#'
+#' # Define spiked species for merging
 #' spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
-#' merged_physeq_sum <- Pre_processing_species_list(physeq, spiked_species, merge_method = "sum")
-#' merged_physeq_sum@tax_table
-#' merged_physeq_sum@otu_table
+#'
+#' # Process the dataset and merge ASVs
+#' merged_TSE <- Pre_processing_species_list(tse, spiked_species, merge_method = "sum")
+#' merged_physeq <- Pre_processing_species_list(physeq, spiked_species, merge_method = "sum")
 #' }
-#' @importFrom phyloseq otu_table tax_table
 #' @export
-Pre_processing_species_list <- function(physeq, spiked_species, merge_method = c("sum", "max"), output_file = NULL) {
-  
-  # Match the merge method argument
+Pre_processing_species_list <- function(obj, spiked_species, merge_method = c("sum", "max"), output_file = NULL) {
+
   merge_method <- match.arg(merge_method)
-  
-  # Suppress messages for loading required packages
-  suppressMessages({
-    requireNamespace("phyloseq", quietly = TRUE)
-  })
-  
   message("Starting pre-processing for spiked-in species...")
-  
-  # Get the taxonomy and OTU tables from the phyloseq object
-  taxa_table <- as.data.frame(phyloseq::tax_table(physeq))
-  otu_table_data <- as(phyloseq::otu_table(physeq), "matrix")
-  
-  # Loop over each species in the spiked_species list
+
+  # Step 1: Detect input format
+  is_physeq <- inherits(obj, "phyloseq")
+  is_tse <- inherits(obj, "TreeSummarizedExperiment")
+
+  if (!is_physeq && !is_tse) {
+    stop("Input object must be either a `phyloseq` or `TreeSummarizedExperiment`.")
+  }
+
+  # Step 2: Retrieve components
+  otu_table_data <- get_otu_table(obj)
+  tax_data <- as.data.frame(get_tax_table(obj))
+  sample_metadata <- get_sample_data(obj)
+
+  # Retrieve phylogenetic tree (if available)
+  phy_tree <- tryCatch(
+    if (is_physeq) phyloseq::phy_tree(obj) else TreeSummarizedExperiment::rowTree(obj),
+    error = function(e) NULL
+  )
+
+  # Retrieve reference sequences (if available)
+  ref_sequences <- tryCatch(
+    if (is_physeq) phyloseq::refseq(obj) else S4Vectors::metadata(obj)$refseq,
+    error = function(e) NULL
+  )
+
+  # Step 3: Ensure `Species` column exists
+  if (!"Species" %in% colnames(tax_data)) stop("Error: 'Species' column not found in taxonomy table.")
+  tax_data$Species <- as.character(tax_data$Species)
+
+  message("Checking taxonomy table...")
+
+  # Step 4: Process each species
   for (species in spiked_species) {
     message("Processing species: ", species)
-    
-    # Find all ASVs belonging to the current species (Genus + Species format)
-    species_asvs <- rownames(taxa_table)[taxa_table$Species == species]
-    
+
+    species_asvs <- rownames(tax_data)[which(tax_data$Species == species)]
+
     if (length(species_asvs) > 1) {
       message("Merging ", length(species_asvs), " ASVs for species: ", species)
-      
-      # Merge the OTU counts based on the specified method
+
       if (merge_method == "sum") {
-        merged_abundances <- colSums(otu_table_data[species_asvs, , drop = FALSE])
+        sum_abundances <- colSums(otu_table_data[species_asvs, , drop = FALSE])
+        otu_table_data[species_asvs[1], ] <- sum_abundances
       } else if (merge_method == "max") {
         max_abundance_asv <- species_asvs[which.max(rowSums(otu_table_data[species_asvs, , drop = FALSE]))]
-        merged_abundances <- otu_table_data[max_abundance_asv, ]
+        otu_table_data[species_asvs[1], ] <- otu_table_data[max_abundance_asv, ]
       }
-      
-      # Update the OTU table: retain the first ASV, update its counts, and remove others
-      otu_table_data[species_asvs[1], ] <- merged_abundances
-      otu_table_data <- otu_table_data[-which(rownames(otu_table_data) %in% species_asvs[-1]), ]
-      
-      # Update the taxonomy table: retain the first ASV's taxonomy and remove others
-      taxa_table <- taxa_table[-which(rownames(taxa_table) %in% species_asvs[-1]), ]
-      
-      message("Successfully merged ASVs for species: ", species)
-      
+
+      # Remove extra ASVs
+      otu_table_data <- otu_table_data[setdiff(rownames(otu_table_data), species_asvs[-1]), , drop = FALSE]
+      tax_data <- tax_data[setdiff(rownames(tax_data), species_asvs[-1]), , drop = FALSE]
     } else if (length(species_asvs) == 1) {
-      message("Only one ASV found for species: ", species, "; no merging required.")
+      message("No merging needed; only one ASV/OTU for species: ", species)
     } else {
-      message("No ASVs found for species: ", species)
+      warning("Warning: No ASVs/OTUs found for species: ", species)
     }
   }
-  
-  # Ensure that OTU and taxonomy tables have matching row names
-  if (!all(rownames(otu_table_data) == rownames(taxa_table))) {
-    stop("Mismatch between OTU and taxonomy table row names.")
+
+  # Step 5: Prune Tree and RefSeq for TSE
+  if (!is.null(phy_tree)) {
+    common_tips <- intersect(phy_tree$tip.label, rownames(otu_table_data))
+    if (length(common_tips) < length(phy_tree$tip.label)) {
+      if (length(common_tips) > 1) {
+        phy_tree <- ape::drop.tip(phy_tree, setdiff(phy_tree$tip.label, common_tips))
+        message("Pruned tree to match remaining taxa.")
+      } else {
+        warning("Tree has too few taxa after pruning. Removing tree.")
+        phy_tree <- NULL
+      }
+    }
   }
-  
-  # Update the phyloseq object with the modified OTU and taxonomy tables
-  physeq@otu_table <- phyloseq::otu_table(as.matrix(otu_table_data), taxa_are_rows = TRUE)
-  physeq@tax_table <- phyloseq::tax_table(as.matrix(taxa_table))
-  
-  # Optional: Save the merged phyloseq object if an output file path is provided
+
+  if (!is.null(ref_sequences)) {
+    common_seqs <- intersect(names(ref_sequences), rownames(otu_table_data))
+    if (length(common_seqs) < length(ref_sequences)) {
+      if (length(common_seqs) > 1) {
+        ref_sequences <- ref_sequences[common_seqs]
+        message("Pruned reference sequences to match remaining taxa.")
+      } else {
+        warning("Reference sequences have too few taxa after pruning. Removing refseq.")
+        ref_sequences <- NULL
+      }
+    }
+  }
+
+  # Step 6: Reconstruct Object
+  if (is_physeq) {
+    components <- list(
+      phyloseq::otu_table(otu_table_data, taxa_are_rows = TRUE),
+      phyloseq::tax_table(as.matrix(tax_data)),
+      phyloseq::sample_data(sample_metadata)
+    )
+
+    if (!is.null(phy_tree)) components <- append(components, list(phy_tree))
+    if (!is.null(ref_sequences)) components <- append(components, list(phyloseq::refseq(ref_sequences)))
+
+    obj <- do.call(phyloseq::phyloseq, components)
+  } else {
+    obj <- TreeSummarizedExperiment::TreeSummarizedExperiment(
+      assays = list(counts = otu_table_data),
+      rowData = tax_data,
+      colData = sample_metadata,
+      rowTree = if (!is.null(phy_tree)) phy_tree else NULL,
+      metadata = if (!is.null(ref_sequences)) list(refseq = ref_sequences) else list()
+    )
+  }
+
   if (!is.null(output_file)) {
-    saveRDS(physeq, file = output_file)
-    message("Merged phyloseq object saved to: ", output_file)
+    saveRDS(obj, file = output_file)
+    message("Merged object saved to: ", output_file)
   }
-  
+
   message("Pre-processing complete.")
-  
-  # Return the modified phyloseq object
-  return(physeq)
+  return(obj)
 }
 
-# # Example usage:
-# #Step 1: Create a taxonomy table
-# taxa_data <- data.frame(
-#   OTUID = c("ASV1", "ASV2", "ASV3",
-#             "ASV4", "ASV5", "ASV6",
-#             "ASV7", "ASV8", "ASV9",
-#             "ASV10", "ASV11", "ASV12",
-#             "ASV13", "ASV14", "ASV15",
-#             "ASV16", "ASV17", "ASV18"),
-#   Kingdom = rep("Bacteria", 18),
-#   Phylum = c("Proteobacteria", "Proteobacteria", "Proteobacteria",
-#              "Proteobacteria", "Proteobacteria", "Proteobacteria",
-#              "Firmicutes", "Firmicutes", "Firmicutes",
-#              "Proteobacteria", "Firmicutes", "Firmicutes",
-#              "Firmicutes", "Firmicutes", "Firmicutes",
-#              "Bacteroidota", "Bacteroidota", "Proteobacteria"),
-#   Class = c("Gammaproteobacteria", "Gammaproteobacteria", "Gammaproteobacteria",
-#             "Gammaproteobacteria", "Gammaproteobacteria", "Gammaproteobacteria",
-#             "Clostridia", "Clostridia", "Clostridia",
-#             "Gammaproteobacteria", "Bacilli", "Bacilli",
-#             "Bacilli", "Bacilli", "Clostridia",
-#             "Bacteroidia", "Bacteroidia", "Epsilonproteobacteria"),
-#   Order = c("Pseudomonadales", "Pseudomonadales", "Pseudomonadales",
-#             "Enterobacterales", "Enterobacterales", "Enterobacterales",
-#             "Clostridiales", "Clostridiales", "Clostridiales",
-#             "Enterobacterales", "Lactobacillales", "Bacillales",
-#             "Bacillales", "Bacillales", "Clostridiales",
-#             "Bacteroidales", "Bacteroidales", "Campylobacterales"),
-#   Family = c("Pseudomonadaceae", "Pseudomonadaceae", "Pseudomonadaceae",
-#              "Enterobacteriaceae", "Enterobacteriaceae", "Enterobacteriaceae",
-#              "Clostridiaceae", "Clostridiaceae", "Clostridiaceae",
-#              "Enterobacteriaceae", "Enterococcaceae", "Staphylococcaceae",
-#              "Listeriaceae", "Bacillaceae", "Clostridiaceae",
-#              "Bacteroidaceae", "Bacteroidaceae", "Helicobacteraceae"),
-#   Genus = c("Pseudomonas", "Pseudomonas", "Pseudomonas",
-#             "Escherichia", "Escherichia", "Escherichia",
-#             "Clostridium", "Clostridium", "Clostridium",
-#             "Salmonella", "Enterococcus", "Staphylococcus",
-#             "Listeria", "Bacillus", "Lactobacillus",
-#             "Bacteroides", "Bacteroides", "Helicobacter"),
-#   Species = c("Pseudomonas aeruginosa", "Pseudomonas aeruginosa", "Pseudomonas aeruginosa",
-#               "Escherichia coli", "Escherichia coli", "Escherichia coli",
-#               "Clostridium difficile", "Clostridium difficile", "Clostridium difficile",
-#               "Salmonella enterica", "Enterococcus faecalis", "Staphylococcus aureus",
-#               "Listeria monocytogenes", "Bacillus subtilis", "Lactobacillus plantarum",
-#               "Bacteroides fragilis", "Bacteroides vulgatus", "Helicobacter pylori")
-# )
-# 
-# # Convert to matrix
-# taxa_matrix <- as.matrix(taxa_data[, -1])
-# rownames(taxa_matrix) <- taxa_data$OTUID
-# 
-# # Step 2: Create an OTU table
-# otu_data <- round(matrix(
-#   c(5.1, 2.3, 1.5,    # Pseudomonas aeruginosa ASV1, ASV2, ASV3
-#     12.4, 6.8, 5.9,   # Escherichia coli ASV4, ASV5, ASV6
-#     15.2, 7.3, 6.9,   # Clostridium difficile ASV7, ASV8, ASV9
-#     12.7, 19, 17.3,   # Salmonella enterica
-#     21.4, 10.3, 14.6, # Enterococcus faecalis
-#     13.1, 9.8, 4.6,   # Staphylococcus aureus
-#     2.5, 1.8, 11.2,   # Listeria monocytogenes
-#     7.1, 6.3, 12.7,   # Bacillus subtilis
-#     5.8, 5.2, 11.4,   # Lactobacillus plantarum
-#     17.1, 15.6, 19.2, # Bacteroides fragilis
-#     12.7, 13.8, 12.5, # Bacteroides vulgatus
-#     8.3, 7.8, 3.9),   # Helicobacter pylori
-#   nrow = 18, ncol = 12, byrow = TRUE,
-#   dimnames = list(taxa_data$OTUID, paste0("Sample", 1:12))
-# ))
-# 
-# # Step 3: Create sample metadata with 12 samples and 4 rep
-# sample_data <- data.frame(
-#   SampleID = paste0("Sample", 1:12),
-#   Category = rep(c("Control", "Extreme Environment", "Normal Condition"), each = 4),  # 4 replicates for each condition
-#   row.names = paste0("Sample", 1:12)
-# )
-# 
-# # Step 4: build the phyloseq
-# otu_table_ps <- phyloseq::otu_table(otu_data, taxa_are_rows = TRUE)
-# tax_table_ps <- phyloseq::tax_table(taxa_matrix)
-# sample_data_ps <- phyloseq::sample_data(sample_data)
-# physeq <- phyloseq(otu_table_ps, tax_table_ps, sample_data_ps)
-# 
-# # tidy up
-# physeq <- tidy_phyloseq(physeq)
-# 
+
+# Usage Example,
 # spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
+# data("tse",package = "DspikeIn")
+# data("physeq",package = "DspikeIn")
+
 # merged_physeq_sum <- Pre_processing_species_list(physeq, spiked_species, merge_method = "sum")
-# merged_physeq_sum@tax_table
-# merged_physeq_sum@otu_table
+# merged_physeq_sum <- Pre_processing_species_list(tse, spiked_species, merge_method = "sum")
+

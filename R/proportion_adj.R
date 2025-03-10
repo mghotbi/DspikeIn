@@ -1,42 +1,120 @@
-#' Proportionally Adjust Abundance
+#' @title Proportionally Adjust Abundance
+#' @description This function normalizes the abundance data in a `phyloseq` or `TreeSummarizedExperiment`
+#' object by adjusting each sample's counts based on a total value, typically the maximum total
+#' sequence count across all samples. The adjusted counts are then rounded to the nearest integer.
 #'
-#' This function normalizes the abundance data in a phyloseq object by adjusting each sample's counts
-#' based on a total value, typically the maximum total sequence count across all samples. The adjusted
-#' counts are then rounded to the nearest integer.
+#' @param obj A `phyloseq` or `TreeSummarizedExperiment` object containing microbiome data.
+#' @param output_file A character string specifying the output file name for the adjusted object. Default is "proportion_adjusted.rds".
+#' @return A modified object of the same class (`phyloseq` or `TreeSummarizedExperiment`) with proportionally adjusted and rounded abundance data.
 #'
-#' @param physeq A phyloseq object containing the microbiome data.
-#' @param output_file A character string specifying the output file name for the adjusted phyloseq object. Default is "proportion_adjusted_physeq.rds".
-#' @return A phyloseq object with the proportionally adjusted and rounded abundance data.
+#' @details
+#' This function extracts the OTU table (or assay in `TSE`), normalizes it based on the sample sums,
+#' and updates the original object while maintaining its structure.
+#'
 #' @examples
-#' \dontrun{
-#' if (interactive()) {
-#'   # Proportionally adjust the abundance data
-#'   normalized_physeq <- proportion_adj(physeq, output_file = "proportion_adjusted_physeq.rds")
+#' \donttest{
+#' if (requireNamespace("DspikeIn", quietly = TRUE)) {
+#'   # Load phyloseq object
+#'   data("physeq_16SOTU", package = "DspikeIn")
+#'   normalized_physeq <- proportion_adj(
+#'     physeq_16SOTU,
+#'     output_file = "proportion_adjusted_physeq.rds"
+#'   )
+#'   print(normalized_physeq)
+#'   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+#'   # Example with a TreeSummarizedExperiment (TSE) object
+#'   data("tse_16SOTU", package = "DspikeIn")
+#'   normalized_tse <- proportion_adj(
+#'     tse_16SOTU,
+#'     output_file = "proportion_adjusted_tse.rds"
+#'   )
+#'   print(normalized_tse)
 #' }
 #' }
+#' @importFrom phyloseq otu_table<-
+#' @importFrom SummarizedExperiment assay<-
+#' @importFrom phyloseq sample_sums transform_sample_counts
+#' @importFrom S4Vectors metadata
 #' @export
-proportion_adj <- function(physeq, output_file = "proportion_adjusted_physeq.rds") {
+proportion_adj <- function(obj, output_file = "proportion_adjusted.rds") {
   suppressMessages({
-    # Normalize total sequence counts
-    normf <- function(x, tot = max(phyloseq::sample_sums(physeq))) {
+    message("\U0001F504 Starting proportional adjustment...")
+
+    # Extract OTU table using accessor function
+    otu_matrix <- get_otu_table(obj)
+    if (is.null(otu_matrix)) stop("\U0000274C Error: OTU table is missing.")
+
+    # Extract sample sums using accessor
+    sample_totals <- get_sample_sums(obj)
+    if (is.null(sample_totals)) stop("\U0000274C Error: Sample sums could not be calculated.")
+
+    # Compute normalization function
+    normf <- function(x, tot = max(sample_totals)) {
       tot * x / sum(x)
     }
-    
+
+    message("\U0001F4C8	Applying normalization based on maximum total sequence count...")
+
     # Apply normalization to sample counts/abundance
-    physeq <- phyloseq::transform_sample_counts(physeq, normf)
-    
-    # Round the abundance counts within the OTU table
-    phyloseq::otu_table(physeq) <- round(phyloseq::otu_table(physeq), digits = 0)
-    
-    # Save the normalized and rounded phyloseq object
-    saveRDS(physeq, file = output_file)
-    cat("Normalized and rounded phyloseq object saved to:", output_file, "\n")
-    
-    # Return the normalized and rounded phyloseq obj
-    return(physeq)
+    if (inherits(obj, "phyloseq")) {
+      obj <- phyloseq::transform_sample_counts(obj, normf)
+    } else if (inherits(obj, "TreeSummarizedExperiment")) {
+      otu_matrix <- apply(otu_matrix, 2, normf)
+    }
+
+    # Round the abundance counts
+    message("\U0001F522 Rounding OTU table values...")
+    otu_matrix <- round(otu_matrix, digits = 0)
+
+    # Update OTU table in the object
+    if (inherits(obj, "phyloseq")) {
+      phyloseq::otu_table(obj) <- phyloseq::otu_table(otu_matrix, taxa_are_rows = TRUE)
+    } else if (inherits(obj, "TreeSummarizedExperiment")) {
+      SummarizedExperiment::assay(obj) <- otu_matrix
+    } else {
+      stop("\U0000274C	Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
+    }
+
+    # Save if output file is provided
+    if (!is.null(output_file)) {
+      message("\U0001F5C2 Saving adjusted object to: ", output_file)
+      saveRDS(obj, file = output_file)
+    }
+
+    return(obj)
   })
 }
 
-# Example usage:
-# Proportionally adjust the abundance data
-# normalized_physeq <- proportion_adj(physeq, output_file = "proportion_adjusted_physeq.rds")
+#' @title Extract OTU Table from Object
+#' @description Retrieves the OTU table from a `phyloseq` or `TreeSummarizedExperiment` object.
+#' @param obj A `phyloseq` or `TreeSummarizedExperiment` object.
+#' @return A matrix containing OTU count data.
+#' @importFrom phyloseq otu_table
+#' @importFrom SummarizedExperiment assay
+#' @export
+get_otu_table <- function(obj) {
+  if (inherits(obj, "phyloseq")) {
+    return(as.matrix(phyloseq::otu_table(obj)))
+  } else if (inherits(obj, "TreeSummarizedExperiment")) {
+    return(as.matrix(SummarizedExperiment::assay(obj)))
+  } else {
+    stop("Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
+  }
+}
+
+#' @title Extract Sample Sums from Object
+#' @description Retrieves the total sequence counts per sample from a `phyloseq` or `TreeSummarizedExperiment` object.
+#' @param obj A `phyloseq` or `TreeSummarizedExperiment` object.
+#' @return A numeric vector of total counts per sample.
+#' @importFrom phyloseq sample_sums
+#' @export
+get_sample_sums <- function(obj) {
+  if (inherits(obj, "phyloseq")) {
+    return(phyloseq::sample_sums(obj))
+  } else if (inherits(obj, "TreeSummarizedExperiment")) {
+    return(colSums(SummarizedExperiment::assay(obj)))
+  } else {
+    stop("Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
+  }
+}
+

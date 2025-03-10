@@ -2,30 +2,35 @@
 % Please edit documentation in R/my_custom_theme.R
 \name{my_custom_theme}
 \alias{my_custom_theme}
-\title{Custom GGplot2 Theme and Color/Shape Vectors}
+\title{Custom ggplot2 Theme with Consistent Aesthetics}
 \usage{
-my_custom_theme()
+my_custom_theme(base_size = 12, font_family = "sans", bg_color = "white")
+}
+\arguments{
+\item{base_size}{Numeric. Base font size for text elements (default: 12).}
+
+\item{font_family}{Character. Font family to use for text elements (default: "sans").}
+
+\item{bg_color}{Character. Background color of the plot (default: "white").}
 }
 \value{
 A ggplot2 theme object.
 }
 \description{
-This function generates a custom ggplot2 theme with specific styling options.
-Additionally, it provides predefined color and shape vectors for consistent plot styling.
+Creates a custom ggplot2 theme with consistent styling options,
+including background color, font size, and axis line formatting.
+}
+\details{
+This function applies a custom theme to ggplot2 plots. It removes unnecessary
+grid lines, ensures a clean background, and standardizes text styling.
 }
 \examples{
 \dontrun{
-# Apply the custom theme to a ggplot
-# The custom theme 'my_custom_theme()' is part of the package
-
-suppressMessages(library(ggplot2))
-
-# Create a scatter plot using the 'mtcars' dataset
-p <- ggplot(mtcars, aes(x = wt, y = mpg)) + 
-  geom_point(size = 3) + 
-  my_custom_theme()  # Apply the custom theme
-
-# Print the plot
+library(ggplot2)
+p <- ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point(size = 3) +
+  my_custom_theme()
 print(p)
 }
+
 }

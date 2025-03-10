@@ -10,8 +10,7 @@ regression_plot(
   y_var,
   custom_range = c(0.1, 15, 30, 50, 75, 100),
   formula = y ~ x,
-  plot_title = NULL,
-  pseudocount = 1e-06
+  plot_title = NULL
 )
 }
 \arguments{
@@ -26,28 +25,29 @@ regression_plot(
 \item{formula}{A formula for the regression equation (default: y ~ x).}
 
 \item{plot_title}{A string specifying the title of the plot (default: NULL, no title will be shown if not provided).}
-
-\item{pseudocount}{A small numeric value that is added to both the x and y variables
-to avoid issues when there are zero values in the data. This is helpful in situations 
-where zero values would cause issues with calculations, such as log transformations 
-or statistical modeling. Default is 1e-6.}
 }
 \value{
 A ggplot2 object.
 }
 \description{
-This function generates a customizable scatter plot with a linear regression line, 
+This function generates a customizable scatter plot with a linear regression line,
 statistical equation, and facets based on a specified range variable.
+The x and y variables are transformed using a natural log transformation (\code{log1p}) to handle zero values.
 }
 \examples{
-\dontrun{
-# Example of how to call the function with custom ranges
-plot_object <- regression_plot(
-  data = metadata, 
-  x_var = "Richness", 
-  y_var = "Total_Reads_spiked", 
-  custom_range = c(0.1, 15, 30, 50, 75, 100)
-)
-print(plot_object)
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("metadata_full", package = "DspikeIn")
+
+  plot_object <- regression_plot(
+    data = metadata_full,
+    x_var = "Observed",
+    y_var = "Total_Reads_spiked",
+    custom_range = c(0.1, 15, 30, 50, 75, 100)
+  )
+
+  # Print the plot output
+  print(plot_object)
+}
 }
 }

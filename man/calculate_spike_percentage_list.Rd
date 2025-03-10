@@ -2,38 +2,61 @@
 % Please edit documentation in R/calculate_spike_percentage_list.R
 \name{calculate_spike_percentage_list}
 \alias{calculate_spike_percentage_list}
-\title{Calculate Spike Percentage for List of Specified Taxa in a Phyloseq Object}
+\title{Calculate Spike Percentage for Specified Taxa}
 \usage{
 calculate_spike_percentage_list(
-  physeq,
+  obj,
   merged_spiked_species = NULL,
   output_path = "merged_data.docx",
   passed_range = c(0.1, 11)
 )
 }
 \arguments{
-\item{physeq}{A \code{phyloseq} object containing microbial data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing microbial data.}
 
-\item{merged_spiked_species}{A character vector of spiked species to check in the phyloseq object.}
+\item{merged_spiked_species}{A character vector of spiked species names to check in the object.}
 
-\item{output_path}{A character string specifying the path to save the output files. Default is \code{"merged_data.docx"}.}
+\item{output_path}{A character string specifying the file path for saving output (DOCX format).
+Default is \code{"merged_data.docx"}.}
 
-\item{passed_range}{A numeric vector of length 2 specifying the range of percentages to categorize results as "passed". Default is \code{c(0.1, 11)}.}
+\item{passed_range}{A numeric vector of length 2 specifying the range of percentages for
+categorization as "passed". Default is \code{c(0.1, 11)}.}
 }
 \value{
-A data frame containing the percentage of spiked taxa reads and the pass/fail results.
+A data frame containing the percentage of spiked taxa reads and the pass/fail classification.
+The results are also saved as a DOCX table and a CSV file.
 }
 \description{
-This function calculates the percentage of reads from specified spiked species in a \code{phyloseq} object.
-It merges the spiked taxa into one ASV, calculates the percentage of reads, categorizes the results as passed or failed,
-and saves the results as DOCX and CSV files.
+Computes the percentage of reads from specified spiked species in a
+\code{phyloseq} or \code{TreeSummarizedExperiment} object. The function merges selected taxa
+into a single ASV, calculates the percentage of reads per sample, classifies the results
+as "passed" or "failed" based on a predefined range, and saves the results in DOCX
+and CSV formats.
+}
+\details{
+This function extracts relevant data from \code{phyloseq} or \code{TreeSummarizedExperiment}
+objects using accessor functions, calculates the percentage of reads contributed by the specified
+spiked taxa, and classifies each sample as "passed" or "failed" based on the provided threshold range.
 }
 \examples{
-\dontrun{
-# Example usage:
-spiked_species_list <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
-result <- calculate_spike_percentage_list(physeq, merged_spiked_species = spiked_species_list, 
-passed_range = c(0.1, 10))
-print(result)
+\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  # Load phyloseq object
+  data("physeq", package = "DspikeIn")
+
+  # Define a list of spiked species
+  spiked_species_list <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
+
+  # Calculate spike percentage within the specified range
+  result <- calculate_spike_percentage_list(
+    obj = physeq,
+    merged_spiked_species = spiked_species_list,
+    passed_range = c(0.1, 10)
+  )
+
+  # Print the result
+  print(result)
 }
+}
+
 }

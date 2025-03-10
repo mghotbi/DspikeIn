@@ -4,10 +4,10 @@
 \alias{set_nf}
 \title{Set Normalization Factors in the Sample Data of the Phyloseq Object}
 \usage{
-set_nf(ps, scaling.factor)
+set_nf(obj, scaling.factor)
 }
 \arguments{
-\item{ps}{A phyloseq object.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing microbial data.}
 
 \item{scaling.factor}{A vector of normalization factors.}
 }
@@ -16,11 +16,4 @@ A phyloseq object with updated sample data.
 }
 \description{
 Set Normalization Factors in the Sample Data of the Phyloseq Object
-}
-\examples{
-\dontrun{
-ps <- phyloseq::GlobalPatterns
-factors <- rep(1, phyloseq::nsamples(ps))
-ps <- set_nf(ps, factors)
-}
 }
