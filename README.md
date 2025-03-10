@@ -684,7 +684,7 @@ results_DESeq2_rel$obj_significant
 
 | Absolute FDR | Relative FDR |
 |:---------------------:|:--------------:|
-| !![Absolute FDR](https://github.com/user-attachments/assets/37c3d8e2-a807-460f-8b6a-9d2c13f0ffc9) | ![Relative FDR](https://github.com/user-attachments/assets/0afd03bb-6ee8-450f-aae5-b9146ae522ac) |
+| ![Absolute FDR](https://github.com/user-attachments/assets/0afd03bb-6ee8-450f-aae5-b9146ae522ac) | ![Relative FDR](https://github.com/user-attachments/assets/37c3d8e2-a807-460f-8b6a-9d2c13f0ffc9) |
 
 
 ---
