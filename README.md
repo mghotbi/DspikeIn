@@ -428,7 +428,7 @@ initial_stat_ASV <- summ_phyloseq_ASV_OTUID(spiked_16S_OTU)
 initial_stat_sampleWise <- summ_phyloseq_sampleID(spiked_16S_OTU)
 
 # Summarize the count data
-summ_count_phyloseq(physeq_16S_OTU)
+summ_count_phyloseq(spiked_16S_OTU)
 
 # Check the summary statistics
 # Ensure the input is in dataframe format for this function
