@@ -116,6 +116,25 @@ physeq_16SOTU <- tidy_phyloseq_tse(physeq_16SOTU)
 saveRDS(physeq_16SOTU, file = "physeq_16SOTU.rds")
 physeq_16SOTU <- readRDS("physeq_16SOTU.rds")
 
+
+# Build TSE
+
+otu <- read.csv("otu.csv", header = TRUE, sep = ",", row.names = 1)
+otu_mat <- as.matrix(otu)  # Convert to matrix
+tax <- read.csv("tax.csv", header = TRUE, sep = ",", row.names = 1)
+colnames(tax) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")  
+tax_mat <- as.matrix(tax)  # Convert to matrix
+meta <- read.csv("metadata.csv", header = TRUE, sep = ",", row.names = 1)
+reference_seqs <- readDNAStringSet("dna-sequences.fasta", format = "fasta")
+tse <- TreeSummarizedExperiment(
+  assays = list(counts = otu_mat),  # OTU table 
+  rowData = tax_mat,                # Taxonomy information
+  colData = meta,                    # Sample metadata
+  rowTree = MyTree,                  # Phylogenetic tree
+  rowSeqs = reference_seqs           # Reference sequences
+)
+
+
 ```
 **Whole-Cell Spike-In Protocol,**
 *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples based on our previous studies [WalkerLab](https://walkerlabmtsu.weebly.com/personnel.html).
