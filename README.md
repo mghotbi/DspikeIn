@@ -87,7 +87,10 @@ list.files(system.file("extdata", package = "DspikeIn"))
 ### Building your own phyloseq and TSE
 
 ```r
-# Briefly:
+
+# =====================================================================
+#                     Build phyloseq 
+# =====================================================================
 otu <- read.csv("otu.csv", header = TRUE, sep = ",", row.names = 1)
 # taxonomic rank need to be capilalized, only the first letter of each rank
 tax <- read.csv("tax.csv", header = TRUE, sep = ",", row.names = 1)
@@ -119,7 +122,9 @@ saveRDS(physeq_16SOTU, file = "physeq_16SOTU.rds")
 physeq_16SOTU <- readRDS("physeq_16SOTU.rds")
 
 
-# Build TSE
+# =====================================================================
+#                       Build TSE 
+# =====================================================================
 
 otu <- read.csv("otu.csv", header = TRUE, sep = ",", row.names = 1)
 otu_mat <- as.matrix(otu)  # Convert to matrix
