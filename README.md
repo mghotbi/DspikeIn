@@ -67,6 +67,7 @@ The DspikeIn package provides functions for:
 - Estimating acceptable retrieval percentages of spiked species.  
 - Performing data transformation, differential abundance analysis, and visualization.  
 
+
 ### To get detailed examples and guidance, please use:
 browseVignettes("DspikeIn")
 
@@ -74,13 +75,48 @@ browseVignettes("DspikeIn")
 The DspikeIn package provides example datasets located in the data/ folder and inst/extdata/ folder. You can list the available datasets using the following commands:
 
 ```r
+
 # List datasets available in the DspikeIn package
 data(package = "DspikeIn")
 
 # List files in the extdata folder
 list.files(system.file("extdata", package = "DspikeIn"))
 ```
+### Building your own phyloseq & TSE
 
+```r
+# Briefly:
+otu <- read.csv("otu.csv", header = TRUE, sep = ",", row.names = 1)
+# taxonomic rank need to be capilalized, only the first letter of each rank
+tax <- read.csv("tax.csv", header = TRUE, sep = ",", row.names = 1)
+# Ensure 'spiked.volume' column is present and correctly formatted in metadata
+meta <- read.csv("metadata.csv", header = TRUE, sep = ",")
+
+# Convert data to appropriate formats
+meta <- as.data.frame(meta)
+taxmat <- as.matrix(tax)
+otumat <- as.matrix(otu)
+colnames(taxmat) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+OTU <- otu_table(otumat, taxa_are_rows = TRUE)
+TAX <- phyloseq::tax_table(taxmat)
+
+# Check
+row.names(meta) <- sample_names(OTU)
+metadata <- sample_data(meta)
+# Build phyloseq obj
+physeq <- phyloseq(OTU, TAX, metadata)
+
+# Follow the next steps if tree and reference files are included
+MyTree <- read.tree("tree.nwk")
+reference_seqs <- readDNAStringSet(file = "dna-sequences.fasta", format = "fasta")
+
+physeq_16SOTU <- merge_phyloseq(physeq, reference_seqs, MyTree)
+physeq_16SOTU <- tidy_phyloseq_tse(physeq_16SOTU)
+
+saveRDS(physeq_16SOTU, file = "physeq_16SOTU.rds")
+physeq_16SOTU <- readRDS("physeq_16SOTU.rds")
+
+```
 **Whole-Cell Spike-In Protocol,**
 *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples based on our previous studies [WalkerLab](https://walkerlabmtsu.weebly.com/personnel.html).
 
@@ -199,47 +235,6 @@ vignette("DspikeIn")
 DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phyloseq) package.
 Requirements
 
-
-### Building  Phyloseq obj Briefly:
-
-```r
-# Load OTU table
-otu <- read.csv("otu.csv", header = TRUE, sep = ",", row.names = 1)
-# Load Taxonomy Table
-# Ensure that taxonomic ranks are capitalized
-tax <- read.csv("tax.csv", header = TRUE, sep = ",", row.names = 1)
-# Load Metadata
-# Ensure the format of spiked.volume is correct
-meta <- read.csv("metadata.csv", header = TRUE, sep = ",")
-
-# Convert data to appropriate formats
-meta <- as.data.frame(meta)
-taxmat <- as.matrix(tax)
-otumat <- as.matrix(otu)
-
-# DspikeIn Requires 7 Taxonomic Ranks
-colnames(taxmat) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
-# Taxa are row
-OTU <- otu_table(otumat, taxa_are_rows = TRUE)
-TAX <- phyloseq::tax_table(taxmat)
-
-row.names(meta) <- sample_names(OTU)
-metadata <- sample_data(meta)
-
-# Build the phyloseq
-physeq <- phyloseq(OTU, TAX, metadata)
-
-# Skip this part if you do not want to include the tree and reference files
-MyTree <- read.tree("tree.nwk")
-reference_seqs <- readDNAStringSet(file = "dna-sequences.fasta", format = "fasta")
-
-physeq_16SOTU <- merge_phyloseq(physeq, reference_seqs, MyTree)
-physeq_16SOTU <- tidy_phyloseq_tse(physeq_16SOTU)
-
-saveRDS(physeq_16SOTU, file = "physeq_16SOTU.rds")
-physeq_16SOTU <- readRDS("physeq_16SOTU.rds")
-
-```
 
 ### To Meet Taxonomic Ranks Requirements
 
