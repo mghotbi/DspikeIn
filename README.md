@@ -200,6 +200,47 @@ DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phylo
 Requirements
 
 
+### Building  Phyloseq obj Briefly:
+
+```r
+# Load OTU table
+otu <- read.csv("otu.csv", header = TRUE, sep = ",", row.names = 1)
+# Load Taxonomy Table
+# Ensure that taxonomic ranks are capitalized
+tax <- read.csv("tax.csv", header = TRUE, sep = ",", row.names = 1)
+# Load Metadata
+# Ensure the format of spiked.volume is correct
+meta <- read.csv("metadata.csv", header = TRUE, sep = ",")
+
+# Convert data to appropriate formats
+meta <- as.data.frame(meta)
+taxmat <- as.matrix(tax)
+otumat <- as.matrix(otu)
+
+# DspikeIn Requires 7 Taxonomic Ranks
+colnames(taxmat) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+# Taxa are row
+OTU <- otu_table(otumat, taxa_are_rows = TRUE)
+TAX <- phyloseq::tax_table(taxmat)
+
+row.names(meta) <- sample_names(OTU)
+metadata <- sample_data(meta)
+
+# Build the phyloseq
+physeq <- phyloseq(OTU, TAX, metadata)
+
+# Skip this part if you do not want to include the tree and reference files
+MyTree <- read.tree("tree.nwk")
+reference_seqs <- readDNAStringSet(file = "dna-sequences.fasta", format = "fasta")
+
+physeq_16SOTU <- merge_phyloseq(physeq, reference_seqs, MyTree)
+physeq_16SOTU <- tidy_phyloseq_tse(physeq_16SOTU)
+
+saveRDS(physeq_16SOTU, file = "physeq_16SOTU.rds")
+physeq_16SOTU <- readRDS("physeq_16SOTU.rds")
+
+```
+
 ### To Meet Taxonomic Ranks Requirements
 
 ```r
