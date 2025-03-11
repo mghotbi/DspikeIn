@@ -19,7 +19,7 @@
    - [Requirements](#To-Meet-Taxonomic-Ranks-Requirements)
    - [GCN Correction](#GCN-Normalization-with-QIIME2-Plugin)
    - [Dataset for training](#dataset-for-practicing-dspikein-package)
-   - [Build Phyloseq or TSE](#Building-your-own-phyloseq-&-TSE)
+   - [Build Phyloseq or TSE](#Building-your-own-phyloseq-and-TSE)
 
 
 
@@ -84,7 +84,7 @@ data(package = "DspikeIn")
 # List files in the extdata folder
 list.files(system.file("extdata", package = "DspikeIn"))
 ```
-### Building your own phyloseq & TSE
+### Building your own phyloseq and TSE
 
 ```r
 # Briefly:
