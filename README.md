@@ -19,6 +19,8 @@
    - [Requirements](#To-Meet-Taxonomic-Ranks-Requirements)
    - [GCN Correction](#GCN-Normalization-with-QIIME2-Plugin)
    - [Dataset for training](#dataset-for-practicing-dspikein-package)
+   - [Build Phyloseq or TSE](#Building-your-own-phyloseq-&-TSE)
+
 
 
 3. **Data Preparation**
