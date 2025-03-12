@@ -547,9 +547,8 @@ Spiked_16S_OTU_scaled <- tidy_phyloseq_tse(Spiked_16S_sum_scaled)
 
 ```
 
-
-## Spiked Species Retrieval %
-## Calculate Spiked Species Retrieval % for One Species
+### Spiked Species Retrieval % 
+### Calculate Spiked Species Retrieval % for One Species
 
 ```r
 
@@ -621,7 +620,7 @@ merged_physeq_sum <- Pre_processing_species_list(physeq, spiked_species, merge_m
 
 ```
 
-### Calculate Acceptable Spiked Species Retrieval for Your System
+### system specific spiked species retrieval
 ### Estimating the system-specific optimal range of spiked species retrieval using biological metrics
 Previously, [Roa et al., 2021](https://www.nature.com/articles/s41586-021-03241-8) reported an acceptable range of 0.1% to 10% for spiked species retrieval. Here, we demonstrate that retrieved spiked species are correlated with biological metrics such as abundance, richness, evenness, and beta dispersion, indicating that the acceptable range is system-dependent and can be changed based on system specifications.
 
@@ -682,21 +681,6 @@ plot_object <- regression_plot(
 )
 
 ```
-### system specific spiked species retrieval
-
-```r
-
-
-plot_object <- regression_plot(data = metadata,
-x_var = "Richness",  #  metadata needs to be in data frame format
-y_var = "Total_Reads_spiked",
- custom_range = c(0.1, 15, 30, 50, 75, 100),  # ranges of percentage 
- plot_title = NULL)  # title/ either NULL or you add it
-
-print(plot_object)
-
-```
-
 
 | Beta Dispersion  (16S) | Evenness (16S) |
 |:---------------------:|:--------------:|
@@ -895,27 +879,6 @@ summ_count_phyloseq(FT_physeq)
 physeq_min <- adjusted_prevalence(ps, method = "min")
 
 ```
-
-### Estimating the system-specific optimal range of spiked species retrieval using biological metrics
-Previously, [Roa et al., 2021](https://www.nature.com/articles/s41586-021-03241-8) reported an acceptable range of 0.1% to 10% for spiked species retrieval. Here, we demonstrate that retrieved spiked species are correlated with biological metrics such as abundance, richness, evenness, and beta dispersion, indicating that the acceptable range is system-dependent and can be changed based on system specifications.
-
-```r
-### system specific spiked species retrieval
-
-plot_object <- regression_plot(data = metadata,
-x_var = "Richness",  #  metadata needs to be in data frame format
-y_var = "Total_Reads_spiked",
- custom_range = c(0.1, 15, 30, 50, 75, 100),  # ranges of percentage 
- plot_title = NULL)  # title/ either NULL or you add it
-
-print(plot_object)
-
-```
-
-
-| Beta Dispersion  (16S) | Evenness (16S) |
-|:---------------------:|:--------------:|
-| ![BetaDis16S](https://github.com/user-attachments/assets/23178086-e7d3-4b0c-873d-5aefe0a12a8d) | ![Evenness16S](https://github.com/user-attachments/assets/3fc63f6f-50ea-4832-983f-68cd8cdf25a8) |
 
 ## Visualization
 
