@@ -35,7 +35,7 @@
    - [Calculate Spiked Species Retrieval % for List of Species](#calculate-spiked-species-retrieval--for-list-of-species)
    - [Scaling Factors for One Spiked Species](#scaling-factors-for-one-spiked-species)
    - [Scaling Factors for a List of Spiked Species](#scaling-factors-for-a-list-of-spiked-species)
-   - [System-Specific Spiked Species Retrieval](#system-specific-spiked-species-retrieval)
+   - [System-Specific Spiked Species Retrieval](#System-specific-spiked-species-retrieval)
    - [Conclusion](#conclusion)
 
 
@@ -474,7 +474,7 @@ We selected the OTU approach using de novo robust clustering algorithms at a 97%
 
 ```r
 # Subset spiked samples (264 samples are spiked)
-spiked_16S_OTU <- subset_samples(physeq16S_OTU, spiked.volume %in% c("2", "1"))
+spiked_16S_OTU <- subset_samples(physeq16S_OTU, spiked.volume %in% c("2", "1")) # Optional
 spiked_16S_OTU <- tidy_phyloseq_tse(spiked_16S_OTU)
 
 ```
@@ -482,9 +482,6 @@ spiked_16S_OTU <- tidy_phyloseq_tse(spiked_16S_OTU)
 Examine Your Count Table/Biom File Before Going Further
 
 ```r
-
-# Summarize the initial statistics for ASVs/OTUs
-initial_stat_ASV <- summ_phyloseq_ASV_OTUID(spiked_16S_OTU)
 
 # Summarize the initial statistics sample-wise
 initial_stat_sampleWise <- summ_phyloseq_sampleID(spiked_16S_OTU)
@@ -509,7 +506,7 @@ summ_count_phyloseq(red16S)
 
 ```
 
-## Preprocessing for Scaling Factor Calculation  
+## Preprocessing before Scaling Factor Calculation  
 ### Preprocessing One Species Scaling Factor
  
 If the spiked species appear in several OTUs/ASVs, check their phylogenetic distances and compare them to the reference sequences of your positive control.
@@ -532,7 +529,7 @@ Spiked_16S_sum_scaled <- Pre_processing_species(
   merge_method = "sum", 
   output_file = "merged_physeq_sum.rds")
 
-# Merge hashcodes using "sum" or "max" method
+# Merge hashcodes using "sum" or "max" method ##for QIIME users
 Spiked_16S_sum_scaled <- Pre_processing_hashcodes(
   spiked_16S_OTU, 
   hashcodes, 
@@ -561,13 +558,21 @@ Spiked_16S_OTU_scaled <- tidy_phyloseq_tse(Spiked_16S_sum_scaled)
 # Select either merged_spiked_species or merged_spiked_hashcodes
 
 merged_spiked_species <- c("Tetragenococcus_halophilus")
+
 result <- calculate_spike_percentage(
   Spiked_16S_sum_scaled, 
-  merged_spiked_species, 
+  merged_spiked_species,
+  output_path = "merged_perc_data.docx", 
   passed_range = c(0.1, 11))
+
 calculate_summary_stats_table(result)
 
-# Define your merged_spiked_hashcodes
+# result of calculating spiked sp reterival can be read as csv
+merged_perc_data <- read.csv("merged_perc_data.csv")
+
+
+## For QIIME users
+# Define your merged_spiked_hashcodes 
 merged_Tetra <- subset_taxa(
   Spiked_16S_OTU_scaled, 
   Species == "Tetragenococcus_halophilus")
@@ -584,6 +589,7 @@ calculate_summary_stats_table(result)
 # You can also go forward with the original file and remove the failed reads 
 # after converting relative to absolute abundance
 
+# Two next steps are optional
 # Filter to get only the samples that passed
 passed_samples <- result$Sample[result$Result == "passed"]
 
@@ -612,7 +618,91 @@ print(result)
 spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
 merged_physeq_sum <- Pre_processing_species_list(physeq, spiked_species, merge_method = "sum")
 
+
 ```
+
+### Calculate Acceptable Spiked Species Retrieval for Your System
+### Estimating the system-specific optimal range of spiked species retrieval using biological metrics
+Previously, [Roa et al., 2021](https://www.nature.com/articles/s41586-021-03241-8) reported an acceptable range of 0.1% to 10% for spiked species retrieval. Here, we demonstrate that retrieved spiked species are correlated with biological metrics such as abundance, richness, evenness, and beta dispersion, indicating that the acceptable range is system-dependent and can be changed based on system specifications.
+
+
+```r
+
+# Results of Spiked Species Retrieval Can Be Added to Metadata
+merged_perc_data <- read.csv("merged_perc_data.csv")
+
+filtered_sample_data <- microbiome::meta(physeq_absolute) %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column(var = "Sample") %>%  
+  dplyr::mutate(Sample = as.character(Sample)) %>%
+  dplyr::left_join(merged_perc_data, by = "Sample")
+
+filtered_sample_data <- tibble::column_to_rownames(filtered_sample_data, "Sample")
+
+filtered_sample_data <- sample_data(as.data.frame(filtered_sample_data))
+
+# Assign back to phyloseq obj
+sample_data(physeq_absolute) <- filtered_sample_data
+
+library(vegan)
+
+# Calculate Pielou's Evenness using Shannon index and species richness (Observed)
+alphab <- estimate_richness(physeq_absolute, measures = c("Observed", "Shannon"))
+alphab$Pielou_evenness <- alphab$Shannon / alphab$Observed
+
+# Normalize values
+alphab <- alphab %>%
+  mutate(across(c("Observed", "Shannon", "Pielou_evenness"), ~ as.numeric(scale(.))))
+
+metadata <- as.data.frame(microbiome::meta(physeq_absolute))
+
+metadata$Sample <- rownames(metadata)
+alphab$Sample <- rownames(alphab)
+
+# Merge alpha diversity metrics into metadata
+metadata <- dplyr::left_join(metadata, alphab[, c("Sample", "Observed", "Shannon", "Pielou_evenness")], by = "Sample")
+
+metadata <- metadata %>%
+  column_to_rownames(var = "Sample")
+
+# Updated metadata back to the phyloseq obj
+sample_data(physeq_absolute) <- sample_data(metadata)
+
+if (!"Spiked_Reads" %in% colnames(metadata)) {
+  stop("Column 'Spiked_Reads' not found in metadata.")
+}
+
+# Generate regression plot
+plot_object <- regression_plot(
+  data = metadata,
+  x_var = "Pielou_evenness",
+  y_var = "Spiked_Reads",
+  custom_range = c(0.1, 15, 30, 45, 60, 85, 100),
+  plot_title = NULL
+)
+
+```
+### system specific spiked species retrieval
+
+```r
+
+
+plot_object <- regression_plot(data = metadata,
+x_var = "Richness",  #  metadata needs to be in data frame format
+y_var = "Total_Reads_spiked",
+ custom_range = c(0.1, 15, 30, 50, 75, 100),  # ranges of percentage 
+ plot_title = NULL)  # title/ either NULL or you add it
+
+print(plot_object)
+
+```
+
+
+| Beta Dispersion  (16S) | Evenness (16S) |
+|:---------------------:|:--------------:|
+| ![BetaDis16S](https://github.com/user-attachments/assets/23178086-e7d3-4b0c-873d-5aefe0a12a8d) | ![Evenness16S](https://github.com/user-attachments/assets/3fc63f6f-50ea-4832-983f-68cd8cdf25a8) |
+
+---
 
 ## Estimating Scaling Factors After Pre-Processing
 
