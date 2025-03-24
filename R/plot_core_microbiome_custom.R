@@ -140,7 +140,10 @@ plot_core_microbiome_custom <- function(obj,
       axis.text.y = ggplot2::element_text(size = 10, face = "bold"),
       legend.text = ggplot2::element_text(size = 11),
       legend.title = ggplot2::element_text(size = 14, face = "bold"),
-      legend.key.size = ggplot2::unit(1, 'cm')
+      legend.key.size = ggplot2::unit(1, 'cm'),
+      panel.border = ggplot2::element_blank(),
+      axis.line.x = ggplot2::element_line(colour = 'black', size = 0.6),
+      axis.line.y = ggplot2::element_line(colour = 'black', size = 0.6)
     )
 
   return(p.core)
