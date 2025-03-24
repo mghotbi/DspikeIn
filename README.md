@@ -1,77 +1,157 @@
----
-title: "DspikeIn1.2.3"
-author: "Mitra Ghotbi"
-date: "2025-03-08"
-output: html_document
----
+## Welcome to the DspikeIn R package repository!
 
-```{r setup, include=FALSE}
-# DspikeIn
-Welcome to the DspikeIn R package repository!
+**Author:** Mitra Ghotbi  
+ **Version:** 1.2.3  
+ **Date:** March 8, 2025  
 
-![CheatSheetDspikeIn](https://github.com/user-attachments/assets/19523496-bf0a-4611-9068-13f1aeffe05c)
 
+
+![CheatSheetDspikeIn](https://github.com/user-attachments/assets/1972dbe7-05b6-4d61-a683-d0ac02b2a219)
 
 ---
 
 ## 📚 Table of Contents
 
 1. **Getting Started**
-   - [Installation](#installation)
-   - [Requirements](#Requirements)
-   - [GCN Correction](#gcn-normalization-with-qiime2-plugin)
+   DspikeIn Package
+   - [DspikeIn](#DspikeIn-Package)
+   - [Installation](#Installation)
+   - [Requirements](#To-Meet-Taxonomic-Ranks-Requirements)
+   - [GCN Correction](#GCN-Normalization-with-QIIME2-Plugin)
    - [Dataset for training](#dataset-for-practicing-dspikein-package)
+   - [Build Phyloseq or TSE](#Building-your-own-phyloseq-and-TSE)
 
 
-2. **Data Preparation**
-   - [Validation Using Phylogenetic Tree](#validation-using-phylogenetic-tree)
-   - [Preparation for Our Protocol](#prepare-the-required-information-for-our-protocol)
-   - [Preparation for the Synthetic Community](#prepare-the-required-information-for-the-synthetic-community)
 
-3. **Processing**
-   - [Preprocessing One Species Scaling Factor](#preprocessing-one-species-scaling-factor)
-   - [Preprocessing List of Species Scaling Factor](#preprocessing-list-of-species-scaling-factor)
+3. **Data Preparation**
+   - [Validation Using Phylogenetic Tree](#Validation-using-phylogenetic-tree)
+   - [Preparation for Our Protocol](#Prepare-the-required-information-for-our-protocol)
+   - [Preparation for the Synthetic Community](#Prepare-the-Required-Information-for-the-Synthetic-community)
+
+4. **Processing**
+   - [Preprocessing One Species Scaling Factor](#Preprocessing-One-Species-Scaling-Factor)
+   - [Preprocessing List of Species Scaling Factor](#Preprocessing-List-of-Species-Scaling-Factor)
    - [Calculate Spiked Species Retrieval % for One Species](#calculate-spiked-species-retrieval--for-one-species)
    - [Calculate Spiked Species Retrieval % for List of Species](#calculate-spiked-species-retrieval--for-list-of-species)
    - [Scaling Factors for One Spiked Species](#scaling-factors-for-one-spiked-species)
    - [Scaling Factors for a List of Spiked Species](#scaling-factors-for-a-list-of-spiked-species)
-   - [System-Specific Spiked Species Retrieval](#system-specific-spiked-species-retrieval)
+   - [System-Specific Spiked Species Retrieval](#System-specific-spiked-species-retrieval)
    - [Conclusion](#conclusion)
 
 
-4. **Bias Correction**
+5. **Bias Correction**
    - [Convert Relative to Absolute Counts](#convert-relative-counts-to-absolute-counts-and-create-a-new-phyloseq-object)
    - [Normalization and Differential Abundance](#normalization-and-differential-abundance)
    - [Customized Filtering](#customized-filtering)
 
-5. **Visualization**
+6. **Visualization**
    - [Visualization](#visualization)
    - [Detect common ASVs/OTUs](#Detect-common-asvs-otus)
 
-6. **Credits**
-   - [Acknowledgement](#acknowledgement)
+7. **Credits**
+   - [Acknowledgement](#Acknowledgement)
    - [Citing DspikeIn](#if-you-use-this-package-and-find-it-useful)
 
-```
+---
 
 ### DspikeIn Package
-The **DspikeIn** package was developed to facilitate:
-- Verifying the phylogenetic distances of ASVs/OTUs resulting from spiked species.
-- Preprocessing data.
-- Calculating the spike-in scaling factor.
-- Converting relative abundance to absolute abundance.
-- Estimating acceptable spiked species retrieval %
-- Data transformation, Differential abundance and visualization.
 
+DspikeIn is designed for microbiome data analysis, seamlessly integrating with **phyloseq** (for marker-gene microbiome data) and **TreeSummarizedExperiment (TSE)** (for hierarchical biological data, including microbiomes). These objects must include seven taxonomic ranks.  
+For absolute abundance estimation, the metadata must contain **spiked.volume**.  
+
+## Features of DspikeIn  
+The DspikeIn package provides functions for:  
+
+- Verifying the phylogenetic distances of ASVs/OTUs derived from spiked species.  
+- Preprocessing microbiome data.  
+- Calculating spike-in scaling factors.  
+- Converting relative abundance to absolute abundance.  
+- Estimating acceptable retrieval percentages of spiked species.  
+- Performing data transformation, differential abundance analysis, and visualization.  
+
+
+### To get detailed examples and guidance, please use:
+browseVignettes("DspikeIn")
+
+### Data availability
+The DspikeIn package provides example datasets located in the data/ folder and inst/extdata/ folder. You can list the available datasets using the following commands:
+
+```r
+
+# List datasets available in the DspikeIn package
+data(package = "DspikeIn")
+
+# List files in the extdata folder
+list.files(system.file("extdata", package = "DspikeIn"))
+```
+### Building your own phyloseq and TSE
+
+```r
+
+# =====================================================================
+#                     Build phyloseq 
+# =====================================================================
+otu <- read.csv("otu.csv", header = TRUE, sep = ",", row.names = 1)
+# taxonomic rank need to be capilalized, only the first letter of each rank
+tax <- read.csv("tax.csv", header = TRUE, sep = ",", row.names = 1)
+# Ensure 'spiked.volume' column is present and correctly formatted in metadata
+meta <- read.csv("metadata.csv", header = TRUE, sep = ",")
+
+# Convert data to appropriate formats
+meta <- as.data.frame(meta)
+taxmat <- as.matrix(tax)
+otumat <- as.matrix(otu)
+colnames(taxmat) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+OTU <- otu_table(otumat, taxa_are_rows = TRUE)
+TAX <- phyloseq::tax_table(taxmat)
+
+# Check
+row.names(meta) <- sample_names(OTU)
+metadata <- sample_data(meta)
+# Build phyloseq obj
+physeq <- phyloseq(OTU, TAX, metadata)
+
+# Follow the next steps if tree and reference files are included
+MyTree <- read.tree("tree.nwk")
+reference_seqs <- readDNAStringSet(file = "dna-sequences.fasta", format = "fasta")
+
+physeq_16SOTU <- merge_phyloseq(physeq, reference_seqs, MyTree)
+physeq_16SOTU <- tidy_phyloseq_tse(physeq_16SOTU)
+
+saveRDS(physeq_16SOTU, file = "physeq_16SOTU.rds")
+physeq_16SOTU <- readRDS("physeq_16SOTU.rds")
+
+
+# =====================================================================
+#                       Build TSE 
+# =====================================================================
+
+otu <- read.csv("otu.csv", header = TRUE, sep = ",", row.names = 1)
+otu_mat <- as.matrix(otu)  # Convert to matrix
+tax <- read.csv("tax.csv", header = TRUE, sep = ",", row.names = 1)
+colnames(tax) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")  
+tax_mat <- as.matrix(tax)  # Convert to matrix
+meta <- read.csv("metadata.csv", header = TRUE, sep = ",", row.names = 1)
+reference_seqs <- readDNAStringSet("dna-sequences.fasta", format = "fasta")
+tse <- TreeSummarizedExperiment(
+  assays = list(counts = otu_mat),  # OTU table 
+  rowData = tax_mat,                # Taxonomy information
+  colData = meta,                    # Sample metadata
+  rowTree = MyTree,                  # Phylogenetic tree
+  rowSeqs = reference_seqs           # Reference sequences
+)
+
+
+```
+**Whole-Cell Spike-In Protocol,**
 *Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples based on our previous studies [WalkerLab](https://walkerlabmtsu.weebly.com/personnel.html).
 
-
-# GCN Normalization with QIIME2 Plugin
+---
+### GCN Normalization with QIIME2 Plugin
 
 Opinions on gene copy number (GCN) correction for the 16S rRNA marker vary, with proponents citing improved accuracy and critics noting limitations. While GCN correction is not included in the DspikeIn package, it can be applied to relative abundance counts using tools like the `q2-gcn-norm` plugin in Qiime2 (rrnDB v5.7) or methods outlined by [Louca et al., 2018](https://link.springer.com/content/pdf/10.1186/s40168-018-0420-9),including PICRUSt, CopyRighter, and PAPRICA. Due to variability in rDNA gene copy numbers ([Lavrinienko et al., 2021](https://doi.org/10.1186/s42523-021-00134-z)), GCN corrections were not applied. However, targeted adjustments can be made to prevent overestimating specific fungal taxa.
 
-```{r }
-# GCN Normalization with QIIME2 Plugin
+---
 ### Command Example
 
 ```bash
@@ -82,60 +162,78 @@ qiime gcn-norm copy-num-normalize \
 
 ```
 
-
-```
-
-
-
-```{r }
-
 ## Installation
 
 To install the DspikeIn package, follow these steps...
-
----
 *If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:*
 
 ## Step 1: Install Required Packages
-
 To install the required packages, use the following script:
 
+---
 #### CRAN packages
 
 ```r
-# Install CRAN packages
-install.packages(c("stats", "dplyr", "ggplot2", "flextable","ggpubr", "randomForest", "ggridges", "ggalluvial","tibble", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"))
+# Install missing CRAN packages
+install.packages(setdiff(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", 
+                           "randomForest", "ggridges", "ggalluvial", "tibble", 
+                           "matrixStats", "RColorBrewer", "ape", "rlang", 
+                           "scales", "magrittr", "phangorn", "igraph", "tidyr", 
+                           "xml2", "data.table", "reshape2","vegan", "patchwork", "officer"), 
+                         installed.packages()[,"Package"]))
 
 # Load CRAN packages
-lapply(c("stats", "dplyr", "ggplot2", "flextable","ggpubr","randomForest", "ggridges", "ggalluvial","tibble", "matrixStats", "RColorBrewer", "ape", "rlang", "scales", "magrittr", "phangorn"), library, character.only = TRUE)
+lapply(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", "randomForest", 
+         "ggridges", "ggalluvial", "tibble", "matrixStats", "RColorBrewer", 
+         "ape", "rlang", "scales", "magrittr", "phangorn", "igraph", "tidyr", 
+         "xml2", "data.table", "reshape2","vegan", "patchwork", "officer"), library, character.only = TRUE)
 
+```
 #### Bioconductor Packages
+
+```r 
+
 # Install BiocManager if not installed
 if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 
-# Install Bioconductor packages
-BiocManager::install(c("phyloseq", "msa", "DESeq2","ggtree", "edgeR", "Biostrings", "DECIPHER", "microbiome"))
+# Install missing Bioconductor packages
+BiocManager::install(setdiff(c("phyloseq", "msa", "DESeq2", "ggtree", "edgeR", 
+                               "Biostrings", "DECIPHER", "microbiome", "limma", 
+                               "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
+                             installed.packages()[,"Package"]))
 
 # Load Bioconductor packages
-lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings","ggtree", "DECIPHER", "microbiome"), library, character.only = TRUE)
+lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings", "ggtree", "DECIPHER", 
+         "microbiome", "limma", "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
+       library, character.only = TRUE)
 
-
+```
 #### GitHub Packages
 
+```r
 
 # Install remotes if not installed
-install.packages("remotes")
+if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
+library(remotes)
 
-# Install GitHub packages
+# Install missing GitHub packages
 remotes::install_github("mikemc/speedyseq")
 remotes::install_github("microsud/microbiomeutilities")
+# Optional
+#devtools::install_github("briatte/ggnet")
+#devtools::install_github("zdk123/SpiecEasi")
 
 # Load GitHub packages
 library(speedyseq)
 library(microbiomeutilities)
+#library(SpiecEasi)
+#library(ggnet)
 
 
+```
 ## Step 2: Install DspikeIn Package
+
+```r
 
 # Installation
 #Instructions for how to install the DspikeIn package.
@@ -150,8 +248,10 @@ install.packages("remotes")
 remotes::install_github("mghotbi/DspikeIn")
 library(DspikeIn)
 
-
-
+# To access the DspikeIn vignette for a detailed tutorial, use vignette("DspikeIn"), or browse all available vignettes with browseVignettes("DspikeIn").
+devtools::install_github("mghotbi/DspikeIn", build_vignettes = TRUE, dependencies = TRUE)
+browseVignettes("DspikeIn")
+vignette("DspikeIn")
 
 ```
 
@@ -161,9 +261,10 @@ library(DspikeIn)
 DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phyloseq) package.
 Requirements
 
-DspikeIn works with a phyloseq object containing 7 taxonomic ranks. To estimate absolute abundance, the spiked.volume column in the metadata is required.
 
-```{r}
+### To Meet Taxonomic Ranks Requirements
+
+```r
 
 ### To remove strain from the taxonomic ranks
 
@@ -192,9 +293,10 @@ print(head(tax_table(ps)))  # Display the first few rows
 
 ```
 
-
 To add species rank to the taxonomic ranks
-```{r}
+
+
+```r
 library(phyloseq)
 # Step 1: Extract the taxonomy table from the phyloseq object
 taxonomy <- tax_table(ps)
@@ -203,24 +305,32 @@ taxonomy[, "species"] <- paste0(taxonomy[, "Genus"], "_OTU", seq_len(nrow(taxono
 # Step 3: Update the taxonomy table in the phyloseq object
 tax_table(ps) <- taxonomy
 # Step 4: Verify the changes
-print(head(tax_table(ps)))  # Display the first few rows to confirm
+print(head(tax_table(ps)))  
+
 
 ```
 
-
-
-## Dataset for practicing DspikeIn Package 📊
+## Dataset for practicing DspikeIn Package
 
 You can download the practice dataset for the DspikeIn package by clicking the link below:  
 👉 [Download Dataset](https://drive.google.com/drive/folders/164_K7MaFLCf5T8F9fsPAb1AndQ8mJOOP?usp=sharing)
 
+### OR You can directly use the datasets provided in the DspikeIn package to practice and test the functions. These datasets include phyloseq objects for different marker-gene microbiome analyses:
 
-```{r}
+```r
+# Load 16S rRNA OTU dataset
+data("physeq_16SOTU", package = "DspikeIn")  
 
-# Make a new directory and set it as your working directory
+# Load ITS OTU dataset (for fungal microbiome analysis)
+data("physeq_ITSOTU", package = "DspikeIn")
+
+```
+
+#### Make a new directory and set it as your working directory
+```r
+
 create_directory("DspikeIn_16S_OTU", set_working_dir = TRUE)
 getwd()
-
 
 # Therefore, please start by creating a phyloseq object and follow the instructions.
 # To create your phyloseq object, please refer to the phyloseq tutorial (https://joey711.github.io/phyloseq).
@@ -229,13 +339,13 @@ getwd()
 
 # Note: DspikeIn requires 'spiked.volume'; any other format is not readable."¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯  ¯\\_(ツ)_/¯"
 
-# We are going to work with a subset of the dataset for both ASVs and OTUs
-# approaches to accelerate this workshop.
+# We will work with a subset of the dataset for both ASV and OTU approaches to accelerate this workshop. However, the full dataset with the OTU approach is available
+# in DspikeIn via data("physeq_16SOTU", package = "DspikeIn") and data("physeq_ITSOTU", package = "DspikeIn").
 
 physeq_16SOTU <-readRDS("Relative16SOTU.rds")
 physeq_ITSOTU <-readRDS("RelativeITSOTU.rds")
 
-physeq_16SOTU <- tidy_phyloseq(physeq_16SOTU)
+physeq_16SOTU <- tidy_phyloseq_tse(physeq_16SOTU)
 
 # Ensure your metadata contains spiked volumes:
 physeq_16SOTU@sam_data$spiked.volume
@@ -246,7 +356,7 @@ physeq_16SOTU@sam_data$spiked.volume
 ## Prepare the required information for our Protocol
 #### Pre-process one Spiked-in Species
 
-```{r}
+```r
 
 # Required Information 
 # Please note that the Spike cell numbers, species name, and selected hashcodes are customizable and can be tailored to the specific needs of individual studies.
@@ -271,10 +381,10 @@ hashcodes <- row.names(phyloseq::tax_table(Dekkera))
 
 ```
 
- Prepare the Required Information for the Synthetic Community
+## Prepare the Required Information for the Synthetic Community
  Pre-process List of Spiked-in Species
 
-```{r}
+```r
 
 # Define the list of spiked-in species
 spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
@@ -284,17 +394,22 @@ spiked_cells_list <- c(10000, 20000, 15000) # or equal number of copies-> spiked
 
 ```
 
-## Validation using phylogenetic tree
-## Plot phylogenetic tree with Bootstrap Values
+### Validation using phylogenetic tree
+### Plot phylogenetic tree with Bootstrap Values
 This step will be helpful for handling ASVs with/without Gene Copy Number Correction
 This section demonstrates how to use various functions from the package to plot and analyze phylogenetic trees.
 
-```{r}
+```r
 
 # In case there are several OTUs/ASVs resulting from the spiked species, you may want to check the phylogenetic distances.
 # We first read DNA sequences from a FASTA file, to perform multiple sequence alignment and compute a distance matrix using the maximum likelihood method, then we construct a phylogenetic tree
 # Use the Neighbor-Joining method  based on a Jukes-Cantor distance matrix and plot the tree with bootstrap values.
 # we compare the Sanger read of Tetragenococcus halophilus with the FASTA sequence of Tetragenococcus halophilus from our phyloseq object.
+
+# Get path to external data folder
+extdata_path <- system.file("extdata", package = "DspikeIn")
+list.files(extdata_path)
+
 
 # Subset the phyloseq object to include only Tetragenococcus species first
 Tetra <- subset_taxa(Tetra, !is.na(taxa_names(Tetra)) & taxa_names(Tetra) != "")
@@ -306,7 +421,7 @@ Tetra_control_sequences <- Biostrings::readDNAStringSet("~/Tetra_Ju.fasta")
 
 # combine the Tetragenococcus FASTA files (from your dataset and the Sanger fasta of Tetragenococcus, positive control)
 combined_sequences <- c(ref_sequences_Tetra, Tetra_control_sequences)
-writeXStringSet(combined_sequences, filepath = "~/combined_fasta_file")
+writeXStringSet(combined_sequences, filepath = "~/combined_fasta_file") # existed in inst/exdata of DspikeIn
 combined_sequences <- Biostrings::readDNAStringSet("~/combined_fasta_file")
 
 # Plot Neighbor-Joining tree with bootstrap values to compare Tetragenococcus in your dataset with your positive control
@@ -336,7 +451,8 @@ Figure 1.
 |:------------------------------------:|:----------:|:---------:|
 | ![Neighbor Joining Tree with Bootstrap](https://github.com/mghotbi/DspikeIn/assets/29090547/175c8554-261f-45ab-8ec8-b22d09eb9ee4) | ![Tetra Plot with Bootstrap](https://github.com/mghotbi/DspikeIn/assets/29090547/78b5d8bb-3391-433d-af77-e40c8d27b055) | ![Cophenetic tree with Bootstrap](https://github.com/mghotbi/DspikeIn/assets/29090547/2a4bc232-e834-4212-9119-8561eddebed1) |
 
-```{r}
+
+```r
 # Aligned Sequences
 
 The result of the aligned sequences is shown below:
@@ -356,24 +472,22 @@ We selected the OTU approach using de novo robust clustering algorithms at a 97%
 *Subset the part of the data which is spiked. Keep solely spiked samples using the `spiked.volume` column.*
 
 
-```{r}
+```r
 # Subset spiked samples (264 samples are spiked)
-spiked_16S_OTU <- subset_samples(physeq16S_OTU, spiked.volume %in% c("2", "1"))
-spiked_16S_OTU <- tidy_phyloseq(spiked_16S_OTU)
+spiked_16S_OTU <- subset_samples(physeq16S_OTU, spiked.volume %in% c("2", "1")) # Optional
+spiked_16S_OTU <- tidy_phyloseq_tse(spiked_16S_OTU)
 
 ```
 
 Examine Your Count Table/Biom File Before Going Further
-```{r}
 
-# Summarize the initial statistics for ASVs/OTUs
-initial_stat_ASV <- summ_phyloseq_ASV_OTUID(spiked_16S_OTU)
+```r
 
 # Summarize the initial statistics sample-wise
 initial_stat_sampleWise <- summ_phyloseq_sampleID(spiked_16S_OTU)
 
 # Summarize the count data
-summ_count_phyloseq(physeq_16S_OTU)
+summ_count_phyloseq(spiked_16S_OTU)
 
 # Check the summary statistics
 # Ensure the input is in dataframe format for this function
@@ -383,10 +497,7 @@ calculate_summary_stats_table(initial_stat_sampleWise)
 
 *Check if transformation is required for spike volume variation.*
 
-```{r}
-# Adjust abundance by one-third
-readAdj16S <- adjust_abundance_one_third(spiked_16S_OTU, factor = 3)
-summ_count_phyloseq(readAdj16S)
+```r
 
 # Random subsampling with reduction factor foe count and taxa
 red16S <- random_subsample_WithReductionFactor(spiked_16S_OTU, reduction_factor = 3)
@@ -395,12 +506,12 @@ summ_count_phyloseq(red16S)
 
 ```
 
-## Preprocessing for Scaling Factor Calculation  
+## Preprocessing before Scaling Factor Calculation  
 ### Preprocessing One Species Scaling Factor
  
 If the spiked species appear in several OTUs/ASVs, check their phylogenetic distances and compare them to the reference sequences of your positive control.
 
-```{r}
+```r
 # Modify the threshold of acceptable spiked species % as needed. 
 # For detailed guidance on acceptable thresholds (passed_range), 
 # please refer to the instructions in our upcoming paper.
@@ -418,7 +529,7 @@ Spiked_16S_sum_scaled <- Pre_processing_species(
   merge_method = "sum", 
   output_file = "merged_physeq_sum.rds")
 
-# Merge hashcodes using "sum" or "max" method
+# Merge hashcodes using "sum" or "max" method ##for QIIME users
 Spiked_16S_sum_scaled <- Pre_processing_hashcodes(
   spiked_16S_OTU, 
   hashcodes, 
@@ -429,31 +540,38 @@ Spiked_16S_sum_scaled <- Pre_processing_hashcodes(
 summ_count_phyloseq(Spiked_16S_sum_scaled)
 
 # Tidy phyloseq object
-Spiked_16S_OTU_scaled <- tidy_phyloseq(Spiked_16S_sum_scaled)
+Spiked_16S_OTU_scaled <- tidy_phyloseq_tse(Spiked_16S_sum_scaled)
 
 
 # Customize the passed_range and merged_spiked_species/merged_spiked_hashcodes based on your preferences.
 
 ```
 
+### Spiked Species Retrieval % 
+### Calculate Spiked Species Retrieval % for One Species
 
-## Spiked Species Retrieval %
-## Calculate Spiked Species Retrieval % for One Species
-
-```{r}
+```r
 
 # Customize the passed_range and merged_spiked_species/merged_spiked_hashcodes based on your preferences.
 # passed_range = "c(0.1, 11)": threshold of acceptable spiked species %
 # Select either merged_spiked_species or merged_spiked_hashcodes
 
 merged_spiked_species <- c("Tetragenococcus_halophilus")
+
 result <- calculate_spike_percentage(
   Spiked_16S_sum_scaled, 
-  merged_spiked_species, 
+  merged_spiked_species,
+  output_path = "merged_perc_data.docx", 
   passed_range = c(0.1, 11))
+
 calculate_summary_stats_table(result)
 
-# Define your merged_spiked_hashcodes
+# result of calculating spiked sp reterival can be read as csv
+merged_perc_data <- read.csv("merged_perc_data.csv")
+
+
+## For QIIME users
+# Define your merged_spiked_hashcodes 
 merged_Tetra <- subset_taxa(
   Spiked_16S_OTU_scaled, 
   Species == "Tetragenococcus_halophilus")
@@ -470,6 +588,7 @@ calculate_summary_stats_table(result)
 # You can also go forward with the original file and remove the failed reads 
 # after converting relative to absolute abundance
 
+# Two next steps are optional
 # Filter to get only the samples that passed
 passed_samples <- result$Sample[result$Result == "passed"]
 
@@ -482,7 +601,7 @@ passed_physeq <- prune_samples(
 
 ### Calculate Spiked Species Retrieval % for List of Species
 
-```{r}
+```r
 
 #ps= is phyloseq obj
 spiked_species_list <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
@@ -493,12 +612,81 @@ print(result)
 
 ### Preprocessing List of Species Scaling Factor  
 
-```{r}
+```r
 
 spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
 merged_physeq_sum <- Pre_processing_species_list(physeq, spiked_species, merge_method = "sum")
 
+
 ```
+
+### system specific spiked species retrieval
+### Estimating the system-specific optimal range of spiked species retrieval using biological metrics
+Previously, [Roa et al., 2021](https://www.nature.com/articles/s41586-021-03241-8) reported an acceptable range of 0.1% to 10% for spiked species retrieval. Here, we demonstrate that retrieved spiked species are correlated with biological metrics such as abundance, richness, evenness, and beta dispersion, indicating that the acceptable range is system-dependent and can be changed based on system specifications.
+
+
+```r
+
+# Results of Spiked Species Retrieval Can Be Added to Metadata
+merged_perc_data <- read.csv("merged_perc_data.csv")
+
+filtered_sample_data <- microbiome::meta(physeq_absolute) %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column(var = "Sample") %>%  
+  dplyr::mutate(Sample = as.character(Sample)) %>%
+  dplyr::left_join(merged_perc_data, by = "Sample")
+
+filtered_sample_data <- tibble::column_to_rownames(filtered_sample_data, "Sample")
+
+filtered_sample_data <- sample_data(as.data.frame(filtered_sample_data))
+
+# Assign back to phyloseq obj
+sample_data(physeq_absolute) <- filtered_sample_data
+
+library(vegan)
+
+# Calculate Pielou's Evenness using Shannon index and species richness (Observed)
+alphab <- estimate_richness(physeq_absolute, measures = c("Observed", "Shannon"))
+alphab$Pielou_evenness <- alphab$Shannon / alphab$Observed
+
+# Normalize values
+alphab <- alphab %>%
+  mutate(across(c("Observed", "Shannon", "Pielou_evenness"), ~ as.numeric(scale(.))))
+
+metadata <- as.data.frame(microbiome::meta(physeq_absolute))
+
+metadata$Sample <- rownames(metadata)
+alphab$Sample <- rownames(alphab)
+
+# Merge alpha diversity metrics into metadata
+metadata <- dplyr::left_join(metadata, alphab[, c("Sample", "Observed", "Shannon", "Pielou_evenness")], by = "Sample")
+
+metadata <- metadata %>%
+  column_to_rownames(var = "Sample")
+
+# Updated metadata back to the phyloseq obj
+sample_data(physeq_absolute) <- sample_data(metadata)
+
+if (!"Spiked_Reads" %in% colnames(metadata)) {
+  stop("Column 'Spiked_Reads' not found in metadata.")
+}
+
+# Generate regression plot
+plot_object <- regression_plot(
+  data = metadata,
+  x_var = "Pielou_evenness",
+  y_var = "Spiked_Reads",
+  custom_range = c(0.1, 15, 30, 45, 60, 85, 100),
+  plot_title = NULL
+)
+
+```
+
+| Beta Dispersion  (16S) | Evenness (16S) |
+|:---------------------:|:--------------:|
+| ![BetaDis16S](https://github.com/user-attachments/assets/23178086-e7d3-4b0c-873d-5aefe0a12a8d) | ![Evenness16S](https://github.com/user-attachments/assets/3fc63f6f-50ea-4832-983f-68cd8cdf25a8) |
+
+---
 
 ## Estimating Scaling Factors After Pre-Processing
 
@@ -507,7 +695,7 @@ merged_physeq_sum <- Pre_processing_species_list(physeq, spiked_species, merge_m
 To estimate scaling factors, ensure you have the `merged_spiked_species` data, which contains the merged species derived from the spiking process.
 *As we have already merged either hashcodes or spiked species and are aware of the contents of the taxa table, we can proceed from here with merged_spiked_species.*
 
-```{r}
+```r
 # Define the merged spiked species
 merged_spiked_species <- c("Tetragenococcus_halophilus")
 
@@ -516,10 +704,6 @@ result <- calculate_spikeIn_factors(Spiked_16S_OTU_scaled, spiked_cells, merged_
 
 # Check the outputs
 scaling_factors <- result$scaling_factors
-physeq_no_spiked <- result$physeq_no_spiked
-spiked_16S_total_reads <- result$spiked_16S_total_reads
-spiked_species_reads <- result$spiked_species_reads
-
 
 ```
 
@@ -527,7 +711,7 @@ spiked_species_reads <- result$spiked_species_reads
 
 This example demonstrates how to calculate scaling factors after merging redundant spike-in species
 
-```{r}
+```r
 # Define spiked-in species and their corresponding cell counts
 spiked_species_list <- list(
   c("Pseudomonas aeruginosa"),
@@ -546,12 +730,13 @@ scaling_factors <- calculate_list_average_scaling_factors(
 
 ## Convert Relative Counts to Absolute Counts and Create a New Phyloseq Object
 
-```{r}
+```r
 # Convert relative counts data to absolute counts
 absolute <- convert_to_absolute_counts(Spiked_16S_OTU_scaled, scaling_factors)
 absolute_counts <- absolute$absolute_counts
-physeq_absolute_abundance_16S_OTU <- absolute$physeq_obj
+physeq_absolute_abundance_16S_OTU <- absolute$obj_adj
 
+physeq_absolute <- physeq_absolute_abundance_16S_OTU
 
 # summary statistics 
 post_eval_summary <- calculate_summary_stats_table(absolute_counts)
@@ -563,7 +748,7 @@ print(post_eval_summary)
 ## Let's check the conclusion and get the report table of spiked species success or failure.
 ### Conclusion
 
-```{r}
+```r
 # Define the parameters once.
 merged_spiked_species <- c("Tetragenococcus_halophilus")
 max_passed_range <- 35
@@ -580,17 +765,18 @@ print(summary_stats)
 Here is an example of a success or failure report:
 ![success report](https://github.com/mghotbi/DspikeIn/assets/29090547/017cfa65-8b75-4625-8d49-6e4a67146193)
 
-```{r}
+```r
 
 #Save your file for later. Please stay tuned for the rest: Comparisons and several visualization methods to show how important it is to convert relative to absolute abundance in the context of microbial ecology.
 
-physeq_absolute_16S_OTU <- tidy_phyloseq(physeq_absolute_abundance_16S_OTU_perc)
+physeq_absolute_16S_OTU <- tidy_phyloseq_tse(physeq_absolute_abundance_16S_OTU_perc)
 saveRDS(physeq_absolute_16S_OTU, "physeq_absolute_16S_OTU.rds")
 
 ```
 
 ## Normalization and Differential Abundance
-```{r}
+
+```r
 # Bolstad, B.M., Irizarry, R.A., Åstrand, M. and Speed, T.P., 2003. A comparison of normalization methods for high-density oligonucleotide array data based on variance and bias. Bioinformatics, 19(2), pp.185-193.
 # Gagnon-Bartsch, J.A. and Speed, T.P., 2012. Using control genes to correct for unwanted variation in microarray data. Biostatistics, 13(3), pp.539-552.
 # Risso, D., Ngai, J., Speed, T.P. and Dudoit, S., 2014. Normalization of RNA-seq data using factor analysis of control genes or samples. Nature biotechnology, 32(9), pp.896-902.
@@ -611,40 +797,70 @@ saveRDS(physeq_absolute_16S_OTU, "physeq_absolute_16S_OTU.rds")
 # result_rar <- normalization_set(ps, method = "rar")
 # result_CLR <- normalization_set(ps, method = "clr")
 
-
-results_edgeR <- perform_and_visualize_DA(
-  ps = ps,
-  method = "edgeR",
-  group_var = "Treatment",
-  contrast = c("Control", "Diet"),
-  output_csv_path = "DA_edgeR.csv",
-  target_glom = "Genus",
-  significance_level = 0.05
-)
-
-print(results_edgeR$plot)
-head(results_edgeR$results)  # View significant taxa
-ps_sig<- results_edgeR$ps_significant # extract significant taxa in phyloseq obj for plotting
+# lets subset samples we need from absolute data
+# Absolute count
+absolute_Des <- physeq_absolute %>%
+  phyloseq::subset_taxa(Genus != "Tetragenococcus") %>%
+  phyloseq::subset_samples(Clade.Order == "Caudate") %>%
+  phyloseq::subset_samples(Host.genus %in% c("Desmognathus", "Plethodon", "Eurycea")) %>%
+  phyloseq::subset_samples(Ecoregion.III == "Blue Ridge") %>%
+  phyloseq::subset_samples(Host.genus == "Desmognathus")
 
 results_DESeq2 <- perform_and_visualize_DA(
-  ps = ps,
-  method = "DESeq2",                # method
-  group_var = "Treatment",          # factor
-  contrast = c("Control", "Diet"),  # levels of contrast
+  obj = absolute_Des,
+  method = "DESeq2",
+  group_var = "Host.taxon",
+  contrast = c("Desmognathus monticola", "Desmognathus imitator"),
   output_csv_path = "DA_DESeq2.csv",
   target_glom = "Genus",
   significance_level = 0.05
 )
-
+# Visualization
 print(results_DESeq2$plot)
-head(results_DESeq2$results)  # View significant taxa
-ps_sig<- results_DESeq2$ps_significant # extract significant taxa in phyloseq obj for plotting
+# Significant taxa table
+head(results_DESeq2$results)
+# Filtered phyloseq object with significant taxa
+results_DESeq2$obj_significant
+
+
+# Relative 
+data("physeq_16SOTU", package = "DspikeIn")
+
+relative_Des <- physeq_16SOTU %>%
+  phyloseq::subset_taxa(Genus != "Tetragenococcus") %>%
+  phyloseq::subset_samples(Clade.Order == "Caudate") %>%
+  phyloseq::subset_samples(Host.genus %in% c("Desmognathus", "Plethodon", "Eurycea")) %>%
+  phyloseq::subset_samples(Ecoregion.III == "Blue Ridge") %>%
+  phyloseq::subset_samples(Host.genus == "Desmognathus")
+
+
+results_DESeq2_rel <- perform_and_visualize_DA(
+  obj = relative_Des,
+  method = "DESeq2",
+  group_var = "Host.taxon",
+  contrast = c("Desmognathus monticola", "Desmognathus imitator"),
+  output_csv_path = "DA_DESeq2_rel.csv",
+  target_glom = "Genus",
+  significance_level = 0.05
+)
+
+print(results_DESeq2_rel$plot)
+head(results_DESeq2_rel$results)
+results_DESeq2_rel$obj_significant
+
 
 ```
 
+| Absolute FDR | Relative FDR |
+|:---------------------:|:--------------:|
+| ![Absolute FDR](https://github.com/user-attachments/assets/0afd03bb-6ee8-450f-aae5-b9146ae522ac) | ![Relative FDR](https://github.com/user-attachments/assets/37c3d8e2-a807-460f-8b6a-9d2c13f0ffc9) |
+
+
+---
+
 ### Customized filtering
 
-```{r}
+```r
 # Proportion adjustment
 normalized_physeq <- proportion_adj(ps, output_file = "proportion_adjusted_physeq.rds")
 summ_count_phyloseq(normalized_16S)
@@ -664,30 +880,9 @@ physeq_min <- adjusted_prevalence(ps, method = "min")
 
 ```
 
-### Estimating the system-specific optimal range of spiked species retrieval using biological metrics
-Previously, [Roa et al., 2021](https://www.nature.com/articles/s41586-021-03241-8) reported an acceptable range of 0.1% to 10% for spiked species retrieval. Here, we demonstrate that retrieved spiked species are correlated with biological metrics such as abundance, richness, evenness, and beta dispersion, indicating that the acceptable range is system-dependent and can be changed based on system specifications.
-
-```{r}
-### system specific spiked species retrieval
-
-plot_object <- regression_plot(data = metadata,
-x_var = "Richness",  #  metadata needs to be in data frame format
-y_var = "Total_Reads_spiked",
- custom_range = c(0.1, 15, 30, 50, 75, 100),  # ranges of percentage 
- plot_title = NULL)  # title/ either NULL or you add it
-
-print(plot_object)
-
-```
-
-
-| Beta Dispersion  (16S) | Evenness (16S) |
-|:---------------------:|:--------------:|
-| ![BetaDis16S](https://github.com/user-attachments/assets/23178086-e7d3-4b0c-873d-5aefe0a12a8d) | ![Evenness16S](https://github.com/user-attachments/assets/3fc63f6f-50ea-4832-983f-68cd8cdf25a8) |
-
 ## Visualization
 
-```{r}
+```r
 # taxa barplot
 # taxa barplot
  #abundance_type = "absolute"/"relative"
@@ -735,7 +930,7 @@ print(plot_object)
 
 
 
-```{r}
+```r
 
 # Check abundance distribution via Ridge Plots before and after converting to absolute abundance
 ridgeP_before <- ridge_plot_it(spiked_16S_OTU, taxrank = "Family", top_n = 10)
@@ -748,7 +943,7 @@ ridgeP_after <- ridge_plot_it(physeq_absolute_16S_OTU, taxrank = "Family", top_n
 |:----------:|:---------:|
 | ![Abs  ridge](https://github.com/mghotbi/DspikeIn/assets/29090547/7b50556d-77d7-4aa0-b2b0-f461c67c65a7) | ![Rel  ridge](https://github.com/mghotbi/DspikeIn/assets/29090547/5b5a85ea-1f10-4082-a108-7c9019bd84d8) |
 
-```{r}
+```r
 
 # core_microbiome
 #ps_ABS=absolute count
@@ -788,7 +983,7 @@ core.microbiome <- readRDS("core.microbiome.rds")
 
 
 ### Visualization Core microbiome distribution
-```{r}
+```r
 
 # shift to long-format data frame and plot the abundance of taxa across the factor of your interest
 # Generate alluvial plot
@@ -838,7 +1033,7 @@ custom_colors = DspikeIn::color_palette$light_MG)
 |:----------:|:---------:|
 | ![Absolute](https://github.com/user-attachments/assets/3e7b0ade-c119-4c64-9d96-5638fc7c2296) | ![Relative](https://github.com/user-attachments/assets/a6e75fec-8590-4b58-87f7-aa12a348002a) |
 
-```{r}
+```r
 
 # selecting the most important ASVs/OTUs through RandomForest classification
 # Salamander_absolute= subset of our phyloseq object
@@ -853,16 +1048,13 @@ RP+facet_wrap(~Diet)
 ## Detect common ASVs-OTUs
 ### DspikeIn includes a feature for detecting common taxa that are dominant or essential across multiple methods.
 
-```{r}
+```r
 
 #detect common ASVs/OTUs
 # The input is the list of phyloseq objects
 results <- detect_common_asvs_taxa(list(rf_physeq, FTspiked_16S , core.microbiome), 
                                     output_common_asvs_rds = "common_asvs.rds", 
                                     output_common_taxa_rds = "common_taxa.rds")
-
-common_asvs_phyloseq <- results$common_asvs_phyloseq
-common_taxa_phyloseq <- results$common_taxa_phyloseq
 
 
 ```
