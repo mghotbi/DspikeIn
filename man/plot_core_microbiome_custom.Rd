@@ -3,6 +3,11 @@
 \name{plot_core_microbiome_custom}
 \alias{plot_core_microbiome_custom}
 \title{Plot Core Microbiome Prevalence Heatmap (Phyloseq & TSE Compatible)}
+\source{
+Uses microbiome::plot_core() for core heatmap visualization
+
+Uses microbiomeutilities::format_to_besthit() for taxonomy formatting
+}
 \usage{
 plot_core_microbiome_custom(
   obj,

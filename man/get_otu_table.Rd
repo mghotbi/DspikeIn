@@ -3,7 +3,7 @@
 %   R/proportion_adj.R, R/summ_ASV_OTUID.R
 \name{get_otu_table}
 \alias{get_otu_table}
-\title{Extract OTU Table from Object}
+\title{Extract OTU Tax Metadata from Object}
 \usage{
 get_otu_table(obj)
 

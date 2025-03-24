@@ -1,21 +1,25 @@
 Package: DspikeIn
 Type: Package
-Title: Quantifying Absolute Abundance to Enhance Microbial Dynamics Assessment
+Title: Estimating Absolute Abundance from Microbial Spike-in Controls
 Version: 1.2.3
 Authors@R: 
     person(given = "Mitra", family = "Ghotbi", role = c("aut", "cre"), 
            email = "mitra.ghotbi@gmail.com")
 Maintainer: Mitra Ghotbi <mitra.ghotbi@gmail.com>
 Description: 
-    The DspikeIn package facilitates the quantification of absolute microbial 
-    abundance, improving the evaluation of microbial dynamics—a critical aspect 
-    of microbial ecology research. It extends the functionality of the phyloseq 
-    package and incorporates enhanced functions from several key packages, 
-    including dplyr, stats, ggplot2, edgeR, ggtree, flextable, DESeq2, 
-    microbiomeutilities, DECIPHER, and speedyseq. 
-    It provides tools for data integration, visualization, and statistical 
-    analysis, leveraging TreeSummarizedExperiment and other Bioconductor 
-    infrastructure.
+    DspikeIn provides tools to estimate absolute microbial abundance using spike-in 
+    controls, supporting the analysis of microbial dynamics — a key aspect of 
+    microbial ecology. The package builds on the phyloseq framework and integrates 
+    functionality from several established packages, including dplyr, stats, 
+    ggplot2, edgeR, DESeq2, microbiome, microbiomeutilities, DECIPHER, speedyseq, 
+    and ggtree. It enables data integration, differential abundance analysis, and 
+    advanced visualization, leveraging Bioconductor infrastructure such as 
+    TreeSummarizedExperiment.
+Acknowledgment: 
+    This package makes use of public APIs from several R packages including phyloseq, 
+    microbiome, microbiomeutilities, speedyseq, ggtree, edgeR, DESeq2, and ggplot2 
+    for analysis and visualization. We thank the authors of these tools for their 
+    contributions to the R and Bioconductor ecosystem.
 biocViews: Microbiome, Software, DataImport, StatisticalMethod, Visualization
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -59,9 +63,11 @@ Imports:
     S4Vectors,
     speedyseq,
     stats,
+    BiocGenerics,
     SummarizedExperiment,
     tibble,
     reshape2,
+    methods,
     patchwork,
     officer,
     TreeSummarizedExperiment

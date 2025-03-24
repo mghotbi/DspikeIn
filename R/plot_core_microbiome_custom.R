@@ -18,6 +18,8 @@
 #' @param output_core_csv A character string specifying the path to save the core microbiome subset as a CSV file. Default is \code{NULL}, meaning no CSV file is saved.
 #' @param output_core_rds A character string specifying the path to save the core microbiome subset as an RDS file. Default is \code{NULL}, meaning no RDS file is saved.
 #' @return A \code{ggplot2} object representing the core microbiome prevalence heatmap.
+#' @source Uses microbiome::plot_core() for core heatmap visualization
+#' @source Uses microbiomeutilities::format_to_besthit() for taxonomy formatting
 #' @examples
 #' \donttest{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
@@ -131,14 +133,14 @@ plot_core_microbiome_custom <- function(obj,
   )) +
     ggplot2::theme_minimal() +
     ggplot2::xlab("Detection Threshold (Relative Abundance)") +
-    ggplot2::ylab(NULL) +  # Removes Y-axis label but keeps tick marks
+    ggplot2::ylab(NULL) +
     ggplot2::scale_x_discrete(labels = function(x) sprintf("%.2f", as.numeric(x))) +
     ggplot2::theme(
-      axis.text.x = ggplot2::element_text(size = 11, angle = 25, hjust = 1, face = "bold"),  # Enlarged X-axis text
-      axis.text.y = ggplot2::element_text(size = 10, face = "bold"),  # Keeps Y-axis text small
-      legend.text = ggplot2::element_text(size = 11),  # Increases legend text size
-      legend.title = ggplot2::element_text(size = 14, face = "bold"),  # Increases legend title size
-      legend.key.size = ggplot2::unit(1, 'cm')  # Adjusts legend box size
+      axis.text.x = ggplot2::element_text(size = 11, angle = 25, hjust = 1, face = "bold"),
+      axis.text.y = ggplot2::element_text(size = 10, face = "bold"),
+      legend.text = ggplot2::element_text(size = 11),
+      legend.title = ggplot2::element_text(size = 14, face = "bold"),
+      legend.key.size = ggplot2::unit(1, 'cm')
     )
 
   return(p.core)

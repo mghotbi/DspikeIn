@@ -3,6 +3,9 @@
 \name{plot_glommed_tree}
 \alias{plot_glommed_tree}
 \title{Plot a Phylogenetic Tree with Glommed OTUs}
+\source{
+Uses speedyseq::tree_glom() and ggtree for tree visualization.
+}
 \usage{
 plot_glommed_tree(
   physeq,

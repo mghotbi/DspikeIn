@@ -51,3 +51,6 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
 }
 }
 }
+\seealso{
+\code{\link[ggpubr]{stat_regline_equation}}, \code{\link[ggpubr]{stat_cor}}, \code{\link[ggplot2]{facet_wrap}}
+}

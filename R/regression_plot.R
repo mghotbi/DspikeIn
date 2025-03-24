@@ -14,6 +14,7 @@
 #' @return A ggplot2 object.
 #' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth theme_minimal labs theme element_text scale_color_manual facet_wrap
 #' @importFrom ggpubr stat_regline_equation stat_cor
+#' @seealso \code{\link[ggpubr]{stat_regline_equation}}, \code{\link[ggpubr]{stat_cor}}, \code{\link[ggplot2]{facet_wrap}}
 #'
 #' @examples
 #' \donttest{

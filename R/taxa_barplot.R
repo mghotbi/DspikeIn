@@ -5,6 +5,7 @@
 #' which is always displayed at the top for clarity. The function supports normalization, faceting,
 #' and customization of plot aesthetics. The plot is built using `ggplot2`, and the taxa are ordered
 #' with "Others" appearing first.
+#' @source Built on public functions from phyloseq and ggplot2 for data transformation and plotting.
 #'
 #' @param physeq A `phyloseq` or `TreeSummarizedExperiment` object containing microbiome data.
 #' @param target_glom A character string specifying the taxonomic rank to plot (e.g., "Genus").

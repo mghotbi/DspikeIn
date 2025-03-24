@@ -9,12 +9,12 @@ tidy_phyloseq_tse(obj)
 tidy_phyloseq_tse(obj)
 }
 \arguments{
-\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
+\item{obj}{A \code{phyloseq::phyloseq} or \code{TreeSummarizedExperiment::TreeSummarizedExperiment} object.}
 }
 \value{
 A cleaned and tidied object of the same class.
 
-A cleaned and tidied object of the same class.
+A cleaned and filtered object of the same class with updated taxonomy.
 }
 \description{
 Cleans and standardizes a microbiome dataset, supporting both
@@ -26,20 +26,18 @@ Cleans and standardizes a microbiome dataset, supporting both
 \item Exclusion of "Chloroplast" and "Mitochondria" classifications (if applicable)
 }
 
-Cleans and standardizes a microbiome dataset, supporting both
-\code{phyloseq} and \code{TreeSummarizedExperiment}. Performs:
+Cleans and standardizes a microbiome object by:
 \itemize{
-\item Standardization of taxonomic ranks (if available)
-\item Removal of leading/trailing whitespace in taxa names
-\item Filtering out zero-count taxa
-\item Exclusion of "Chloroplast" and "Mitochondria" classifications (if applicable)
+\item Removing taxonomic prefixes (e.g. \code{k__}, \code{p__})
+\item Trimming whitespace
+\item Renaming \code{Domain} to \code{Kingdom} (if present)
+\item Removing taxa with "Chloroplast" or "Mitochondria" in \strong{any} rank
+\item Filtering out taxa with zero total abundance
+\item Ensuring robust handling of both phyloseq and TreeSummarizedExperiment formats
 }
 }
 \details{
 Tidy a Phyloseq Object and Remove Zero/Negative Count Samples
-
-This function standardizes taxonomic ranks, removes unnecessary whitespace,
-and filters unwanted classifications, ensuring consistency for downstream analysis.
 
 This function standardizes taxonomic ranks, removes unnecessary whitespace,
 and filters unwanted classifications, ensuring consistency for downstream analysis.
@@ -55,15 +53,8 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
 \donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
-
-  # Convert phyloseq object to tidy format
   tidy_physeq <- tidy_phyloseq_tse(physeq_16SOTU)
-
-  # TreeSummarizedExperiment (TSE) object
-  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
-
-  # Convert TSE object to tidy format
-  tidy_tse <- tidy_phyloseq_tse(tse_16SOTU)
 }
 }
+
 }

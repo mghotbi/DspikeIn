@@ -3,6 +3,9 @@
 \name{taxa_barplot}
 \alias{taxa_barplot}
 \title{Generate a Taxa Barplot with Relative or Absolute Abundance}
+\source{
+Built on public functions from phyloseq and ggplot2 for data transformation and plotting.
+}
 \usage{
 taxa_barplot(
   physeq,

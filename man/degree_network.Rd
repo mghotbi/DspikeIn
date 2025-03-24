@@ -4,26 +4,33 @@
 \alias{degree_network}
 \title{Analyze and Visualize a Microbial Network}
 \usage{
-degree_network(graph_path, save_metrics = TRUE, layout_type = "stress")
+degree_network(
+  graph_path,
+  save_metrics = TRUE,
+  metrics_path = "Global_Network_Metrics.csv",
+  layout_type = "stress"
+)
 }
 \arguments{
-\item{graph_path}{Character or igraph object. Path to the GraphML file containing the network,
-or an already loaded \code{igraph} object.}
+\item{graph_path}{Character or igraph object. Path to the GraphML file or an already loaded \code{igraph} object.}
 
-\item{save_metrics}{Logical. If TRUE, saves the global metrics as \code{"Global_Network_Metrics.csv"}.}
+\item{save_metrics}{Logical. If TRUE, saves the global metrics as a CSV file.}
 
-\item{layout_type}{Character. The layout algorithm for visualization. Options: \code{"stress"} (default), \code{"graphopt"},
-\code{"fr"} (Fruchterman-Reingold), \code{"mds"}, \code{"kk"} (Kamada-Kawai).}
+\item{metrics_path}{Optional. Path to save the metrics file. Default: "Global_Network_Metrics.csv".}
+
+\item{layout_type}{Character. Layout algorithm: "stress" (default), "graphopt", "fr", "mds", or "kk".}
 }
 \value{
 A list containing:
 \item{plot}{A ggplot object displaying the network.}
 \item{metrics}{A dataframe with global network metrics.}
+\item{layout_data}{The layout used for plotting.}
+\item{graph}{The annotated igraph object.}
 }
 \description{
 This function loads a microbial network from a GraphML file or an \code{igraph} object,
 computes node degree and modularity, assigns node sizes based on degree, and visualizes the network.
-Edge thickness is determined by weight. It also computes and saves global network metrics.
+Edge thickness is determined by weight. It also computes and optionally saves global network metrics.
 }
 \examples{
 \donttest{
@@ -46,4 +53,5 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   print(result_kk$plot)
 }
 }
+
 }

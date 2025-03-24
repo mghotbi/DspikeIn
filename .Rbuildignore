@@ -32,3 +32,4 @@
 ^summary\.csv$
 ^summary\.docx$
 ^tree_with_bootstrap_and_cophenetic\.png$
+^README\.Rmd$

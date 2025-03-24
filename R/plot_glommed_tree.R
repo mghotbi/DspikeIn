@@ -1,6 +1,7 @@
 #' @title Plot a Phylogenetic Tree with Glommed OTUs
 #' @description This function gloms the OTUs in a `phyloseq` object at the specified resolution and plots the phylogenetic tree.
 #' If a `TreeSummarizedExperiment` (TSE) object is provided, it is first converted to `phyloseq`.
+#' @source Uses speedyseq::tree_glom() and ggtree for tree visualization.
 #'
 #' @param physeq A `phyloseq` or `TreeSummarizedExperiment` object containing the phylogenetic data.
 #' @param resolution A numeric value specifying the resolution for glomming the OTUs.

@@ -2,7 +2,7 @@
 #'
 #' @description This function creates an alluvial plot based on input data, which can be
 #' either absolute or relative abundance data.
-#'
+#' @source Built using ggalluvial, ggplot2, and dplyr for visualization of microbial abundance dynamics.
 #' @param data A data frame containing abundance and categorical variables.
 #' @param axes A character vector specifying the categorical variables for the x-axis.
 #' @param abundance_threshold A numeric value specifying the minimum abundance

@@ -24,7 +24,7 @@
 #'   result <- weight_Network()
 #'
 #'   # Load a specific GraphML dataset from DspikeIn
-#'   result <- weight_Network(graph_path = "NoHubs.graphml")
+#'   result <- weight_Network(graph_path = "Complete.graphml")
 #'
 #'   # Load a custom GraphML file from user directory,
 #'   # for external graphml please use **full address**
@@ -34,7 +34,7 @@
 #'   result$metrics
 #' }
 #' }
-#'
+#' @seealso \code{\link[igraph]{cluster_fast_greedy}}, \code{\link[ggraph]{ggraph}}, \code{\link{load_graphml}}
 #' @importFrom igraph cluster_fast_greedy membership degree edge_density is_connected
 #' @importFrom igraph components induced_subgraph V E modularity transitivity diameter mean_distance vcount ecount
 #' @importFrom ggraph ggraph create_layout geom_edge_link geom_node_point scale_edge_colour_manual
@@ -125,7 +125,7 @@ weight_Network <- function(graph_path = NULL, save_metrics = TRUE) {
   edge_thickness <- scales::rescale(abs(igraph::E(graph)$original_weight), to = c(0.3, 5))  # Use original weight to reflect true weight
 
   plot <- ggraph::ggraph(layout_data) +
-    ggraph::geom_edge_link(ggplot2::aes(edge_width = edge_thickness, color = edge_sign), alpha = 0.2) +
+    ggraph::geom_edge_link(ggplot2::aes(edge_width = edge_thickness, color = edge_sign), alpha = 0.3) +
     ggraph::scale_edge_colour_manual(values = edge_colors) +
     ggraph::geom_node_point(ggplot2::aes(x = layout_x, y = layout_y, size = degree, color = modules)) +
     ggrepel::geom_text_repel(ggplot2::aes(x = layout_x, y = layout_y, label = igraph::V(graph)$name), size = 3, max.overlaps = 10) +

@@ -44,9 +44,10 @@ ridge_plot_it <- function(obj, taxrank = "Genus", rarefaction_depth = NULL, top_
     stop("\U0000274C Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
   }
 
-  # Rarefaction (only applicable for phyloseq)
   if (inherits(obj, "phyloseq") && is.null(rarefaction_depth)) {
-    rarefaction_depth <- max(10, 0.9 * min(phyloseq::sample_sums(obj)))
+    min_depth <- min(phyloseq::sample_sums(obj))
+    if (min_depth < 10) warning("Some samples have very low depth (<10); rarefaction may not be reliable.")
+    rarefaction_depth <- max(10, floor(0.9 * min_depth))
     obj <- phyloseq::rarefy_even_depth(obj, rngseed = 500, sample.size = rarefaction_depth, replace = TRUE)
   }
 

@@ -3,6 +3,11 @@
 \name{perform_and_visualize_DA}
 \alias{perform_and_visualize_DA}
 \title{Perform and Visualize Differential Abundance Analysis with edgeR or DESeq2}
+\source{
+Uses edgeR and DESeq2 for differential abundance modeling
+
+Inspired by Bioconductor workflows for microbiome DA analysis
+}
 \usage{
 perform_and_visualize_DA(
   obj,
@@ -21,66 +26,70 @@ perform_and_visualize_DA(
 
 \item{method}{A string: \code{"edgeR"} or \code{"DESeq2"}.}
 
-\item{group_var}{A string: grouping variable in the sample metadata.}
+\item{group_var}{A string: The grouping variable in the sample metadata.}
 
-\item{contrast}{A character vector: levels to compare (e.g., \code{c("Control", "Treated")}).}
+\item{contrast}{A character vector: Levels to compare (e.g., \code{c("Control", "Treated")}).}
 
-\item{pseudocount}{A numeric: pseudocount for zero handling (default = \code{1}).}
+\item{pseudocount}{A numeric: Pseudocount for zero handling (default = \code{1}).}
 
-\item{significance_level}{A numeric: FDR threshold (default = \code{0.05}).}
+\item{significance_level}{A numeric: FDR threshold for significance (default = \code{0.05}).}
 
-\item{output_csv_path}{A string: output path for results CSV (optional).}
+\item{output_csv_path}{A string: File path to save results CSV (optional).}
 
-\item{target_glom}{A string: taxonomic rank to aggregate taxa (default = \code{"Genus"}).}
+\item{target_glom}{A string: Taxonomic rank to aggregate taxa (default = \code{"Genus"}).}
 
-\item{palette}{A vector: colors for significant and non-significant points (default = \code{c("#FFEB3B", "#073B4C")}).}
+\item{palette}{A vector: Colors for significant and non-significant points (default = \code{c("#FFEB3B", "#073B4C")}).}
 }
 \value{
-A list with:
+A list containing:
 \item{results}{Data frame of differential abundance results.}
 \item{obj_significant}{Filtered \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
-\item{plot}{\code{ggplot2} volcano plot with factor levels.}
+\item{plot}{\code{ggplot2} volcano plot for differentially abundant taxa.}
+\item{bar_plot}{\code{ggplot2} bar plot of log fold changes for significant taxa.}
 }
 \description{
-Performs differential abundance analysis using edgeR or DESeq2, processes data, and creates a volcano plot.
+Performs differential abundance analysis using edgeR or DESeq2, processes data,
+and creates a volcano plot and bar plot for visualization.
+}
+\details{
+For edgeR, standard error of log-fold change (lfcSE) is estimated using the formula:
+\code{lfcSE = logFC / sqrt(LR)}, based on the likelihood ratio test statistic.
 }
 \examples{
 \donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
+  # Run edgeR analysis
   results_edgeR <- perform_and_visualize_DA(
     obj = physeq_16SOTU,
     method = "edgeR",
     group_var = "Diet",
     contrast = c("Insectivore", "Carnivore"),
-    output_csv_path = "DA_edgeR.csv",
     target_glom = "Genus",
     significance_level = 0.05
   )
 
-  # Print and visualize results
-  print(results_edgeR$plot)
-  head(results_edgeR$results)
-  print(results_edgeR$obj_significant)
+  # Visualize results
+  print(results_edgeR$plot)  # Volcano plot
+  print(results_edgeR$bar_plot)  # Bar plot of significant taxa
+  results_edgeR$results
 
-  # Example with a TreeSummarizedExperiment (TSE) object
+  # Convert to TreeSummarizedExperiment (TSE) and run DESeq2
   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
-
   results_DESeq2 <- perform_and_visualize_DA(
     obj = tse_16SOTU,
     method = "DESeq2",
     group_var = "Diet",
     contrast = c("Insectivore", "Carnivore"),
-    output_csv_path = "DA_DESeq2.csv",
     target_glom = "Genus",
     significance_level = 0.05
   )
 
-  # Print and visualize results
+  # Print and visualize DESeq2 results
   print(results_DESeq2$plot)
-  head(results_DESeq2$results)
-  print(results_DESeq2$obj_significant)
+  print(results_DESeq2$bar_plot)
+  results_DESeq2$results
 }
 }
 }

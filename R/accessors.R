@@ -1,4 +1,4 @@
-#' @title Extract OTU Table from Object
+#' @title Extract OTU Tax Metadata from Object
 #' @description Retrieves the OTU table from a `phyloseq` or `TreeSummarizedExperiment` object.
 #' @param obj A `phyloseq` or `TreeSummarizedExperiment` object.
 #' @return A matrix containing OTU count data.

@@ -33,7 +33,7 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   result <- weight_Network()
 
   # Load a specific GraphML dataset from DspikeIn
-  result <- weight_Network(graph_path = "NoHubs.graphml")
+  result <- weight_Network(graph_path = "Complete.graphml")
 
   # Load a custom GraphML file from user directory,
   # for external graphml please use **full address**
@@ -43,5 +43,7 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   result$metrics
 }
 }
-
+}
+\seealso{
+\code{\link[igraph]{cluster_fast_greedy}}, \code{\link[ggraph]{ggraph}}, \code{\link{load_graphml}}
 }

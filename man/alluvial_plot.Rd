@@ -3,6 +3,9 @@
 \name{alluvial_plot}
 \alias{alluvial_plot}
 \title{Generate an Alluvial Plot}
+\source{
+Built using ggalluvial, ggplot2, and dplyr for visualization of microbial abundance dynamics.
+}
 \usage{
 alluvial_plot(
   data,

@@ -28,8 +28,9 @@ It removes non-positive and NA values by default.
 \details{
 Overview of Normalization Methods
 }
-\section{These normalization methods are commonly used in microbiome analysis to ensure fair comparisons across samples.}{
-NA
+\section{Normalization Use Cases}{
+
+These normalization methods are commonly used in microbiome analysis to ensure fair comparisons across samples.
 }
 
 \examples{

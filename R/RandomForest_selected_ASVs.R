@@ -5,6 +5,8 @@
 #' based on a Random Forest model. If a `TreeSummarizedExperiment (TSE)` is provided, it is first converted to `phyloseq`.
 #' The function allows filtering and pruning of taxa before selecting the most important features.
 #' Optionally, the selected ASVs/OTUs can be saved as a CSV file.
+#' @seealso \code{\link[randomForest]{randomForest}}, \code{\link[phyloseq]{prune_taxa}}
+#' @source Based on public API usage of randomForest and phyloseq packages.
 #'
 #' @param physeq A `phyloseq` or `TreeSummarizedExperiment (TSE)` object containing microbiome data.
 #' @param response_var A character string specifying the response variable from the sample metadata.

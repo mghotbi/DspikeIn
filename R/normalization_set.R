@@ -6,7 +6,8 @@
 #' - **For Compositional Data**: `CLR` normalization accounts for compositional structure by transforming the data into log-ratio format.
 #' - **For Simplicity and Ease of Use**: `TC`, `UQ`, or `Median` normalization methods are quick but may not be as robust.
 #'
-#' @section These normalization methods are commonly used in microbiome analysis to ensure fair comparisons across samples.
+#' @section Normalization Use Cases:
+#' These normalization methods are commonly used in microbiome analysis to ensure fair comparisons across samples.
 #'
 #' @keywords normalization microbiome
 #' NULL
@@ -282,7 +283,7 @@ create_list <- function(obj) {
 
 
 # -----------------------------------------------------------
-#' @title the Selected Normalization Method to the Phyloseq Object
+#' @title Apply the Selected Normalization Method to the Phyloseq and TSE Objects
 #' @name normalization_set
 #' @param obj A phyloseq object.
 #' @param method A character string specifying the normalization method ("TC", "UQ", "med", "DESeq", "Poisson", "QN", "TMM", "clr", "rar", "css", "tss", "rle").
@@ -566,7 +567,7 @@ norm.DESeq <- function(obj, groups, pseudocount = 1) {
   #  Check for Single Group Issue
   unique_groups <- levels(sample_data_df[[groups]])
   if (length(unique_groups) == 1) {
-    warning(" Only one group detected! Using design ~ 1.")
+    warning("Only one group detected! Using design ~ 1.")
     design <- stats::model.matrix(~ 1)
   } else {
     design <- stats::model.matrix(~ sample_data_df[[groups]])

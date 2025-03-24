@@ -31,8 +31,8 @@
 #'
 #' @return A list containing:
 #' - `metrics`: A data frame with node-level metrics.
-#' - `plot1`: The first multi-panel ggplot figure (4 subplots).
-#' - `plot2`: The second multi-panel ggplot figure (4 subplots).
+#' - `plot1`: First multi-panel plot (2x2 layout with 4 subplots)
+#' - `plot2`: Second multi-panel plot (2x2 layout with 4 subplots)
 #' - `facet_plot`: A faceted plot showing **Z-score standardized** metrics across communities.
 #'
 #' @importFrom igraph V E degree strength closeness betweenness eigen_centrality page_rank transitivity coreness
@@ -237,6 +237,8 @@ node_level_metrics <- function(graph, save_path = NULL) {
 
   return(list(metrics = metrics, flextable = table_flex, plot1 = plot1, plot2 = plot2, facet_plot = facet_plot))
 }
+
+
 #Usage Example:
 # set.seed(42)
 # CustomNet <- load_graphml("~/herp.spiecsym.network.graphml")

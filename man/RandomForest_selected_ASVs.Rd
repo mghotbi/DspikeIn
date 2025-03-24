@@ -3,6 +3,9 @@
 \name{RandomForest_selected_ASVs}
 \alias{RandomForest_selected_ASVs}
 \title{Select Important ASVs/OTUs Using Random Forest}
+\source{
+Based on public API usage of randomForest and phyloseq packages.
+}
 \usage{
 RandomForest_selected_ASVs(
   physeq,
@@ -66,4 +69,7 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
 }
 }
 
+}
+\seealso{
+\code{\link[randomForest]{randomForest}}, \code{\link[phyloseq]{prune_taxa}}
 }

@@ -37,11 +37,12 @@
 #' @importFrom SummarizedExperiment colData
 #' @importFrom TreeSummarizedExperiment TreeSummarizedExperiment rowTree
 #' @importFrom S4Vectors metadata
-#' @importFrom stats aggregate
+#' @importFrom stats aggregate reorder
 #' @importFrom dplyr where
 #' @importFrom data.table :=
+#' @importFrom methods is
 utils::globalVariables(c(
-  ".data","Taxon_Label","Degree","read_spike_report","Among_Module_Connectivity", "EigenvectorCentrality",
+  ".data","Taxon_Label","LR","Genus","lfcSE" ,"Degree","prune_common_taxa","reorder" ,"LFC_Direction","read_spike_report","Among_Module_Connectivity", "EigenvectorCentrality",
   "Within_Module_Connectivity", "group","eq.label","tail","PageRank", "Closeness", "Betweenness", "Community",
   "Strength", "Local_Efficiency", "Coreness", "Redundancy","get_refseq",
   "Constraint", "Efficiency", "Z_Score","Significance","format_common_data","FDR","contrast","model.matrix","convert_phyloseq_to_tse","aggregateByTaxonomy", "agglomerateByRank", "group_var" ,

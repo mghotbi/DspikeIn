@@ -15,8 +15,8 @@ node_level_metrics(graph, save_path = NULL)
 A list containing:
 \itemize{
 \item \code{metrics}: A data frame with node-level metrics.
-\item \code{plot1}: The first multi-panel ggplot figure (4 subplots).
-\item \code{plot2}: The second multi-panel ggplot figure (4 subplots).
+\item \code{plot1}: First multi-panel plot (2x2 layout with 4 subplots)
+\item \code{plot2}: Second multi-panel plot (2x2 layout with 4 subplots)
 \item \code{facet_plot}: A faceted plot showing \strong{Z-score standardized} metrics across communities.
 }
 }

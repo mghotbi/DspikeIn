@@ -2,7 +2,7 @@
 % Please edit documentation in R/normalization_set.R
 \name{normalization_set}
 \alias{normalization_set}
-\title{the Selected Normalization Method to the Phyloseq Object}
+\title{Apply the Selected Normalization Method to the Phyloseq and TSE Objects}
 \usage{
 normalization_set(obj, method, groups = NULL)
 }
@@ -17,7 +17,7 @@ normalization_set(obj, method, groups = NULL)
 A list containing the normalized phyloseq object and scaling factors.
 }
 \description{
-the Selected Normalization Method to the Phyloseq Object
+Apply the Selected Normalization Method to the Phyloseq and TSE Objects
 }
 \examples{
 \donttest{
