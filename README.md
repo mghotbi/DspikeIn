@@ -561,8 +561,9 @@ merged_spiked_species <- c("Tetragenococcus_halophilus")
 result <- calculate_spike_percentage(
   Spiked_16S_sum_scaled, 
   merged_spiked_species,
-  output_path = "merged_perc_data.docx", 
+  output_file = "merged_perc_data.docx", 
   passed_range = c(0.1, 11))
+
 
 calculate_summary_stats_table(result)
 
