@@ -1038,7 +1038,7 @@ custom_colors = DspikeIn::color_palette$light_MG)
 
 # selecting the most important ASVs/OTUs through RandomForest classification
 # Salamander_absolute= subset of our phyloseq object
-rf_physeq <- RandomForest_selected_ASVs(ps_physeq_absolute_16S_OTU, response_var = "Host_Species", na_vars = c("Habitat","Diet", "Ecoregion_III", "Host_genus", "Animal_type"))
+rf_physeq <- RandomForest_selected(ps_physeq_absolute_16S_OTU, response_var = "Host_Species", na_vars = c("Habitat","Diet", "Ecoregion_III", "Host_genus", "Animal_type"))
 RP=ridge_plot_it(rf_physeq)
 RP+facet_wrap(~Diet)
 
