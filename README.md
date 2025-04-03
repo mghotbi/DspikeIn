@@ -451,7 +451,7 @@ result <- validate_spikein_clade(
 
 | Spike-in distribution | Spike-in validation |
 |:---------------------:|:-------------------:|
-| <img src="https://github.com/user-attachments/assets/a883a66a-9155-4a92-be5a-996cc4f2315e" width="600"/> | <img src="https://github.com/user-attachments/assets/406cacf3-fb06-480a-8a35-1cd800a92b57" width="400"/> |
+| <img src="https://github.com/user-attachments/assets/a883a66a-9155-4a92-be5a-996cc4f2315e" width="500"/> | <img src="https://github.com/user-attachments/assets/406cacf3-fb06-480a-8a35-1cd800a92b57" width="500"/> |
 
 
 ### Spike-ins Behaviour 
