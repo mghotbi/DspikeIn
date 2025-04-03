@@ -449,10 +449,8 @@ result <- validate_spikein_clade(
 
 ```
 
-Figure 1.
-
 | Spike-in distribution | spike-in validation |
-|:---------------------:|:-------------------:|
+|:---------------------:|:-------------------------------:|
 | ![Spike-in distribution](https://github.com/user-attachments/assets/a883a66a-9155-4a92-be5a-996cc4f2315e) | ![spike-in validation](https://github.com/user-attachments/assets/406cacf3-fb06-480a-8a35-1cd800a92b57) |
 
 
