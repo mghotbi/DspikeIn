@@ -24,7 +24,8 @@
 
 
 3. **Data Preparation**
-   - [Validation Using Phylogenetic Tree](#Validation-using-phylogenetic-tree)
+   - [Validation Using Phylogenetic Tree](#spike-in-validation)
+   - [Spike-ins Behaviour ](#Spike-ins-Behaviour)
    - [Preparation for Our Protocol](#Prepare-the-required-information-for-our-protocol)
    - [Preparation for the Synthetic Community](#Prepare-the-Required-Information-for-the-Synthetic-community)
 
@@ -394,76 +395,89 @@ spiked_cells_list <- c(10000, 20000, 15000) # or equal number of copies-> spiked
 
 ```
 
-### Validation using phylogenetic tree
-### Plot phylogenetic tree with Bootstrap Values
-This step will be helpful for handling ASVs with/without Gene Copy Number Correction
-This section demonstrates how to use various functions from the package to plot and analyze phylogenetic trees.
+Do all detected sample spike-in sequences cluster with the reference, and are their branch lengths statistically similar, supporting a common ancestor?
+
+# spike-in validation 
+
+All sample-derived sequences are forming a clade with the reference.
+We look for a monophyletic grouping of spike-in OTUs
+The clade is strongly supported (bootstrap around 100 percentage).
+The branch lengths and distances are in a biologically plausible range.
 
 ```r
 
-# In case there are several OTUs/ASVs resulting from the spiked species, you may want to check the phylogenetic distances.
-# We first read DNA sequences from a FASTA file, to perform multiple sequence alignment and compute a distance matrix using the maximum likelihood method, then we construct a phylogenetic tree
 # Use the Neighbor-Joining method  based on a Jukes-Cantor distance matrix and plot the tree with bootstrap values.
 # we compare the Sanger read of Tetragenococcus halophilus with the FASTA sequence of Tetragenococcus halophilus from our phyloseq object.
+
+library(Biostrings)
+library(phyloseq)
 
 # Get path to external data folder
 extdata_path <- system.file("extdata", package = "DspikeIn")
 list.files(extdata_path)
 
+data("physeq_16SOTU", package = "DspikeIn")
+
+physeq_16SOTU <- tidy_phyloseq_tse(physeq_16SOTU)
+
+physeq_16SOTU <- phyloseq::prune_taxa(
+  get_tax_table(physeq_16SOTU)$Kingdom %in% c("Bacteria", "Archaea"),
+  physeq_16SOTU
+)
+
 
 # Subset the phyloseq object to include only Tetragenococcus species first
-Tetra <- subset_taxa(Tetra, !is.na(taxa_names(Tetra)) & taxa_names(Tetra) != "")
-tree <- phy_tree(Tetra)
-ref_sequences_Tetra <- refseq(Tetra)
-writeXStringSet(ref_sequences_Tetra, "ref_sequences_Tetra.fasta")
-# postitive control 
-Tetra_control_sequences <- Biostrings::readDNAStringSet("~/Tetra_Ju.fasta")
-
-# combine the Tetragenococcus FASTA files (from your dataset and the Sanger fasta of Tetragenococcus, positive control)
-combined_sequences <- c(ref_sequences_Tetra, Tetra_control_sequences)
-writeXStringSet(combined_sequences, filepath = "~/combined_fasta_file") # existed in inst/exdata of DspikeIn
-combined_sequences <- Biostrings::readDNAStringSet("~/combined_fasta_file")
-
-# Plot Neighbor-Joining tree with bootstrap values to compare Tetragenococcus in your dataset with your positive control
-fasta_path <- "~/combined_fasta_file"
-plot_tree_nj(fasta_path, output_file = "neighbor_joining_tree_with_bootstrap.png")
+# Tetragenococcus <- subset_taxa(physeq_16SOTU, Genus=="Tetragenococcus")
+# Tetragenococcus <- subset_taxa(Tetragenococcus, !is.na(taxa_names(Tetragenococcus)) & taxa_names(Tetragenococcus) != "")
+# tree <- phy_tree(Tetragenococcus)
+# ref_sequences_Tetragenococcus <- refseq(Tetragenococcus)
+# library(Biostrings)
+# writeXStringSet(ref_sequences_Tetragenococcus, "Sample.fasta.fasta")
 
 
-# Plot phylogenetic tree
-plot_tree_custom(Tetra, output_prefix = "p0", width = 18, height = 18, layout = "circular")
 
-# Plot the tree with glommed OTUs at 0.2 resolution/ or modify it
-plot_glommed_tree(Tetra, resolution = 0.2, output_prefix = "top", width = 18, height = 18)
-
-# Plot the phylogenetic tree with multiple sequence alignment
-plot_tree_with_alignment(Tetra, output_prefix = "tree_alignment", width = 15, height = 15)
-
-# Plot phylogenetic tree with bootstrap values and cophenetic distances
-Bootstrap_phy_tree_with_cophenetic(Tetra, output_file = "tree_with_bootstrap_and_cophenetic.png", bootstrap_replicates = 500)
+ref_fasta <- system.file("extdata", "Ref.fasta", package = "DspikeIn")
+sample_fasta <- system.file("extdata", "Sample.fasta", package = "DspikeIn")
 
 
+
+result <- validate_spikein_clade(
+  reference_fasta = ref_fasta,
+  sample_fasta = sample_fasta,
+  bootstrap = 200,
+  output_prefix = "comp_spikein")
 
 ```
 
 Figure 1.
 
-| Neighbor Joining Tree with Bootstrap | Tetra Plot with Bootstrap | Cophenetic tree with Bootstrap|
-|:------------------------------------:|:----------:|:---------:|
-| ![Neighbor Joining Tree with Bootstrap](https://github.com/mghotbi/DspikeIn/assets/29090547/175c8554-261f-45ab-8ec8-b22d09eb9ee4) | ![Tetra Plot with Bootstrap](https://github.com/mghotbi/DspikeIn/assets/29090547/78b5d8bb-3391-433d-af77-e40c8d27b055) | ![Cophenetic tree with Bootstrap](https://github.com/mghotbi/DspikeIn/assets/29090547/2a4bc232-e834-4212-9119-8561eddebed1) |
+| Spike-in distribution | spike-in validation |
+|:---------------------:|:-------------------:|
+| ![Spike-in distribution](https://github.com/user-attachments/assets/a883a66a-9155-4a92-be5a-996cc4f2315e) | ![spike-in validation](https://github.com/user-attachments/assets/406cacf3-fb06-480a-8a35-1cd800a92b57) |
 
+
+# Spike-ins Behaviour 
+####     Did spike-ins behave as expected across all samples?
 
 ```r
-# Aligned Sequences
 
-The result of the aligned sequences is shown below:
-DNAStringSet object of length 5:
-    width seq                                                                                                                                         names               
-[1]   292 -------------------TACGTAGGTGGCAAGCGTTGTCCGGATTTATTGGGCGTAAAGCGAGCGC...CTGGTCTGTAACTGACGCTGAGGCTCGAAAGCGTGGGTAGCAAACAGG-------------------- 2ddb215ff668b6a24...
-[2]   292 -------------------TACGTAGGTGGCAAGCGTTGTCCGGATTTATTGGGCGTAAAGCGAGCGC...CTGGTCTGTAACTGACGCTGAGGCTCGAAAGCGTGGGTAGCAAACAGG-------------------- Tetragenococcus h...
-[3]   292 -------------------TACGTAGGTGGCAAGCGTTGTCCGGATTTATTGGGCGTAAAGCGAGCGC...CTGGTCTGTAACTGACGCTGAGGCTCGAAAGCGTAGGTAGCAAACAGG-------------------- 65ab824f29da71010...
-[4]   292 -------------------TACGTAGGTGGCAAGCGTTGTCCGGATTTATTGGGCGTAAAGCGAGCGC...CTGGTCTGTAACTGACGCTGAGACTCGAAAGCGTGGGTAGCAAACAGG-------------------- e49935179f23c00fb...
-[5]   292 -------------------TACGTAGGTGGCAAGCGTTGTCCGGATTTATTGGGCGTAAAGCGAGCGC...CTGGACTGTAACTGACGCTGAGGCTCGAAAGCGTGGGGAGCAAACAGG-------------------- 0350f990080b4757a...
+Tip labels=	OTU/ASV names
+Branch length numbers=	Actual evolutionary distances (small = very similar)
+Prevalence stars	How frequently the OTU occurs across samples
+Blue bar ring=	Log10 mean abundance
+Outer colored tiles=	The metadata variable you choose (e.g., Animal.type)
 
+spikein <- phyloseq::subset_taxa(physeq_16SOTU, Genus == "Tetragenococcus")
+taxa_names(spikein) <- paste0("OTU", seq_len(ntaxa(spikein)))
+
+# Visualize
+ps <- plot_spikein_tree_diagnostic(
+  obj = spikein,
+  metadata_var = "Animal.type",
+  output_prefix = "tetragenococcus_diag")
+
+ps
+                                                                                                                               
 ```
 
 We selected the OTU approach using de novo robust clustering algorithms at a 97% similarity threshold, following the methods outlined by [Westcott and Schloss (2015)](https://doi.org/10.7717/peerj.1487).
