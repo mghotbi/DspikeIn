@@ -1,99 +1,71 @@
-#' @title Filter and Split Abundance Data (Saves Phyloseq & TSE Separately)
-#' @description Filters low-abundance taxa from a `phyloseq` or `TreeSummarizedExperiment` object,
-#'              splits data into high- and low-abundance groups, and saves all results **in both formats**.
+#' @title Filter and Split Abundance Data by Threshold
+#' @description
+#' Filters low-abundance taxa from a `phyloseq` or `TreeSummarizedExperiment` object,
+#' splits data into high- and low-abundance groups, and optionally saves results.
 #'
 #' @param obj A `phyloseq` or `TreeSummarizedExperiment` object.
-#' @param threshold A numeric value indicating the mean abundance threshold for filtering and splitting.
-#' @param output_prefix A character string specifying the filename prefix for saved results.
+#' @param threshold A numeric value indicating the mean abundance threshold for filtering.
+#' @param output_prefix A character string specifying the filename prefix for saving.
+#'                      If `NULL`, files will not be saved. Default is `NULL`.
 #'
-#' @return A list containing:
-#' - `$filtered`: Filtered objects in both formats.
-#' - `$high`: High-abundance taxa in both formats.
-#' - `$low`: Low-abundance taxa in both formats.
-#'
-#' @details
-#' The function:
-#' - Removes taxa with mean abundance below `threshold`
-#' - Splits remaining data into **high-abundance** and **low-abundance** groups
-#' - Saves all results as **both `phyloseq` and `TreeSummarizedExperiment` formats**
-#' - Notifies users where files are saved via `cat()`
+#' @return A named list with components:
+#' \describe{
+#'   \item{high}{Subset with taxa having mean abundance > threshold}
+#'   \item{low}{Subset with taxa having mean abundance <= threshold}
+#' }
+#' Each returned element contains a single object of the same class as the input (`phyloseq` or `TSE`).
 #'
 #' @examples
-#' \donttest{
-#' data("physeq_ITSOTU", package="DspikeIn")
-#' results <- filter_and_split_abundance(physeq_ITSOTU,
-#' threshold = 0.05,
-#' output_prefix = "abundance_analysis")
-#' tse_ITSOTU <-convert_phyloseq_to_tse(physeq_ITSOTU)
-#' results <- filter_and_split_abundance(tse_ITSOTU,
-#' threshold = 0.05, output_prefix = "abundance_analysis")
-#' }
+#' data("physeq_ITSOTU", package = "DspikeIn")
+#'
+#' # Return results without saving
+#' output <- filter_and_split_abundance(physeq_ITSOTU, threshold = 0.05)
+#'
+#' # With saving
+#' tse_ITSOTU <- convert_phyloseq_to_tse(physeq_ITSOTU)
+#'
+#' output <- filter_and_split_abundance(tse_ITSOTU,
+#'   threshold = 0.05,
+#'   output_prefix = file.path(tempdir(), "abund")
+#' )
 #'
 #' @importFrom phyloseq prune_taxa
-#' @importFrom SummarizedExperiment assay
 #' @export
-filter_and_split_abundance <- function(obj, threshold = 0.01, output_prefix = "abundance_analysis") {
-  # Ensure object is valid
+filter_and_split_abundance <- function(obj, threshold = 0.01, output_prefix = NULL) {
+  # Validate input
   if (!inherits(obj, c("phyloseq", "TreeSummarizedExperiment"))) {
-    stop("\U0000274C Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
+    stop("Input must be a phyloseq or TreeSummarizedExperiment object.")
   }
 
-  # Extract OTU table
+  is_physeq <- inherits(obj, "phyloseq")
+
+  # Get abundance matrix
   otu <- get_otu_table(obj)
+
+  # Identify high and low abundance taxa
   high_otu <- otu[rowMeans(otu) > threshold, , drop = FALSE]
   low_otu <- otu[rowMeans(otu) <= threshold, , drop = FALSE]
 
-  # Process based on object type
-  if (inherits(obj, "phyloseq")) {
-    filtered_obj_phy <- phyloseq::prune_taxa(rownames(high_otu), obj)
-    high_obj_phy <- phyloseq::prune_taxa(rownames(high_otu), obj)
-    low_obj_phy <- phyloseq::prune_taxa(rownames(low_otu), obj)
-
-    # Convert phyloseq to TSE
-    filtered_obj_tse <- convert_phyloseq_to_tse(filtered_obj_phy)
-    high_obj_tse <- convert_phyloseq_to_tse(high_obj_phy)
-    low_obj_tse <- convert_phyloseq_to_tse(low_obj_phy)
-
-  } else if (inherits(obj, "TreeSummarizedExperiment")) {
-    filtered_obj_tse <- obj[rownames(high_otu), ]
-    high_obj_tse <- obj[rownames(high_otu), ]
-    low_obj_tse <- obj[rownames(low_otu), ]
-
-    # Convert TSE to phyloseq
-    filtered_obj_phy <- convert_tse_to_phyloseq(filtered_obj_tse)
-    high_obj_phy <- convert_tse_to_phyloseq(high_obj_tse)
-    low_obj_phy <- convert_tse_to_phyloseq(low_obj_tse)
+  if (is_physeq) {
+    high_obj <- phyloseq::prune_taxa(rownames(high_otu), obj)
+    low_obj <- phyloseq::prune_taxa(rownames(low_otu), obj)
+  } else {
+    high_obj <- obj[rownames(high_otu), ]
+    low_obj <- obj[rownames(low_otu), ]
   }
 
-  # Save results with distinct filenames
-  saveRDS(filtered_obj_phy, paste0(output_prefix, "_filtered_phyloseq.rds"))
-  saveRDS(filtered_obj_tse, paste0(output_prefix, "_filtered_tse.rds"))
-  saveRDS(high_obj_phy, paste0(output_prefix, "_high_abundance_phyloseq.rds"))
-  saveRDS(high_obj_tse, paste0(output_prefix, "_high_abundance_tse.rds"))
-  saveRDS(low_obj_phy, paste0(output_prefix, "_low_abundance_phyloseq.rds"))
-  saveRDS(low_obj_tse, paste0(output_prefix, "_low_abundance_tse.rds"))
+  # Save to files if prefix provided
+  if (!is.null(output_prefix)) {
+    saveRDS(high_obj, paste0(output_prefix, "_high.rds"))
+    saveRDS(low_obj, paste0(output_prefix, "_low.rds"))
 
-  # Inform user where files are saved
-  cat("\n **Filtered and split datasets saved!**\n")
-  cat("\U0001F5C2 Filtered (phyloseq): ", paste0(output_prefix, "_filtered_phyloseq.rds"), "\n")
-  cat("\U0001F5C2 Filtered (TSE): ", paste0(output_prefix, "_filtered_tse.rds"), "\n")
-  cat("\U0001F5C2 High-abundance (phyloseq): ", paste0(output_prefix, "_high_abundance_phyloseq.rds"), "\n")
-  cat("\U0001F5C2 High-abundance (TSE): ", paste0(output_prefix, "_high_abundance_tse.rds"), "\n")
-  cat("\U0001F5C2 Low-abundance (phyloseq): ", paste0(output_prefix, "_low_abundance_phyloseq.rds"), "\n")
-  cat("\U0001F5C2 Low-abundance (TSE): ", paste0(output_prefix, "_low_abundance_tse.rds"), "\n")
+    message("\n✔ High- and low-abundance objects saved:")
+    message("High: ", output_prefix, "_high.rds")
+    message("Low : ", output_prefix, "_low.rds")
+  }
 
-  # Return results as a named list
   return(list(
-    filtered = list(phyloseq = filtered_obj_phy, tse = filtered_obj_tse),
-    high = list(phyloseq = high_obj_phy, tse = high_obj_tse),
-    low = list(phyloseq = low_obj_phy, tse = low_obj_tse)
+    high = high_obj,
+    low = low_obj
   ))
 }
-
-#Usage Example:
-# results <- filter_and_split_abundance(physeq_ITSOTU,
-# threshold = 0.05, output_prefix = "abundance_analysis")
-
-# tse_ITSOTU <-convert_phyloseq_to_tse(physeq_ITSOTU)
-# results <- filter_and_split_abundance(tse_ITSOTU,
-# threshold = 0.05, output_prefix = "abundance_analysis")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/calculate_list_average_scaling_factors.R
 \name{calculate_list_average_scaling_factors}
 \alias{calculate_list_average_scaling_factors}
-\title{Calculate Average Scaling Factors for Multiple Spiked Species}
+\title{Calculate Sample-specific Average Scaling Factors for Multiple Spike-in Groups}
 \usage{
 calculate_list_average_scaling_factors(
   obj,
@@ -12,34 +12,45 @@ calculate_list_average_scaling_factors(
 )
 }
 \arguments{
-\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} (TSE) object containing microbial abundance data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
 
-\item{spiked_species_list}{A list of character vectors. Each vector contains the spiked species
-(by taxon names) to be merged for calculating scaling factors for each group.}
+\item{spiked_species_list}{A list of character vectors. Each vector contains taxon names (at species level) for one spike-in group.}
 
-\item{spiked_cells_list}{A numeric vector specifying the number of spiked cells corresponding to each group in \code{spiked_species_list}.}
+\item{spiked_cells_list}{A numeric vector specifying the expected number of spike-in cells for each group.
+The order must match \code{spiked_species_list}.}
 
-\item{merge_method}{A character string specifying how to merge ASVs/OTUs for each group of spiked species.
-Accepted values are \code{"sum"} or \code{"max"}. Default is \code{"sum"}.}
+\item{merge_method}{Character. Either \code{"sum"} or \code{"max"}. Controls how OTUs of each spike-in group are merged.}
 }
 \value{
-A numeric vector of averaged and rounded scaling factors for each OTU in the object.
-OTUs not associated with any spiked species are assigned a default scaling factor of 1.
+A named numeric vector of sample-specific scaling factors.
 }
 \description{
-This function calculates scaling factors for multiple spiked species in a \code{phyloseq} or
-\code{TreeSummarizedExperiment} (TSE) object. It merges ASVs/OTUs for each species if necessary,
-averages the scaling factors, and returns the averaged scaling factors for each OTU.
-Different spiked cell counts can be provided for each set of spiked species.
-If an OTU is not associated with any spiked species, a default scaling factor (1) is assigned.
-Scaling factors are rounded to the specified number of decimal places.
+Computes sample-specific scaling factors for multiple groups of spiked species
+in a \code{phyloseq} or \code{TreeSummarizedExperiment} object. Each group can have its own
+expected spike-in cell count. Scaling factors are calculated per sample and averaged across groups.
+Missing spike-in observations in a sample will be handled gracefully by averaging available groups.
 }
+\details{
+The function assumes that the taxonomy table has a \code{Species} column.
+The output is suitable for downstream absolute quantification pipelines.
+OTUs belonging to each spike-in group will be merged using the specified \code{merge_method}
+("sum" or "max") to obtain a group-specific spike-in abundance in each sample.
+
+If a sample does not contain any spike-in sequences, a scaling factor of 1 is assigned.
+}
+\section{Notes}{
+
+\itemize{
+\item This function does not modify the input object.
+\item The returned scaling factors are intended to be used for absolute abundance normalization.
+}
+}
+
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq", package = "DspikeIn")
 
-  # Step 1: Define the spiked species list and corresponding cell counts
+  # Step 1: Define the spike-in species groups and associated cell counts
   spiked_species_list <- list(
     c("Pseudomonas aeruginosa"),
     c("Escherichia coli"),
@@ -48,7 +59,7 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
 
   spiked_cells_list <- c(10000, 20000, 15000)
 
-  # Step 2: Apply the function to a phyloseq object
+  # Step 2: Compute the scaling factors
   scaling_factors <- calculate_list_average_scaling_factors(
     physeq,
     spiked_species_list,
@@ -56,8 +67,7 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
     merge_method = "sum"
   )
 
-  # Step 3: Print the results
+  # Step 3: Inspect scaling factors
   print(scaling_factors)
-}
 }
 }

@@ -5,7 +5,6 @@ library(TreeSummarizedExperiment)
 library(SummarizedExperiment)
 
 test_that("convert_to_absolute_counts works correctly with phyloseq and TSE", {
-
   output_file <- "absolute_counts.csv"
 
   if (file.exists(output_file)) file.remove(output_file)
@@ -73,5 +72,4 @@ test_that("convert_to_absolute_counts works correctly with phyloseq and TSE", {
     convert_to_absolute_counts(physeq_16SOTU, invalid_scaling_factors),
     regexp = " Error: Some sample names in scaling_factors do not match OTU table sample names."
   )
-
 })

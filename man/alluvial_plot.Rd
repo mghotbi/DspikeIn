@@ -2,7 +2,7 @@
 % Please edit documentation in R/alluvial_plot.R
 \name{alluvial_plot}
 \alias{alluvial_plot}
-\title{Generate an Alluvial Plot}
+\title{Generate an Alluvial Plot for Microbiome Data}
 \source{
 Built using ggalluvial, ggplot2, and dplyr for visualization of microbial abundance dynamics.
 }
@@ -58,8 +58,10 @@ A \code{ggplot2} object representing an alluvial plot.
 This function creates an alluvial plot based on input data, which can be
 either absolute or relative abundance data.
 }
+\note{
+This function assumes data has already been converted to long format with an "Abundance" column.
+}
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
@@ -81,7 +83,7 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
     top_taxa = 10,
     text_size = 4,
     legend_ncol = 1,
-    custom_colors = DspikeIn::color_palette$cool_MG  # Extended color palette
+    custom_colors = DspikeIn::color_palette$cool_MG # Extended color palette
   )
 
   print(alluvial_plot_rel)
@@ -105,7 +107,6 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   )
 
   print(alluvial_plot_abs)
-}
 }
 
 }

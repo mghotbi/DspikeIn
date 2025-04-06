@@ -1,95 +1,89 @@
 #' @title Adjust Prevalence in a Microbiome Object
-#' @description Adjusts the prevalence of ASVs based on a specified method
-#'   and prunes those that do not meet the prevalence threshold.
+#'
+#' @description
+#' Removes low-prevalence taxa from a `phyloseq` or `TreeSummarizedExperiment` object based
+#' on user-specified prevalence thresholds derived from taxa abundance statistics.
+#'
 #' @param obj A `phyloseq` or `TreeSummarizedExperiment` object.
-#' @param method A character string specifying the method ("min", "mean", "median", "max").
-#' @param output_file A character string specifying the file path to save the adjusted object.
-#' @return An adjusted object with pruned taxa.
-#' @importFrom phyloseq taxa_sums prune_taxa sample_sums
-#' @importFrom SummarizedExperiment assay colData
+#' @param method Character. Threshold method: one of `"min"`, `"mean"`, `"median"`, or `"max"`.
+#' @param output_file Optional. Character. Path to save the adjusted object as `.rds`.
+#' Default is `NULL`, meaning no file will be saved unless explicitly provided.
+#'
+#' @return The adjusted object of the same class as `obj`.
+#'
+#' @importFrom phyloseq prune_taxa taxa_sums sample_sums otu_table
+#' @importFrom SummarizedExperiment assay
 #' @examples
-#' \donttest{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
 #'
-#'   # Adjust prevalence using the "min" method
-#'   adjusted_physeq <- adjusted_prevalence(physeq_16SOTU, method = "min")
-#'   print(adjusted_physeq)
+#'   ## Adjust prevalence in phyloseq
+#'   adjusted_physeq <- adjusted_prevalence(physeq_16SOTU, method = "mean")
 #'
-#'   # Convert phyloseq to TreeSummarizedExperiment (TSE)
-#'   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+#'   ## Convert to TreeSummarizedExperiment
+#'   tse_obj <- convert_phyloseq_to_tse(physeq_16SOTU)
 #'
-#'   # Adjust prevalence using the "max" method on a TSE object
-#'   adjusted_tse <- adjusted_prevalence(tse_16SOTU, method = "max")
-#'   print(adjusted_tse)
+#'   ## Adjust prevalence in TSE
+#'   adjusted_tse <- adjusted_prevalence(tse_obj, method = "median")
 #' }
-#' }
+#'
 #' @export
-adjusted_prevalence <- function(obj, method = "min", output_file = "adjusted_prevalence.rds") {
-  suppressMessages({
-    # Ensure method is valid
-    method <- tolower(method)
-    valid_methods <- c("min", "mean", "median", "max")
-    if (!method %in% valid_methods) {
-      stop("\U0000274C Invalid method. Choose from 'min', 'mean', 'median', or 'max'.")
-    }
+adjusted_prevalence <- function(obj, method = "min", output_file = NULL) {
+  # Validate method
+  method <- match.arg(method, c("min", "mean", "median", "max"))
 
-    # Extract abundance data
-    if (inherits(obj, "phyloseq")) {
-      reads <- switch(method,
-                      "min" = min(phyloseq::taxa_sums(obj)),
-                      "mean" = mean(phyloseq::taxa_sums(obj)),
-                      "median" = median(phyloseq::taxa_sums(obj)),
-                      "max" = max(phyloseq::taxa_sums(obj)))
-      sample_sums <- phyloseq::sample_sums(obj)
-      otu_matrix <- as.matrix(phyloseq::otu_table(obj))
-    } else if (inherits(obj, "TreeSummarizedExperiment")) {
-      abundance_data <- as.matrix(SummarizedExperiment::assay(obj))
-      reads <- switch(method,
-                      "min" = min(rowSums(abundance_data)),
-                      "mean" = mean(rowSums(abundance_data)),
-                      "median" = median(rowSums(abundance_data)),
-                      "max" = max(rowSums(abundance_data)))
-      sample_sums <- colSums(abundance_data)
-      otu_matrix <- abundance_data
-    } else {
-      stop("\U0000274C Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
-    }
+  # Extract data depending on object type
+  if (inherits(obj, "phyloseq")) {
+    otu_mat <- as.matrix(phyloseq::otu_table(obj))
+    taxa_sums_vec <- phyloseq::taxa_sums(obj)
+  } else if (inherits(obj, "TreeSummarizedExperiment")) {
+    otu_mat <- as.matrix(SummarizedExperiment::assay(obj))
+    taxa_sums_vec <- rowSums(otu_mat)
+  } else {
+    stop("Object must be of class 'phyloseq' or 'TreeSummarizedExperiment'.")
+  }
 
-    # Print chosen method and reads
-    cat("Number of reads chosen by method", method, ":", reads, "\n")
+  # Calculate abundance threshold
+  abundance_threshold <- switch(method,
+    "min" = min(taxa_sums_vec),
+    "mean" = mean(taxa_sums_vec),
+    "median" = median(taxa_sums_vec),
+    "max" = max(taxa_sums_vec)
+  )
 
-    # Compute prevalence
-    prevalence_counts <- rowSums(otu_matrix > 0)
-    otu_df <- data.frame(prev = prevalence_counts, sums = rowSums(otu_matrix))
-    otu_df <- otu_df[order(-otu_df$prev, -otu_df$sums), ]
+  # Calculate prevalence threshold (default = present in ≥10% of samples)
+  prevalence_counts <- rowSums(otu_mat > 0)
+  prevalence_threshold <- ceiling(0.1 * ncol(otu_mat))
 
-    # Define threshold and number of OTUs to keep
-    prevalence_threshold <- 0.1 * reads
-    nOTUs <- sum(otu_df$prev >= prevalence_threshold)
-    cat("Prevalence threshold:", prevalence_threshold, "\n")
-    cat("Number of OTUs to keep:", nOTUs, "\n")
+  message("Prevalence threshold = taxa detected in ≥ ", prevalence_threshold, " samples.")
+  message("Abundance threshold (", method, ") = ", round(abundance_threshold, 2), " reads.")
 
-    # Prune low-prevalence taxa
-    selected_otus <- rownames(otu_df)[1:nOTUs]
+  # Filter
+  selected <- which((prevalence_counts >= prevalence_threshold) & (taxa_sums_vec >= abundance_threshold))
 
-    if (inherits(obj, "phyloseq")) {
-      obj_adj <- phyloseq::prune_taxa(selected_otus, obj)
-    } else if (inherits(obj, "TreeSummarizedExperiment")) {
-      obj_adj <- obj[row.names(otu_matrix) %in% selected_otus, ]
-    }
+  if (length(selected) == 0) stop("No taxa passed the chosen thresholds.")
 
-    # Save and return adjusted object
+  message("Number of retained taxa: ", length(selected))
+
+  # Apply filtering
+  if (inherits(obj, "phyloseq")) {
+    obj_adj <- phyloseq::prune_taxa(rownames(otu_mat)[selected], obj)
+  } else {
+    obj_adj <- obj[selected, ]
+  }
+
+  # Optional output
+  if (!is.null(output_file)) {
     saveRDS(obj_adj, file = output_file)
-    cat("Adjusted object saved to:", output_file, "\n")
+    message("Adjusted object saved to: ", output_file)
+  }
 
-    return(obj_adj)
-  })
+  return(obj_adj)
 }
 
-#Usage Example:
+
+# Usage Example:
 # adjusted_physeq <- adjusted_prevalence(physeq_16SOTU, method = "min")
 # adjusted_physeq <- adjusted_prevalence(physeq_ITSOTU, method = "min")
-#tse_16SOTU<-convert_phyloseq_to_tse(physeq_16SOTU)
-#adjusted_physeq <- adjusted_prevalence(tse_16SOTU, method = "min")
-
+# tse_16SOTU<-convert_phyloseq_to_tse(physeq_16SOTU)
+# adjusted_tse <- adjusted_prevalence(tse_16SOTU, method = "min")

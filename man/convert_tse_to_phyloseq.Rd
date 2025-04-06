@@ -25,16 +25,14 @@ into a \code{phyloseq} object, ensuring the phylogenetic tree and
 reference sequences are restored, if present.
 }
 \examples{
-\donttest{
-  if (requireNamespace("DspikeIn", quietly = TRUE)) {
-    data("physeq_16SOTU", package = "DspikeIn")
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("physeq_16SOTU", package = "DspikeIn")
 
-    # Convert phyloseq to TSE
-    tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+  # Convert phyloseq to TSE
+  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 
-    # Convert TSE back to phyloseq
-    phy_M <- convert_tse_to_phyloseq(tse_16SOTU)
-    print(phy_M)
-  }
+  # Convert TSE back to phyloseq
+  phy_M <- convert_tse_to_phyloseq(tse_16SOTU)
+  print(phy_M)
 }
 }

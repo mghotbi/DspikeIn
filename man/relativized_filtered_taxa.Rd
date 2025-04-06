@@ -35,7 +35,6 @@ This function filters taxa from a phyloseq or TreeSummarizedExperiment (TSE) obj
 custom thresholds for percentage of samples, mean abundance, count, and relative abundance.
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
@@ -47,6 +46,5 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
     threshold_count = 5,
     threshold_relative_abundance = 0.001
   )
-}
 }
 }

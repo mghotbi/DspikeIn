@@ -8,7 +8,7 @@ calculate_spikeIn_factors(
   obj,
   spiked_cells,
   merged_spiked_species,
-  output_path = "spikeIn_factors_output"
+  output_path = NULL
 )
 }
 \arguments{
@@ -19,7 +19,7 @@ calculate_spikeIn_factors(
 \item{merged_spiked_species}{A character vector of spiked species to merge in the object.}
 
 \item{output_path}{A character string specifying the path to save the DOCX output file.
-Default is \code{NULL}, which saves the report as \code{"spikeIn_factors_summary.docx"}.}
+Default is \code{NULL}, which disables file writing.}
 }
 \value{
 A list containing:
@@ -31,6 +31,7 @@ A list containing:
 \item{spiked_species_reads}{A data frame with read counts for merged spiked species.}
 \item{absolute_counts}{The bias-corrected OTU table converted from relative to absolute counts.}
 \item{normalized_obj}{The corrected \code{phyloseq} or \code{TreeSummarizedExperiment} object with all original components intact.}
+\item{tree}{The phylogenetic tree from the input object, if present. NULL otherwise.}
 }
 \description{
 This function calculates scaling factors for specified spiked species
@@ -41,35 +42,57 @@ applies them to the OTU table, and returns bias-corrected absolute counts along 
 \details{
 \itemize{
 \item The metadata must contain a column named \code{"spiked.volume"} with appropriate values.
-\item \strong{If no spiked species are detected in a sample, a default scaling factor of 1 is applied} (to prevent division by zero).
+\item If no spiked species are detected in a sample, a default scaling factor of 1 is applied (to prevent division by zero).
 \item If \code{TreeSummarizedExperiment} is entered and \code{rowTree(obj)} is invalid, the tree will be omitted.
 }
 }
 \examples{
-\donttest{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
+
   spiked_cells <- 1847
   species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
   merged_spiked_species <- "Tetragenococcus_halophilus"
 
-  # Subset the phyloseq object based on spiked.volume
+  # --- Phyloseq Example ---
   spiked_16S_OTU <- phyloseq::subset_samples(physeq_16SOTU, spiked.volume \%in\% c("2", "1"))
+  temp_output_file <- file.path(tempdir(), "merged_physeq_sum.rds")
+  output_dir <- file.path(tempdir(), "spikeIn_factors_output")
 
-  # Pre-process species data by merging using the sum method
   merged_physeq_sum <- Pre_processing_species(
     spiked_16S_OTU,
     species_name = merged_spiked_species,
     merge_method = "sum",
-    output_file = "merged_physeq_sum.rds"
+    output_file = temp_output_file
   )
 
-  # Calculate spike-in factors for phyloseq object
   result_physeq <- calculate_spikeIn_factors(
-  merged_physeq_sum,
-  spiked_cells = 1874,
-  merged_spiked_species = merged_spiked_species
+    merged_physeq_sum,
+    spiked_cells = spiked_cells,
+    merged_spiked_species = merged_spiked_species,
+    output_path = output_dir
   )
-  scaling_factors_physeq <- result_physeq$scaling_factors
-  print(scaling_factors_physeq)
+
+  print(result_physeq$scaling_factors)
+
+  if (file.exists(temp_output_file)) unlink(temp_output_file, force = TRUE)
+  if (dir.exists(output_dir)) unlink(output_dir, recursive = TRUE, force = TRUE)
+
+  # --- TSE Example ---
+  tse_data <- convert_phyloseq_to_tse(physeq_16SOTU)
+  merged_tse_sum <- Pre_processing_species(
+    tse_data,
+    species_name = merged_spiked_species,
+    merge_method = "sum"
+  )
+
+  result_tse <- calculate_spikeIn_factors(
+    merged_tse_sum,
+    spiked_cells = spiked_cells,
+    merged_spiked_species = merged_spiked_species
+  )
+
+  print(result_tse$scaling_factors)
 }
+
 }

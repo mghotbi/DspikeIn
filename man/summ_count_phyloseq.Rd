@@ -17,7 +17,6 @@ Computes overall summary statistics (mean, median, standard deviation, standard 
 for the OTU table in a \code{phyloseq} or \code{TreeSummarizedExperiment} (TSE) object.
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
@@ -29,7 +28,6 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
 
   # Summarize counts for the TSE object
   summary_stats_tse <- summ_count_phyloseq(tse_16SOTU)
-}
 }
 
 }

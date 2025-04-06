@@ -17,7 +17,6 @@
 #' @seealso \code{\link[ggpubr]{stat_regline_equation}}, \code{\link[ggpubr]{stat_cor}}, \code{\link[ggplot2]{facet_wrap}}
 #'
 #' @examples
-#' \donttest{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   data("metadata_full", package = "DspikeIn")
 #'
@@ -31,12 +30,10 @@
 #'   # Print the plot output
 #'   print(plot_object)
 #' }
-#' }
 #' @export
 regression_plot <- function(data, x_var, y_var,
                             custom_range = c(0.1, 15, 30, 50, 75, 100),
                             formula = y ~ x, plot_title = NULL) {
-
   # Ensure x_var and y_var exist in the dataset
   if (!(x_var %in% colnames(data)) || !(y_var %in% colnames(data))) {
     stop("Specified x_var or y_var not found in the data.")
@@ -77,7 +74,7 @@ regression_plot <- function(data, x_var, y_var,
   plot <- ggplot2::ggplot(data, ggplot2::aes(x = .data[[x_var]], y = .data[[y_var]])) +
     ggplot2::geom_point(ggplot2::aes(color = .data$Range), size = 3, alpha = 0.7) +
     ggplot2::geom_smooth(method = "lm", se = TRUE, color = "black", linetype = "dashed") +
-    ggplot2::scale_color_manual(values = color_palette[1:num_ranges]) +
+    ggplot2::scale_color_manual(values = color_palette[seq_len(num_ranges)]) +
     ggplot2::theme_minimal() +
     ggplot2::labs(
       x = paste0("log1p(", x_var, ")"),
@@ -95,12 +92,14 @@ regression_plot <- function(data, x_var, y_var,
       legend.key.size = ggplot2::unit(1, "cm")
     ) +
     ggpubr::stat_regline_equation(ggplot2::aes(label = after_stat(eq.label)),
-                                  formula = formula,
-                                  label.x.npc = "left", label.y.npc = 0.85,
-                                  vjust = 1, hjust = -0.01) +
+      formula = formula,
+      label.x.npc = "left", label.y.npc = 0.85,
+      vjust = 1, hjust = -0.01
+    ) +
     ggpubr::stat_cor(ggplot2::aes(label = after_stat(paste(..rr.label.., ..p.label.., sep = "~~~"))),
-                     label.x.npc = "left", label.y.npc = 0.75) +
-    ggplot2::facet_wrap(~ Range, scales = "free")
+      label.x.npc = "left", label.y.npc = 0.75
+    ) +
+    ggplot2::facet_wrap(~Range, scales = "free")
 
   # Add title if provided
   if (!is.null(plot_title)) {

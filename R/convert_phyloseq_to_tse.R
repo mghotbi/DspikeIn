@@ -13,13 +13,11 @@
 #'   }
 #' @return A `TreeSummarizedExperiment` object preserving all components.
 #' @examples
-#' \donttest{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
-#'    data("physeq_16SOTU", package = "DspikeIn")
+#'   data("physeq_16SOTU", package = "DspikeIn")
 #'
-#'    # Convert phyloseq object to TreeSummarizedExperiment
-#'    tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
-#' }
+#'   # Convert phyloseq object to TreeSummarizedExperiment
+#'   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 #' }
 #' @importFrom phyloseq otu_table tax_table sample_data phy_tree refseq taxa_are_rows sample_names
 #' @importFrom microbiome meta
@@ -72,7 +70,7 @@ convert_phyloseq_to_tse <- function(physeq) {
 
   if (!is.null(tree) && !ape::is.rooted(tree)) {
     message("Warning: Phylogenetic tree is unrooted. Proceeding without modification.")
-    tree <- ape::as.phylo(tree)  # Ensure compatibility
+    tree <- ape::as.phylo(tree) # Ensure compatibility
   }
 
   # --- Extract Reference Sequences (if available) ---
@@ -120,4 +118,4 @@ convert_phyloseq_to_tse <- function(physeq) {
 # tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 
 # Print to confirm structure
-#print(tse_16SOTU)
+# print(tse_16SOTU)

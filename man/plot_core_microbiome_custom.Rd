@@ -5,8 +5,6 @@
 \title{Plot Core Microbiome Prevalence Heatmap (Phyloseq & TSE Compatible)}
 \source{
 Uses microbiome::plot_core() for core heatmap visualization
-
-Uses microbiomeutilities::format_to_besthit() for taxonomy formatting
 }
 \usage{
 plot_core_microbiome_custom(
@@ -34,9 +32,13 @@ plot_core_microbiome_custom(
 \item \code{taxa_order}: A character string indicating whether to order taxa by "ascending" or "descending" abundance. Default is "descending".
 }}
 
-\item{output_core_csv}{A character string specifying the path to save the core microbiome subset as a CSV file. Default is \code{NULL}, meaning no CSV file is saved.}
+\item{output_core_csv}{Path to save the core microbiome subset as a CSV file.
+Default is \code{NULL}. To avoid writing to the working directory during examples,
+use \code{file.path(tempdir(), "core_microbiome.csv")}.}
 
-\item{output_core_rds}{A character string specifying the path to save the core microbiome subset as an RDS file. Default is \code{NULL}, meaning no RDS file is saved.}
+\item{output_core_rds}{Path to save the core microbiome subset as an RDS file.
+Default is \code{NULL}. Use \code{file.path(tempdir(), "core_microbiome.rds")}
+to write to a temporary directory during examples or checks.}
 }
 \value{
 A \code{ggplot2} object representing the core microbiome prevalence heatmap.
@@ -48,7 +50,6 @@ filter, and it provides an option to order taxa either in ascending or descendin
 The plot displays a heatmap showing detection thresholds at different prevalence levels.
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
@@ -60,17 +61,20 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
     taxa_order = "ascending"
   )
 
+  # Define output paths using tempdir()
+  core_csv <- file.path(tempdir(), "core_microbiome.csv")
+  core_rds <- file.path(tempdir(), "core_microbiome.rds")
+
   # Generate a core microbiome plot with custom settings
   plot_result <- plot_core_microbiome_custom(
     obj = physeq_16SOTU,
     detections = custom_detections,
     taxrank = "Genus",
-    output_core_rds = "core_microbiome.rds",
-    output_core_csv = "core_microbiome.csv"
+    output_core_rds = core_rds,
+    output_core_csv = core_csv
   )
 
   # Print the resulting plot
   print(plot_result)
-}
 }
 }

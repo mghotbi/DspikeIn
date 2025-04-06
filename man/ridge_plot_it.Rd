@@ -35,7 +35,6 @@ This function:
 }
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   # Load phyloseq object
   data("physeq_16SOTU", package = "DspikeIn")
@@ -45,7 +44,6 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   # convert phyloseq object to TSE
   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
   ridge_tse <- ridge_plot_it(tse_16SOTU, taxrank = "Family", top_n = 10)
-}
 }
 
 }

@@ -22,14 +22,14 @@
 #' @param na.rm Logical. Should missing values (NAs) be removed? Defaults to TRUE.
 #' @return Geometric mean of x, or NA if no valid values are present.
 #' @examples
-#' \dontrun{
 #' vec <- c(1, 10, 100, 1000)
 #' gm_mean(vec)
-#' }
 #' @export
 gm_mean <- function(x, na.rm = TRUE) {
   valid_x <- x[x > 0 & !is.na(x)]
-  if (length(valid_x) == 0) return(NA)
+  if (length(valid_x) == 0) {
+    return(NA)
+  }
   exp(sum(log(valid_x), na.rm = na.rm) / length(valid_x))
 }
 # ------------------------------------------------------------------------
@@ -76,11 +76,9 @@ set_nf <- function(obj, scaling.factor) {
 #' and filters unwanted classifications, ensuring consistency for downstream analysis.
 #'
 #' @examples
-#' \dontrun{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
 #'   tidy_physeq <- tidy_phyloseq_tse(physeq_16SOTU)
-#' }
 #' }
 #'
 #' @importFrom phyloseq prune_taxa
@@ -150,6 +148,17 @@ tidy_phyloseq_tse <- function(obj) {
 #' @param pseudocount A numeric value to add to avoid zero counts.
 #' @return A phyloseq object with filtered and adjusted OTU table.
 #' @importFrom phyloseq otu_table prune_samples prune_taxa sample_sums
+#' @examples
+#' if (requireNamespace("DspikeIn", quietly = TRUE)) {
+#'   library(DspikeIn)
+#'   data("physeq_16SOTU", package = "DspikeIn")
+#'
+#'   # Remove samples with zero/negative/NA counts and add pseudocount
+#'   cleaned_ps <- remove_zero_negative_count_samples(
+#'     physeq_16SOTU,
+#'     pseudocount = 1e-6
+#'   )
+#' }
 #' @export
 remove_zero_negative_count_samples <- function(obj, pseudocount = 1e-6) {
   if (inherits(obj, "phyloseq")) {
@@ -162,7 +171,7 @@ remove_zero_negative_count_samples <- function(obj, pseudocount = 1e-6) {
 
     # Prune the samples that meet the removal criteria
     if (any(samples_to_remove)) {
-      cat("Removing", sum(samples_to_remove), "samples with zero, negative counts, or NA values.\n")
+      message(sprintf("Removing %d samples with zero, negative counts, or NA values.", sum(samples_to_remove)))
       obj <- phyloseq::prune_samples(!samples_to_remove, obj)
       otu <- as(phyloseq::otu_table(obj), "matrix")
     }
@@ -170,7 +179,7 @@ remove_zero_negative_count_samples <- function(obj, pseudocount = 1e-6) {
     # Remove features with zero counts across all samples
     zero_rows <- rowSums(otu) == 0
     if (any(zero_rows)) {
-      cat("Removing", sum(zero_rows), "features with zero counts across all samples.\n")
+      message(sprintf("Removing %d features with zero counts across all samples.", sum(zero_rows)))
       obj <- phyloseq::prune_taxa(!zero_rows, obj)
     }
 
@@ -178,7 +187,6 @@ remove_zero_negative_count_samples <- function(obj, pseudocount = 1e-6) {
     otu <- as(phyloseq::otu_table(obj), "matrix") + pseudocount
     phyloseq::otu_table(obj) <- phyloseq::otu_table(otu, taxa_are_rows = TRUE)
     return(obj)
-
   } else if (inherits(obj, "TreeSummarizedExperiment")) {
     #  Extract count data
     otu <- SummarizedExperiment::assay(obj)
@@ -186,10 +194,9 @@ remove_zero_negative_count_samples <- function(obj, pseudocount = 1e-6) {
     # Identify and remove zero-count taxa
     zero_rows <- rowSums(otu) == 0
     if (any(zero_rows)) {
-      cat("Removing", sum(zero_rows), "features with zero counts across all samples.\n")
-
+      message(sprintf("Removing %d features with zero counts across all samples.", sum(zero_rows)))
       # Ensure both `assay()` and `rowData()` remain synchronized
-      obj <- obj[!zero_rows, ]  # Removes both count data and metadata
+      obj <- obj[!zero_rows, ] # Removes both count data and metadata
     }
 
     # Add pseudocount
@@ -210,10 +217,8 @@ remove_zero_negative_count_samples <- function(obj, pseudocount = 1e-6) {
 #' @param obj A `phyloseq` or `TreeSummarizedExperiment` object containing microbial data.
 #' @return A phyloseq object with updated sample data.
 #' @examples
-#' \dontrun{
-#' data("physeq_16SOTU", package= "DspikeIn")
+#' data("physeq_16SOTU", package = "DspikeIn")
 #' ps_factor <- convert_categorical_to_factors(physeq_16SOTU)
-#' }
 #' @export
 convert_categorical_to_factors <- function(obj) {
   if (inherits(obj, "phyloseq")) {
@@ -290,7 +295,6 @@ create_list <- function(obj) {
 #' @param groups A column name of group labels from sample data.
 #' @return A list containing the normalized phyloseq object and scaling factors.
 #' @examples
-#' \donttest{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
 #'   ps <- physeq_16SOTU
@@ -378,7 +382,6 @@ create_list <- function(obj) {
 #'   normalized_ps_rle <- result_rle$dat.normed
 #'   scaling_factors_rle <- result_rle$scaling.factor
 #' }
-#' }
 #'
 #' @export
 normalization_set <- function(obj, method, groups = NULL) {
@@ -401,19 +404,20 @@ normalization_set <- function(obj, method, groups = NULL) {
   }
 
   result <- switch(method,
-                   "TC" = norm.TC(obj, groups),
-                   "UQ" = norm.UQ(obj, groups),
-                   "med" = norm.med(obj, groups),
-                   "DESeq" = norm.DESeq(obj, groups),
-                   "Poisson" = norm.Poisson(obj, groups),
-                   "QN" = norm.QN(obj),
-                   "TMM" = norm.TMM(obj, groups),
-                   "clr" = norm.clr(obj),
-                   "rar" = norm.rar(obj),
-                   "css" = norm.css(obj),
-                   "tss" = norm.tss(obj),
-                   "rle" = norm.rle(obj),
-                   stop("Invalid normalization method"))
+    "TC" = norm.TC(obj, groups),
+    "UQ" = norm.UQ(obj, groups),
+    "med" = norm.med(obj, groups),
+    "DESeq" = norm.DESeq(obj, groups),
+    "Poisson" = norm.Poisson(obj, groups),
+    "QN" = norm.QN(obj),
+    "TMM" = norm.TMM(obj, groups),
+    "clr" = norm.clr(obj),
+    "rar" = norm.rar(obj),
+    "css" = norm.css(obj),
+    "tss" = norm.tss(obj),
+    "rle" = norm.rle(obj),
+    stop("Invalid normalization method")
+  )
 
   dat.normed <- result$dat.normed
   scaling.factor <- result$scaling.factor
@@ -425,7 +429,7 @@ normalization_set <- function(obj, method, groups = NULL) {
 #' @name norm.TC
 #' @importFrom phyloseq otu_table taxa_are_rows
 #' @importFrom edgeR DGEList
-#' @param obj A phyloseq object.
+#' @param obj A Phyloseq or TreeSummarizedExperiment objects.
 #' @param groups A string specifying the grouping variable in sample data.
 #'
 #' @return A list containing the normalized phyloseq object and scaling factors.
@@ -466,7 +470,7 @@ norm.TC <- function(obj, groups) {
 #' @name norm.UQ
 #' @importFrom phyloseq otu_table taxa_are_rows
 #' @importFrom stats quantile
-#' @param obj A phyloseq object.
+#' @param obj A Phyloseq or TreeSummarizedExperiment objects.
 #' @param groups A string specifying the grouping variable in sample data.
 #' @return A list containing the normalized phyloseq object and scaling factors.
 norm.UQ <- function(obj, groups) {
@@ -498,7 +502,7 @@ norm.UQ <- function(obj, groups) {
 #' @name norm.med
 #' @importFrom phyloseq otu_table taxa_are_rows
 #' @importFrom stats median
-#' @param obj A phyloseq object.
+#' @param obj A Phyloseq or TreeSummarizedExperiment objects.
 #' @param groups A string specifying the grouping variable in sample data.
 #' @return A list containing the normalized phyloseq object and scaling factors.
 norm.med <- function(obj, groups) {
@@ -552,8 +556,8 @@ norm.DESeq <- function(obj, groups, pseudocount = 1) {
   obj <- convert_categorical_to_factors(obj)
 
   #  Extract Count Table
-  raw <- as(phyloseq::otu_table(obj), "matrix") + pseudocount  # Add pseudocount
-  raw <- round(raw)  # Ensure integer counts (required by DESeq2)
+  raw <- as(phyloseq::otu_table(obj), "matrix") + pseudocount # Add pseudocount
+  raw <- round(raw) # Ensure integer counts (required by DESeq2)
 
   #  Extract Sample Data
   sample_data_df <- as.data.frame(phyloseq::sample_data(obj))
@@ -568,7 +572,7 @@ norm.DESeq <- function(obj, groups, pseudocount = 1) {
   unique_groups <- levels(sample_data_df[[groups]])
   if (length(unique_groups) == 1) {
     warning("Only one group detected! Using design ~ 1.")
-    design <- stats::model.matrix(~ 1)
+    design <- stats::model.matrix(~1)
   } else {
     design <- stats::model.matrix(~ sample_data_df[[groups]])
   }
@@ -606,7 +610,7 @@ norm.DESeq <- function(obj, groups, pseudocount = 1) {
 #' @name norm.QN
 #' @importFrom phyloseq otu_table taxa_are_rows taxa_names tax_table
 #'
-#' @param obj A phyloseq object.
+#' @param obj A Phyloseq or TreeSummarizedExperiment objects.
 #' @param filter Logical, whether to filter low counts.
 #' @return A list containing the normalized phyloseq object and scaling factors.
 norm.QN <- function(obj, filter = FALSE) {
@@ -647,7 +651,7 @@ norm.QN <- function(obj, filter = FALSE) {
 #' @importFrom edgeR DGEList calcNormFactors estimateDisp glmFit glmLRT topTags
 #' @importFrom stats model.matrix
 #'
-#' @param obj A phyloseq object or matrix of raw counts.
+#' @param obj A Phyloseq or TreeSummarizedExperiment objects.
 #' @param group_var A string specifying the grouping variable in sample data (if phyloseq object).
 #' @param pseudocount A numeric value added to avoid division by zero.
 #' @return A list containing the normalized data, scaling factor, and differential abundance results.
@@ -686,7 +690,7 @@ norm.Poisson <- function(obj, group_var = NULL, pseudocount = 1e-6) {
   dge <- edgeR::DGEList(counts = raw_otu, group = y)
   dge <- edgeR::calcNormFactors(dge, method = "TMM")
   dge <- edgeR::estimateDisp(dge)
-  design <- stats::model.matrix(~ y)
+  design <- stats::model.matrix(~y)
   fit <- edgeR::glmFit(dge, design)
   lrt <- edgeR::glmLRT(fit)
   topTags <- edgeR::topTags(lrt, n = nrow(raw_otu))
@@ -702,7 +706,7 @@ norm.Poisson <- function(obj, group_var = NULL, pseudocount = 1e-6) {
 #' @importFrom phyloseq otu_table taxa_are_rows sample_data
 #' @importFrom edgeR DGEList calcNormFactors
 #'
-#' @param obj A phyloseq object.
+#' @param obj A Phyloseq or TreeSummarizedExperiment objects.
 #' @param groups A string specifying the grouping variable in sample data.
 #' @return A list containing the normalized phyloseq object and scaling factors.
 norm.TMM <- function(obj, groups) {
@@ -737,7 +741,7 @@ norm.TMM <- function(obj, groups) {
 #' @name norm.clr
 #' @importFrom phyloseq transform_sample_counts nsamples
 #'
-#' @param obj A phyloseq object.
+#' @param obj A Phyloseq or TreeSummarizedExperiment objects.
 #' @return A list containing the normalized phyloseq object and scaling factors.
 norm.clr <- function(obj) {
   obj <- remove_zero_negative_count_samples(obj)
@@ -755,7 +759,7 @@ norm.clr <- function(obj) {
 #' @name norm.rar
 #' @importFrom phyloseq rarefy_even_depth sample_sums
 #'
-#' @param obj A phyloseq object.
+#' @param obj A Phyloseq or TreeSummarizedExperiment objects.
 #' @return A list containing the normalized phyloseq object and scaling factors.
 norm.rar <- function(obj) {
   obj <- remove_zero_negative_count_samples(obj)
@@ -771,7 +775,7 @@ norm.rar <- function(obj) {
 #' @name norm.tss
 #' @importFrom phyloseq otu_table taxa_are_rows nsamples
 #'
-#' @param obj A phyloseq object.
+#' @param obj A Phyloseq or TreeSummarizedExperiment objects.
 #' @return A list containing the normalized phyloseq object and scaling factor
 norm.tss <- function(obj) {
   obj <- remove_zero_negative_count_samples(obj)
@@ -792,7 +796,7 @@ norm.tss <- function(obj) {
 #' @importFrom phyloseq otu_table taxa_are_rows
 #' @importFrom edgeR DGEList calcNormFactors
 #'
-#' @param obj A phyloseq object.
+#' @param obj A Phyloseq or TreeSummarizedExperiment objects.
 #' @return A list containing the normalized phyloseq object and scaling factors.
 norm.css <- function(obj) {
   obj <- remove_zero_negative_count_samples(obj)
@@ -816,7 +820,7 @@ norm.css <- function(obj) {
 #' @importFrom DESeq2 estimateSizeFactorsForMatrix
 #' @importFrom stats median
 #'
-#' @param obj A phyloseq object.
+#' @param obj A Phyloseq or TreeSummarizedExperiment objects.
 #' @param locfunc A function to compute the location statistic (default is median).
 #' @param type A character string specifying the type of normalization ("poscounts" or "ratio").
 #' @param geo_means A vector of geometric means for each feature.
@@ -846,7 +850,7 @@ norm.rle <- function(obj, locfunc = stats::median, type = c("poscounts", "ratio"
     }
   } else {
     # Default: Use all genes as control genes
-    control_genes <- rep(TRUE, nrow(otu))  # A logical vector selecting all genes
+    control_genes <- rep(TRUE, nrow(otu)) # A logical vector selecting all genes
   }
 
   #  Call DESeq2 normalization

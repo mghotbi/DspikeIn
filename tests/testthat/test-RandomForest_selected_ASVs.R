@@ -15,5 +15,7 @@ test_that("RandomForest_selected_ASVs works correctly with phyloseq", {
 
   expect_s4_class(result_phyloseq, "phyloseq")
   expect_gt(ntaxa(result_phyloseq), 0)
-})
 
+  # Clean up any auto-saved output
+  unlink(list.files(pattern = "\\.csv$|\\.rds$", full.names = TRUE), force = TRUE)
+})

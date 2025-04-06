@@ -1,5 +1,4 @@
 test_that("quadrant_plot generates a valid ggplot object using Complete.graphml", {
-
   library(testthat)
   library(igraph)
   library(ggplot2)
@@ -9,7 +8,7 @@ test_that("quadrant_plot generates a valid ggplot object using Complete.graphml"
 
   #  Compute node-level metrics
   result <- node_level_metrics(g)
-  metrics <- result$metrics  # Extract metrics dataframe
+  metrics <- result$metrics # Extract metrics dataframe
 
   # Ensure the function returns a ggplot object
   plot <- quadrant_plot(metrics, x_metric = "Degree", y_metric = "Efficiency")
@@ -20,10 +19,12 @@ test_that("quadrant_plot generates a valid ggplot object using Complete.graphml"
 
   #  Test error handling for missing metric cols
   expect_error(quadrant_plot(metrics, x_metric = "InvalidMetric", y_metric = "Efficiency"),
-               regexp = "Error: Specified x_metric or y_metric not found in metrics data frame.")
+    regexp = "Error: Specified x_metric or y_metric not found in metrics data frame."
+  )
 
   expect_error(quadrant_plot(metrics, x_metric = "Degree", y_metric = "InvalidMetric"),
-               regexp = "Error: Specified x_metric or y_metric not found in metrics data frame.")
+    regexp = "Error: Specified x_metric or y_metric not found in metrics data frame."
+  )
 
   plot2 <- quadrant_plot(metrics, x_metric = "Degree", y_metric = "Redundancy")
   expect_s3_class(plot2, "ggplot")

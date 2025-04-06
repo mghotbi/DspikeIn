@@ -23,7 +23,7 @@ A data frame with 312 rows and 46 columns:
 \item{X16S.biosample}{16S rRNA sequencing biosample identifier.}
 \item{dna.biosample}{DNA biosample identifier.}
 \item{data.type}{General data type classification.}
-\item{ampliconlibrary.quantification.ng.ul}{Library quantification (ng/μL).}
+\item{ampliconlibrary.quantification.ng.ul}{Library quantification (ng/\eqn{\mu}L).}
 \item{plate.ID}{Identifier for the sequencing plate.}
 \item{well.location}{Well location on the sequencing plate.}
 \item{Env.broad.scale}{Broad-scale environmental classification.}
@@ -36,7 +36,7 @@ A data frame with 312 rows and 46 columns:
 \item{Family}{Taxonomic family of the host.}
 \item{Diet}{General dietary classification of the host.}
 \item{Diet.Detailed}{Detailed dietary classification.}
-\item{Habitat}{Description of the habitat where the sample was collected.}
+\item{Habitat}{Habitat description where the sample was collected.}
 \item{Metamorphosis}{Indicates whether the species undergoes metamorphosis.}
 \item{Reproduction}{Reproductive strategy of the host species.}
 \item{Ecoregion.III}{Ecoregion classification (level III).}
@@ -45,26 +45,30 @@ A data frame with 312 rows and 46 columns:
 \item{sample.name}{Human-readable sample name.}
 \item{biosample.parent}{Parent biosample identifier.}
 \item{data.type.1}{Secondary data type classification.}
-\item{ampliconlibrary.quantification.ng.ul.1}{Second measurement of library quantification (ng/μL).}
+\item{ampliconlibrary.quantification.ng.ul.1}{Second library quantification (ng/\eqn{\mu}L).}
 \item{plate.ID.1}{Secondary plate ID (if applicable).}
 \item{well.location.1}{Secondary well location (if applicable).}
 \item{sample.or.blank}{Indicates whether the sample is biological or a blank control.}
 \item{sample.spiked.blank}{Indicates whether the sample was spiked with a blank.}
 \item{spiked.volume}{Volume of spike added to the sample.}
-\item{swab.presence}{Indicates whether a swab was used for collection (Yes/No).}
+\item{swab.presence}{Indicates whether a swab was used for collection.}
 \item{MK.spike}{Molecular spike-in used in the sequencing process.}
 }
 }
 \usage{
 data(metadata_full)
 }
+\value{
+A data frame containing sample-level metadata for microbiome sequencing analysis.
+}
 \description{
-This dataset contains metadata associated with microbiome sequencing samples,
-including host information, sequencing metrics, and environmental factors.
+This dataset contains detailed metadata associated with microbiome sequencing samples.
+It includes host information, sequencing metrics, environmental classifications, and
+experimental factors relevant for downstream analyses.
 }
 \examples{
 data(metadata_full)
-str(metadata_full)
 head(metadata_full)
+summary(metadata_full)
 }
 \keyword{datasets}

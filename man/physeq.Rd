@@ -3,9 +3,14 @@
 \docType{data}
 \name{physeq}
 \alias{physeq}
-\title{General Phyloseq Object}
+\title{General Example Phyloseq Object}
 \format{
-A phyloseq object with taxonomic and abundance data.
+A \code{phyloseq} object with:
+\describe{
+\item{otu_table}{Operational Taxonomic Unit (OTU) abundance matrix.}
+\item{tax_table}{Taxonomic classification of OTUs.}
+\item{sample_data}{Metadata associated with the samples.}
+}
 }
 \source{
 Simulated dataset for microbiome analysis.
@@ -13,11 +18,19 @@ Simulated dataset for microbiome analysis.
 \usage{
 data(physeq)
 }
+\value{
+A \code{phyloseq} object containing OTU abundances, taxonomy, and sample metadata.
+}
 \description{
-A phyloseq object containing microbiome data for general use.
+This is a general-purpose \code{phyloseq} object containing microbiome data,
+simulated for testing and demonstration of microbiome workflows.
+It contains OTU abundances, taxonomic annotations, and sample metadata.
 }
 \examples{
 data(physeq)
 physeq
+sample_names(physeq)
+taxa_names(physeq)
+summary(physeq)
 }
 \keyword{datasets}

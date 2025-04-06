@@ -7,32 +7,37 @@
 summ_phyloseq_sampleID(obj)
 }
 \arguments{
-\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing microbial data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing microbiome data.}
 }
 \value{
 A data frame containing summary statistics per sample, with columns:
-Sample_ID, Mean, Median, Standard Deviation, Standard Error, Q25, Q50, Q75.
+\itemize{
+\item Sample_ID
+\item Mean
+\item Median
+\item Standard Deviation (SD)
+\item Standard Error (SE)
+\item Q25 (25th percentile)
+\item Q50 (Median)
+\item Q75 (75th percentile)
+}
 }
 \description{
 Calculates summary statistics (mean, median, standard deviation, standard error, and quartiles)
 for each sample in a \code{phyloseq} or \code{TreeSummarizedExperiment} object.
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
-  # Summarize the phyloseq object by sample ID
+  # Summarize the phyloseq object
   summary_stats_physeq <- summ_phyloseq_sampleID(physeq_16SOTU)
   print(summary_stats_physeq)
 
-  # Convert phyloseq object to a TreeSummarizedExperiment (TSE)
+  # Convert to TreeSummarizedExperiment
   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
-
-  # Summarize the TSE object by sample ID
   summary_stats_tse <- summ_phyloseq_sampleID(tse_16SOTU)
   print(summary_stats_tse)
-}
 }
 
 }

@@ -19,32 +19,30 @@
 #' @importFrom S4Vectors metadata
 #' @importFrom Biostrings DNAStringSet
 #' @examples
-#' \donttest{
-#'   if (requireNamespace("DspikeIn", quietly = TRUE)) {
-#'     data("physeq_16SOTU", package = "DspikeIn")
+#' if (requireNamespace("DspikeIn", quietly = TRUE)) {
+#'   data("physeq_16SOTU", package = "DspikeIn")
 #'
-#'     # Convert phyloseq to TSE
-#'     tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+#'   # Convert phyloseq to TSE
+#'   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 #'
-#'     # Convert TSE back to phyloseq
-#'     phy_M <- convert_tse_to_phyloseq(tse_16SOTU)
-#'     print(phy_M)
-#'   }
+#'   # Convert TSE back to phyloseq
+#'   phy_M <- convert_tse_to_phyloseq(tse_16SOTU)
+#'   print(phy_M)
 #' }
 #' @export
 convert_tse_to_phyloseq <- function(tse) {
   if (!inherits(tse, "TreeSummarizedExperiment")) {
-    stop("\U0000274C Error: Input must be a valid 'TreeSummarizedExperiment' object.")
+    stop("Error: Input must be a valid 'TreeSummarizedExperiment' object.")
   }
 
-  message("\U0001F50D Extracting OTU table...")
+  message("Extracting OTU table...")
   otu_table_matrix <- SummarizedExperiment::assay(tse, "counts")
 
   # Extract sample metadata
   sample_metadata <- as.data.frame(SummarizedExperiment::colData(tse))
 
   if (nrow(sample_metadata) == 0) {
-    stop("\U0000274C Error: Sample metadata (colData) is empty.")
+    stop("Error: Sample metadata (colData) is empty.")
   }
 
   # Ensure sample names are characters
@@ -52,7 +50,7 @@ convert_tse_to_phyloseq <- function(tse) {
 
   # Ensure sample names in OTU table match colData row names
   if (!identical(colnames(otu_table_matrix), rownames(sample_metadata))) {
-    message("\U0001F50D Sample names mismatch detected. Aligning sample names...")
+    message("Sample names mismatch detected. Aligning sample names...")
     colnames(otu_table_matrix) <- rownames(sample_metadata)
   }
 
@@ -72,7 +70,7 @@ convert_tse_to_phyloseq <- function(tse) {
 
   # Ensure all sample names match before proceeding
   if (!identical(phyloseq::sample_names(otu_table_phy), phyloseq::sample_names(sample_data_phy))) {
-    message("\U000026A0 Warning: Sample names still do not match. Attempting forced alignment...")
+    message("Warning: Sample names still do not match. Attempting forced alignment...")
     rownames(sample_data_phy) <- phyloseq::sample_names(otu_table_phy)
   }
 
@@ -93,38 +91,38 @@ convert_tse_to_phyloseq <- function(tse) {
   ref_sequences <- S4Vectors::metadata(tse)$refseq
 
   if (!is.null(ref_sequences)) {
-    message("\U0001F50D Checking refseq format...")
+    message("Checking refseq format...")
 
     if (is.list(ref_sequences)) {
-      message("\U0001F500 Converting refseq from list to character vector...")
+      message("Converting refseq from list to character vector...")
       ref_sequences <- unlist(ref_sequences)
     }
 
     if (is.matrix(ref_sequences)) {
-      message("\U0001F500 Converting refseq from matrix to character vector...")
+      message("Converting refseq from matrix to character vector...")
       ref_sequences <- as.character(ref_sequences)
     }
 
     if (is.character(ref_sequences)) {
-      message("\U0001F500 Converting refseq to DNAStringSet format...")
+      message("Converting refseq to DNAStringSet format...")
       refseq_dna <- Biostrings::DNAStringSet(ref_sequences)
 
       # Ensure refseq names match taxa names
       names(refseq_dna) <- taxa_names(physeq_obj)
 
       if (!identical(names(refseq_dna), taxa_names(physeq_obj))) {
-        message("\U000026A0 refseq names do not match taxa_names. Attempting forced alignment...")
+        message("refseq names do not match taxa_names. Attempting forced alignment...")
         refseq_dna <- refseq_dna[taxa_names(physeq_obj)]
       }
 
       # Attach refseq to phyloseq object
       physeq_obj <- phyloseq::merge_phyloseq(physeq_obj, refseq_dna)
-      message("\U00002705 Successfully added refseq to phyloseq object.")
+      message("Successfully added refseq to phyloseq object.")
     } else {
-      message("\U0001F6AB Refseq format unknown. Skipping refseq assignment.")
+      message("Refseq format unknown. Skipping refseq assignment.")
     }
   } else {
-    message("\U0001F6AB No valid reference sequences found. Proceeding without refseq.")
+    message("No valid reference sequences found. Proceeding without refseq.")
   }
 
   return(physeq_obj)
@@ -139,7 +137,4 @@ convert_tse_to_phyloseq <- function(tse) {
 # phy_M <- convert_tse_to_phyloseq(M_TSE)
 
 # Print to confirm
-#print(phy_M)
-
-
-
+# print(phy_M)

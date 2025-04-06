@@ -14,11 +14,11 @@
 #' @return A cleaned and filtered object of the same class with updated taxonomy.
 #'
 #' @examples
-#' \donttest{
+#'
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
+#'
 #'   tidy_physeq <- tidy_phyloseq_tse(physeq_16SOTU)
-#' }
 #' }
 #'
 #' @importFrom phyloseq prune_taxa tax_table tax_table<-
@@ -27,13 +27,13 @@
 #' @export
 tidy_phyloseq_tse <- function(obj) {
   if (!inherits(obj, c("phyloseq", "TreeSummarizedExperiment"))) {
-    stop("\U0000274C Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
+    stop("Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
   }
 
   tax_data <- get_tax_table(obj)
 
   if (is.null(tax_data) || ncol(tax_data) == 0) {
-    warning("\U000026A0 No taxonomy table found. Returning unmodified object.")
+    warning("No taxonomy table found. Returning unmodified object.")
     return(obj)
   }
 
@@ -59,7 +59,7 @@ tidy_phyloseq_tse <- function(obj) {
   # Get OTU table
   otu_matrix <- get_otu_table(obj)
   if (is.null(otu_matrix) || nrow(otu_matrix) == 0) {
-    warning("\U000026A0 No OTU table found. Returning unmodified object.")
+    warning("No OTU table found. Returning unmodified object.")
     return(obj)
   }
 
@@ -75,7 +75,6 @@ tidy_phyloseq_tse <- function(obj) {
     stopifnot(identical(keep_taxa_ids, rownames(tax_clean_subset)))
 
     phyloseq::tax_table(obj) <- phyloseq::tax_table(as.matrix(tax_clean_subset))
-
   } else if (inherits(obj, "TreeSummarizedExperiment")) {
     obj <- obj[keep_taxa_ids, ]
     SummarizedExperiment::rowData(obj) <- tax_data_clean[keep_taxa_ids, , drop = FALSE]
@@ -85,10 +84,8 @@ tidy_phyloseq_tse <- function(obj) {
 }
 
 
-#Usage Example
+# Usage Example
 # tidy_physeq <- tidy_phyloseq_tse(M18)
 # tidy_Mt_tse <- tidy_phyloseq_tse(mt)
-#taxonomy_table <- SummarizedExperiment::rowData(tidy_M19_tse)
+# taxonomy_table <- SummarizedExperiment::rowData(tidy_M19_tse)
 # phylo_tree <- S4Vectors::metadata(tidy_M19_tse)$tree
-
-

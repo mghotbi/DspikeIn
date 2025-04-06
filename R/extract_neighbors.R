@@ -20,7 +20,6 @@
 #'
 #' @importFrom igraph neighbors V read_graph
 #' @examples
-#' \donttest{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   Complete <- load_graphml("Complete.graphml")
 #'
@@ -29,11 +28,10 @@
 #'   print(result1$summary)
 #'
 #'   # for an **external** GraphML file (enter full address please)
-#'   # Use an **already loaded** igraph object
+#'   # Use an already loaded igraph object
 #'   Nohubs <- load_graphml("Nohubs.graphml")
 #'   result3 <- extract_neighbors(graph = Nohubs, target_node = "OTU1:Lilapila_jurana")
 #'   print(result3$summary)
-#' }
 #' }
 #'
 #' @export
@@ -42,31 +40,31 @@ extract_neighbors <- function(graph = NULL, target_node, mode = "all") {
   # Load Graph If Needed
   # ========================
   if (is.null(graph)) {
-    message("\U0001F4C1 Using default network: 'Complete.graphml'")
-    graph <- load_graphml("Complete.graphml")  # Load from package
+    message("Using default network: 'Complete.graphml'")
+    graph <- load_graphml("Complete.graphml") # Load from package
   } else if (is.character(graph)) {
     # Check if graph is an **external** file or a **package** file
     if (file.exists(graph)) {
-      message("\U0001F4C1 Loading external GraphML file: ", graph)
+      message("Loading external GraphML file: ", graph)
       graph <- igraph::read_graph(graph, format = "graphml")
     } else {
       # Try loading it from `DspikeIn`
-      message("\U0001F4C1 Loading GraphML from package: ", graph)
+      message("Loading GraphML from package: ", graph)
       graph <- load_graphml(graph)
     }
   } else if (!inherits(graph, "igraph")) {
-    stop("\U0000274C Error: The 'graph' argument must be an igraph object or a valid GraphML file path.")
+    stop("Error: The 'graph' argument must be an igraph object or a valid GraphML file path.")
   }
 
   # ========================
   # Validate Target Node
   # ========================
   if (!target_node %in% igraph::V(graph)$name) {
-    stop("\U0000274C Error: Target node '", target_node, "' not found in the graph.")
+    stop("Error: Target node '", target_node, "' not found in the graph.")
   }
 
   if (!mode %in% c("all", "out", "in")) {
-    stop("\U0000274C Error: Mode must be 'all', 'out', or 'in'.")
+    stop("Error: Mode must be 'all', 'out', or 'in'.")
   }
 
   # ========================
@@ -91,18 +89,20 @@ extract_neighbors <- function(graph = NULL, target_node, mode = "all") {
   # Handle Cases with No Neighbors
   # ========================
   if (length(first_neighbors_names) == 0) {
-    warning("\U000026A0 Warning: No first neighbors found for '", target_node, "'.")
+    warning("Warning: No first neighbors found for '", target_node, "'.")
   }
   if (length(second_neighbors_names) == 0) {
-    warning("\U000026A0 Warning: No second neighbors found for '", target_node, "'.")
+    warning("Warning: No second neighbors found for '", target_node, "'.")
   }
 
   # ========================
   # Create Summary Data Frame
   # ========================
   summary_table <- data.frame(
-    Type = c(rep("First Neighbor", length(first_neighbors_names)),
-             rep("Second Neighbor", length(second_neighbors_names))),
+    Type = c(
+      rep("First Neighbor", length(first_neighbors_names)),
+      rep("Second Neighbor", length(second_neighbors_names))
+    ),
     Node = c(first_neighbors_names, second_neighbors_names),
     stringsAsFactors = FALSE
   )

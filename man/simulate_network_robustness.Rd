@@ -47,7 +47,6 @@ Users can specify a node removal strategy from the following options:
 \strong{Important:} For the \code{"betweenness"} strategy, all edge weights \strong{must be positive}.
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   Complete <- load_graphml("Complete.graphml")
 
@@ -76,6 +75,5 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   print(robustness_degree$plot)
   print(robustness_random$plot)
   print(robustness_betweenness$plot)
-}
 }
 }

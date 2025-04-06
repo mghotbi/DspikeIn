@@ -4,32 +4,31 @@
 #' sequence count across all samples. The adjusted counts are then rounded to the nearest integer.
 #'
 #' @param obj A `phyloseq` or `TreeSummarizedExperiment` object containing microbiome data.
-#' @param output_file A character string specifying the output file name for the adjusted object. Default is "proportion_adjusted.rds".
+#' @param output_file A character string specifying the output file name for the adjusted object.
+#' If `NULL`, the object is not saved. Default is "proportion_adjusted.rds".
 #' @return A modified object of the same class (`phyloseq` or `TreeSummarizedExperiment`) with proportionally adjusted and rounded abundance data.
 #'
 #' @details
 #' This function extracts the OTU table (or assay in `TSE`), normalizes it based on the sample sums,
 #' and updates the original object while maintaining its structure.
-#'
 #' @examples
-#' \donttest{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   # Load phyloseq object
 #'   data("physeq_16SOTU", package = "DspikeIn")
+#'
 #'   normalized_physeq <- proportion_adj(
 #'     physeq_16SOTU,
-#'     output_file = "proportion_adjusted_physeq.rds"
+#'     output_file = file.path(tempdir(), "proportion_adjusted_physeq.rds")
 #'   )
 #'   print(normalized_physeq)
+#'
+#'   # Convert to TSE and apply
 #'   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
-#'   # Example with a TreeSummarizedExperiment (TSE) object
-#'   data("tse_16SOTU", package = "DspikeIn")
 #'   normalized_tse <- proportion_adj(
 #'     tse_16SOTU,
-#'     output_file = "proportion_adjusted_tse.rds"
+#'     output_file = file.path(tempdir(), "proportion_adjusted_tse.rds")
 #'   )
 #'   print(normalized_tse)
-#' }
 #' }
 #' @importFrom phyloseq otu_table<-
 #' @importFrom SummarizedExperiment assay<-
@@ -37,52 +36,50 @@
 #' @importFrom S4Vectors metadata
 #' @export
 proportion_adj <- function(obj, output_file = "proportion_adjusted.rds") {
-  suppressMessages({
-    message("\U0001F504 Starting proportional adjustment...")
+  message("Starting proportional adjustment...")
 
-    # Extract OTU table using accessor function
-    otu_matrix <- get_otu_table(obj)
-    if (is.null(otu_matrix)) stop("\U0000274C Error: OTU table is missing.")
+  # Extract OTU table using accessor function
+  otu_matrix <- get_otu_table(obj)
+  if (is.null(otu_matrix)) stop("Error: OTU table is missing.")
 
-    # Extract sample sums using accessor
-    sample_totals <- get_sample_sums(obj)
-    if (is.null(sample_totals)) stop("\U0000274C Error: Sample sums could not be calculated.")
+  # Extract sample sums using accessor
+  sample_totals <- get_sample_sums(obj)
+  if (is.null(sample_totals)) stop("Error: Sample sums could not be calculated.")
 
-    # Compute normalization function
-    normf <- function(x, tot = max(sample_totals)) {
-      tot * x / sum(x)
-    }
+  # Compute normalization function
+  normf <- function(x, tot = max(sample_totals)) {
+    tot * x / sum(x)
+  }
 
-    message("\U0001F4C8	Applying normalization based on maximum total sequence count...")
+  message("Applying normalization based on maximum total sequence count...")
 
-    # Apply normalization to sample counts/abundance
-    if (inherits(obj, "phyloseq")) {
-      obj <- phyloseq::transform_sample_counts(obj, normf)
-    } else if (inherits(obj, "TreeSummarizedExperiment")) {
-      otu_matrix <- apply(otu_matrix, 2, normf)
-    }
+  # Apply normalization to sample counts/abundance
+  if (inherits(obj, "phyloseq")) {
+    obj <- phyloseq::transform_sample_counts(obj, normf)
+  } else if (inherits(obj, "TreeSummarizedExperiment")) {
+    otu_matrix <- apply(otu_matrix, 2, normf)
+  }
 
-    # Round the abundance counts
-    message("\U0001F522 Rounding OTU table values...")
-    otu_matrix <- round(otu_matrix, digits = 0)
+  # Round the abundance counts
+  message("Rounding OTU table values...")
+  otu_matrix <- round(otu_matrix, digits = 0)
 
-    # Update OTU table in the object
-    if (inherits(obj, "phyloseq")) {
-      phyloseq::otu_table(obj) <- phyloseq::otu_table(otu_matrix, taxa_are_rows = TRUE)
-    } else if (inherits(obj, "TreeSummarizedExperiment")) {
-      SummarizedExperiment::assay(obj) <- otu_matrix
-    } else {
-      stop("\U0000274C	Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
-    }
+  # Update OTU table in the object
+  if (inherits(obj, "phyloseq")) {
+    phyloseq::otu_table(obj) <- phyloseq::otu_table(otu_matrix, taxa_are_rows = TRUE)
+  } else if (inherits(obj, "TreeSummarizedExperiment")) {
+    SummarizedExperiment::assay(obj) <- otu_matrix
+  } else {
+    stop("Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
+  }
 
-    # Save if output file is provided
-    if (!is.null(output_file)) {
-      message("\U0001F5C2 Saving adjusted object to: ", output_file)
-      saveRDS(obj, file = output_file)
-    }
+  # Save if output file is provided
+  if (!is.null(output_file)) {
+    message("Saving adjusted object to: ", output_file)
+    saveRDS(obj, file = output_file)
+  }
 
-    return(obj)
-  })
+  return(obj)
 }
 
 #' @title Extract OTU Table from Object
@@ -117,4 +114,3 @@ get_sample_sums <- function(obj) {
     stop("Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
   }
 }
-

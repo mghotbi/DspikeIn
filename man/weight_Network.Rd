@@ -11,13 +11,13 @@ weight_Network(graph_path = NULL, save_metrics = TRUE)
 Valid internal options: \code{"Complete.graphml"}, \code{"NoHubs.graphml"}, \code{"NoBasid.graphml"}.
 If an \strong{external path} is provided, the function loads that instead.}
 
-\item{save_metrics}{Logical. If \code{TRUE}, saves \code{"Global_Network_Metrics.csv"}.}
+\item{save_metrics}{Logical. If \code{TRUE}, saves the global metrics as a CSV file (in the working directory or specified by \code{metrics_path}).}
 }
 \value{
-A \strong{list} containing:
-\item{plot}{A \strong{ggplot2} object displaying the network.}
-\item{metrics}{A \strong{data.frame} with global network metrics.}
-\item{graph}{The \strong{igraph} object with assigned attributes.}
+A list containing:
+\item{plot}{A \code{ggplot2} object displaying the network.}
+\item{metrics}{A \code{data.frame} with global network metrics.}
+\item{graph}{The annotated \code{igraph} object.}
 }
 \description{
 Loads a microbial network from the \strong{DspikeIn} package (\code{Complete.graphml}, \code{NoHubs.graphml}, or \code{NoBasid.graphml})
@@ -25,13 +25,11 @@ or from a user-provided \strong{GraphML} file. Computes network metrics, assigns
 and visualizes the network using \code{ggraph}. Optionally saves computed \strong{global network metrics} as a CSV file.
 }
 \examples{
-\donttest{
+
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   Complete <- load_graphml("Complete.graphml")
 
   # Run network weighting function on the loaded dataset
-  result <- weight_Network()
-
   # Load a specific GraphML dataset from DspikeIn
   result <- weight_Network(graph_path = "Complete.graphml")
 
@@ -41,8 +39,10 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
 
   # View network metrics
   result$metrics
+  # Optional: Clean up generated metrics file if saved
+  unlink("Global_Network_Metrics.csv")
 }
-}
+
 }
 \seealso{
 \code{\link[igraph]{cluster_fast_greedy}}, \code{\link[ggraph]{ggraph}}, \code{\link{load_graphml}}

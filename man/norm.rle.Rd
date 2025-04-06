@@ -13,7 +13,7 @@ norm.rle(
 )
 }
 \arguments{
-\item{obj}{A phyloseq object.}
+\item{obj}{A Phyloseq or TreeSummarizedExperiment objects.}
 
 \item{locfunc}{A function to compute the location statistic (default is median).}
 

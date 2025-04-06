@@ -11,22 +11,21 @@ load_graphml <- function(filename = "herp.spiecsym.network.graphml") {
   # If the file exists externally, use it directly
   if (file.exists(filename)) {
     file_path <- filename
-    message("\U0001F4C1 Loading external GraphML file: ", filename)
+    message("Loading external GraphML file: ", filename)
   } else {
     file_path <- system.file("extdata", filename, package = "DspikeIn")
 
     if (file_path == "") {
-      stop("\U0000274C Error: The specified GraphML file does not exist in the package or as a user file.")
+      stop("Error: The specified GraphML file does not exist in the package or as a user file.")
     }
 
-    message("\U0001F4C1 Loading package GraphML file: ", filename)
+    message("Loading package GraphML file: ", filename)
   }
-
-  # Suppress warnings during graph loading
-  suppressWarnings({
-    graph <- igraph::read_graph(file_path, format = "graphml")
-  })
-
+  # Suppress known attribute warning on import
+  graph <- withCallingHandlers(
+    igraph::read_graph(file_path, format = "graphml"),
+    warning = function(w) invokeRestart("muffleWarning")
+  )
   # Step 1: Identify the correct attribute for node names
   name_attr <- NULL
   if ("label" %in% igraph::vertex_attr_names(graph)) {
@@ -40,14 +39,16 @@ load_graphml <- function(filename = "herp.spiecsym.network.graphml") {
   # Step 2: Assign correct node names
   if (!is.null(name_attr)) {
     graph <- igraph::set_vertex_attr(graph, "name", value = igraph::vertex_attr(graph, name_attr))
-    message("\U0002705 Assigned correct node names from attribute: ", name_attr)
+    message("Assigned correct node names from attribute: ", name_attr)
   } else {
-    message("\U0001F6AB Warning: No valid node name attribute found. Keeping default names.")
+    message("Warning: No valid node name attribute found. Keeping default names.")
   }
 
   # Ensure the graph loaded correctly
-  message("\U0001F4C1 Successfully loaded: ", filename,
-          " with ", igraph::vcount(graph), " nodes and ", igraph::ecount(graph), " edges.")
+  message(
+    "Successfully loaded: ", filename,
+    " with ", igraph::vcount(graph), " nodes and ", igraph::ecount(graph), " edges."
+  )
 
   return(graph)
 }
@@ -67,4 +68,3 @@ load_graphml <- function(filename = "herp.spiecsym.network.graphml") {
 # print(Complete)
 # print(NoHubs)
 # print(NoBasid)
-

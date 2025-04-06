@@ -11,7 +11,7 @@ get_otu_table <- function(obj) {
   } else if (inherits(obj, "TreeSummarizedExperiment")) {
     return(SummarizedExperiment::assay(obj))
   } else {
-    stop("\U0000274C Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
+    stop("Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
   }
 }
 
@@ -28,7 +28,7 @@ get_tax_table <- function(obj) {
   } else if (inherits(obj, "TreeSummarizedExperiment")) {
     return(as.data.frame(SummarizedExperiment::rowData(obj)))
   } else {
-    stop("\U0000274C object type: must be phyloseq or TreeSummarizedExperiment.")
+    stop("Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
   }
 }
 
@@ -42,11 +42,11 @@ get_tax_table <- function(obj) {
 #' @export
 get_sample_data <- function(obj) {
   if (inherits(obj, "phyloseq")) {
-    return(as.data.frame(microbiome::meta(obj)))  # Preferred method for phyloseq
+    return(as.data.frame(microbiome::meta(obj))) # Preferred method for phyloseq
   } else if (inherits(obj, "TreeSummarizedExperiment")) {
     return(as.data.frame(SummarizedExperiment::colData(obj)))
   } else {
-    stop("\U0000274C Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
+    stop("Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
   }
 }
 
@@ -55,17 +55,24 @@ get_sample_data <- function(obj) {
 #' @param obj A `phyloseq` or `TreeSummarizedExperiment` object.
 #' @return A phylogenetic tree object.
 #' @importFrom phyloseq phy_tree
-#' @importFrom S4Vectors metadata
+#' @importFrom TreeSummarizedExperiment rowTree
 #' @export
 get_phy_tree <- function(obj) {
   if (inherits(obj, "phyloseq")) {
-    return(phy_tree(obj))
+    tree <- phyloseq::phy_tree(obj)
+    if (is.null(tree)) stop("No phylogenetic tree found in phyloseq object.")
+    return(tree)
   } else if (inherits(obj, "TreeSummarizedExperiment")) {
-    return(S4Vectors::metadata(obj)$tree)  # TSE stores trees in metadata
+    if (!is.null(TreeSummarizedExperiment::rowTree(obj))) {
+      return(TreeSummarizedExperiment::rowTree(obj))
+    } else {
+      stop("No tree found in rowTree(obj).")
+    }
   } else {
-    stop("\U0000274C Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
+    stop("Unsupported object type. Must be phyloseq or TreeSummarizedExperiment.")
   }
 }
+
 
 #' @title Extract Reference Sequences
 #' @description Retrieves the reference sequences (if available) from an object.
@@ -88,6 +95,6 @@ get_reference_seq <- function(obj) {
       stop(" No reference sequences found in the TreeSummarizedExperiment object.")
     }
   } else {
-    stop("\U0000274C Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
+    stop("Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
   }
 }

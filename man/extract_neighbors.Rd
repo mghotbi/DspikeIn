@@ -34,7 +34,6 @@ Extracts the first and second neighbors of a given target node in an \code{igrap
 Users can provide either an \code{igraph} object or a GraphML file path (internal or external).
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   Complete <- load_graphml("Complete.graphml")
 
@@ -43,11 +42,10 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   print(result1$summary)
 
   # for an **external** GraphML file (enter full address please)
-  # Use an **already loaded** igraph object
+  # Use an already loaded igraph object
   Nohubs <- load_graphml("Nohubs.graphml")
   result3 <- extract_neighbors(graph = Nohubs, target_node = "OTU1:Lilapila_jurana")
   print(result3$summary)
-}
 }
 
 }

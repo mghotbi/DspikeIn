@@ -37,7 +37,6 @@ This function visualizes relationships between \strong{any two node metrics} in 
 Quadrant labels dynamically adjust based on the selected X and Y axis metrics.
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   g <- load_graphml("Complete.graphml")
 
@@ -48,7 +47,6 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   # Generate a quadrant plot using Degree and Efficiency
   plot <- quadrant_plot(metrics, x_metric = "Degree", y_metric = "Efficiency")
   print(plot)
-}
 }
 
 }

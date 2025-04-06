@@ -42,39 +42,37 @@ The function computes the following node-level metrics:\tabular{ll}{
    \code{Coreness} \tab Node's coreness (from k-core decomposition) \cr
    \code{Constraint} \tab Burt's constraint (measures structural holes in a node's ego network) \cr
    \code{EffectiveSize} \tab Inverse of constraint (larger values = more non-redundant connections) \cr
-   \code{Redundancy} \tab Sum of constraint values of a node’s alters \cr
+   \code{Redundancy} \tab Sum of constraint values of a node's alters \cr
    \code{Community} \tab Community assignment from Louvain clustering \cr
    \code{Efficiency} \tab Global efficiency (average inverse shortest path length) \cr
-   \code{Local_Efficiency} \tab Local efficiency (subgraph efficiency for a node’s neighbors) \cr
+   \code{Local_Efficiency} \tab Local efficiency (subgraph efficiency for a node's neighbors) \cr
    \code{Within_Module_Connectivity} \tab Proportion of neighbors in the same community \cr
    \code{Among_Module_Connectivity} \tab Proportion of neighbors in different communities \cr
 }
 }
 \examples{
-\donttest{
-  library(igraph)
-  set.seed(42)
-  # For external graphml please use full address
-  # Load internal graphml
-  Complete <- load_graphml("Complete.graphml")
+library(igraph)
+set.seed(42)
+# For external graphml please use full address
+# Load internal graphml
+Complete <- load_graphml("Complete.graphml")
 
-  # Compute node-level metrics
-  result <- node_level_metrics(Complete)
+# Compute node-level metrics
+result <- node_level_metrics(Complete)
 
-  # View computed metrics
-  print(result$metrics)
+# View computed metrics
+print(result$metrics)
 
-  # Show the first 4x4 plot
-  print(result$plots$plot1)
+# Show the first 4x4 plot
+print(result$plots$plot1)
 
-  # Show the second 4x4 plot
-  print(result$plots$plot2)
+# Show the second 4x4 plot
+print(result$plots$plot2)
 
-  # Show facet plot
-  print(result$facet_plot)
+# Show facet plot
+print(result$facet_plot)
 
-  # Print metrics and flextable
-  print(result$metrics)
-  print(result$flextable)
-}
+# Print metrics and flextable
+print(result$metrics)
+print(result$flextable)
 }

@@ -19,7 +19,10 @@ This function checks if a specified directory exists and creates it if it doesn'
 Optionally, it can also set the newly created or existing directory as the working directory.
 }
 \examples{
-# Example usage:
 # Create a new directory and set it as the working directory
-# create_directory("new", set_working_dir = TRUE)
+create_directory("new", set_working_dir = TRUE)
+
+# Clean up afterwards
+setwd(tempdir())
+unlink("new", recursive = TRUE)
 }

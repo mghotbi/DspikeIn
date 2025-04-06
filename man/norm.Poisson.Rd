@@ -7,7 +7,7 @@
 norm.Poisson(obj, group_var = NULL, pseudocount = 1e-06)
 }
 \arguments{
-\item{obj}{A phyloseq object or matrix of raw counts.}
+\item{obj}{A Phyloseq or TreeSummarizedExperiment objects.}
 
 \item{group_var}{A string specifying the grouping variable in sample data (if phyloseq object).}
 

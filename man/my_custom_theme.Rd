@@ -25,12 +25,10 @@ This function applies a custom theme to ggplot2 plots. It removes unnecessary
 grid lines, ensures a clean background, and standardizes text styling.
 }
 \examples{
-\dontrun{
 library(ggplot2)
 p <- ggplot(mtcars, aes(x = wt, y = mpg)) +
   geom_point(size = 3) +
   my_custom_theme()
 print(p)
-}
 
 }

@@ -19,7 +19,6 @@
 #' - Generates a ridge plot to visualize abundance distributions.
 #'
 #' @examples
-#' \donttest{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   # Load phyloseq object
 #'   data("physeq_16SOTU", package = "DspikeIn")
@@ -29,7 +28,6 @@
 #'   # convert phyloseq object to TSE
 #'   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 #'   ridge_tse <- ridge_plot_it(tse_16SOTU, taxrank = "Family", top_n = 10)
-#' }
 #' }
 #'
 #' @importFrom phyloseq rarefy_even_depth
@@ -41,7 +39,7 @@
 #' @export
 ridge_plot_it <- function(obj, taxrank = "Genus", rarefaction_depth = NULL, top_n = 10) {
   if (!inherits(obj, c("phyloseq", "TreeSummarizedExperiment"))) {
-    stop("\U0000274C Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
+    stop("Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
   }
 
   if (inherits(obj, "phyloseq") && is.null(rarefaction_depth)) {
@@ -57,12 +55,12 @@ ridge_plot_it <- function(obj, taxrank = "Genus", rarefaction_depth = NULL, top_
 
   # Ensure taxonomic rank exists
   if (is.null(tax_data) || !(taxrank %in% colnames(tax_data))) {
-    stop(paste("Taxonomic rank", taxrank, "not found in dataset."))
+    stop("Taxonomic rank ", taxrank, " not found in dataset.")
   }
 
   # Aggregate abundance at the selected taxonomic level
   otu_table_aggregated <- aggregate(otu_table, by = list(tax_data[[taxrank]]), FUN = sum)
-  colnames(otu_table_aggregated)[1] <- taxrank  # Rename first column
+  colnames(otu_table_aggregated)[1] <- taxrank # Rename first column
 
   # Summarize total abundance per taxon and select top taxa
   top_taxa <- otu_table_aggregated %>%
@@ -80,8 +78,10 @@ ridge_plot_it <- function(obj, taxrank = "Genus", rarefaction_depth = NULL, top_
   plot_data <- reshape2::melt(otu_table_filtered, id.vars = taxrank, variable.name = "Sample", value.name = "Abundance")
 
   # Generate ridge plot
-  plot <- ggplot2::ggplot(plot_data %>% dplyr::filter(Abundance > 0 & !is.na(!!rlang::sym(taxrank))),
-                          ggplot2::aes(y = !!rlang::sym(taxrank), x = log10(Abundance), fill = !!rlang::sym(taxrank))) +
+  plot <- ggplot2::ggplot(
+    plot_data %>% dplyr::filter(Abundance > 0 & !is.na(!!rlang::sym(taxrank))),
+    ggplot2::aes(y = !!rlang::sym(taxrank), x = log10(Abundance), fill = !!rlang::sym(taxrank))
+  ) +
     ggridges::geom_density_ridges2(scale = 1, alpha = 0.8, show.legend = FALSE) +
     ggplot2::ggtitle("Abundance Distribution") +
     ggplot2::labs(x = "Log10 (Abundance)", y = NULL) +

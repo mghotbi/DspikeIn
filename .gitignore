@@ -1,4 +1,17 @@
-.Rproj.user
-inst/doc
-/doc/
-/Meta/
+^DspikeIn\.Rproj$
+^LICENSE\.md$
+^cran-comments\.md$
+^\.Rproj\.user$
+^README\.Rmd$
+^\.gitignore$
+^\.gitattributes$
+^\.github$
+^\.Rd2pdf.*
+
+# Ignore dynamically created outputs
+^merged_data\.csv$
+^summary\.docx$
+^.*_processed\.rds$
+^tree_with_bootstrap_and_cophenetic\.png$
+^spikeIn_factors_output$
+^grep$

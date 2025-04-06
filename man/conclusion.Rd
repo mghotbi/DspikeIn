@@ -27,17 +27,48 @@ A list containing:
 \item{phy_tree}{The phylogenetic tree (if available).}
 }
 \description{
-Processes a phylogenetic dataset, extracts components,
-calculates spiked species statistics, and generates summary statistics in \code{flextable} format.
+Computes per-sample spike-in summary statistics from a microbiome object (\code{phyloseq} or \code{TSE}),
+generates a spike-in success report using \code{calculate_spike_percentage()}, and returns both the raw data and
+a formatted summary table (\code{flextable}). The function also attempts to extract and retain the phylogenetic tree if present.
 }
 \examples{
-\donttest{
-  data("physeq_16SOTU", package="DspikeIn")
-  species_name <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
-  merged_spiked_species <- c("Tetragenococcus_halophilus")
-  merged_sum <- Pre_processing_species(physeq_16SOTU, species_name, merge_method = "sum")
-  max_passed_range <- 20
-  results <- conclusion(merged_sum, merged_spiked_species, max_passed_range)
-  results$summary_stats
-}
+## -------------------------------
+## Example 1: Using phyloseq object
+## -------------------------------
+library(DspikeIn)
+data("physeq_16SOTU", package = "DspikeIn")
+
+# Merge spike-in species
+species_name <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
+merged_sum <- Pre_processing_species(
+  obj = physeq_16SOTU,
+  species_name = species_name,
+  merge_method = "sum"
+)
+
+# Compute summary statistics
+output_doc <- file.path(tempdir(), "summary_phyloseq.docx")
+
+results_physeq <- conclusion(
+  obj = merged_sum,
+  merged_spiked_species = "Tetragenococcus_halophilus",
+  max_passed_range = 20,
+  output_path = output_doc
+)
+print(results_physeq$summary_stats)
+
+## -----------------------------------------------
+## Example 2: Using TreeSummarizedExperiment object
+## -----------------------------------------------
+tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+
+output_doc_tse <- file.path(tempdir(), "summary_tse.docx")
+results_tse <- conclusion(
+  obj = tse_16SOTU,
+  merged_spiked_species = "Tetragenococcus_halophilus",
+  max_passed_range = 20,
+  output_path = output_doc_tse
+)
+print(results_tse$summary_stats)
+
 }

@@ -12,7 +12,6 @@
 #' and updates the original object while maintaining its structure.
 #'
 #' @examples
-#' \donttest{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
 #'   adjusted_physeq <- adjust_abundance_one_third(physeq_16SOTU, factor = 3)
@@ -20,7 +19,6 @@
 #'   # Example with a TreeSummarizedExperiment object
 #'   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 #'   adjusted_tse <- adjust_abundance_one_third(tse_16SOTU, factor = 3)
-#' }
 #' }
 #'
 #' @importFrom phyloseq otu_table<-
@@ -35,7 +33,7 @@ adjust_abundance_one_third <- function(obj, factor = 3, output_file = NULL) {
   if (is.null(otu_matrix)) stop("Error: OTU table is missing.")
 
   message("Dividing OTU table by factor ", factor, "...")
-  otu_matrix <- otu_matrix / factor  # Normalize abundance
+  otu_matrix <- otu_matrix / factor # Normalize abundance
 
   # Update OTU table in the object
   if (inherits(obj, "phyloseq")) {

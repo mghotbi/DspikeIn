@@ -4,41 +4,35 @@
 \alias{adjusted_prevalence}
 \title{Adjust Prevalence in a Microbiome Object}
 \usage{
-adjusted_prevalence(
-  obj,
-  method = "min",
-  output_file = "adjusted_prevalence.rds"
-)
+adjusted_prevalence(obj, method = "min", output_file = NULL)
 }
 \arguments{
 \item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
 
-\item{method}{A character string specifying the method ("min", "mean", "median", "max").}
+\item{method}{Character. Threshold method: one of \code{"min"}, \code{"mean"}, \code{"median"}, or \code{"max"}.}
 
-\item{output_file}{A character string specifying the file path to save the adjusted object.}
+\item{output_file}{Optional. Character. Path to save the adjusted object as \code{.rds}.
+Default is \code{NULL}, meaning no file will be saved unless explicitly provided.}
 }
 \value{
-An adjusted object with pruned taxa.
+The adjusted object of the same class as \code{obj}.
 }
 \description{
-Adjusts the prevalence of ASVs based on a specified method
-and prunes those that do not meet the prevalence threshold.
+Removes low-prevalence taxa from a \code{phyloseq} or \code{TreeSummarizedExperiment} object based
+on user-specified prevalence thresholds derived from taxa abundance statistics.
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
-  # Adjust prevalence using the "min" method
-  adjusted_physeq <- adjusted_prevalence(physeq_16SOTU, method = "min")
-  print(adjusted_physeq)
+  ## Adjust prevalence in phyloseq
+  adjusted_physeq <- adjusted_prevalence(physeq_16SOTU, method = "mean")
 
-  # Convert phyloseq to TreeSummarizedExperiment (TSE)
-  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+  ## Convert to TreeSummarizedExperiment
+  tse_obj <- convert_phyloseq_to_tse(physeq_16SOTU)
 
-  # Adjust prevalence using the "max" method on a TSE object
-  adjusted_tse <- adjusted_prevalence(tse_16SOTU, method = "max")
-  print(adjusted_tse)
+  ## Adjust prevalence in TSE
+  adjusted_tse <- adjusted_prevalence(tse_obj, method = "median")
 }
-}
+
 }

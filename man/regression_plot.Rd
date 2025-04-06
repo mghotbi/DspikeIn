@@ -35,7 +35,6 @@ statistical equation, and facets based on a specified range variable.
 The x and y variables are transformed using a natural log transformation (\code{log1p}) to handle zero values.
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("metadata_full", package = "DspikeIn")
 
@@ -48,7 +47,6 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
 
   # Print the plot output
   print(plot_object)
-}
 }
 }
 \seealso{

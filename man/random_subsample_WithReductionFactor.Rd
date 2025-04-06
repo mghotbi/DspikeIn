@@ -7,38 +7,37 @@
 random_subsample_WithReductionFactor(
   obj,
   reduction_factor = 3,
-  output_file = "Less_subsampled_object.rds"
+  output_file = NULL
 )
 }
 \arguments{
 \item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
 
-\item{reduction_factor}{A numeric value specifying the factor by which to reduce the counts. Default is 3.}
+\item{reduction_factor}{A numeric value ≥ 1 to reduce counts. Default is 3.}
 
-\item{output_file}{A character string specifying the output file name for the subsampled object. Default is "Less_subsampled_object.rds".}
+\item{output_file}{Optional. A character string specifying the \code{.rds} file path
+to save the result. If \code{NULL}, no file will be saved. Default is \code{NULL}.}
 }
 \value{
-A subsampled object of the same class as the input.
+A subsampled object of the same class as the input (\code{phyloseq} or \code{TreeSummarizedExperiment}).
 }
 \description{
-This function performs random subsampling on the OTU table of a phyloseq or
-TreeSummarizedExperiment (TSE) object, reducing the counts of each ASV
-(Amplicon Sequence Variant) by a specified reduction factor.
-The resulting subsampled object is saved to a specified output file.
+Performs random subsampling on the OTU table of a \code{phyloseq} or
+\code{TreeSummarizedExperiment} (TSE) object by dividing each ASV count
+by a specified reduction factor and rounding down to the nearest whole number.
+Optionally, the result can be saved to disk as an \code{.rds} file.
 }
 \examples{
-\dontrun{
-# Perform random subsampling on the phyloseq/TSE object with a reduction factor of 10
-data("physeq_16SOTU", package="DspikeIn")
+# Subsampling phyloseq object
+data("physeq_16SOTU", package = "DspikeIn")
 red <- random_subsample_WithReductionFactor(physeq_16SOTU, reduction_factor = 10)
-
-# Summarize the subsampled object
 summary_stats <- summ_phyloseq_sampleID(red)
 print(summary_stats)
 
-# TSE format
-tse_16SOTU<- convert_phyloseq_to_tse("physeq_16SOTU")
+# Subsampling TSE object
+tse_16SOTU <- convert_phyloseq_to_tse("physeq_16SOTU")
 red <- random_subsample_WithReductionFactor(tse_16SOTU, reduction_factor = 10)
 summary_stats <- summ_phyloseq_sampleID(red)
-}
+print(summary_stats)
+
 }

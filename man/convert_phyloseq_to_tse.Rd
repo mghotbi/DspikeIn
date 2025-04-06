@@ -25,12 +25,10 @@ Converts a \code{phyloseq} object into a \code{TreeSummarizedExperiment}
 are preserved in \code{rowTree} and \code{metadata} if they exist.
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
-   data("physeq_16SOTU", package = "DspikeIn")
+  data("physeq_16SOTU", package = "DspikeIn")
 
-   # Convert phyloseq object to TreeSummarizedExperiment
-   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
-}
+  # Convert phyloseq object to TreeSummarizedExperiment
+  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 }
 }

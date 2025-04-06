@@ -17,3 +17,15 @@ A phyloseq object with filtered and adjusted OTU table.
 \description{
 Remove Samples with Zero, Negative Counts, or NA Values and Add Pseudocount
 }
+\examples{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  library(DspikeIn)
+  data("physeq_16SOTU", package = "DspikeIn")
+
+  # Remove samples with zero/negative/NA counts and add pseudocount
+  cleaned_ps <- remove_zero_negative_count_samples(
+    physeq_16SOTU,
+    pseudocount = 1e-6
+  )
+}
+}

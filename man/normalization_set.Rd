@@ -20,7 +20,6 @@ A list containing the normalized phyloseq object and scaling factors.
 Apply the Selected Normalization Method to the Phyloseq and TSE Objects
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
   ps <- physeq_16SOTU
@@ -107,7 +106,6 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   result_rle <- normalization_set(ps, method = "rle")
   normalized_ps_rle <- result_rle$dat.normed
   scaling_factors_rle <- result_rle$scaling.factor
-}
 }
 
 }

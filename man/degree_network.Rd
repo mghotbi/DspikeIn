@@ -33,25 +33,23 @@ computes node degree and modularity, assigns node sizes based on degree, and vis
 Edge thickness is determined by weight. It also computes and optionally saves global network metrics.
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
-  Complete <- load_graphml("Complete.graphml")
+  Complete <- load_graphml(system.file("extdata", "Complete.graphml", package = "DspikeIn"))
 
-  # Compute degree metrics and visualize the network
-  result <- degree_network(graph_path = Complete, save_metrics = TRUE)
+  # Save metrics to a temporary file
+  temp_metrics <- file.path(tempdir(), "Global_Network_Metrics.csv")
+
+  result <- degree_network(
+    graph_path = Complete,
+    save_metrics = TRUE,
+    metrics_path = temp_metrics
+  )
+
   print(result$metrics)
   print(result$plot)
 
-  # Use Kamada-Kawai layout for better separation
-  # Options: `"stress"` (default), `"graphopt"`, `"fr"`
-  # (Fruchterman-Reingold), `"mds"`, `"kk"` (Kamada-Kawai)
-  result_kk <- degree_network(
-    graph_path = load_graphml("Complete.graphml"),
-    save_metrics = TRUE,
-    layout_type = "kk"
-  )
-  print(result_kk$plot)
-}
+  # Clean up temporary file
+  unlink(temp_metrics)
 }
 
 }

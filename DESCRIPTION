@@ -1,107 +1,112 @@
 Package: DspikeIn
 Type: Package
-Title: Estimating Absolute Abundance from Microbial Spike-in Controls
-Version: 1.2.3
+Title: Estimating absolute abundance from microbial spike-in controls
+Version: 0.99.0
 Authors@R: 
-    person(given = "Mitra", family = "Ghotbi", role = c("aut", "cre"), 
-           email = "mitra.ghotbi@gmail.com")
-Maintainer: Mitra Ghotbi <mitra.ghotbi@gmail.com>
-Description: 
-    DspikeIn provides tools to estimate absolute microbial abundance using spike-in 
-    controls, supporting the analysis of microbial dynamics — a key aspect of 
-    microbial ecology. The package builds on the phyloseq framework and integrates 
-    functionality from several established packages, including dplyr, stats, 
-    ggplot2, edgeR, DESeq2, microbiome, microbiomeutilities, DECIPHER, speedyseq, 
-    and ggtree. It enables data integration, differential abundance analysis, and 
-    advanced visualization, leveraging Bioconductor infrastructure such as 
-    TreeSummarizedExperiment.
-Acknowledgment: 
-    This package makes use of public APIs from several R packages including phyloseq, 
-    microbiome, microbiomeutilities, speedyseq, ggtree, edgeR, DESeq2, and ggplot2 
-    for analysis and visualization. We thank the authors of these tools for their 
-    contributions to the R and Bioconductor ecosystem.
-biocViews: Microbiome, Software, DataImport, StatisticalMethod, Visualization
+    person(given = "Mitra", family = "Ghotbi", 
+           role = c("aut", "cre"), 
+           email = "mitra.ghotbi@gmail.com",
+           comment = c(ORCID = "0000-0001-9185-9993"))
+Description: Provides tools for absolute microbial quantification using both 
+    'phyloseq' and 'TreeSummarizedExperiment' (TSE) data structures. Supports 
+    single spike-in taxa or synthetic communities with flexible spike-in volumes 
+    and copy numbers. Implements a complete workflow including spike-in validation, 
+    data preprocessing, scaling factor estimation, conversion to absolute abundances, 
+    bias correction, normalization, and downstream analyses. Offers visualization 
+    and interactive plots via 'ggplot2' and 'ggtree'. Enables analysis with 
+    'DESeq2', 'edgeR', and other methods. Includes vignette tutorials, case 
+    studies, and comprehensive documentation.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
+LazyData: false
 LazyDataCompression: xz
 Depends: 
-    R (>= 3.5.0)
+    R (>= 4.3.0)
 Imports:
     ape,
-    dplyr,
-    ggalluvial,
-    ggrepel,
-    phangorn,
-    xml2,
-    tidyr,
-    tidytree,
-    igraph,
-    ggraph,
-    scales,
+    BiocGenerics,
     Biostrings,
+    data.table,
     DECIPHER,
     DESeq2,
+    dplyr,
     edgeR,
     flextable,
+    ggalluvial,
+    ggnewscale,
     ggplot2,
     ggpubr,
+    ggraph,
+    ggrepel,
     ggridges,
     ggtree,
-    data.table,
-    grid,
+    ggtreeExtra,
+    graphics,
+    grDevices,
+    igraph,
     limma,
     magrittr,
     matrixStats,
+    methods,
     microbiome,
-    microbiomeutilities,
-    msa,
+    officer,
+    grid,
+    reshape2,
+    patchwork,
+    phangorn,
     phyloseq,
     randomForest,
     RColorBrewer,
     rlang,
     S4Vectors,
-    speedyseq,
+    scales,
     stats,
-    BiocGenerics,
     SummarizedExperiment,
     tibble,
-    reshape2,
-    methods,
-    patchwork,
-    officer,
-    TreeSummarizedExperiment
-Remotes: 
-    github::mikemc/speedyseq,
-    github::microsud/microbiomeutilities
+    tidyr,
+    TreeSummarizedExperiment,
+    utils,
+    msa,
+    xml2,
+    ggstar
 Suggests:
-    knitr,
-    rmarkdown,
-    agricolae,
     Biobase,
     BiocManager,
-    vegan,
     cluster,
-    dada2,
     devtools,
     DT,
     e1071,
     foreach,
+    ggtext,
+    graphics,
     grDevices,
     intergraph,
+    knitr,
     optparse,
     plyr,
     preprocessCore,
     qpdf,
     remotes,
+    rmarkdown,
     ShortRead,
     testthat (>= 3.0.0),
-    viridis,
-    ggtext
+    vegan,
+    viridis
+biocViews: 
+    Microbiome,
+    Preprocessing,
+    QualityControl,
+    DifferentialExpression, 
+    Normalization, 
+    Sequencing, 
+    Visualization, 
+    Phylogenetics, 
+    ExperimentalDesign, 
+    DataImport, 
+    Software
 URL: https://github.com/mghotbi/DspikeIn
 BugReports: https://github.com/mghotbi/DspikeIn/issues
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr
-Packaged: 2024-07-28 21:21:56 UTC; mghotbi
 NeedsCompilation: no

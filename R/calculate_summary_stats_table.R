@@ -1,74 +1,92 @@
 #' @title Calculate Summary Statistics Table
 #'
-#' @description This function calculates summary statistics (mean, standard deviation, standard error, quantiles) for numeric columns in a data frame,
-#' creates a flextable for formatted output, and saves the table in a Word document and CSV file.
+#' @description Computes summary statistics (mean, standard deviation, standard error, quartiles)
+#' for numeric columns of a data frame, generates a formatted flextable, and saves
+#' both DOCX and CSV versions of the table.
 #'
-#' @param data A data frame containing the data to be summarized.
-#' @param output_path A character string specifying the output path for the Word document. Default is NULL, which sets the output path to "post_eval_summary.docx".
-#' @return A flextable object containing the summary statistics.
-#' @examples
-#' \donttest{
-#' if (requireNamespace("DspikeIn", quietly = TRUE) &&
-#'  requireNamespace("microbiome", quietly = TRUE)) {
-#'   # Load necessary libraries
-#'   library(microbiome)
+#' @param data A data frame containing numeric variables.
+#' @param output_path Optional. Character string specifying the DOCX output path.
+#' Default is "post_eval_summary.docx".
 #'
-#'   data("physeq_16SOTU", package = "DspikeIn")
+#' @return A `flextable` object with formatted summary statistics.
 #'
-#'   # Extract absolute counts using the microbiome package
-#'   absolute_count <- microbiome::meta(physeq_16SOTU)
-#'
-#'   # Calculate summary statistics and save the table to a Word document
-#'   summary_table <- calculate_summary_stats_table(absolute_count, output_path = "summary.docx")
-#'
-#'   # Print the calculated summary table
-#'   print(summary_table)
-#' }
-#' }
 #' @importFrom flextable flextable fontsize font color bold italic save_as_docx
 #' @importFrom dplyr select_if summarise_all
 #' @importFrom utils write.csv
+#' @importFrom stats sd quantile median
+#'
+#' @examples
+#' if (requireNamespace("DspikeIn", quietly = TRUE)) {
+#'   ## --- Phyloseq example ---
+#'   data("physeq_16SOTU", package = "DspikeIn")
+#'
+#'   absolute_count <- phyloseq::otu_table(physeq_16SOTU)
+#'
+#'   tmp_docx <- file.path(tempdir(), "physeq_summary.docx")
+#'
+#'   summary_table_physeq <- calculate_summary_stats_table(
+#'     data = as.data.frame(absolute_count),
+#'     output_path = tmp_docx
+#'   )
+#'
+#'   print(summary_table_physeq)
+#'   if (file.exists(tmp_docx)) file.remove(tmp_docx)
+#'
+#'   ## --- TSE example ---
+#'   data("tse", package = "DspikeIn")
+#'
+#'   tse_counts <- SummarizedExperiment::assay(tse)
+#'
+#'   tmp_docx2 <- file.path(tempdir(), "tse_summary.docx")
+#'
+#'   summary_table_tse <- calculate_summary_stats_table(
+#'     data = as.data.frame(tse_counts),
+#'     output_path = tmp_docx2
+#'   )
+#'
+#'   print(summary_table_tse)
+#'   if (file.exists(tmp_docx2)) file.remove(tmp_docx2)
+#' }
+#'
 #' @export
 calculate_summary_stats_table <- function(data, output_path = NULL) {
-  suppressMessages({
+  if (!is.data.frame(data)) stop("'data' must be a data frame.")
 
-    # Calculate summary statistics for numeric columns
-    summary_stats <- dplyr::select_if(data, is.numeric) %>%
-      dplyr::summarise_all(list(
-        mean = ~mean(.),
-        sd = ~ifelse(all(is.na(.)), NA, stats::sd(., na.rm = TRUE)),
-        se = ~ifelse(all(is.na(.)), NA, stats::sd(., na.rm = TRUE) / sqrt(length(.))),
-        q25 = ~stats::quantile(., 0.25, na.rm = TRUE),
-        median = ~stats::median(.),
-        q75 = ~stats::quantile(., 0.75, na.rm = TRUE)
-      ))
+  numeric_data <- dplyr::select_if(data, is.numeric)
 
-    # Create a flextable for the summary statistics
-    ft <- flextable::flextable(summary_stats) %>%
-      flextable::fontsize(size = 10) %>%
-      flextable::font(part = "all", fontname = "Inconsolata") %>%
-      flextable::color(part = "header", color = "#582F0E") %>%
-      flextable::bold(part = "header") %>%
-      flextable::italic()
+  if (ncol(numeric_data) == 0) stop("No numeric columns found in the data.")
 
-    # Set default output directory if none provided
-    if (is.null(output_path)) {
-      output_path <- "post_eval_summary.docx"
-    }
+  # Calculate statistics
+  summary_stats <- dplyr::summarise_all(numeric_data, list(
+    mean = ~ mean(., na.rm = TRUE),
+    sd = ~ sd(., na.rm = TRUE),
+    se = ~ sd(., na.rm = TRUE) / sqrt(sum(!is.na(.))),
+    q25 = ~ quantile(., 0.25, na.rm = TRUE),
+    median = ~ median(., na.rm = TRUE),
+    q75 = ~ quantile(., 0.75, na.rm = TRUE)
+  ))
 
-    # Save the flextable as a Word document
-    flextable::save_as_docx(ft, path = output_path)
+  # Format
+  ft <- flextable::flextable(summary_stats) |>
+    flextable::fontsize(size = 10) |>
+    flextable::font(part = "all", fontname = "Inconsolata") |>
+    flextable::color(part = "header", color = "#582F0E") |>
+    flextable::bold(part = "header") |>
+    flextable::italic()
 
-    # Save summary statistics data frame as CSV
-    csv_path <- sub(".docx", ".csv", output_path)
-    utils::write.csv(summary_stats, file = csv_path, row.names = FALSE)
+  if (is.null(output_path)) output_path <- "post_eval_summary.docx"
 
-    # Print a message indicating where the files were saved
-    cat("\U0001F4BE	Table saved in docx format:", output_path, "\n")
-    cat("\U0001F4BE	Summary statistics saved as CSV:", csv_path, "\n")
+  # Save DOCX
+  flextable::save_as_docx(ft, path = output_path)
 
-    return(ft)
-  })
+  # Save CSV
+  csv_path <- sub("\\.docx$", ".csv", output_path)
+  utils::write.csv(summary_stats, file = csv_path, row.names = FALSE)
+
+  message("DOCX table saved to: ", output_path)
+  message("CSV summary saved to: ", csv_path)
+
+  return(ft)
 }
 
 # Example usage:

@@ -1,29 +1,38 @@
-#' @title Calculate Average Scaling Factors for Multiple Spiked Species
+#' @title Calculate Sample-specific Average Scaling Factors for Multiple Spike-in Groups
 #'
-#' @description This function calculates scaling factors for multiple spiked species in a \code{phyloseq} or
-#' \code{TreeSummarizedExperiment} (TSE) object. It merges ASVs/OTUs for each species if necessary,
-#' averages the scaling factors, and returns the averaged scaling factors for each OTU.
-#' Different spiked cell counts can be provided for each set of spiked species.
-#' If an OTU is not associated with any spiked species, a default scaling factor (1) is assigned.
-#' Scaling factors are rounded to the specified number of decimal places.
+#' @description
+#' Computes sample-specific scaling factors for multiple groups of spiked species
+#' in a `phyloseq` or `TreeSummarizedExperiment` object. Each group can have its own
+#' expected spike-in cell count. Scaling factors are calculated per sample and averaged across groups.
+#' Missing spike-in observations in a sample will be handled gracefully by averaging available groups.
 #'
-#' @param obj A \code{phyloseq} or \code{TreeSummarizedExperiment} (TSE) object containing microbial abundance data.
-#' @param spiked_species_list A list of character vectors. Each vector contains the spiked species
-#' (by taxon names) to be merged for calculating scaling factors for each group.
-#' @param spiked_cells_list A numeric vector specifying the number of spiked cells corresponding to each group in `spiked_species_list`.
-#' @param merge_method A character string specifying how to merge ASVs/OTUs for each group of spiked species.
-#' Accepted values are \code{"sum"} or \code{"max"}. Default is \code{"sum"}.
-#' @return A numeric vector of averaged and rounded scaling factors for each OTU in the object.
-#' OTUs not associated with any spiked species are assigned a default scaling factor of 1.
+#' @details
+#' The function assumes that the taxonomy table has a `Species` column.
+#' The output is suitable for downstream absolute quantification pipelines.
+#' OTUs belonging to each spike-in group will be merged using the specified `merge_method`
+#' ("sum" or "max") to obtain a group-specific spike-in abundance in each sample.
+#'
+#' If a sample does not contain any spike-in sequences, a scaling factor of 1 is assigned.
+#'
+#' @param obj A `phyloseq` or `TreeSummarizedExperiment` object.
+#' @param spiked_species_list A list of character vectors. Each vector contains taxon names (at species level) for one spike-in group.
+#' @param spiked_cells_list A numeric vector specifying the expected number of spike-in cells for each group.
+#' The order must match `spiked_species_list`.
+#' @param merge_method Character. Either `"sum"` or `"max"`. Controls how OTUs of each spike-in group are merged.
+#' @return A named numeric vector of sample-specific scaling factors.
+#'
+#' @section Notes:
+#' - This function does not modify the input object.
+#' - The returned scaling factors are intended to be used for absolute abundance normalization.
 #'
 #' @importFrom phyloseq taxa_names otu_table tax_table
 #' @importFrom SummarizedExperiment assay rowData
+#' @export
 #' @examples
-#' \donttest{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   data("physeq", package = "DspikeIn")
 #'
-#'   # Step 1: Define the spiked species list and corresponding cell counts
+#'   # Step 1: Define the spike-in species groups and associated cell counts
 #'   spiked_species_list <- list(
 #'     c("Pseudomonas aeruginosa"),
 #'     c("Escherichia coli"),
@@ -32,7 +41,7 @@
 #'
 #'   spiked_cells_list <- c(10000, 20000, 15000)
 #'
-#'   # Step 2: Apply the function to a phyloseq object
+#'   # Step 2: Compute the scaling factors
 #'   scaling_factors <- calculate_list_average_scaling_factors(
 #'     physeq,
 #'     spiked_species_list,
@@ -40,111 +49,105 @@
 #'     merge_method = "sum"
 #'   )
 #'
-#'   # Step 3: Print the results
+#'   # Step 3: Inspect scaling factors
 #'   print(scaling_factors)
-#' }
 #' }
 #' @export
 calculate_list_average_scaling_factors <- function(obj, spiked_species_list, spiked_cells_list, merge_method = c("sum", "max")) {
-
-  # Ensure correct merge_method input
   merge_method <- match.arg(merge_method)
 
-  # Validate input lengths
+  # Validate inputs
   if (length(spiked_species_list) != length(spiked_cells_list)) {
-    stop("\U0000274C The length of spiked_species_list must match the length of spiked_cells_list.")
+    stop("'spiked_species_list' and 'spiked_cells_list' must have the same length.")
   }
 
-  # Determine object type and use appropriate accessor functions
-  otu_table <- if (inherits(obj, "TreeSummarizedExperiment")) {
+  # Extract OTU and taxonomy tables
+  is_tse <- inherits(obj, "TreeSummarizedExperiment")
+
+  otu_mat <- if (is_tse) {
     SummarizedExperiment::assay(obj)
   } else {
-    phyloseq::otu_table(obj)
+    as(phyloseq::otu_table(obj), "matrix")
   }
 
-  tax_data <- if (inherits(obj, "TreeSummarizedExperiment")) {
-    SummarizedExperiment::rowData(obj)
+  tax_data <- if (is_tse) {
+    as.data.frame(SummarizedExperiment::rowData(obj))
   } else {
-    phyloseq::tax_table(obj)
+    as.data.frame(phyloseq::tax_table(obj))
   }
 
-  otu_names <- rownames(otu_table)
+  sample_names_vec <- colnames(otu_mat)
+  n_samples <- ncol(otu_mat)
 
-  # Initialize scaling factor storage
-  scaling_factors_total <- rep(0, length(otu_names))
-  count_contributions <- rep(0, length(otu_names))
+  # Initialize matrices
+  scaling_factors_matrix <- matrix(NA, nrow = n_samples, ncol = length(spiked_species_list))
+  rownames(scaling_factors_matrix) <- sample_names_vec
 
-  # Loop through each group of spiked species and calculate scaling factors
+  # Loop over each spike-in group
   for (i in seq_along(spiked_species_list)) {
-
-    # Identify OTUs corresponding to the spiked species
     spiked_species <- spiked_species_list[[i]]
-    matched_otus <- which(tax_data[, "Species"] %in% spiked_species)
+    expected_cells <- spiked_cells_list[i]
 
-    # Ensure OTUs were found
+    # Identify matched OTUs by Species
+    matched_otus <- which(tax_data$Species %in% spiked_species)
+
     if (length(matched_otus) == 0) {
-      warning(paste("No OTUs matched for spiked species:", paste(spiked_species, collapse = ", ")))
+      warning(sprintf("No OTUs matched for: %s", paste(spiked_species, collapse = ", ")))
       next
     }
 
-    # Extract relevant abundance data
-    spiked_abundances <- otu_table[matched_otus, , drop = FALSE]
+    spikein_abund <- otu_mat[matched_otus, , drop = FALSE]
 
-    # Merge ASVs/OTUs based on specified method
+    # Merge OTUs per sample
     merged_abundance <- if (merge_method == "sum") {
-      rowSums(spiked_abundances, na.rm = TRUE)
+      colSums(spikein_abund, na.rm = TRUE)
     } else {
-      apply(spiked_abundances, 2, max, na.rm = TRUE)
+      apply(spikein_abund, 2, max, na.rm = TRUE)
     }
 
-    # Calculate total observed abundance
-    total_abundance_spiked <- sum(merged_abundance)
+    # Avoid divide by zero
+    scaling_vec <- ifelse(merged_abundance > 0,
+      expected_cells / merged_abundance,
+      NA
+    )
 
-    # Avoid division by zero
-    if (total_abundance_spiked == 0) {
-      warning(paste("Zero total abundance for spiked species:", paste(spiked_species, collapse = ", ")))
-      next
-    }
-
-    # Compute scaling factor
-    scaling_factor <- spiked_cells_list[i] / total_abundance_spiked
-
-    # Assign scaling factors to matched OTUs
-    scaling_factors_total[matched_otus] <- scaling_factors_total[matched_otus] + scaling_factor
-    count_contributions[matched_otus] <- count_contributions[matched_otus] + 1
+    scaling_factors_matrix[, i] <- scaling_vec
   }
 
-  # Compute average scaling factors
-  average_scaling_factors <- scaling_factors_total / count_contributions
+  # Calculate average scaling factor per sample (excluding NAs)
+  average_scaling <- rowMeans(scaling_factors_matrix, na.rm = TRUE)
 
-  # Replace NAs with default scaling factor (1)
-  average_scaling_factors[is.na(average_scaling_factors)] <- 1
+  # Replace any NA (i.e., sample had no spike-in from any group) with default 1
+  average_scaling[is.na(average_scaling)] <- 1
 
-  # Round values for consistency
-  average_scaling_factors <- round(average_scaling_factors, digits = 2)
+  # Round for consistency
+  average_scaling <- round(average_scaling, digits = 4)
 
-  return(average_scaling_factors)
+  names(average_scaling) <- sample_names_vec
+  return(average_scaling)
 }
+
+
 
 # Example usage:
 # Step 1: Define the spiked species list and corresponding cell counts
-#spiked_species_list <- list(
+# spiked_species_list <- list(
 #  c("Pseudomonas aeruginosa"),
 #  c("Escherichia coli"),
 #  c("Clostridium difficile")
-#)
+# )
 
 # spiked_cells_list <- c(10000, 20000, 15000)
 
 # Step 2: Apply the function to a phyloseq object
-#scaling_factors <- calculate_list_average_scaling_factors(
+# scaling_factors <- calculate_list_average_scaling_factors(
 # physeq,
 # spiked_species_list,
 #  spiked_cells_list,
 #  merge_method = "sum")
 
 # Step 3: Print the results
-#print(scaling_factors)
+# print(scaling_factors)
 
 #
 # # Step 4: build the phyloseq

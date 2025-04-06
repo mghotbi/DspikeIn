@@ -2,51 +2,42 @@
 % Please edit documentation in R/filter_and_split_abundance.R
 \name{filter_and_split_abundance}
 \alias{filter_and_split_abundance}
-\title{Filter and Split Abundance Data (Saves Phyloseq & TSE Separately)}
+\title{Filter and Split Abundance Data by Threshold}
 \usage{
-filter_and_split_abundance(
-  obj,
-  threshold = 0.01,
-  output_prefix = "abundance_analysis"
-)
+filter_and_split_abundance(obj, threshold = 0.01, output_prefix = NULL)
 }
 \arguments{
 \item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
 
-\item{threshold}{A numeric value indicating the mean abundance threshold for filtering and splitting.}
+\item{threshold}{A numeric value indicating the mean abundance threshold for filtering.}
 
-\item{output_prefix}{A character string specifying the filename prefix for saved results.}
+\item{output_prefix}{A character string specifying the filename prefix for saving.
+If \code{NULL}, files will not be saved. Default is \code{NULL}.}
 }
 \value{
-A list containing:
-\itemize{
-\item \verb{$filtered}: Filtered objects in both formats.
-\item \verb{$high}: High-abundance taxa in both formats.
-\item \verb{$low}: Low-abundance taxa in both formats.
+A named list with components:
+\describe{
+\item{high}{Subset with taxa having mean abundance > threshold}
+\item{low}{Subset with taxa having mean abundance <= threshold}
 }
+Each returned element contains a single object of the same class as the input (\code{phyloseq} or \code{TSE}).
 }
 \description{
 Filters low-abundance taxa from a \code{phyloseq} or \code{TreeSummarizedExperiment} object,
-splits data into high- and low-abundance groups, and saves all results \strong{in both formats}.
-}
-\details{
-The function:
-\itemize{
-\item Removes taxa with mean abundance below \code{threshold}
-\item Splits remaining data into \strong{high-abundance} and \strong{low-abundance} groups
-\item Saves all results as \strong{both \code{phyloseq} and \code{TreeSummarizedExperiment} formats}
-\item Notifies users where files are saved via \code{cat()}
-}
+splits data into high- and low-abundance groups, and optionally saves results.
 }
 \examples{
-\donttest{
-data("physeq_ITSOTU", package="DspikeIn")
-results <- filter_and_split_abundance(physeq_ITSOTU,
-threshold = 0.05,
-output_prefix = "abundance_analysis")
-tse_ITSOTU <-convert_phyloseq_to_tse(physeq_ITSOTU)
-results <- filter_and_split_abundance(tse_ITSOTU,
-threshold = 0.05, output_prefix = "abundance_analysis")
-}
+data("physeq_ITSOTU", package = "DspikeIn")
+
+# Return results without saving
+output <- filter_and_split_abundance(physeq_ITSOTU, threshold = 0.05)
+
+# With saving
+tse_ITSOTU <- convert_phyloseq_to_tse(physeq_ITSOTU)
+
+output <- filter_and_split_abundance(tse_ITSOTU,
+  threshold = 0.05,
+  output_prefix = file.path(tempdir(), "abund")
+)
 
 }

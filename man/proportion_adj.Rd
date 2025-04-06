@@ -9,7 +9,8 @@ proportion_adj(obj, output_file = "proportion_adjusted.rds")
 \arguments{
 \item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing microbiome data.}
 
-\item{output_file}{A character string specifying the output file name for the adjusted object. Default is "proportion_adjusted.rds".}
+\item{output_file}{A character string specifying the output file name for the adjusted object.
+If \code{NULL}, the object is not saved. Default is "proportion_adjusted.rds".}
 }
 \value{
 A modified object of the same class (\code{phyloseq} or \code{TreeSummarizedExperiment}) with proportionally adjusted and rounded abundance data.
@@ -24,23 +25,22 @@ This function extracts the OTU table (or assay in \code{TSE}), normalizes it bas
 and updates the original object while maintaining its structure.
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   # Load phyloseq object
   data("physeq_16SOTU", package = "DspikeIn")
+
   normalized_physeq <- proportion_adj(
     physeq_16SOTU,
-    output_file = "proportion_adjusted_physeq.rds"
+    output_file = file.path(tempdir(), "proportion_adjusted_physeq.rds")
   )
   print(normalized_physeq)
+
+  # Convert to TSE and apply
   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
-  # Example with a TreeSummarizedExperiment (TSE) object
-  data("tse_16SOTU", package = "DspikeIn")
   normalized_tse <- proportion_adj(
     tse_16SOTU,
-    output_file = "proportion_adjusted_tse.rds"
+    output_file = file.path(tempdir(), "proportion_adjusted_tse.rds")
   )
   print(normalized_tse)
-}
 }
 }

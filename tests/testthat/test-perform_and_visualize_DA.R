@@ -5,7 +5,6 @@ library(ggplot2)
 library(TreeSummarizedExperiment)
 
 test_that("perform_and_visualize_DA returns expected outputs", {
-
   data("physeq_16SOTU", package = "DspikeIn")
 
   #  Define test parameters
@@ -66,6 +65,4 @@ test_that("perform_and_visualize_DA returns expected outputs", {
   #  Ensure output remains valid for TSE input
   expect_type(result_TSE, "list")
   expect_true(inherits(result_TSE$obj_significant, "TreeSummarizedExperiment"))
-
 })
-

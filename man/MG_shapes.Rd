@@ -20,7 +20,7 @@ A numeric vector of point shapes (0–25) for use in ggplot2.
 # Example usage of MG_shapes in ggplot2
 ggplot2::ggplot(mtcars, ggplot2::aes(x = wt, y = mpg, shape = factor(cyl))) +
   ggplot2::geom_point(size = 4) +
-  ggplot2::scale_shape_manual(values = MG_shapes[1:3]) +  
+  ggplot2::scale_shape_manual(values = MG_shapes[seq_len(3)]) +
   my_custom_theme()
 
 }

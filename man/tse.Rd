@@ -3,17 +3,37 @@
 \docType{data}
 \name{tse}
 \alias{tse}
-\title{Example TreeSummarizedExperiment Data (TSE)}
+\title{Example TreeSummarizedExperiment (TSE) Object}
 \format{
-A \code{TreeSummarizedExperiment} object.
+A \code{TreeSummarizedExperiment} object with:
+\describe{
+\item{assays}{Matrix of observed counts or abundances.}
+\item{colData}{Sample metadata table.}
+\item{rowData}{Taxonomic annotations or feature metadata (if available).}
+}
 }
 \source{
-Example dataset from microbiome analysis.
+Example dataset for microbiome analysis.
 }
 \usage{
 data(tse)
 }
+\value{
+A \code{TreeSummarizedExperiment} object containing simulated microbiome data.
+}
 \description{
-A dataset containing microbiome data stored as a TreeSummarizedExperiment object.
+This dataset contains simulated microbiome data stored as a \code{TreeSummarizedExperiment} (TSE) object.
+The TSE structure combines abundance data, sample metadata, and optional feature annotations,
+suitable for downstream statistical analysis of microbiome datasets.
+}
+\examples{
+data(tse)
+tse
+assay(tse)
+colData(tse)
+rowData(tse)
+}
+\seealso{
+\code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-constructor]{TreeSummarizedExperiment::TreeSummarizedExperiment()}}
 }
 \keyword{datasets}

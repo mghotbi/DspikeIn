@@ -8,6 +8,7 @@ library(microbiome)
 test_that("calculate_summary_stats_table() returns a flextable and saves files", {
   data("physeq_16SOTU", package = "DspikeIn")
   absolute_count <- microbiome::meta(physeq_16SOTU)
+
   expect_true(nrow(absolute_count) > 0, info = "Dataset should have rows.")
   expect_true(ncol(absolute_count) > 0, info = "Dataset should have columns.")
 
@@ -16,9 +17,7 @@ test_that("calculate_summary_stats_table() returns a flextable and saves files",
 
   summary_table <- calculate_summary_stats_table(absolute_count, output_path = temp_docx)
 
-  # Test if the function returns a flextable
   expect_s3_class(summary_table, "flextable")
-
   expect_true(file.exists(temp_docx), info = "Word document should be created.")
   expect_true(file.exists(temp_csv), info = "CSV file should be created.")
 
@@ -26,7 +25,6 @@ test_that("calculate_summary_stats_table() returns a flextable and saves files",
   expect_true(nrow(summary_data) > 0, info = "CSV file should have rows.")
   expect_true(ncol(summary_data) > 0, info = "CSV file should have columns.")
 
-  # Cleanup temporary files
-  unlink(temp_docx)
-  unlink(temp_csv)
+  # Cleanup
+  unlink(c(temp_docx, temp_csv))
 })

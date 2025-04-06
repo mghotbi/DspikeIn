@@ -19,10 +19,10 @@
 #' | `Coreness`                     | Node's coreness (from k-core decomposition) |
 #' | `Constraint`                   | Burt's constraint (measures structural holes in a node's ego network) |
 #' | `EffectiveSize`                | Inverse of constraint (larger values = more non-redundant connections) |
-#' | `Redundancy`                   | Sum of constraint values of a node’s alters |
+#' | `Redundancy`                   | Sum of constraint values of a node's alters |
 #' | `Community`                    | Community assignment from Louvain clustering |
 #' | `Efficiency`                   | Global efficiency (average inverse shortest path length) |
-#' | `Local_Efficiency`             | Local efficiency (subgraph efficiency for a node’s neighbors) |
+#' | `Local_Efficiency`             | Local efficiency (subgraph efficiency for a node's neighbors) |
 #' | `Within_Module_Connectivity`   | Proportion of neighbors in the same community |
 #' | `Among_Module_Connectivity`    | Proportion of neighbors in different communities |
 #'
@@ -43,35 +43,32 @@
 #' @importFrom reshape2 melt
 #' @importFrom dplyr mutate_at
 #' @examples
-#' \donttest{
-#'   library(igraph)
-#'   set.seed(42)
-#'   # For external graphml please use full address
-#'   # Load internal graphml
-#'   Complete <- load_graphml("Complete.graphml")
+#' library(igraph)
+#' set.seed(42)
+#' # For external graphml please use full address
+#' # Load internal graphml
+#' Complete <- load_graphml("Complete.graphml")
 #'
-#'   # Compute node-level metrics
-#'   result <- node_level_metrics(Complete)
+#' # Compute node-level metrics
+#' result <- node_level_metrics(Complete)
 #'
-#'   # View computed metrics
-#'   print(result$metrics)
+#' # View computed metrics
+#' print(result$metrics)
 #'
-#'   # Show the first 4x4 plot
-#'   print(result$plots$plot1)
+#' # Show the first 4x4 plot
+#' print(result$plots$plot1)
 #'
-#'   # Show the second 4x4 plot
-#'   print(result$plots$plot2)
+#' # Show the second 4x4 plot
+#' print(result$plots$plot2)
 #'
-#'   # Show facet plot
-#'   print(result$facet_plot)
+#' # Show facet plot
+#' print(result$facet_plot)
 #'
-#'   # Print metrics and flextable
-#'   print(result$metrics)
-#'   print(result$flextable)
-#' }
+#' # Print metrics and flextable
+#' print(result$metrics)
+#' print(result$flextable)
 #' @export
 node_level_metrics <- function(graph, save_path = NULL) {
-
   # =====================
   # Ensure Edge Weights
   # =====================
@@ -85,23 +82,27 @@ node_level_metrics <- function(graph, save_path = NULL) {
   clusters <- igraph::cluster_louvain(graph, weights = edge_weights)
 
   # =====================
-  # Compute Node-Level Metrics (INCLUDING ALL METRICS)
+  # Compute Node-Level Metrics
   # =====================
-
   metrics <- data.frame(
     Node = as.character(igraph::V(graph)$name),
-    Degree = as.integer(igraph::degree(graph)),  # ensure integer
+    Degree = as.integer(igraph::degree(graph)),
     Strength = igraph::strength(graph, weights = edge_weights),
     Closeness = igraph::closeness(graph, weights = edge_weights, normalized = TRUE),
-    Betweenness = suppressWarnings(igraph::betweenness(graph, weights = edge_weights, normalized = TRUE)),
+    Betweenness = withCallingHandlers(
+      igraph::betweenness(graph, weights = edge_weights, normalized = TRUE),
+      warning = function(w) invokeRestart("muffleWarning")
+    ),
     EigenvectorCentrality = igraph::eigen_centrality(graph, weights = edge_weights)$vector,
     PageRank = igraph::page_rank(graph, weights = edge_weights)$vector,
     Harmonic = igraph::harmonic_centrality(graph, weights = edge_weights),
     Transitivity = igraph::transitivity(graph, type = "local", isolates = "zero"),
-    Coreness = as.integer(igraph::coreness(graph, mode = "all")),  # ensure integer
+    Coreness = as.integer(igraph::coreness(graph, mode = "all")),
     Constraint = igraph::constraint(graph),
     EffectiveSize = 1 / igraph::constraint(graph),
-    Redundancy = sapply(igraph::V(graph), function(v) sum(igraph::constraint(graph)[v])),
+    Redundancy = vapply(igraph::V(graph), function(v) {
+      sum(igraph::constraint(graph)[v])
+    }, numeric(1)),
     Community = as.factor(clusters$membership),
     Efficiency = NA,
     Local_Efficiency = NA,
@@ -109,50 +110,57 @@ node_level_metrics <- function(graph, save_path = NULL) {
     Among_Module_Connectivity = NA
   )
 
+  # =====================
   # Compute Efficiency & Local Efficiency
-  metrics$Efficiency <- sapply(igraph::V(graph), function(v) {
+  # =====================
+  metrics$Efficiency <- vapply(igraph::V(graph), function(v) {
     dist_mat <- igraph::distances(graph, v = v)
     valid_distances <- dist_mat[dist_mat > 0 & is.finite(dist_mat)]
-    if (length(valid_distances) == 0) return(0)  # Ensure no NA
+    if (length(valid_distances) == 0) {
+      return(0)
+    }
     mean(1 / valid_distances, na.rm = TRUE)
-  })
+  }, numeric(1))
 
-  metrics$Local_Efficiency <- sapply(igraph::V(graph), function(v) {
+  metrics$Local_Efficiency <- vapply(igraph::V(graph), function(v) {
     neighbors <- igraph::neighbors(graph, v)
-    if (length(neighbors) < 2) return(0)  # Replace NA with 0
+    if (length(neighbors) < 2) {
+      return(0)
+    }
     subgraph <- igraph::induced_subgraph(graph, neighbors)
     dist_mat <- igraph::distances(subgraph)
     valid_distances <- dist_mat[dist_mat > 0 & is.finite(dist_mat)]
-    if (length(valid_distances) == 0) return(0)  # Replace NA with 0
+    if (length(valid_distances) == 0) {
+      return(0)
+    }
     mean(1 / valid_distances, na.rm = TRUE)
-  })
-
-  # Compute Within-Module and Among-Module Connectivity
-  metrics$Within_Module_Connectivity <- sapply(igraph::V(graph), function(v) {
-    node_community <- clusters$membership[as.numeric(v)]
-    neighbors <- as.numeric(igraph::neighbors(graph, v))
-
-    if (length(neighbors) == 0) return(0)  # No neighbors, return 0
-
-    same_community_neighbors <- sum(clusters$membership[neighbors] == node_community)
-
-    return(same_community_neighbors / length(neighbors))
-  })
-
-  metrics$Among_Module_Connectivity <- sapply(igraph::V(graph), function(v) {
-    node_community <- clusters$membership[as.numeric(v)]  # Get node's community
-    neighbors <- as.numeric(igraph::neighbors(graph, v))
-
-    if (length(neighbors) == 0) return(0)  # No neighbors, return 0
-
-    diff_community_neighbors <- sum(clusters$membership[neighbors] != node_community)
-
-    return(diff_community_neighbors / length(neighbors))
-  })
-
+  }, numeric(1))
 
   # =====================
-  # Generate Plots (FULLY INCLUDED)
+  # Within/Among Module Connectivity
+  # =====================
+  metrics$Within_Module_Connectivity <- vapply(igraph::V(graph), function(v) {
+    node_community <- clusters$membership[as.numeric(v)]
+    neighbors <- as.numeric(igraph::neighbors(graph, v))
+    if (length(neighbors) == 0) {
+      return(0)
+    }
+    same_community_neighbors <- sum(clusters$membership[neighbors] == node_community)
+    same_community_neighbors / length(neighbors)
+  }, numeric(1))
+
+  metrics$Among_Module_Connectivity <- vapply(igraph::V(graph), function(v) {
+    node_community <- clusters$membership[as.numeric(v)]
+    neighbors <- as.numeric(igraph::neighbors(graph, v))
+    if (length(neighbors) == 0) {
+      return(0)
+    }
+    diff_community_neighbors <- sum(clusters$membership[neighbors] != node_community)
+    diff_community_neighbors / length(neighbors)
+  }, numeric(1))
+
+  # =====================
+  # Generate Plots
   # =====================
   color_palette <- DspikeIn::color_palette$cool_MG
 
@@ -160,17 +168,14 @@ node_level_metrics <- function(graph, save_path = NULL) {
     ggplot2::ggplot(metrics, ggplot2::aes(x = Degree)) +
       ggplot2::geom_histogram(fill = "#FB5607", bins = 20, alpha = 0.7) +
       ggplot2::theme_minimal(),
-
     ggplot2::ggplot(metrics, ggplot2::aes(x = PageRank)) +
       ggplot2::geom_histogram(fill = "#553C9A", bins = 20, alpha = 0.7) +
       ggplot2::theme_minimal(),
-
     ggplot2::ggplot(metrics, ggplot2::aes(y = Closeness, x = Betweenness, color = Community)) +
       ggplot2::geom_point(size = 3, alpha = 0.8) +
       ggplot2::scale_color_manual(values = color_palette) +
       ggplot2::theme_minimal() +
       ggplot2::theme(legend.position = "top"),
-
     ggplot2::ggplot(metrics, ggplot2::aes(y = Strength, x = EigenvectorCentrality, color = Degree)) +
       ggplot2::geom_point(size = 3, alpha = 0.8) +
       ggplot2::scale_color_viridis_c() +
@@ -184,19 +189,16 @@ node_level_metrics <- function(graph, save_path = NULL) {
       ggplot2::scale_color_manual(values = color_palette) +
       ggplot2::theme_minimal() +
       ggplot2::theme(legend.position = "top"),
-
     ggplot2::ggplot(metrics, ggplot2::aes(y = Redundancy, x = Degree, color = Community)) +
       ggplot2::geom_point(size = 3, alpha = 0.8) +
       ggplot2::scale_color_manual(values = color_palette) +
       ggplot2::theme_minimal() +
       ggplot2::theme(legend.position = "top"),
-
     ggplot2::ggplot(metrics, ggplot2::aes(y = Constraint, x = Within_Module_Connectivity, color = Community)) +
       ggplot2::geom_point(size = 3, alpha = 0.8) +
       ggplot2::scale_color_manual(values = color_palette) +
       ggplot2::theme_minimal() +
       ggplot2::theme(legend.position = "top"),
-
     ggplot2::ggplot(metrics, ggplot2::aes(y = Degree, x = Coreness, color = Community)) +
       ggplot2::geom_point(size = 3, alpha = 0.8) +
       ggplot2::scale_color_manual(values = color_palette) +
@@ -206,14 +208,16 @@ node_level_metrics <- function(graph, save_path = NULL) {
   )
 
   # =====================
-  # Generate Facet Plot (FULLY INCLUDED)
+  # Generate Facet Plot
   # =====================
   metrics_zscore <- dplyr::mutate_if(metrics, is.numeric, as.double)
   metrics_zscore <- dplyr::mutate_at(metrics_zscore, dplyr::vars(-Node, -Community), ~ scale(.))
-  metrics_long <- reshape2::melt(metrics_zscore, id.vars = c("Node", "Community"),
-                                 variable.name = "Metric", value.name = "Z_Score")
+  metrics_long <- reshape2::melt(metrics_zscore,
+    id.vars = c("Node", "Community"),
+    variable.name = "Metric", value.name = "Z_Score"
+  )
 
-    facet_plot <- ggplot2::ggplot(metrics_long, ggplot2::aes(x = Community, y = Z_Score, fill = Community)) +
+  facet_plot <- ggplot2::ggplot(metrics_long, ggplot2::aes(x = Community, y = Z_Score, fill = Community)) +
     ggplot2::geom_boxplot(alpha = 0.8) +
     ggplot2::facet_grid(~Metric, scales = "free_y") +
     ggplot2::scale_fill_manual(values = color_palette) +
@@ -221,10 +225,10 @@ node_level_metrics <- function(graph, save_path = NULL) {
     ggplot2::theme(axis.text.x = ggplot2::element_blank())
 
   # =====================
-  # Generate Flextable (Fixed Coloring)
+  # Generate Flextable
   # =====================
   unique_communities <- levels(metrics$Community)
-  community_colors <- setNames(color_palette[1:length(unique_communities)], unique_communities)
+  community_colors <- setNames(color_palette[seq_len(length(unique_communities))], unique_communities)
   bg_colors <- community_colors[as.character(metrics$Community)]
 
   table_flex <- flextable::qflextable(metrics) %>%
@@ -235,11 +239,17 @@ node_level_metrics <- function(graph, save_path = NULL) {
     flextable::bg(j = "Community", bg = bg_colors, part = "body") %>%
     flextable::autofit()
 
-  return(list(metrics = metrics, flextable = table_flex, plot1 = plot1, plot2 = plot2, facet_plot = facet_plot))
+  return(list(
+    metrics = metrics,
+    flextable = table_flex,
+    plot1 = plot1,
+    plot2 = plot2,
+    facet_plot = facet_plot
+  ))
 }
 
 
-#Usage Example:
+# Usage Example:
 # set.seed(42)
 # CustomNet <- load_graphml("~/herp.spiecsym.network.graphml")
 # result <- node_level_metrics(CustomNet)
@@ -259,7 +269,6 @@ node_level_metrics <- function(graph, save_path = NULL) {
 # print(result$plots$plot2)
 
 # result$table
-#ggplot2::ggsave("plot1.png", result$plot1, width = 10, height = 5)
-#ggplot2::ggsave("plot2.png", result$plot2, width = 10, height = 5)
-#ggplot2::ggsave("facet_plot.png", result$facet_plot, width = 12, height = 6)
-
+# ggplot2::ggsave("plot1.png", result$plot1, width = 10, height = 5)
+# ggplot2::ggsave("plot2.png", result$plot2, width = 10, height = 5)
+# ggplot2::ggsave("facet_plot.png", result$facet_plot, width = 12, height = 6)

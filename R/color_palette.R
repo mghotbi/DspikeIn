@@ -1,32 +1,34 @@
-#' @title Original and Extended Color Palette Sequence
+#' @title Original, Extended, and Nature-Inspired Color Palette Sequence
+#' @return A named list of character vectors, each containing color hex codes for different palettes.
+#' @description This object provides multiple color palettes for scientific, exploratory, and publication-grade graphics:
+#'  - MG: The original palette.
+#'  - extended_palette: MG combined with rainbow colors.
+#'  - light_MG: A chic pastel palette.
+#'  - MG_Awesome: A vibrant and unique 50-color palette for visualization.
+#'  - cool_MG: A sophisticated, modern 50-color palette with oceanic, earthy, and high-contrast tones.
+#'  - mix_MG: A randomly mixed unique palette.
+#'  - vivid_MG: A vivid and bright 50-color palette.
+#'  - Mar_palette: A carefully crafted 40-color nature-inspired palette suitable for high-quality publications.
 #'
-#' @description This object provides multiple color palettes:
-#'  - MG: The original palette
-#'  - extended_palette: MG combined with rainbow colors
-#'  - light_MG: A chic pastel palette
-#'  - MG_Awesome: A vibrant and unique 50-color palette for visualization
-#'  - cool_MG: A sophisticated, modern 50-color palette
-#'  - mix_MG: A randomly mixed unique palette
-#'  - vivid_MG: A vivid and bright 50-color palette
+#' @details These palettes can be directly used with ggplot2 or other visualization systems supporting manual color scales.
 #'
-#' @details These palettes can be used in ggplot2 or other plotting systems.
-#'
-#' @format A list with seven elements:
+#' @format A list with eight elements:
 #' \describe{
-#'   \item{MG}{A character vector of original color codes.}
-#'   \item{extended_palette}{A character vector of extended color codes, combining the original palette with the rainbow palette.}
+#'   \item{MG}{A character vector of the original color codes.}
+#'   \item{extended_palette}{A character vector of extended color codes, combining MG with the rainbow palette.}
 #'   \item{light_MG}{A character vector of chic pastel color codes.}
-#'   \item{MG_Awesome}{A vibrant 50-color palette for high-quality visualizations.}
+#'   \item{MG_Awesome}{A vibrant 50-color palette designed for high-impact visualizations.}
 #'   \item{cool_MG}{A sophisticated and modern 50-color palette with oceanic, earthy, and high-contrast tones.}
-#'   \item{mix_MG}{A fully combined and randomly mixed unique palette.}
+#'   \item{mix_MG}{A fully combined and randomly mixed unique palette including Mar_palette.}
 #'   \item{vivid_MG}{A vivid and bright 50-color palette.}
+#'   \item{Mar_palette}{A 40-color palette inspired by nature, suitable for academic and professional publications.}
 #' }
 #'
 #' @examples
-#' # Use mix_MG palette in ggplot2
+#' # Example using the Mar_palette
 #' ggplot2::ggplot(mtcars, ggplot2::aes(x = wt, y = mpg, color = factor(cyl))) +
 #'   ggplot2::geom_point(size = 4) +
-#'   ggplot2::scale_color_manual(values = color_palette$mix_MG) +
+#'   ggplot2::scale_color_manual(values = color_palette$Mar_palette) +
 #'   ggplot2::theme_minimal()
 #'
 #' @name color_palette
@@ -42,15 +44,15 @@ color_palette <- local({
     "#82cfd0", "#b2e0e4", "lightskyblue4", "#0e668b", "#a3c4dc", "lightskyblue1", "aliceblue",
     "olivedrab3", "#4DAF4A", "#336633", "#66a61e", "chartreuse1", "#A6D854", "#909800", "#00FF00",
     "green", "darkgreen", "#386641", "#1B4332", "#2D6A4F", "#40916C", "#52B788", "#74C69D",
-        "#984EA3", "#E78AC3", "#7570b3", "#9183E6", "#00AD9A", "#CC6686", "#FF3399", "#990033",
+    "#984EA3", "#E78AC3", "#7570b3", "#9183E6", "#00AD9A", "#CC6686", "#FF3399", "#990033",
     "#6A0572", "#AB83A1", "#553C9A", "#3F37C9", "#8338EC", "#DA33FF", "purple", "darkred",
-        "#663300", "#A37F6F", "#e1deda", "burlywood", "papayawhip", "wheat4", "cornsilk3", "khaki2",
+    "#663300", "#A37F6F", "#e1deda", "burlywood", "papayawhip", "wheat4", "cornsilk3", "khaki2",
     "beige", "gray60", "gray80", "gray96", "cadetblue4", "honeydew2", "mintcream", "#8d96a3",
     "lavender", "lavenderblush2", "mistyrose3", "black", "navy", "yellow"
   )
 
-    # Extended palette using the rainbow function
-  extended_palette <- c(MG, suppressMessages(grDevices::rainbow(50)))
+  # Extended palette using the rainbow function
+  extended_palette <- c(MG, grDevices::rainbow(50))
 
   # Chic Pastel Palette (light_MG)
   light_MG <- c(
@@ -88,9 +90,9 @@ color_palette <- local({
     "#264653", "#936639", "#14213D", "#E5E5E5", "#8D99AE", "#3A86FF",
     "#2A9D8F", "#A68A64", "#FFBA08", "#EDF2F4", "#D00000", "#BC4749",
     "#6A994E", "#B6AD90", "#8D99AE", "#D00000", "#FF006E", "#780000"
-      )
+  )
 
- #vivid colors
+  # vivid colors
 
   vivid_MG <- c(
     "#FF0000", "#FF4500", "#FF8C00", "#FFD700", "#FFFF00", "#ADFF2F", "#7CFC00", "#32CD32",
@@ -102,17 +104,28 @@ color_palette <- local({
     "#7B68EE", "#8B0000"
   )
 
-  # Fully Randomized Mixed Palette
-  mix_MG <- unique(sample(c(MG, light_MG, MG_Awesome, cool_MG,vivid_MG  )))
-                          # Return the list containing all palettes
-                          list(
-                            MG = MG,
-                            extended_palette = extended_palette,
-                            light_MG = light_MG,
-                            MG_Awesome = MG_Awesome,
-                            cool_MG = cool_MG,
-                            vivid_MG = vivid_MG,
-                            mix_MG = mix_MG)
+  # MarMar
+  Mar_palette <- c(
+    "#1b4332", "#2d6a4f", "#386641", "#40916c", "#52b788",
+    "#74c69d", "#90be6d", "#b5c99a", "#ccd5ae", "#e9d8a6",
+    "#fefae0", "#faedcd", "#f4a261", "#e76f51", "#bc6c25",
+    "#dda15e", "#d4a373", "#c19a6b", "#a98467", "#8c6f58",
+    "#6c584c", "#5f4b3a", "#b08968", "#e0ac9d", "#c4a69f",
+    "#b99382", "#997b66", "#d7b29d", "#ecd9c6", "#ffe8d6",
+    "#6a994e", "#a7c957", "#f9bc60", "#e36414", "#9a031e",
+    "#5f0f40", "#0a9396", "#005f73", "#ee9b00", "#3f37c9"
+  )
+
+  mix_MG <- unique(sample(c(cool_MG, light_MG, MG, MG_Awesome, vivid_MG, Mar_palette)))
+
+  list(
+    Mar_palette = Mar_palette,
+    MG = MG,
+    extended_palette = extended_palette,
+    light_MG = light_MG,
+    MG_Awesome = MG_Awesome,
+    cool_MG = cool_MG,
+    vivid_MG = vivid_MG,
+    mix_MG = mix_MG
+  )
 })
-
-

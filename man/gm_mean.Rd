@@ -34,10 +34,8 @@ These normalization methods are commonly used in microbiome analysis to ensure f
 }
 
 \examples{
-\dontrun{
 vec <- c(1, 10, 100, 1000)
 gm_mean(vec)
-}
 }
 \keyword{-----------------------------------------------------------}
 \keyword{NULL}

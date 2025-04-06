@@ -8,7 +8,7 @@ randomsubsample_Trimmed_evenDepth(
   obj,
   smalltrim = 0.001,
   replace = TRUE,
-  output_file = "randomsubsample_Trimmed_evenDepth.rds"
+  output_file = NULL
 )
 }
 \arguments{
@@ -18,26 +18,23 @@ randomsubsample_Trimmed_evenDepth(
 
 \item{replace}{A logical value indicating whether to sample with replacement. Default is TRUE.}
 
-\item{output_file}{A character string specifying the output file name for the subsampled object. Default is "randomsubsample_Trimmed_evenDepth.rds".}
+\item{output_file}{A character string specifying the output file name for the subsampled object.
+Default is \code{NULL}, meaning the object will not be saved.}
 }
 \value{
-A \code{phyloseq} or \code{TreeSummarizedExperiment} object with subsampled sequencing depths.
+A rarefied \code{phyloseq} or \code{TreeSummarizedExperiment} object with adjusted sequencing depths.
 }
 \description{
 Performs subsampling to an equal sequencing depth, determined by the sample with
 the lowest sequencing depth after excluding very low abundant taxa. It rounds down the result
-to the nearest integer (floor). Caution: you might lose samples.
+to the nearest integer (\code{floor}). Note: some samples may be lost in this process.
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_ITSOTU", package = "DspikeIn")
-
-  # Convert phyloseq to TreeSummarizedExperiment (TSE)
   tse_ITSOTU <- convert_phyloseq_to_tse(physeq_ITSOTU)
+  rarefied <- randomsubsample_Trimmed_evenDepth(tse_ITSOTU, smalltrim = 0.001)
+  print(rarefied)
+}
 
-  # Perform random subsampling with trimmed even depth
-  ITS_evenDepth <- randomsubsample_Trimmed_evenDepth(tse_ITSOTU, smalltrim = 0.001)
-}
-}
 }

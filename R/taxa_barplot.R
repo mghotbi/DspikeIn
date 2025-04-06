@@ -34,7 +34,6 @@
 #' @importFrom rlang sym
 #'
 #' @examples
-#' \donttest{
 #' # Example 1: Relative abundance barplot for Genus
 #' data("physeq_16SOTU", package = "DspikeIn")
 #' bp_rel <- taxa_barplot(
@@ -53,7 +52,7 @@
 #'
 #' # Example 2: Absolute abundance barplot for Family with faceting
 #' data("physeq_ITSOTU", package = "DspikeIn")
-#'  tse_ITSOTU <-convert_phyloseq_to_tse(physeq_ITSOTU)
+#' tse_ITSOTU <- convert_phyloseq_to_tse(physeq_ITSOTU)
 #' bp_abs <- taxa_barplot(
 #'   physeq = tse_ITSOTU,
 #'   target_glom = "Genus",
@@ -70,7 +69,6 @@
 #'   legend_size = 12
 #' )
 #' print(bp_abs$barplot)
-#' }
 #'
 #' @export
 taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL,
@@ -78,7 +76,6 @@ taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL,
                          abundance_type = "relative", x_angle = 25, fill_variable = target_glom,
                          facet_variable = NULL, top_n_taxa = 20, palette = color_palette$MG,
                          legend_size = 11, legend_columns = 1, x_scale = "free", xlab = NULL) {
-
   #  Convert TSE to phyloseq if needed
   if (inherits(physeq, "TreeSummarizedExperiment")) {
     physeq <- convert_tse_to_phyloseq(physeq)
@@ -91,7 +88,13 @@ taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL,
   glom <- phyloseq::prune_taxa(phyloseq::taxa_sums(glom) > 0, glom)
 
   # Step 3: Select top taxa based on abundance
-  top_taxa <- names(sort(phyloseq::taxa_sums(glom), decreasing = TRUE)[1:top_n_taxa])
+  if (top_n_taxa > 0) {
+    top_taxa <- names(
+      sort(phyloseq::taxa_sums(glom), decreasing = TRUE)[seq_len(top_n_taxa)]
+    )
+  } else {
+    top_taxa <- character(0)
+  }
 
   # Step 4: Identify "Others" and combine
   otu_matrix <- as(phyloseq::otu_table(glom), "matrix")
@@ -134,6 +137,7 @@ taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL,
 
   # Step 8: Melt data for ggplot
   pm <- phyloseq::psmelt(new_physeq)
+  pm <- pm[!is.na(pm$Abundance), ]
 
   # Ensure proper order for "fill_variable"
   pm[[fill_variable]] <- factor(
@@ -245,4 +249,3 @@ taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL,
 #  legend_columns = 1,
 #  palette = color_palette$light_MG)
 # print(bp_free$barplot)
-

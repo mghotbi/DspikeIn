@@ -19,11 +19,13 @@ test_that("Function returns a list with expected components", {
 # TEST 2: Metrics Data Frame Structure
 # ==============================
 test_that("Metrics dataframe has correct columns", {
-  expected_cols <- c("Node", "Degree", "Strength", "Closeness", "Betweenness",
-                     "EigenvectorCentrality", "PageRank", "Harmonic",
-                     "Transitivity", "Coreness", "Constraint", "EffectiveSize",
-                     "Redundancy", "Community", "Efficiency", "Local_Efficiency",
-                     "Within_Module_Connectivity", "Among_Module_Connectivity")
+  expected_cols <- c(
+    "Node", "Degree", "Strength", "Closeness", "Betweenness",
+    "EigenvectorCentrality", "PageRank", "Harmonic",
+    "Transitivity", "Coreness", "Constraint", "EffectiveSize",
+    "Redundancy", "Community", "Efficiency", "Local_Efficiency",
+    "Within_Module_Connectivity", "Among_Module_Connectivity"
+  )
 
   expect_true(is.data.frame(result$metrics))
   expect_setequal(names(result$metrics), expected_cols)
@@ -44,13 +46,16 @@ test_that("Metrics dataframe has correct data types", {
 # TEST 4: Ensure No Missing Values in Core Metrics
 # ==============================
 test_that("Core network metrics do not contain NAs (except Local_Efficiency)", {
-  core_metrics <- c("Degree", "Strength", "Closeness", "Betweenness",
-                    "EigenvectorCentrality", "PageRank", "Harmonic",
-                    "Efficiency")
+  core_metrics <- c(
+    "Degree", "Strength", "Closeness", "Betweenness",
+    "EigenvectorCentrality", "PageRank", "Harmonic",
+    "Efficiency"
+  )
 
   for (metric in core_metrics) {
     expect_false(any(is.na(result$metrics[[metric]])),
-                 info = paste0("Missing values found in ", metric))
+      info = paste0("Missing values found in ", metric)
+    )
   }
 
   # Local_Efficiency may have NA values for isolated nodes

@@ -22,7 +22,6 @@ This function extracts the OTU table (or assay in \code{TSE}), computes per-ASV 
 and returns a tidy summary data frame.
 }
 \examples{
-\donttest{
 # Example with a phyloseq object
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_ITSOTU", package = "DspikeIn")
@@ -31,7 +30,6 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   # Example with a TreeSummarizedExperiment object
   tse_ITSOTU <- convert_phyloseq_to_tse(physeq_ITSOTU)
   summary_tse <- summ_ASV_OTUID(tse_ITSOTU)
-}
 }
 
 }

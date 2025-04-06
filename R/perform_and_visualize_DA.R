@@ -21,8 +21,6 @@
 #'   \item{obj_significant}{Filtered `phyloseq` or `TreeSummarizedExperiment` object.}
 #'   \item{plot}{`ggplot2` volcano plot for differentially abundant taxa.}
 #'   \item{bar_plot}{`ggplot2` bar plot of log fold changes for significant taxa.}
-#'
-#' @importFrom DspikeIn convert_tse_to_phyloseq convert_phyloseq_to_tse
 #' @importFrom phyloseq otu_table sample_data tax_table prune_taxa tax_glom transform_sample_counts
 #' @importFrom edgeR DGEList estimateDisp calcNormFactors glmFit glmLRT topTags
 #' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq results
@@ -37,7 +35,6 @@
 #' @source Uses edgeR and DESeq2 for differential abundance modeling
 #' @source Inspired by Bioconductor workflows for microbiome DA analysis
 #' @examples
-#' \donttest{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
 #'
@@ -52,8 +49,8 @@
 #'   )
 #'
 #'   # Visualize results
-#'   print(results_edgeR$plot)  # Volcano plot
-#'   print(results_edgeR$bar_plot)  # Bar plot of significant taxa
+#'   print(results_edgeR$plot) # Volcano plot
+#'   print(results_edgeR$bar_plot) # Bar plot of significant taxa
 #'   results_edgeR$results
 #'
 #'   # Convert to TreeSummarizedExperiment (TSE) and run DESeq2
@@ -72,14 +69,12 @@
 #'   print(results_DESeq2$bar_plot)
 #'   results_DESeq2$results
 #' }
-#' }
 #' @export
 perform_and_visualize_DA <- function(obj, method, group_var, contrast,
                                      pseudocount = 1, significance_level = 0.05,
                                      output_csv_path = NULL,
                                      target_glom = "Genus",
                                      palette = c("#FFEB3B", "#073B4C")) {
-
   #  Detect if input is TSE and convert to phyloseq
   is_TSE <- inherits(obj, "TreeSummarizedExperiment")
   if (is_TSE) {
@@ -91,7 +86,7 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
 
   #  Ensure `group_var` exists*
   if (!group_var %in% colnames(metadata)) {
-    stop(paste("Error: group_var", group_var, "not found in sample metadata!"))
+    stop("Error: group_var ", group_var, " not found in sample metadata!")
   }
 
   # Convert "-" to "_" in metadata to comply with DESeq2
@@ -117,11 +112,16 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
   #  Check if contrast levels exist
   available_levels <- levels(metadata[[group_var]])
   if (!all(contrast_fixed %in% available_levels)) {
-    stop(paste0(
-      "Error: Specified contrast levels do not match group_var levels in metadata!\n",
-      "Provided contrast: ", paste(contrast_fixed, collapse = ", "), "\n",
-      "Available levels in metadata: ", paste(available_levels, collapse = ", "), "\n",
-      "Ensure contrast matches the exact spelling in metadata."
+    stop(sprintf(
+      paste(
+        "Error: Specified contrast levels do not match group_var levels in metadata.",
+        "Provided contrast: %s",
+        "Available levels in metadata: %s",
+        "Ensure contrast matches the exact spelling in metadata.",
+        sep = "\n"
+      ),
+      paste(contrast_fixed, collapse = ", "),
+      paste(available_levels, collapse = ", ")
     ))
   }
 
@@ -148,8 +148,8 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
       dplyr::mutate(
         FDR = p.adjust(pvalue, method = "BH"),
         padj = FDR,
-        lfcSE = logFC / sqrt(LR),  # <-- Estimate SE
-        lfcSE = ifelse(is.nan(lfcSE) | is.infinite(lfcSE), NA, lfcSE),  # clean bad values
+        lfcSE = logFC / sqrt(LR), # <-- Estimate SE
+        lfcSE = ifelse(is.nan(lfcSE) | is.infinite(lfcSE), NA, lfcSE), # clean bad values
         Significance = ifelse(FDR < significance_level, "Significant", "Not Significant"),
         group = ifelse(logFC > 0, contrast[2], contrast[1])
       )
@@ -180,9 +180,11 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
 
     res <- res %>%
       dplyr::rename(logFC = log2FoldChange, pvalue = pvalue) %>%
-      dplyr::mutate(FDR = p.adjust(pvalue, method = "BH"),
-                    Significance = ifelse(FDR < significance_level, "Significant", "Not Significant"),
-                    group = ifelse(logFC > 0, contrast[2], contrast[1]))
+      dplyr::mutate(
+        FDR = p.adjust(pvalue, method = "BH"),
+        Significance = ifelse(padj < significance_level, "Significant", "Not Significant"),
+        group = ifelse(logFC > 0, contrast[2], contrast[1])
+      )
 
     res$OTU <- rownames(res)
     res <- dplyr::left_join(res, taxonomy_table, by = "OTU")
@@ -220,8 +222,10 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
         ggplot2::aes(label = ifelse(FDR < significance_level & -log10(pvalue) > 5, OTU, "")),
         size = 4, fontface = "plain", max.overlaps = 15, segment.color = "grey40"
       ) +
-      ggplot2::geom_hline(yintercept = -log10(significance_level),
-                          linetype = "dashed", color = "#FF5733", linewidth = 1) +
+      ggplot2::geom_hline(
+        yintercept = -log10(significance_level),
+        linetype = "dashed", color = "#FF5733", linewidth = 1
+      ) +
       ggplot2::scale_color_manual(values = palette) +
       ggplot2::theme_minimal(base_size = 15) +
       ggplot2::theme(
@@ -235,8 +239,8 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
         legend.key.size = ggplot2::unit(0.9, "cm"),
         legend.text = ggplot2::element_text(size = 10),
         legend.title = ggplot2::element_text(size = 12, face = "plain"),
-        legend.spacing.x = ggplot2::unit(-0.3, 'cm'),
-        legend.spacing.y = ggplot2::unit(-0.1, 'cm')
+        legend.spacing.x = ggplot2::unit(-0.3, "cm"),
+        legend.spacing.y = ggplot2::unit(-0.1, "cm")
       ) +
       ggplot2::labs(
         x = "Log2 Fold Change",
@@ -248,17 +252,18 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
     message(" Warning: No significant results found. Volcano plot not created.")
     p <- NULL
   }
-  # **Ensure one logFC per Genus (taking the mean) and explicitly drop groups**
+
+  # **one logFC per Genus (taking the mean)**
   df_filtered <- results %>%
     dplyr::group_by(Genus, group) %>%
     dplyr::summarise(
       logFC = mean(logFC, na.rm = TRUE),
       lfcSE = mean(lfcSE, na.rm = TRUE),
       padj = ifelse(all(is.na(padj)), NA, min(padj, na.rm = TRUE)),
-      .groups = "drop"  # **Ensure grouping is removed after summarization**
+      .groups = "drop" # **grouping is removed after summarization**
     ) %>%
     dplyr::filter(!is.na(Genus)) %>%
-    dplyr::filter(!is.na(padj) & padj < significance_level)  # **Use dynamic p-value threshold**
+    dplyr::filter(!is.na(padj) & padj < significance_level) # **Use dynamic p-value threshold**
 
   # **Check for duplicates before setting factor levels**
   if (BiocGenerics::anyDuplicated(df_filtered$Genus) > 0) {
@@ -278,16 +283,21 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
 
   bar_plot <- ggplot2::ggplot(df_filtered, ggplot2::aes(x = stats::reorder(Genus, logFC), y = logFC, fill = group)) +
     ggplot2::geom_bar(stat = "identity", position = ggplot2::position_dodge(width = 0.7), alpha = 0.9, color = "black") +
-    ggplot2::geom_point(ggplot2::aes(color = LFC_Direction), size = 1,
-                        position = ggplot2::position_dodge(width = 0.7), shape = 21, stroke = 1.0) +
+    ggplot2::geom_point(ggplot2::aes(color = LFC_Direction),
+      size = 1,
+      position = ggplot2::position_dodge(width = 0.7), shape = 21, stroke = 1.0
+    ) +
     ggplot2::geom_errorbar(ggplot2::aes(ymin = logFC - lfcSE, ymax = logFC + lfcSE, color = LFC_Direction),
-                           width = 0.1, position = ggplot2::position_dodge(width = 0.2), size = 1) +
+      width = 0.1, position = ggplot2::position_dodge(width = 0.2), size = 1
+    ) +
     ggplot2::coord_flip() +
-    ggplot2::labs(subtitle = paste("Significant taxa with padj <", significance_level),
-                  x = "",
-                  y = "Log Fold Change",
-                  fill = "Group",
-                  color = "LFC Direction") +
+    ggplot2::labs(
+      subtitle = paste("Significant taxa with padj <", significance_level),
+      x = "",
+      y = "Log Fold Change",
+      fill = "Group",
+      color = "LFC Direction"
+    ) +
     ggplot2::theme_minimal(base_size = 16) +
     ggplot2::theme(
       plot.title = ggplot2::element_text(face = "bold", size = 20, hjust = 0.5),
@@ -300,8 +310,8 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
       panel.grid.major.y = ggplot2::element_blank(),
       panel.grid.minor = ggplot2::element_blank()
     ) +
-    ggplot2::scale_fill_manual(values = c("#9183E6",  "#33FFD1", "#EDF2F4", "#A3AC9A")) +
-    ggplot2::scale_color_manual(values = c("Positive LFC" = "navy" , "Negative LFC" ="#20B2AA"))
+    ggplot2::scale_fill_manual(values = c("#9183E6", "#33FFD1", "#EDF2F4", "#A3AC9A")) +
+    ggplot2::scale_color_manual(values = c("Positive LFC" = "navy", "Negative LFC" = "#20B2AA"))
 
   # **Convert back to TSE if needed**
   if (is_TSE) {

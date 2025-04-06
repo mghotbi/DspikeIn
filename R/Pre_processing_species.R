@@ -1,50 +1,56 @@
-#' @title Pre-process species in a phyloseq or TSE object by merging ASVs/OTUs
-#' @description Merges ASVs/OTUs while ensuring the phylogenetic tree and reference sequences remain intact.
+#' @title Pre-process taxa in a phyloseq or TSE object by merging ASVs/OTUs
+#'
+#' @description
+#' Merges ASVs/OTUs while ensuring that the phylogenetic tree and reference sequences remain intact.
+#' The provided taxonomic name(s) will be searched across **all taxonomic levels** (e.g., Kingdom, Phylum, ..Genus, Species).
 #' If tree or refseq become mismatched, they are pruned or removed safely.
 #'
 #' @param obj A `phyloseq` or `TreeSummarizedExperiment` object.
-#' @param species_name A character vector of species names to merge.
-#' @param merge_method `"sum"` (default) or `"max"`: method for merging ASV counts.
-#' @param output_file Optional file path to save the processed object.
-#' @return A processed `phyloseq` or `TreeSummarizedExperiment` object.
+#' @param species_name A character vector of **exact** taxonomic names to merge (matched across all taxonomy levels).
+#' @param merge_method Method used to merge counts: `"sum"` (default) or `"max"`.
+#' @param output_file Optional file path to save the processed object (e.g., `file.path(tempdir(), "output.rds")`).
+#' @return A processed `phyloseq` or `TreeSummarizedExperiment` object with merged ASVs/OTUs.
+#'
 #' @importFrom phyloseq otu_table tax_table sample_data phy_tree phyloseq refseq
 #' @importFrom TreeSummarizedExperiment TreeSummarizedExperiment rowTree
 #' @importFrom SummarizedExperiment assay rowData colData
 #' @importFrom S4Vectors metadata
 #' @importFrom ape drop.tip
 #' @examples
-#' \dontrun{
 #' library(DspikeIn)
 #' data("physeq_16SOTU", package = "DspikeIn")
-#'  spiked_cells <- 1847
-#'  species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
 #'
-#'  merged_sum <- Pre_processing_species(physeq_16SOTU, species_name, merge_method = "sum")
+#' species_name <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
+#'
+#' # Merge species in phyloseq format
+#' merged_sum <- Pre_processing_species(
+#'   physeq_16SOTU,
+#'   species_name,
+#'   merge_method = "sum"
+#' )
 #'
 #' # Convert phyloseq to TSE format
 #' tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 #'
-#' species_name <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp." )
-#'
-#' # Merge species in TSE format
+#' # Merge species in TSE format and write to tempdir
+#' output_rds <- file.path(tempdir(), "merged_TSE_sum.rds")
 #' merged_TSE_sum <- Pre_processing_species(
-#'     tse_16SOTU,
-#'     species_name,
-#'     merge_method = "sum",
-#'     output_file = "merged_TSE_sum.rds"
+#'   tse_16SOTU,
+#'   species_name,
+#'   merge_method = "sum",
+#'   output_file = output_rds
 #' )
-#' }
 #' @export
 Pre_processing_species <- function(obj, species_name, merge_method = c("sum", "max"), output_file = NULL) {
   merge_method <- match.arg(merge_method)
-  message("\U0001F504 Starting pre-processing...")
+  message("Starting pre-processing...")
 
   # Detect object type
   is_physeq <- inherits(obj, "phyloseq")
   is_tse <- inherits(obj, "TreeSummarizedExperiment")
 
   if (!is_physeq && !is_tse) {
-    stop("\U0000274C Input must be `phyloseq` or `TreeSummarizedExperiment`.")
+    stop("Input must be `phyloseq` or `TreeSummarizedExperiment`.")
   }
 
   # Extract components
@@ -54,66 +60,66 @@ Pre_processing_species <- function(obj, species_name, merge_method = c("sum", "m
   phy_tree <- tryCatch(if (is_physeq) phyloseq::phy_tree(obj) else TreeSummarizedExperiment::rowTree(obj), error = function(e) NULL)
   ref_sequences <- tryCatch(if (is_physeq) phyloseq::refseq(obj) else S4Vectors::metadata(obj)$refseq, error = function(e) NULL)
 
-  # Convert species column to character
-  tax_data$Species <- as.character(tax_data$Species)
-  message("\U0001F50D Checking taxonomy table...")
+  # Convert all taxonomy columns to character
+  tax_data[] <- lapply(tax_data, as.character)
+  message("Checking taxonomy table...")
 
   # Process each species
   for (species in species_name) {
-    message("\U0001F504 Processing species: ", species)
+    message("Processing taxon: ", species)
 
-    species_asvs <- rownames(tax_data)[which(tax_data$Species == species)]
+    # Exact matching across ALL taxonomy levels
+    species_asvs <- rownames(tax_data)[apply(tax_data, 1, function(x) any(x %in% species))]
+
     if (length(species_asvs) == 0) {
-      species_asvs <- rownames(tax_data)[grep(species, tax_data$Species, ignore.case = TRUE)]
-      if (length(species_asvs) > 0) {
-        message("\U000026A0 Using partial match for species: ", species)
-      }
+      warning("No ASVs found matching exactly: ", species)
+      next
     }
 
     if (length(species_asvs) > 1) {
+      message("Merging ", length(species_asvs), " ASVs for: ", species)
+
       if (merge_method == "sum") {
-        message("\U00002795 Merging ASVs by summing abundances for: ", species)
         sum_abundances <- colSums(otu_table_data[species_asvs, , drop = FALSE])
         otu_table_data[species_asvs[1], ] <- sum_abundances
       } else if (merge_method == "max") {
-        message("\U00002795 Merging ASVs using 'max' method for: ", species)
         max_abundance_asv <- which.max(rowSums(otu_table_data[species_asvs, , drop = FALSE]))
-        otu_table_data[species_asvs[1], ] <- otu_table_data[max_abundance_asv, ]
+        otu_table_data[species_asvs[1], ] <- otu_table_data[species_asvs[max_abundance_asv], ]
       }
 
       # Remove redundant ASVs
       otu_table_data <- otu_table_data[setdiff(rownames(otu_table_data), species_asvs[-1]), , drop = FALSE]
       tax_data <- tax_data[setdiff(rownames(tax_data), species_asvs[-1]), , drop = FALSE]
 
-      tax_data[species_asvs[1], "Genus"] <- tax_data[species_asvs[1], "Genus"]
-      tax_data[species_asvs[1], "Species"] <- species
-      message("\U00002705 Merging completed for: ", species)
+      message("Merging completed for: ", species)
+    } else {
+      message("Single ASV found for: ", species, ". No merging needed.")
     }
   }
 
-  # **Prune Phylogenetic Tree to Match Remaining Taxa**
+  # Prune Phylogenetic Tree to Match Remaining Taxa
   if (!is.null(phy_tree)) {
     common_tips <- intersect(phy_tree$tip.label, rownames(otu_table_data))
     if (length(common_tips) < length(phy_tree$tip.label)) {
       if (length(common_tips) > 1) {
         phy_tree <- ape::drop.tip(phy_tree, setdiff(phy_tree$tip.label, common_tips))
-        message("\U00002705 Pruned phylogenetic tree to match taxa.")
+        message("Pruned phylogenetic tree to match taxa.")
       } else {
-        warning("\U000026A0 Too few taxa left in the tree after pruning. Removing tree.")
+        warning("Too few taxa left in the tree after pruning. Removing tree.")
         phy_tree <- NULL
       }
     }
   }
 
-  # **Prune Reference Sequences to Match Remaining Taxa**
+  # Prune Reference Sequences to Match Remaining Taxa
   if (!is.null(ref_sequences)) {
     common_seqs <- intersect(names(ref_sequences), rownames(otu_table_data))
     if (length(common_seqs) < length(ref_sequences)) {
       if (length(common_seqs) > 1) {
         ref_sequences <- ref_sequences[common_seqs]
-        message("\U00002705 Pruned reference sequences to match taxa.")
+        message("Pruned reference sequences to match taxa.")
       } else {
-        warning("\U000026A0 Too few reference sequences left after pruning. Removing refseq.")
+        warning("Too few reference sequences left after pruning. Removing refseq.")
         ref_sequences <- NULL
       }
     }
@@ -138,16 +144,18 @@ Pre_processing_species <- function(obj, species_name, merge_method = c("sum", "m
     )
   }
 
+  # Save if requested
   if (!is.null(output_file)) {
     saveRDS(obj, file = output_file)
-    message("\U0001F4BE Merged object saved to: ", output_file)
+    message("Merged object saved to: ", output_file)
   }
 
-  message("\U00002705 Pre-processing complete.")
+  message("Pre-processing complete.")
   return(obj)
 }
 
-#Usage Example
+
+# Usage Example
 # data("physeq_16SOTU", package="DspikeIn")
 # species_name <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
 # merged_sum <- Pre_processing_species(physeq_16SOTU, species_name, merge_method = "sum")
@@ -160,8 +168,4 @@ Pre_processing_species <- function(obj, species_name, merge_method = c("sum", "m
 #  species_name,
 #  merge_method = "sum",
 #  output_file = "merged_TSE_sum.rds"
-#)
-
-
-
-
+# )

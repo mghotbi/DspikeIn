@@ -2,7 +2,7 @@
 % Please edit documentation in R/Pre_processing_species_list.R
 \name{Pre_processing_species_list}
 \alias{Pre_processing_species_list}
-\title{Pre-process a list of spiked-in species in a phyloseq or TSE object}
+\title{Preprocess and Merge Spike-in Species in a Phyloseq or TSE Object}
 \usage{
 Pre_processing_species_list(
   obj,
@@ -14,32 +14,38 @@ Pre_processing_species_list(
 \arguments{
 \item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
 
-\item{spiked_species}{A character vector of species names to be processed (Genus Species format).}
+\item{spiked_species}{Character vector of species names to be processed (match \code{Species} column).}
 
-\item{merge_method}{Either \code{"sum"} (sum counts) or \code{"max"} (keep max abundance ASV). Default is \code{"sum"}.}
+\item{merge_method}{Either \code{"sum"} (default) to sum counts across ASVs or \code{"max"} to keep the most abundant ASV.}
 
-\item{output_file}{Optional: File path to save the merged object as an \code{.rds} file.}
+\item{output_file}{Optional. Character string specifying the path to save the merged object as \code{.rds}.}
 }
 \value{
-A \code{phyloseq} or \code{TreeSummarizedExperiment} object with merged species.
+A merged object of the same class as input (\code{phyloseq} or \code{TreeSummarizedExperiment}).
 }
 \description{
-Merges ASVs based on a specified method while preserving all metadata
-(taxonomy, sample data, phylogenetic tree, and reference sequences, if available).
+Merges ASVs belonging to user-defined spike-in species by summing or selecting maximum counts,
+while preserving all available metadata (taxonomy, sample data, tree, and reference sequences).
+This function works for both \code{phyloseq} and \code{TreeSummarizedExperiment} objects.
 }
 \examples{
-\dontrun{
-library(phyloseq)
-library(TreeSummarizedExperiment)
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("tse", package = "DspikeIn")
+  data("physeq", package = "DspikeIn")
 
-data("tse", package = "DspikeIn")
-data("physeq", package = "DspikeIn")
+  spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
 
-# Define spiked species for merging
-spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
+  merged_TSE <- Pre_processing_species_list(
+    tse,
+    spiked_species = spiked_species,
+    merge_method = "sum"
+  )
 
-# Process the dataset and merge ASVs
-merged_TSE <- Pre_processing_species_list(tse, spiked_species, merge_method = "sum")
-merged_physeq <- Pre_processing_species_list(physeq, spiked_species, merge_method = "sum")
+  merged_physeq <- Pre_processing_species_list(
+    physeq,
+    spiked_species = spiked_species,
+    merge_method = "sum"
+  )
 }
+
 }

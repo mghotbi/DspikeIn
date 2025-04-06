@@ -2,61 +2,75 @@
 % Please edit documentation in R/calculate_spike_percentage_list.R
 \name{calculate_spike_percentage_list}
 \alias{calculate_spike_percentage_list}
-\title{Calculate Spike Percentage for Specified Taxa}
+\title{Calculate Spike-in Percentage for Specified Taxa}
 \usage{
 calculate_spike_percentage_list(
   obj,
-  merged_spiked_species = NULL,
-  output_path = "merged_data.docx",
+  merged_spiked_species,
+  output_path = NULL,
   passed_range = c(0.1, 11)
 )
 }
 \arguments{
-\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing microbial data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
 
-\item{merged_spiked_species}{A character vector of spiked species names to check in the object.}
+\item{merged_spiked_species}{Character vector or list of spike-in species names (at the \code{Species} level).}
 
-\item{output_path}{A character string specifying the file path for saving output (DOCX format).
-Default is \code{"merged_data.docx"}.}
+\item{output_path}{Optional. Character string specifying the output path (DOCX).
+If \code{NULL} (default) results are not saved.}
 
-\item{passed_range}{A numeric vector of length 2 specifying the range of percentages for
-categorization as "passed". Default is \code{c(0.1, 11)}.}
+\item{passed_range}{Numeric vector of length 2 specifying the accepted percentage range.
+Default is \code{c(0.1, 11)}.}
 }
 \value{
-A data frame containing the percentage of spiked taxa reads and the pass/fail classification.
-The results are also saved as a DOCX table and a CSV file.
+A \code{data.frame} with:
+\itemize{
+\item Sample
+\item Total_Reads
+\item Total_Reads_spiked
+\item Percentage (of spike-in reads)
+\item Result ("passed"/"failed")
+}
 }
 \description{
-Computes the percentage of reads from specified spiked species in a
-\code{phyloseq} or \code{TreeSummarizedExperiment} object. The function merges selected taxa
-into a single ASV, calculates the percentage of reads per sample, classifies the results
-as "passed" or "failed" based on a predefined range, and saves the results in DOCX
-and CSV formats.
+Computes the percentage of reads attributed to specified spike-in taxa in a
+\code{phyloseq} or \code{TreeSummarizedExperiment} object. The function merges spike-in taxa,
+computes percentages, classifies samples into "passed" or "failed" based on a
+user-defined threshold, and optionally exports DOCX and CSV reports.
 }
 \details{
-This function extracts relevant data from \code{phyloseq} or \code{TreeSummarizedExperiment}
-objects using accessor functions, calculates the percentage of reads contributed by the specified
-spiked taxa, and classifies each sample as "passed" or "failed" based on the provided threshold range.
+The function automatically detects spike-in OTUs based on the \code{Species} column in
+the taxonomy table. It works with both \code{phyloseq} and \code{TreeSummarizedExperiment}
+objects and produces QC diagnostics commonly required for spike-in based absolute
+quantification workflows.
 }
-\examples{
-\donttest{
-if (requireNamespace("DspikeIn", quietly = TRUE)) {
-  # Load phyloseq object
-  data("physeq", package = "DspikeIn")
+\section{Notes}{
 
-  # Define a list of spiked species
+\itemize{
+\item Assumes the taxonomy table contains a column named \code{Species}.
+\item Supports both \code{phyloseq} and \code{TreeSummarizedExperiment} objects.
+}
+}
+
+\examples{
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("physeq", package = "DspikeIn")
   spiked_species_list <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
 
-  # Calculate spike percentage within the specified range
+  temp_docx <- file.path(tempdir(), "merged_result.docx")
+  temp_csv <- sub(".docx", ".csv", temp_docx)
+
   result <- calculate_spike_percentage_list(
     obj = physeq,
     merged_spiked_species = spiked_species_list,
+    output_path = temp_docx,
     passed_range = c(0.1, 10)
   )
 
-  # Print the result
   print(result)
-}
-}
 
+  # Clean up
+  if (file.exists(temp_docx)) unlink(temp_docx, force = TRUE)
+  if (file.exists(temp_csv)) unlink(temp_csv, force = TRUE)
+}
 }

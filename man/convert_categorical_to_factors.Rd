@@ -16,8 +16,6 @@ A phyloseq object with updated sample data.
 Convert Categorical Columns to Factors in Sample Data
 }
 \examples{
-\dontrun{
-data("physeq_16SOTU", package= "DspikeIn")
+data("physeq_16SOTU", package = "DspikeIn")
 ps_factor <- convert_categorical_to_factors(physeq_16SOTU)
-}
 }

@@ -30,7 +30,6 @@ and saving taxa based on provided hashcodes. It retains taxonomic information an
 for further downstream analysis.
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
@@ -43,12 +42,16 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   # Extract hashcodes (OTU IDs)
   hashcodes <- row.names(phyloseq::otu_table(Tetragenococcus))
 
+  # Temp file paths
+  sum_prefix <- file.path(tempdir(), "merged_physeq_sum")
+  max_prefix <- file.path(tempdir(), "merged_physeq_max")
+
   # Process data using the "sum" merging method
   processed_data_sum <- Pre_processing_hashcodes(
     physeq_16SOTU,
     hashcodes,
     merge_method = "sum",
-    output_prefix = "merged_physeq_sum"
+    output_prefix = sum_prefix
   )
 
   # Convert to TreeSummarizedExperiment (TSE)
@@ -60,7 +63,7 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   # Convert full phyloseq object to TSE format
   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 
-  # Alternatively, load the precomputed TSE object
+  # Load precomputed TSE object (optional)
   data("tse_16SOTU", package = "DspikeIn")
 
   # Process data using the "max" merging method
@@ -68,8 +71,11 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
     tse_16SOTU,
     hashcodes,
     merge_method = "max",
-    output_prefix = "merged_physeq_max"
+    output_prefix = max_prefix
   )
-}
+
+  # Clean up
+  files_to_delete <- paste0(c(sum_prefix, max_prefix), "_processed.rds")
+  invisible(file.remove(files_to_delete[file.exists(files_to_delete)]))
 }
 }

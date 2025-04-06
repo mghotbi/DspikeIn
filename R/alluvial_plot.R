@@ -1,5 +1,5 @@
-#' @title Generate an Alluvial Plot
-#'
+#' @title Generate an Alluvial Plot for Microbiome Data
+#' @note This function assumes data has already been converted to long format with an "Abundance" column.
 #' @description This function creates an alluvial plot based on input data, which can be
 #' either absolute or relative abundance data.
 #' @source Built using ggalluvial, ggplot2, and dplyr for visualization of microbial abundance dynamics.
@@ -23,8 +23,8 @@
 #' @importFrom ggalluvial is_alluvia_form geom_alluvium geom_stratum
 #' @importFrom magrittr %>%
 #' @importFrom grid unit
+#' @importFrom rlang sym as_name
 #' @examples
-#' \donttest{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
 #'
@@ -46,7 +46,7 @@
 #'     top_taxa = 10,
 #'     text_size = 4,
 #'     legend_ncol = 1,
-#'     custom_colors = DspikeIn::color_palette$cool_MG  # Extended color palette
+#'     custom_colors = DspikeIn::color_palette$cool_MG # Extended color palette
 #'   )
 #'
 #'   print(alluvial_plot_rel)
@@ -71,23 +71,28 @@
 #'
 #'   print(alluvial_plot_abs)
 #' }
-#' }
 #'
 #' @export
 alluvial_plot <- function(data, axes = NULL, abundance_threshold = 10000, fill_variable = "Phylum", silent = TRUE,
                           abundance_type = "absolute", total_reads = NULL, top_taxa = NULL,
                           facet_vars = NULL, text_size = 4, legend_ncol = 1,
                           custom_colors = color_palette$MG, color_mapping = NULL) {
-
   # Remove rows with NA values
   data <- stats::na.omit(data)
 
   # Ensure required columns exist
-  if (!is.null(axes) && !all(axes %in% names(data))) stop("\U0000274C Error: Some specified axes are not in the data.")
-  if (!fill_variable %in% names(data)) stop("\U0000274C Error: Fill variable is not in the data.")
+  if (!is.null(axes) && !all(axes %in% names(data))) {
+    stop("Error: Some specified axes are not in the data.")
+  }
+
+  if (!fill_variable %in% names(data)) {
+    stop("Error: Fill variable is not in the data.")
+  }
 
   # Ensure "Sample" column exists for per-sample normalization
-  if (!"Sample" %in% colnames(data)) stop("\U0000274C Error: 'Sample' column is missing. Each row must belong to a specific sample.")
+  if (!"Sample" %in% colnames(data)) {
+    stop("Error: 'Sample' column is missing. Each row must belong to a specific sample.")
+  }
 
   # Remove rows with NA values in specified axes and abundance
   data <- data[stats::complete.cases(data[, c("Abundance", axes)]), ]
@@ -99,7 +104,7 @@ alluvial_plot <- function(data, axes = NULL, abundance_threshold = 10000, fill_v
     # Normalize within each sample first (ensuring each sample sums to 100%)
     data <- data %>%
       dplyr::group_by(Sample) %>%
-      dplyr::mutate(RelativeAbundance = Abundance / sum(Abundance)*100) %>%
+      dplyr::mutate(RelativeAbundance = Abundance / sum(Abundance) * 100) %>%
       dplyr::ungroup()
 
     # Summarize within each factor separately
@@ -161,14 +166,13 @@ alluvial_plot <- function(data, axes = NULL, abundance_threshold = 10000, fill_v
     if ("NA" %in% names(color_palette)) {
       color_palette <- color_palette[!names(color_palette) %in% "NA"]
     }
-
   } else if (!is.null(custom_colors)) {
     color_palette <- custom_colors
     if (length(unique(data[[fill_variable]])) > length(color_palette)) {
       stop("\U0000274C Insufficient values in manual scale.")
     }
   } else {
-    color_palette <- color_palette$MG  # Use MG by default
+    color_palette <- color_palette$MG # Use MG by default
     if (length(unique(data[[fill_variable]])) > length(color_palette)) {
       stop("\U0000274C Insufficient values in manual scale.")
     }
@@ -181,7 +185,7 @@ alluvial_plot <- function(data, axes = NULL, abundance_threshold = 10000, fill_v
     # Create the plot with axes
     AllE <- ggplot2::ggplot(data, ggplot2::aes(
       y = !!rlang::sym(abundance_column),
-      !!!axis_mapping,  # Dynamically map the axes
+      !!!axis_mapping, # Dynamically map the axes
       fill = !!rlang::sym(fill_variable)
     )) +
       ggalluvial::geom_alluvium(width = 0.5, alpha = 0.9, decreasing = TRUE) +
@@ -194,16 +198,16 @@ alluvial_plot <- function(data, axes = NULL, abundance_threshold = 10000, fill_v
         legend.text = ggplot2::element_text(size = 10),
         panel.grid.major = ggplot2::element_blank(),
         panel.grid.minor = ggplot2::element_blank(),
-        axis.line.x = ggplot2::element_line(color = "black"),  # Add X-axis line
-        axis.line.y = ggplot2::element_line(color = "black"),  # Add Y-axis line
+        axis.line.x = ggplot2::element_line(color = "black"), # Add X-axis line
+        axis.line.y = ggplot2::element_line(color = "black"), # Add Y-axis line
         axis.title.x = ggplot2::element_text(size = 14, margin = ggplot2::margin(t = 10)),
         axis.title.y = ggplot2::element_text(size = 14, margin = ggplot2::margin(r = 10)),
         plot.title = ggplot2::element_text(size = 18, face = "bold", hjust = 0.5)
       ) +
       ggplot2::scale_x_discrete(limits = axes, expand = c(.1, .1)) +
-      ggplot2::scale_fill_manual(values = color_palette, na.translate = FALSE) +  # Ignore NA in legend
+      ggplot2::scale_fill_manual(values = color_palette, na.translate = FALSE) + # Ignore NA in legend
       ggplot2::ylab(if (abundance_type == "relative") "Relative Abundance" else "Absolute Abundance") +
-      ggplot2::xlab("") +  # Remove "Factors" from x-axis when axes are NULL
+      ggplot2::xlab("") + # Remove "Factors" from x-axis when axes are NULL
       ggplot2::guides(fill = ggplot2::guide_legend(ncol = legend_ncol))
   }
 

@@ -5,7 +5,12 @@
 \alias{AcceptableRange}
 \title{Acceptable Range Data}
 \format{
-A data frame with range of microbial abundance
+A data frame with the following columns:
+\describe{
+\item{min_abundance}{The minimum acceptable abundance threshold.}
+\item{max_abundance}{The maximum acceptable abundance threshold.}
+\item{taxon}{Taxonomic identifier or group name.}
+}
 }
 \source{
 Internal package dataset.
@@ -13,11 +18,16 @@ Internal package dataset.
 \usage{
 data(AcceptableRange)
 }
+\value{
+A data frame with acceptable abundance thresholds by taxon.
+}
 \description{
-A dataset containing acceptable ranges for microbial abundance estimates.
+This dataset provides acceptable ranges for microbial abundance estimates,
+which can be used for validation and quality control purposes in microbiome analyses.
 }
 \examples{
 data(AcceptableRange)
 head(AcceptableRange)
+summary(AcceptableRange)
 }
 \keyword{datasets}

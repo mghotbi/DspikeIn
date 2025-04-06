@@ -3,42 +3,47 @@
 \docType{data}
 \name{color_palette}
 \alias{color_palette}
-\title{Original and Extended Color Palette Sequence}
+\title{Original, Extended, and Nature-Inspired Color Palette Sequence}
 \format{
-A list with seven elements:
+A list with eight elements:
 \describe{
-\item{MG}{A character vector of original color codes.}
-\item{extended_palette}{A character vector of extended color codes, combining the original palette with the rainbow palette.}
+\item{MG}{A character vector of the original color codes.}
+\item{extended_palette}{A character vector of extended color codes, combining MG with the rainbow palette.}
 \item{light_MG}{A character vector of chic pastel color codes.}
-\item{MG_Awesome}{A vibrant 50-color palette for high-quality visualizations.}
+\item{MG_Awesome}{A vibrant 50-color palette designed for high-impact visualizations.}
 \item{cool_MG}{A sophisticated and modern 50-color palette with oceanic, earthy, and high-contrast tones.}
-\item{mix_MG}{A fully combined and randomly mixed unique palette.}
+\item{mix_MG}{A fully combined and randomly mixed unique palette including Mar_palette.}
 \item{vivid_MG}{A vivid and bright 50-color palette.}
+\item{Mar_palette}{A 40-color palette inspired by nature, suitable for academic and professional publications.}
 }
 }
 \usage{
 color_palette
 }
+\value{
+A named list of character vectors, each containing color hex codes for different palettes.
+}
 \description{
-This object provides multiple color palettes:
+This object provides multiple color palettes for scientific, exploratory, and publication-grade graphics:
 \itemize{
-\item MG: The original palette
-\item extended_palette: MG combined with rainbow colors
-\item light_MG: A chic pastel palette
-\item MG_Awesome: A vibrant and unique 50-color palette for visualization
-\item cool_MG: A sophisticated, modern 50-color palette
-\item mix_MG: A randomly mixed unique palette
-\item vivid_MG: A vivid and bright 50-color palette
+\item MG: The original palette.
+\item extended_palette: MG combined with rainbow colors.
+\item light_MG: A chic pastel palette.
+\item MG_Awesome: A vibrant and unique 50-color palette for visualization.
+\item cool_MG: A sophisticated, modern 50-color palette with oceanic, earthy, and high-contrast tones.
+\item mix_MG: A randomly mixed unique palette.
+\item vivid_MG: A vivid and bright 50-color palette.
+\item Mar_palette: A carefully crafted 40-color nature-inspired palette suitable for high-quality publications.
 }
 }
 \details{
-These palettes can be used in ggplot2 or other plotting systems.
+These palettes can be directly used with ggplot2 or other visualization systems supporting manual color scales.
 }
 \examples{
-# Use mix_MG palette in ggplot2
+# Example using the Mar_palette
 ggplot2::ggplot(mtcars, ggplot2::aes(x = wt, y = mpg, color = factor(cyl))) +
   ggplot2::geom_point(size = 4) +
-  ggplot2::scale_color_manual(values = color_palette$mix_MG) +
+  ggplot2::scale_color_manual(values = color_palette$Mar_palette) +
   ggplot2::theme_minimal()
 
 }

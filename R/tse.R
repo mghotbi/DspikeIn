@@ -1,8 +1,28 @@
-#' @title Example TreeSummarizedExperiment Data (TSE)
+#' @title Example TreeSummarizedExperiment (TSE) Object
 #'
-#' @description A dataset containing microbiome data stored as a TreeSummarizedExperiment object.
+#' @description
+#' This dataset contains simulated microbiome data stored as a \code{TreeSummarizedExperiment} (TSE) object.
+#' The TSE structure combines abundance data, sample metadata, and optional feature annotations,
+#' suitable for downstream statistical analysis of microbiome datasets.
 #'
-#' @format A `TreeSummarizedExperiment` object.
+#' @format A \code{TreeSummarizedExperiment} object with:
+#' \describe{
+#'   \item{assays}{Matrix of observed counts or abundances.}
+#'   \item{colData}{Sample metadata table.}
+#'   \item{rowData}{Taxonomic annotations or feature metadata (if available).}
+#' }
+#'
+#' @return A \code{TreeSummarizedExperiment} object containing simulated microbiome data.
+#'
+#' @seealso [TreeSummarizedExperiment::TreeSummarizedExperiment()]
 #' @usage data(tse)
-#' @source Example dataset from microbiome analysis.
+#'
+#' @source Example dataset for microbiome analysis.
+#'
+#' @examples
+#' data(tse)
+#' tse
+#' assay(tse)
+#' colData(tse)
+#' rowData(tse)
 "tse"

@@ -16,25 +16,23 @@
 #'   \item{graph}{The annotated igraph object.}
 #'
 #' @examples
-#' \donttest{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
-#'   Complete <- load_graphml("Complete.graphml")
+#'   Complete <- load_graphml(system.file("extdata", "Complete.graphml", package = "DspikeIn"))
 #'
-#'   # Compute degree metrics and visualize the network
-#'   result <- degree_network(graph_path = Complete, save_metrics = TRUE)
+#'   # Save metrics to a temporary file
+#'   temp_metrics <- file.path(tempdir(), "Global_Network_Metrics.csv")
+#'
+#'   result <- degree_network(
+#'     graph_path = Complete,
+#'     save_metrics = TRUE,
+#'     metrics_path = temp_metrics
+#'   )
+#'
 #'   print(result$metrics)
 #'   print(result$plot)
 #'
-#'   # Use Kamada-Kawai layout for better separation
-#'   # Options: `"stress"` (default), `"graphopt"`, `"fr"`
-#'   # (Fruchterman-Reingold), `"mds"`, `"kk"` (Kamada-Kawai)
-#'   result_kk <- degree_network(
-#'     graph_path = load_graphml("Complete.graphml"),
-#'     save_metrics = TRUE,
-#'     layout_type = "kk"
-#'   )
-#'   print(result_kk$plot)
-#' }
+#'   # Clean up temporary file
+#'   unlink(temp_metrics)
 #' }
 #'
 #' @importFrom igraph read_graph cluster_louvain membership degree edge_density is_connected components induced_subgraph V E modularity
@@ -45,19 +43,18 @@
 #' @importFrom utils write.csv
 #' @export
 degree_network <- function(graph_path, save_metrics = TRUE, metrics_path = "Global_Network_Metrics.csv", layout_type = "stress") {
-
   # Load network
   if (inherits(graph_path, "igraph")) {
-    message("\U0001F504 Using preloaded igraph object...")
+    message("Using preloaded igraph object...")
     graph <- graph_path
   } else {
-    if (!file.exists(graph_path)) stop("\U0000274C Error: Graph file not found.")
-    message("\U0001F504 Loading graph from file...")
+    if (!file.exists(graph_path)) stop("Error: Graph file not found.")
+    message("Loading graph from file...")
     graph <- igraph::read_graph(graph_path, format = "graphml")
   }
 
   # Ensure edge weights
-  message("\U0001F503 Processing edge weights...")
+  message("Processing edge weights...")
   if (!is.null(igraph::E(graph)$weight)) {
     igraph::E(graph)$original_weight <- igraph::E(graph)$weight
     igraph::E(graph)$weight <- ifelse(igraph::E(graph)$weight <= 0, 1e-3, igraph::E(graph)$weight)
@@ -78,7 +75,7 @@ degree_network <- function(graph_path, save_metrics = TRUE, metrics_path = "Glob
   }
 
   # Compute global metrics
-  message("\U0001F310 Computing global network metrics...")
+  message("Computing global network metrics...")
   is_conn <- igraph::is_connected(graph)
   largest_comp <- if (!is_conn) {
     igraph::induced_subgraph(graph, which(igraph::components(graph)$membership == which.max(igraph::components(graph)$csize)))
@@ -100,28 +97,31 @@ degree_network <- function(graph_path, save_metrics = TRUE, metrics_path = "Glob
   # Save global metrics
   if (save_metrics) {
     utils::write.csv(global_metrics, metrics_path, row.names = FALSE)
-    message("\U0001F4C2 Global network metrics saved as '", metrics_path, "'.")
+    message("Global network metrics saved as '", metrics_path, "'.")
   }
 
   # Safe layout generation
   safely_layout <- function(graph, layout_type, weights) {
-    tryCatch({
-      if (layout_type %in% c("stress", "graphopt", "fr")) {
-        ggraph::create_layout(graph, layout = layout_type, weights = weights)
-      } else {
-        ggraph::create_layout(graph, layout = layout_type)
+    tryCatch(
+      {
+        if (layout_type %in% c("stress", "graphopt", "fr")) {
+          ggraph::create_layout(graph, layout = layout_type, weights = weights)
+        } else {
+          ggraph::create_layout(graph, layout = layout_type)
+        }
+      },
+      error = function(e) {
+        warning("Layout failed. Falling back to 'fr'.")
+        ggraph::create_layout(graph, layout = "fr", weights = weights)
       }
-    }, error = function(e) {
-      warning("Layout failed. Falling back to 'fr'.")
-      ggraph::create_layout(graph, layout = "fr", weights = weights)
-    })
+    )
   }
   layout_data <- safely_layout(graph, layout_type, abs(edge_weights))
 
   # Color handling
   num_colors <- length(unique(communities))
   if (requireNamespace("DspikeIn", quietly = TRUE)) {
-    node_colors <- DspikeIn::color_palette$cool_MG[1:num_colors]
+    node_colors <- DspikeIn::color_palette$cool_MG[seq_len(num_colors)]
   } else {
     warning("DspikeIn color palette not available. Using rainbow colors.")
     node_colors <- rainbow(num_colors)
@@ -130,7 +130,7 @@ degree_network <- function(graph_path, save_metrics = TRUE, metrics_path = "Glob
   igraph::V(graph)$color <- node_colors[as.character(communities)]
 
   # Label top degree nodes
-  top_nodes <- order(-igraph::V(graph)$degree)[1:min(15, igraph::vcount(graph))]
+  top_nodes <- order(-igraph::V(graph)$degree)[seq_len(min(15, igraph::vcount(graph)))]
   label_nodes <- ifelse(igraph::V(graph)$name %in% igraph::V(graph)$name[top_nodes], igraph::V(graph)$name, "")
 
   # Edge thickness

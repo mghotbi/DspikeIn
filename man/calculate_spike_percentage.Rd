@@ -8,46 +8,84 @@ calculate_spike_percentage(
   obj,
   merged_spiked_species = NULL,
   merged_spiked_hashcodes = NULL,
-  output_path = "merged_data.docx",
+  output_file = NULL,
   passed_range = c(0.1, 11)
 )
 }
 \arguments{
-\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} (TSE) object containing the microbial data.}
+\item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing the microbial data.}
 
-\item{merged_spiked_species}{A character vector of spiked species to check in the dataset. Default is NULL.}
+\item{merged_spiked_species}{A character vector of spiked taxa names (can be from any taxonomic level).}
 
-\item{merged_spiked_hashcodes}{A character vector of spiked hashcodes to check in the dataset. Default is NULL.}
+\item{merged_spiked_hashcodes}{A character vector of spiked hashcodes (ASV/OTU IDs) to check in the dataset. Default is NULL.}
 
-\item{output_path}{A character string specifying the path to save the output files. Default is "merged_data.docx".}
+\item{output_file}{A character string specifying the path to save the output files. Default is NULL (no files are written).}
 
 \item{passed_range}{A numeric vector of length 2 specifying the range of percentages to categorize results as "passed". Default is c(0.1, 11).}
 }
 \value{
-A data frame containing the percentage of spiked taxa reads and the pass/fail results.
+A data frame containing:
+\itemize{
+\item Sample
+\item Total_Reads
+\item Spiked_Reads
+\item Percentage
+\item Result ("passed" or "failed")
+}
 }
 \description{
 This function calculates the percentage of reads from specified spiked species or hashcodes in a microbiome dataset.
-It merges the spiked taxa into one ASV, calculates the percentage of reads, categorizes the results as passed or failed,
-and saves the results as a DOCX and CSV file.
+It merges the spiked taxa into one ASV/OTU, calculates the percentage of reads, categorizes the results as passed or failed,
+and optionally saves the results as DOCX and CSV files.
 }
 \examples{
-\donttest{
-  spiked_cells <- 1847
-  species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
-  merged_spiked_species <- "Tetragenococcus_halophilus"
-
-  # Load phyloseq object from the DspikeIn package
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  # Load example phyloseq object
   data("physeq_16SOTU", package = "DspikeIn")
 
-  # Pre-process species data by merging using the sum method
-  merged_sum <- Pre_processing_species(physeq_16SOTU,
-                                       species_name = species_name,
-                                       merge_method = "sum")
+  # ----------- Phyloseq Example -----------
+  species_name <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
+  merged_spiked_species <- "Tetragenococcus_halophilus"
 
-  # Calculate spike percentage within the specified range
-  calculate_spike_percentage(merged_sum,
-                             merged_spiked_species = merged_spiked_species,
-                             passed_range = c(0.1, 20))
+  # Pre-process the phyloseq object to merge spike-in taxa
+  merged_physeq <- Pre_processing_species(
+    physeq_16SOTU,
+    species_name = species_name,
+    merge_method = "sum"
+  )
+
+  # Perform spike-in percentage calculation
+  output_docx <- file.path(tempdir(), "spike_summary_physeq.docx")
+
+  result_physeq <- calculate_spike_percentage(
+    obj = merged_physeq,
+    merged_spiked_species = merged_spiked_species,
+    output_file = "output.docx",
+    passed_range = c(0.1, 20)
+  )
+  print(result_physeq)
+
+
+  # ----------- TreeSummarizedExperiment Example -----------
+  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+
+  merged_tse <- Pre_processing_species(
+    tse_16SOTU,
+    species_name = species_name,
+    merge_method = "sum"
+  )
+
+  output_docx_tse <- file.path(tempdir(), "spike_summary_tse.docx")
+  result_tse <- calculate_spike_percentage(
+    obj = merged_tse,
+    merged_spiked_species = merged_spiked_species,
+    output_file = NULL,
+    passed_range = c(0.1, 20)
+  )
+
+  print(result_tse)
+
+  # Clean up temporary files
+  if (file.exists(output.docx)) unlink(output.docx, force = TRUE)
 }
 }

@@ -7,7 +7,7 @@
 norm.QN(obj, filter = FALSE)
 }
 \arguments{
-\item{obj}{A phyloseq object.}
+\item{obj}{A Phyloseq or TreeSummarizedExperiment objects.}
 
 \item{filter}{Logical, whether to filter low counts.}
 }

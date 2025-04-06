@@ -12,13 +12,11 @@
 #' grid lines, ensures a clean background, and standardizes text styling.
 #'
 #' @examples
-#' \dontrun{
 #' library(ggplot2)
 #' p <- ggplot(mtcars, aes(x = wt, y = mpg)) +
 #'   geom_point(size = 3) +
 #'   my_custom_theme()
 #' print(p)
-#' }
 #'
 #' @importFrom ggplot2 theme_bw theme element_blank element_rect element_line element_text unit
 #' @export
@@ -30,12 +28,12 @@ my_custom_theme <- function(base_size = 12, font_family = "sans", bg_color = "wh
       panel.background = ggplot2::element_rect(fill = bg_color),
       plot.background = ggplot2::element_rect(fill = bg_color, color = "#e1deda"),
       panel.border = ggplot2::element_blank(),
-      axis.line.x = ggplot2::element_line(colour = 'black', size = 0.6),
-      axis.line.y = ggplot2::element_line(colour = 'black', size = 0.6),
-      axis.ticks = ggplot2::element_line(colour = 'black', size = 0.35),
+      axis.line.x = ggplot2::element_line(colour = "black", size = 0.6),
+      axis.line.y = ggplot2::element_line(colour = "black", size = 0.6),
+      axis.ticks = ggplot2::element_line(colour = "black", size = 0.35),
       legend.title = ggplot2::element_text(size = base_size, family = font_family),
       legend.text = ggplot2::element_text(size = base_size - 1, color = "black", family = font_family, face = "plain"),
-      legend.key.size = ggplot2::unit(0.7, 'cm'),
+      legend.key.size = ggplot2::unit(0.7, "cm"),
       axis.title.x = ggplot2::element_text(size = base_size, color = "black", family = font_family, face = "bold"),
       axis.title.y = ggplot2::element_text(size = base_size, color = "black", family = font_family, face = "bold"),
       axis.text.x = ggplot2::element_text(size = base_size, color = "black", family = font_family, face = "bold"),
@@ -46,5 +44,3 @@ my_custom_theme <- function(base_size = 12, font_family = "sans", bg_color = "wh
       strip.text = ggplot2::element_text(size = base_size + 1, face = "bold", family = font_family)
     )
 }
-
-

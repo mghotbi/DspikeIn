@@ -1,136 +1,139 @@
-#' @title Pre-process a list of spiked-in species in a phyloseq or TSE object
-#' @description Merges ASVs based on a specified method while preserving all metadata
-#' (taxonomy, sample data, phylogenetic tree, and reference sequences, if available).
+#' @title Preprocess and Merge Spike-in Species in a Phyloseq or TSE Object
+#'
+#' @description
+#' Merges ASVs belonging to user-defined spike-in species by summing or selecting maximum counts,
+#' while preserving all available metadata (taxonomy, sample data, tree, and reference sequences).
+#' This function works for both `phyloseq` and `TreeSummarizedExperiment` objects.
 #'
 #' @param obj A `phyloseq` or `TreeSummarizedExperiment` object.
-#' @param spiked_species A character vector of species names to be processed (Genus Species format).
-#' @param merge_method Either `"sum"` (sum counts) or `"max"` (keep max abundance ASV). Default is `"sum"`.
-#' @param output_file Optional: File path to save the merged object as an `.rds` file.
-#' @return A `phyloseq` or `TreeSummarizedExperiment` object with merged species.
+#' @param spiked_species Character vector of species names to be processed (match `Species` column).
+#' @param merge_method Either `"sum"` (default) to sum counts across ASVs or `"max"` to keep the most abundant ASV.
+#' @param output_file Optional. Character string specifying the path to save the merged object as `.rds`.
+#'
+#' @return A merged object of the same class as input (`phyloseq` or `TreeSummarizedExperiment`).
 #'
 #' @importFrom phyloseq otu_table tax_table phy_tree refseq sample_data prune_taxa
 #' @importFrom TreeSummarizedExperiment TreeSummarizedExperiment rowTree
 #' @importFrom SummarizedExperiment assay rowData assays colData
 #' @importFrom S4Vectors DataFrame metadata
-#' @importFrom ape is.rooted drop.tip
+#' @importFrom ape drop.tip
 #'
 #' @examples
-#' \dontrun{
-#' library(phyloseq)
-#' library(TreeSummarizedExperiment)
+#' if (requireNamespace("DspikeIn", quietly = TRUE)) {
+#'   data("tse", package = "DspikeIn")
+#'   data("physeq", package = "DspikeIn")
 #'
-#' data("tse", package = "DspikeIn")
-#' data("physeq", package = "DspikeIn")
+#'   spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
 #'
-#' # Define spiked species for merging
-#' spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
+#'   merged_TSE <- Pre_processing_species_list(
+#'     tse,
+#'     spiked_species = spiked_species,
+#'     merge_method = "sum"
+#'   )
 #'
-#' # Process the dataset and merge ASVs
-#' merged_TSE <- Pre_processing_species_list(tse, spiked_species, merge_method = "sum")
-#' merged_physeq <- Pre_processing_species_list(physeq, spiked_species, merge_method = "sum")
+#'   merged_physeq <- Pre_processing_species_list(
+#'     physeq,
+#'     spiked_species = spiked_species,
+#'     merge_method = "sum"
+#'   )
 #' }
+#'
 #' @export
-Pre_processing_species_list <- function(obj, spiked_species, merge_method = c("sum", "max"), output_file = NULL) {
-
+Pre_processing_species_list <- function(obj,
+                                        spiked_species,
+                                        merge_method = c("sum", "max"),
+                                        output_file = NULL) {
   merge_method <- match.arg(merge_method)
-  message("Starting pre-processing for spiked-in species...")
+  message("\u25B6 Starting pre-processing...")
 
-  # Step 1: Detect input format
   is_physeq <- inherits(obj, "phyloseq")
   is_tse <- inherits(obj, "TreeSummarizedExperiment")
 
-  if (!is_physeq && !is_tse) {
-    stop("Input object must be either a `phyloseq` or `TreeSummarizedExperiment`.")
-  }
+  if (!is_physeq && !is_tse) stop("Input object must be a 'phyloseq' or 'TreeSummarizedExperiment'.")
 
-  # Step 2: Retrieve components
+  # --- Accessors ---
   otu_table_data <- get_otu_table(obj)
   tax_data <- as.data.frame(get_tax_table(obj))
   sample_metadata <- get_sample_data(obj)
 
-  # Retrieve phylogenetic tree (if available)
+  # --- Optional Tree ---
   phy_tree <- tryCatch(
     if (is_physeq) phyloseq::phy_tree(obj) else TreeSummarizedExperiment::rowTree(obj),
     error = function(e) NULL
   )
 
-  # Retrieve reference sequences (if available)
+  # --- Optional RefSeq ---
   ref_sequences <- tryCatch(
     if (is_physeq) phyloseq::refseq(obj) else S4Vectors::metadata(obj)$refseq,
     error = function(e) NULL
   )
 
-  # Step 3: Ensure `Species` column exists
-  if (!"Species" %in% colnames(tax_data)) stop("Error: 'Species' column not found in taxonomy table.")
+  # --- Check Taxonomy ---
+  if (!"Species" %in% colnames(tax_data)) stop("'Species' column not found in taxonomy table.")
+
   tax_data$Species <- as.character(tax_data$Species)
 
-  message("Checking taxonomy table...")
-
-  # Step 4: Process each species
+  # --- Process each species ---
   for (species in spiked_species) {
-    message("Processing species: ", species)
+    message("   > Processing: ", species)
 
-    species_asvs <- rownames(tax_data)[which(tax_data$Species == species)]
+    species_asvs <- rownames(tax_data)[tax_data$Species == species]
 
     if (length(species_asvs) > 1) {
-      message("Merging ", length(species_asvs), " ASVs for species: ", species)
+      message("     Merging ", length(species_asvs), " ASVs for: ", species)
 
       if (merge_method == "sum") {
         sum_abundances <- colSums(otu_table_data[species_asvs, , drop = FALSE])
         otu_table_data[species_asvs[1], ] <- sum_abundances
-      } else if (merge_method == "max") {
-        max_abundance_asv <- species_asvs[which.max(rowSums(otu_table_data[species_asvs, , drop = FALSE]))]
-        otu_table_data[species_asvs[1], ] <- otu_table_data[max_abundance_asv, ]
+      } else {
+        max_asv <- species_asvs[which.max(rowSums(otu_table_data[species_asvs, , drop = FALSE]))]
+        otu_table_data[species_asvs[1], ] <- otu_table_data[max_asv, ]
       }
 
-      # Remove extra ASVs
-      otu_table_data <- otu_table_data[setdiff(rownames(otu_table_data), species_asvs[-1]), , drop = FALSE]
-      tax_data <- tax_data[setdiff(rownames(tax_data), species_asvs[-1]), , drop = FALSE]
+      # Remove redundant ASVs
+      keep <- setdiff(rownames(otu_table_data), species_asvs[-1])
+      otu_table_data <- otu_table_data[keep, , drop = FALSE]
+      tax_data <- tax_data[keep, , drop = FALSE]
     } else if (length(species_asvs) == 1) {
-      message("No merging needed; only one ASV/OTU for species: ", species)
+      message("     Only one ASV found for: ", species)
     } else {
-      warning("Warning: No ASVs/OTUs found for species: ", species)
+      warning("No ASVs found for species: ", species)
     }
   }
 
-  # Step 5: Prune Tree and RefSeq for TSE
+  # --- Prune Tree ---
   if (!is.null(phy_tree)) {
     common_tips <- intersect(phy_tree$tip.label, rownames(otu_table_data))
-    if (length(common_tips) < length(phy_tree$tip.label)) {
-      if (length(common_tips) > 1) {
-        phy_tree <- ape::drop.tip(phy_tree, setdiff(phy_tree$tip.label, common_tips))
-        message("Pruned tree to match remaining taxa.")
-      } else {
-        warning("Tree has too few taxa after pruning. Removing tree.")
-        phy_tree <- NULL
-      }
+    if (length(common_tips) > 1) {
+      phy_tree <- ape::drop.tip(phy_tree, setdiff(phy_tree$tip.label, common_tips))
+      message("   > Tree pruned to match taxa.")
+    } else {
+      phy_tree <- NULL
+      message("   > Tree removed due to insufficient taxa.")
     }
   }
 
+  # --- Prune RefSeq ---
   if (!is.null(ref_sequences)) {
     common_seqs <- intersect(names(ref_sequences), rownames(otu_table_data))
-    if (length(common_seqs) < length(ref_sequences)) {
-      if (length(common_seqs) > 1) {
-        ref_sequences <- ref_sequences[common_seqs]
-        message("Pruned reference sequences to match remaining taxa.")
-      } else {
-        warning("Reference sequences have too few taxa after pruning. Removing refseq.")
-        ref_sequences <- NULL
-      }
+    if (length(common_seqs) > 1) {
+      ref_sequences <- ref_sequences[common_seqs]
+      message("   > Reference sequences pruned.")
+    } else {
+      ref_sequences <- NULL
+      message("   > Reference sequences removed due to insufficient taxa.")
     }
   }
 
-  # Step 6: Reconstruct Object
+  # --- Reconstruct ---
   if (is_physeq) {
     components <- list(
       phyloseq::otu_table(otu_table_data, taxa_are_rows = TRUE),
       phyloseq::tax_table(as.matrix(tax_data)),
       phyloseq::sample_data(sample_metadata)
     )
-
     if (!is.null(phy_tree)) components <- append(components, list(phy_tree))
     if (!is.null(ref_sequences)) components <- append(components, list(phyloseq::refseq(ref_sequences)))
-
     obj <- do.call(phyloseq::phyloseq, components)
   } else {
     obj <- TreeSummarizedExperiment::TreeSummarizedExperiment(
@@ -142,12 +145,13 @@ Pre_processing_species_list <- function(obj, spiked_species, merge_method = c("s
     )
   }
 
+  # --- Optional Save ---
   if (!is.null(output_file)) {
     saveRDS(obj, file = output_file)
-    message("Merged object saved to: ", output_file)
+    message("\u2713 Merged object saved to: ", output_file)
   }
 
-  message("Pre-processing complete.")
+  message("\u2713 Pre-processing complete.")
   return(obj)
 }
 
@@ -159,4 +163,3 @@ Pre_processing_species_list <- function(obj, spiked_species, merge_method = c("s
 
 # merged_physeq_sum <- Pre_processing_species_list(physeq, spiked_species, merge_method = "sum")
 # merged_physeq_sum <- Pre_processing_species_list(tse, spiked_species, merge_method = "sum")
-

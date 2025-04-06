@@ -25,30 +25,37 @@ Converts relative ASV counts in a \code{phyloseq} or \code{TreeSummarizedExperim
 to absolute counts by multiplying ASV counts by provided scaling factors.
 Ensures phylogenetic tree (\code{rowTree}) and reference sequences (\code{refseq}) are \strong{retained} if possible.
 }
+\note{
+The output file \code{absolute_counts.csv} is written to the specified directory. For CRAN compliance, use \code{tempdir()} when saving files inside examples or vignettes.
+}
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
-  # Scaling factors calculated from `calculate_spikeIn_factors()`
 
   spiked_cells <- 1847
   species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
   merged_spiked_species <- "Tetragenococcus_halophilus"
 
-  spiked_16S_OTU <- phyloseq::subset_samples(physeq_16SOTU,
-    spiked.volume \%in\% c("2", "1"))
+  spiked_16S_OTU <- phyloseq::subset_samples(physeq_16SOTU, spiked.volume \%in\% c("2", "1"))
   Spiked_16S_sum_scaled <- Pre_processing_species(
     spiked_16S_OTU,
     species_name,
     merge_method = "sum",
-    output_file = "merged_physeq_sum.rds"
+    output_file = file.path(tempdir(), "merged_physeq_sum.rds")
   )
 
-  result <- calculate_spikeIn_factors(Spiked_16S_sum_scaled,
-    spiked_cells, merged_spiked_species)
+  result <- calculate_spikeIn_factors(
+    Spiked_16S_sum_scaled,
+    spiked_cells,
+    merged_spiked_species
+  )
   scaling_factors <- result$scaling_factors
 
-  result_physeq <- convert_to_absolute_counts(Spiked_16S_sum_scaled, scaling_factors)
+  result_physeq <- convert_to_absolute_counts(
+    Spiked_16S_sum_scaled,
+    scaling_factors,
+    output_dir = tempdir()
+  )
   abs_counts_physeq <- result_physeq$absolute_counts
   physeq_adj <- result_physeq$obj_adj
 
@@ -59,16 +66,22 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
     spiked_16S_OTU_TSE,
     species_name,
     merge_method = "sum",
-    output_file = "merged_physeq_sum.rds"
+    output_file = file.path(tempdir(), "merged_tse_sum.rds")
   )
 
-  result <- calculate_spikeIn_factors(Spiked_16S_sum_tse_scaled,
-    spiked_cells, merged_spiked_species)
+  result <- calculate_spikeIn_factors(
+    Spiked_16S_sum_tse_scaled,
+    spiked_cells,
+    merged_spiked_species
+  )
   scaling_factors <- result$scaling_factors
 
-  result_tse <- convert_to_absolute_counts(spiked_16S_OTU_TSE, scaling_factors)
+  result_tse <- convert_to_absolute_counts(
+    spiked_16S_OTU_TSE,
+    scaling_factors,
+    output_dir = tempdir()
+  )
   abs_counts_tse <- result_tse$absolute_counts
   tse_adj <- result_tse$obj_adj
-}
 }
 }

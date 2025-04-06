@@ -71,7 +71,6 @@ and customization of plot aesthetics. The plot is built using \code{ggplot2}, an
 with "Others" appearing first.
 }
 \examples{
-\donttest{
 # Example 1: Relative abundance barplot for Genus
 data("physeq_16SOTU", package = "DspikeIn")
 bp_rel <- taxa_barplot(
@@ -90,7 +89,7 @@ print(bp_rel$barplot)
 
 # Example 2: Absolute abundance barplot for Family with faceting
 data("physeq_ITSOTU", package = "DspikeIn")
- tse_ITSOTU <-convert_phyloseq_to_tse(physeq_ITSOTU)
+tse_ITSOTU <- convert_phyloseq_to_tse(physeq_ITSOTU)
 bp_abs <- taxa_barplot(
   physeq = tse_ITSOTU,
   target_glom = "Genus",
@@ -107,6 +106,5 @@ bp_abs <- taxa_barplot(
   legend_size = 12
 )
 print(bp_abs$barplot)
-}
 
 }

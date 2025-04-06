@@ -7,7 +7,7 @@
 norm.rar(obj)
 }
 \arguments{
-\item{obj}{A phyloseq object.}
+\item{obj}{A Phyloseq or TreeSummarizedExperiment objects.}
 }
 \value{
 A list containing the normalized phyloseq object and scaling factors.

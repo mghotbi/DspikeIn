@@ -12,25 +12,21 @@
 #' @importFrom dplyr mutate select rename bind_cols
 #' @importFrom tidyr pivot_longer
 #' @examples
-#' \donttest{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
-#'    data("physeq_16SOTU", package = "DspikeIn")
-#'    tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+#'   data("physeq_16SOTU", package = "DspikeIn")
+#'   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 #'
-#'    # Turn it to the long format
-#'    melted_ph <- get_long_format_data(physeq_16SOTU)
-#'    melted <- get_long_format_data(tse_16SOTU)
-#' }
+#'   # Turn it to the long format
+#'   melted_ph <- get_long_format_data(physeq_16SOTU)
+#'   melted <- get_long_format_data(tse_16SOTU)
 #' }
 #' @export
 get_long_format_data <- function(obj) {
   if (inherits(obj, "phyloseq")) {
-    message("\U0001F501 Converting phyloseq object to long format using psmelt()...")
-    return(phyloseq::psmelt(obj))  # Use psmelt directly for phyloseq
-  }
-
-  else if (inherits(obj, "TreeSummarizedExperiment")) {
-    message("\U0001F501 Converting TreeSummarizedExperiment object to long format...")
+    message("Converting phyloseq object to long format using psmelt()...")
+    return(phyloseq::psmelt(obj)) # Use psmelt directly for phyloseq
+  } else if (inherits(obj, "TreeSummarizedExperiment")) {
+    message("Converting TreeSummarizedExperiment object to long format...")
 
     # Extract abundance data
     abundance_data <- as.data.frame(SummarizedExperiment::assay(obj))
@@ -57,10 +53,8 @@ get_long_format_data <- function(obj) {
     long_data <- dplyr::left_join(long_data, sample_data, by = "Sample")
 
     return(long_data)
-  }
-
-  else {
-    stop("\U0000274C Unsupported object type. Input must be a phyloseq or TreeSummarizedExperiment object.")
+  } else {
+    stop("Unsupported object type. Input must be a phyloseq or TreeSummarizedExperiment object.")
   }
 }
 

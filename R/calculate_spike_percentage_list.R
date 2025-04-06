@@ -1,99 +1,110 @@
-#' @title Calculate Spike Percentage for Specified Taxa
-#' @description Computes the percentage of reads from specified spiked species in a
-#' `phyloseq` or `TreeSummarizedExperiment` object. The function merges selected taxa
-#' into a single ASV, calculates the percentage of reads per sample, classifies the results
-#' as "passed" or "failed" based on a predefined range, and saves the results in DOCX
-#' and CSV formats.
+#' @title Calculate Spike-in Percentage for Specified Taxa
 #'
-#' @param obj A `phyloseq` or `TreeSummarizedExperiment` object containing microbial data.
-#' @param merged_spiked_species A character vector of spiked species names to check in the object.
-#' @param output_path A character string specifying the file path for saving output (DOCX format).
-#' Default is `"merged_data.docx"`.
-#' @param passed_range A numeric vector of length 2 specifying the range of percentages for
-#' categorization as "passed". Default is `c(0.1, 11)`.
+#' @description
+#' Computes the percentage of reads attributed to specified spike-in taxa in a
+#' `phyloseq` or `TreeSummarizedExperiment` object. The function merges spike-in taxa,
+#' computes percentages, classifies samples into "passed" or "failed" based on a
+#' user-defined threshold, and optionally exports DOCX and CSV reports.
 #'
-#' @return A data frame containing the percentage of spiked taxa reads and the pass/fail classification.
-#' The results are also saved as a DOCX table and a CSV file.
+#' @details
+#' The function automatically detects spike-in OTUs based on the `Species` column in
+#' the taxonomy table. It works with both `phyloseq` and `TreeSummarizedExperiment`
+#' objects and produces QC diagnostics commonly required for spike-in based absolute
+#' quantification workflows.
 #'
-#' @details This function extracts relevant data from `phyloseq` or `TreeSummarizedExperiment`
-#' objects using accessor functions, calculates the percentage of reads contributed by the specified
-#' spiked taxa, and classifies each sample as "passed" or "failed" based on the provided threshold range.
+#' @param obj A `phyloseq` or `TreeSummarizedExperiment` object.
+#' @param merged_spiked_species Character vector or list of spike-in species names (at the `Species` level).
+#' @param output_path Optional. Character string specifying the output path (DOCX).
+#' If `NULL` (default) results are not saved.
+#' @param passed_range Numeric vector of length 2 specifying the accepted percentage range.
+#' Default is `c(0.1, 11)`.
 #'
-#' @importFrom phyloseq tax_table sample_names sample_sums otu_table
-#' @importFrom SummarizedExperiment assay
-#' @importFrom dplyr left_join
+#' @return A `data.frame` with:
+#' \itemize{
+#'   \item Sample
+#'   \item Total_Reads
+#'   \item Total_Reads_spiked
+#'   \item Percentage (of spike-in reads)
+#'   \item Result ("passed"/"failed")
+#' }
+#'
+#' @section Notes:
+#' - Assumes the taxonomy table contains a column named `Species`.
+#' - Supports both `phyloseq` and `TreeSummarizedExperiment` objects.
+#'
+#' @importFrom phyloseq otu_table tax_table sample_data
+#' @importFrom SummarizedExperiment assay rowData colData
 #' @importFrom flextable flextable fontsize font color bold italic save_as_docx
 #' @importFrom utils write.csv
-#' @importFrom rlang .data
+#' @importFrom stats na.omit
 #'
 #' @examples
-#' \donttest{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
-#'   # Load phyloseq object
 #'   data("physeq", package = "DspikeIn")
-#'
-#'   # Define a list of spiked species
 #'   spiked_species_list <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
 #'
-#'   # Calculate spike percentage within the specified range
+#'   temp_docx <- file.path(tempdir(), "merged_result.docx")
+#'   temp_csv <- sub(".docx", ".csv", temp_docx)
+#'
 #'   result <- calculate_spike_percentage_list(
 #'     obj = physeq,
 #'     merged_spiked_species = spiked_species_list,
+#'     output_path = temp_docx,
 #'     passed_range = c(0.1, 10)
 #'   )
 #'
-#'   # Print the result
 #'   print(result)
-#' }
-#' }
 #'
+#'   # Clean up
+#'   if (file.exists(temp_docx)) unlink(temp_docx, force = TRUE)
+#'   if (file.exists(temp_csv)) unlink(temp_csv, force = TRUE)
+#' }
 #' @export
-calculate_spike_percentage_list <- function(obj, merged_spiked_species = NULL,
-                                            output_path = "merged_data.docx",
+calculate_spike_percentage_list <- function(obj,
+                                            merged_spiked_species,
+                                            output_path = NULL,
                                             passed_range = c(0.1, 11)) {
-
-  # Step 1: Validate Input Parameters
+  # --- Validate input ---
   if (!is.numeric(passed_range) || length(passed_range) != 2) {
-    stop("passed_range must be a numeric vector of length 2.")
-  }
-  if (is.null(merged_spiked_species)) {
-    stop("You must provide 'merged_spiked_species'.")
+    stop("'passed_range' must be a numeric vector of length 2.")
   }
 
-  # Step 2: Extract Data Using Accessor Functions
-  otu_data <- get_otu_table(obj) # Extract OTU table (phyloseq or TSE)
-  tax_data <- get_tax_table(obj) # Extract taxonomy table (phyloseq or TSE)
-  sample_data <- get_sample_data(obj) # Extract sample metadata (phyloseq or TSE)
+  # Accept character() or list()
+  merged_spiked_species <- unique(as.character(unlist(merged_spiked_species)))
+  if (length(merged_spiked_species) == 0) {
+    stop("You must provide at least one spike-in species.")
+  }
 
-  # Ensure that the species column exists in taxonomy data
+  # --- Accessors ---
+  otu_data <- if (inherits(obj, "TreeSummarizedExperiment")) {
+    SummarizedExperiment::assay(obj)
+  } else {
+    as(phyloseq::otu_table(obj), "matrix")
+  }
+
+  tax_data <- if (inherits(obj, "TreeSummarizedExperiment")) {
+    as.data.frame(SummarizedExperiment::rowData(obj))
+  } else {
+    as.data.frame(phyloseq::tax_table(obj))
+  }
+
+  # --- Check species column ---
   if (!"Species" %in% colnames(tax_data)) {
-    stop("The taxonomy table does not contain a 'Species' column.")
+    stop("The taxonomy table must contain a 'Species' column.")
   }
 
-  # Step 3: Identify Spiked Taxa in the Taxonomy Table
-  cleaned_spiked_species <- trimws(unlist(merged_spiked_species))
+  # --- Match spike-in taxa ---
+  spikein_idx <- rownames(tax_data)[tax_data$Species %in% merged_spiked_species]
 
-  # Get species names from taxonomy table
-  species_names <- tax_data[, "Species", drop = FALSE]
-
-  # Identify the taxa matching spiked species
-  spiked_taxa_idx <- rownames(species_names)[species_names$Species %in% cleaned_spiked_species]
-
-  # Check if any spiked taxa are found
-  if (length(spiked_taxa_idx) == 0) {
-    stop("\U0000274C No spiked taxa found in the dataset.")
+  if (length(spikein_idx) == 0) {
+    stop("No matching spike-in species found in the dataset.")
   }
 
-  # Step 4: Subset OTU Table for Spiked Taxa
-  spiked_otu_data <- otu_data[spiked_taxa_idx, , drop = FALSE]
-
-  # Merge Spiked Taxa into One ASV
+  # --- Calculate percentages ---
+  spiked_otu_data <- otu_data[spikein_idx, , drop = FALSE]
   merged_spiked_reads <- colSums(spiked_otu_data, na.rm = TRUE)
-
-  # Step 5: Calculate Total Reads for Each Sample
   total_reads <- colSums(otu_data, na.rm = TRUE)
 
-  # Step 6: Create Data Frame with Calculations
   merged_data <- data.frame(
     Sample = colnames(otu_data),
     Total_Reads = total_reads,
@@ -101,31 +112,27 @@ calculate_spike_percentage_list <- function(obj, merged_spiked_species = NULL,
     Percentage = (merged_spiked_reads / total_reads) * 100
   )
 
-  # Categorize Results Based on Passed Range
   merged_data$Result <- ifelse(
     merged_data$Percentage >= passed_range[1] & merged_data$Percentage <= passed_range[2],
-    "passed",
-    "failed"
+    "passed", "failed"
   )
 
-  # Step 7: Format and Save as DOCX Using flextable
-  ft <- flextable::flextable(merged_data) %>%
-    flextable::fontsize(size = 10) %>%
-    flextable::font(part = "all", fontname = "Inconsolata") %>%
-    flextable::color(part = "header", color = "red4") %>%
-    flextable::bold(part = "header") %>%
-    flextable::italic()
+  # --- Save DOCX and CSV if output_path is provided ---
+  if (!is.null(output_path)) {
+    ft <- flextable::flextable(merged_data) |>
+      flextable::fontsize(size = 10) |>
+      flextable::font(part = "all", fontname = "Inconsolata") |>
+      flextable::color(part = "header", color = "red4") |>
+      flextable::bold(part = "header")
 
-  # Save the table as DOCX and CSV
-  flextable::save_as_docx(ft, path = output_path)
-  csv_path <- sub(".docx", ".csv", output_path)
-  utils::write.csv(merged_data, file = csv_path, row.names = FALSE)
+    flextable::save_as_docx(ft, path = output_path)
+    csv_path <- sub("\\.docx$", ".csv", output_path)
+    utils::write.csv(merged_data, file = csv_path, row.names = FALSE)
 
-  # Print save locations
-  message("\U0001F4BE Table saved in DOCX format: ", output_path)
-  message("\U0001F4BE Merged data saved as CSV: ", csv_path)
+    message("\u2713 Results saved to: ", output_path)
+    message("\u2713 CSV saved to: ", csv_path)
+  }
 
-  # Return the final data frame
   return(merged_data)
 }
 
@@ -134,10 +141,9 @@ calculate_spike_percentage_list <- function(obj, merged_spiked_species = NULL,
 #
 # # tidy up
 # physeq<- tidy_phyloseq_tse(physeq)
-# spiked_species_list <- list(
-#   c("Pseudomonas aeruginosa"),
-#   c("Escherichia coli"),
-#   c("Clostridium difficile") )
+# spiked_species_list<- merged_spiked_species <- c("Pseudomonas aeruginosa",
+# "Escherichia coli", "Clostridium difficile")
+
 #
 # # Call the function to calculate the spike percentages
 # result <- calculate_spike_percentage_list(merged_physeq_sum,

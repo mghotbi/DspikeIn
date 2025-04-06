@@ -3,7 +3,6 @@ library(phyloseq)
 library(flextable)
 
 test_that("conclusion function works correctly with embedded dataset", {
-
   # Define output file paths
   output_docx <- "merged_data.docx"
   output_csv <- "merged_data.csv"
@@ -32,9 +31,9 @@ test_that("conclusion function works correctly with embedded dataset", {
 
   # **Fix: Properly remove 'spiked.volume' column**
   physeq_invalid <- physeq_16SOTU
-  metadata_invalid <- phyloseq::sample_data(physeq_invalid)  # Extract metadata
-  metadata_invalid$spiked.volume <- NULL  # Remove required column
-  phyloseq::sample_data(physeq_invalid) <- metadata_invalid  # Reassign modified metadata
+  metadata_invalid <- phyloseq::sample_data(physeq_invalid) # Extract metadata
+  metadata_invalid$spiked.volume <- NULL # Remove required column
+  phyloseq::sample_data(physeq_invalid) <- metadata_invalid # Reassign modified metadata
 
   # Ensure function throws error when 'spiked.volume' is missing
   expect_error(
@@ -45,5 +44,4 @@ test_that("conclusion function works correctly with embedded dataset", {
   # Clean up files after running the test
   if (file.exists(output_docx)) file.remove(output_docx)
   if (file.exists(output_csv)) file.remove(output_csv)
-
 })

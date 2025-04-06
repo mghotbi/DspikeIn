@@ -14,7 +14,6 @@
 #' @return A `ggplot` object representing the customized quadrant plot.
 #'
 #' @examples
-#' \donttest{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   g <- load_graphml("Complete.graphml")
 #'
@@ -26,19 +25,18 @@
 #'   plot <- quadrant_plot(metrics, x_metric = "Degree", y_metric = "Efficiency")
 #'   print(plot)
 #' }
-#' }
 #'
 #' @importFrom ggplot2 ggplot aes geom_point geom_vline geom_hline scale_color_manual theme_minimal labs
 #' @importFrom dplyr filter mutate case_when
 #' @importFrom ggrepel geom_text_repel
 #' @export
 quadrant_plot <- function(metrics,
-                              x_metric = "Degree",
-                              y_metric = "Redundancy",
-                              x_threshold = NULL,
-                              y_threshold = NULL,
-                              top_quantile = 0.95,
-                              point_size = 3) {
+                          x_metric = "Degree",
+                          y_metric = "Redundancy",
+                          x_threshold = NULL,
+                          y_threshold = NULL,
+                          top_quantile = 0.95,
+                          point_size = 3) {
   message("\U0001F578 Generating customizable network visualization...")
 
   # Validate input
@@ -55,8 +53,8 @@ quadrant_plot <- function(metrics,
     mutate(
       Quadrant = case_when(
         .data[[x_metric]] >= x_threshold & .data[[y_metric]] >= y_threshold ~ paste("High", y_metric, "& High", x_metric),
-        .data[[x_metric]] >= x_threshold & .data[[y_metric]] < y_threshold  ~ paste("Low", y_metric, "& High", x_metric),
-        .data[[x_metric]] < x_threshold & .data[[y_metric]] >= y_threshold  ~ paste("High", y_metric, "& Low", x_metric),
+        .data[[x_metric]] >= x_threshold & .data[[y_metric]] < y_threshold ~ paste("Low", y_metric, "& High", x_metric),
+        .data[[x_metric]] < x_threshold & .data[[y_metric]] >= y_threshold ~ paste("High", y_metric, "& Low", x_metric),
         TRUE ~ paste("Low", y_metric, "& Low", x_metric)
       )
     )
@@ -103,4 +101,3 @@ quadrant_plot <- function(metrics,
 # print(plot2)
 # print(plot3)
 # print(plot4)
-

@@ -25,7 +25,6 @@ This function extracts the OTU table (or assay in \code{TSE}), normalizes it by 
 and updates the original object while maintaining its structure.
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
   adjusted_physeq <- adjust_abundance_one_third(physeq_16SOTU, factor = 3)
@@ -33,7 +32,6 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   # Example with a TreeSummarizedExperiment object
   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
   adjusted_tse <- adjust_abundance_one_third(tse_16SOTU, factor = 3)
-}
 }
 
 }

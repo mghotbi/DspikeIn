@@ -7,22 +7,19 @@
 #' @param graph_path Character. The **GraphML file path**. Default (`NULL`) loads `"Complete.graphml"` from **DspikeIn**.
 #' Valid internal options: `"Complete.graphml"`, `"NoHubs.graphml"`, `"NoBasid.graphml"`.
 #' If an **external path** is provided, the function loads that instead.
+#' @param save_metrics Logical. If `TRUE`, saves the global metrics as a CSV file (in the working directory or specified by `metrics_path`).
 #'
-#' @param save_metrics Logical. If `TRUE`, saves `"Global_Network_Metrics.csv"`.
-#'
-#' @return A **list** containing:
-#'   \item{plot}{A **ggplot2** object displaying the network.}
-#'   \item{metrics}{A **data.frame** with global network metrics.}
-#'   \item{graph}{The **igraph** object with assigned attributes.}
+#' @return A list containing:
+#' \item{plot}{A `ggplot2` object displaying the network.}
+#' \item{metrics}{A `data.frame` with global network metrics.}
+#' \item{graph}{The annotated `igraph` object.}
 #'
 #' @examples
-#' \donttest{
+#'
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   Complete <- load_graphml("Complete.graphml")
 #'
 #'   # Run network weighting function on the loaded dataset
-#'   result <- weight_Network()
-#'
 #'   # Load a specific GraphML dataset from DspikeIn
 #'   result <- weight_Network(graph_path = "Complete.graphml")
 #'
@@ -32,8 +29,10 @@
 #'
 #'   # View network metrics
 #'   result$metrics
+#'   # Optional: Clean up generated metrics file if saved
+#'   unlink("Global_Network_Metrics.csv")
 #' }
-#' }
+#'
 #' @seealso \code{\link[igraph]{cluster_fast_greedy}}, \code{\link[ggraph]{ggraph}}, \code{\link{load_graphml}}
 #' @importFrom igraph cluster_fast_greedy membership degree edge_density is_connected
 #' @importFrom igraph components induced_subgraph V E modularity transitivity diameter mean_distance vcount ecount
@@ -44,7 +43,6 @@
 #' @importFrom utils write.csv
 #' @export
 weight_Network <- function(graph_path = NULL, save_metrics = TRUE) {
-
   # =====================
   # Load GraphML File
   # =====================
@@ -71,11 +69,11 @@ weight_Network <- function(graph_path = NULL, save_metrics = TRUE) {
   # Preserve & Modify Edge Weights
   # =====================
   if (!is.null(igraph::E(graph)$weight)) {
-    igraph::E(graph)$original_weight <- igraph::E(graph)$weight  # Store original weight for visualization
-    igraph::E(graph)$weight <- abs(igraph::E(graph)$weight)  # Convert all weights to positive for layout calculations
+    igraph::E(graph)$original_weight <- igraph::E(graph)$weight # Store original weight for visualization
+    igraph::E(graph)$weight <- abs(igraph::E(graph)$weight) # Convert all weights to positive for layout calculations
   } else {
     igraph::E(graph)$weight <- rep(1, igraph::ecount(graph))
-    igraph::E(graph)$original_weight <- rep(1, igraph::ecount(graph))  # Keep consistent for visualization
+    igraph::E(graph)$original_weight <- rep(1, igraph::ecount(graph)) # Keep consistent for visualization
   }
 
   # =====================
@@ -121,8 +119,8 @@ weight_Network <- function(graph_path = NULL, save_metrics = TRUE) {
   message("\U0001F5A7 Generating network plot...")
 
   edge_sign <- factor(ifelse(igraph::E(graph)$original_weight > 0, "Positive", "Negative"))
-  edge_colors <- c("Positive" = "#669BBC", "Negative" =   "#EE9B00")
-  edge_thickness <- scales::rescale(abs(igraph::E(graph)$original_weight), to = c(0.3, 5))  # Use original weight to reflect true weight
+  edge_colors <- c("Positive" = "#669BBC", "Negative" = "#EE9B00")
+  edge_thickness <- scales::rescale(abs(igraph::E(graph)$original_weight), to = c(0.3, 5)) # Use original weight to reflect true weight
 
   plot <- ggraph::ggraph(layout_data) +
     ggraph::geom_edge_link(ggplot2::aes(edge_width = edge_thickness, color = edge_sign), alpha = 0.3) +
@@ -132,15 +130,15 @@ weight_Network <- function(graph_path = NULL, save_metrics = TRUE) {
     ggplot2::scale_color_manual(values = node_colors) +
     ggplot2::theme_void() +
     ggplot2::theme(
-      legend.position = "bottom",    # Move legend to bottom
+      legend.position = "bottom", # Move legend to bottom
       legend.direction = "horizontal", # Make legend horizontal
-      legend.box = "horizontal",     # Align legend elements horizontally
-      legend.text = ggplot2::element_text(size = 10, face = "plain"),  # Make text readable
+      legend.box = "horizontal", # Align legend elements horizontally
+      legend.text = ggplot2::element_text(size = 10, face = "plain"), # Make text readable
       legend.title = ggplot2::element_text(size = 10, face = "bold"),
       legend.key.size = ggplot2::unit(0.5, "cm"), # Reduce legend item size
       legend.spacing.x = ggplot2::unit(0.3, "pt") # Reduce horizontal space between legend items
     ) +
-      ggplot2::guides(
+    ggplot2::guides(
       color = ggplot2::guide_legend(nrow = 2, byrow = TRUE, keywidth = 0.5, keyheight = 0.5)
     )
 
@@ -155,19 +153,16 @@ weight_Network <- function(graph_path = NULL, save_metrics = TRUE) {
 # Load the default DspikeIn dataset (Complete.graphml)
 # Complete <- load_graphml("Complete.graphml")
 
-#result <- weight_Network()
+# result <- weight_Network()
 
 # Load a different built-in dataset (NoHubs.graphml)
-#result <- weight_Network(graph_path = "NoBasid.graphml")
+# result <- weight_Network(graph_path = "NoBasid.graphml")
 
 # Load a user-provided GraphML file
-#result <- weight_Network(graph_path = "~/network.graphml")
+# result <- weight_Network(graph_path = "~/network.graphml")
 
 # View the network plot
-#print(result$plot)
+# print(result$plot)
 
 # Check global network metrics
-#result$metrics
-
-
-
+# result$metrics

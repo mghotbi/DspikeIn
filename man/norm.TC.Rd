@@ -7,7 +7,7 @@
 norm.TC(obj, groups)
 }
 \arguments{
-\item{obj}{A phyloseq object.}
+\item{obj}{A Phyloseq or TreeSummarizedExperiment objects.}
 
 \item{groups}{A string specifying the grouping variable in sample data.}
 }

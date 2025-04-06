@@ -1,11 +1,27 @@
-#' @title General Phyloseq Object
+#' @title General Example Phyloseq Object
 #'
-#' @description A phyloseq object containing microbiome data for general use.
+#' @description
+#' This is a general-purpose \code{phyloseq} object containing microbiome data,
+#' simulated for testing and demonstration of microbiome workflows.
+#' It contains OTU abundances, taxonomic annotations, and sample metadata.
 #'
-#' @format A phyloseq object with taxonomic and abundance data.
+#' @format A \code{phyloseq} object with:
+#' \describe{
+#'   \item{otu_table}{Operational Taxonomic Unit (OTU) abundance matrix.}
+#'   \item{tax_table}{Taxonomic classification of OTUs.}
+#'   \item{sample_data}{Metadata associated with the samples.}
+#' }
+#'
+#' @return A \code{phyloseq} object containing OTU abundances, taxonomy, and sample metadata.
+#'
 #' @usage data(physeq)
+#'
 #' @source Simulated dataset for microbiome analysis.
+#'
 #' @examples
 #' data(physeq)
 #' physeq
+#' sample_names(physeq)
+#' taxa_names(physeq)
+#' summary(physeq)
 "physeq"

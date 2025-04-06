@@ -43,18 +43,16 @@ This function standardizes taxonomic ranks, removes unnecessary whitespace,
 and filters unwanted classifications, ensuring consistency for downstream analysis.
 }
 \examples{
-\dontrun{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
   tidy_physeq <- tidy_phyloseq_tse(physeq_16SOTU)
-}
 }
 
-\donttest{
+
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
+
   tidy_physeq <- tidy_phyloseq_tse(physeq_16SOTU)
-}
 }
 
 }

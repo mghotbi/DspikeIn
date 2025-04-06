@@ -18,14 +18,12 @@ a long-format data frame, similar to \code{phyloseq::psmelt()}, for compatibilit
 with visualization functions such as \code{alluvial_plot()}.
 }
 \examples{
-\donttest{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
-   data("physeq_16SOTU", package = "DspikeIn")
-   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+  data("physeq_16SOTU", package = "DspikeIn")
+  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 
-   # Turn it to the long format
-   melted_ph <- get_long_format_data(physeq_16SOTU)
-   melted <- get_long_format_data(tse_16SOTU)
-}
+  # Turn it to the long format
+  melted_ph <- get_long_format_data(physeq_16SOTU)
+  melted <- get_long_format_data(tse_16SOTU)
 }
 }

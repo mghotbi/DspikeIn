@@ -2,7 +2,7 @@
 % Please edit documentation in R/Pre_processing_species.R
 \name{Pre_processing_species}
 \alias{Pre_processing_species}
-\title{Pre-process species in a phyloseq or TSE object by merging ASVs/OTUs}
+\title{Pre-process taxa in a phyloseq or TSE object by merging ASVs/OTUs}
 \usage{
 Pre_processing_species(
   obj,
@@ -14,39 +14,42 @@ Pre_processing_species(
 \arguments{
 \item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
 
-\item{species_name}{A character vector of species names to merge.}
+\item{species_name}{A character vector of \strong{exact} taxonomic names to merge (matched across all taxonomy levels).}
 
-\item{merge_method}{\code{"sum"} (default) or \code{"max"}: method for merging ASV counts.}
+\item{merge_method}{Method used to merge counts: \code{"sum"} (default) or \code{"max"}.}
 
-\item{output_file}{Optional file path to save the processed object.}
+\item{output_file}{Optional file path to save the processed object (e.g., \code{file.path(tempdir(), "output.rds")}).}
 }
 \value{
-A processed \code{phyloseq} or \code{TreeSummarizedExperiment} object.
+A processed \code{phyloseq} or \code{TreeSummarizedExperiment} object with merged ASVs/OTUs.
 }
 \description{
-Merges ASVs/OTUs while ensuring the phylogenetic tree and reference sequences remain intact.
+Merges ASVs/OTUs while ensuring that the phylogenetic tree and reference sequences remain intact.
+The provided taxonomic name(s) will be searched across \strong{all taxonomic levels} (e.g., Kingdom, Phylum, ..Genus, Species).
 If tree or refseq become mismatched, they are pruned or removed safely.
 }
 \examples{
-\dontrun{
 library(DspikeIn)
 data("physeq_16SOTU", package = "DspikeIn")
- spiked_cells <- 1847
- species_name <- spiked_species <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
 
- merged_sum <- Pre_processing_species(physeq_16SOTU, species_name, merge_method = "sum")
+species_name <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
+
+# Merge species in phyloseq format
+merged_sum <- Pre_processing_species(
+  physeq_16SOTU,
+  species_name,
+  merge_method = "sum"
+)
 
 # Convert phyloseq to TSE format
 tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 
-species_name <- c("Tetragenococcus_halophilus", "Tetragenococcus_sp." )
-
-# Merge species in TSE format
+# Merge species in TSE format and write to tempdir
+output_rds <- file.path(tempdir(), "merged_TSE_sum.rds")
 merged_TSE_sum <- Pre_processing_species(
-    tse_16SOTU,
-    species_name,
-    merge_method = "sum",
-    output_file = "merged_TSE_sum.rds"
+  tse_16SOTU,
+  species_name,
+  merge_method = "sum",
+  output_file = output_rds
 )
-}
 }

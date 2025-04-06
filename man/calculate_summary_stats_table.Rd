@@ -7,34 +7,50 @@
 calculate_summary_stats_table(data, output_path = NULL)
 }
 \arguments{
-\item{data}{A data frame containing the data to be summarized.}
+\item{data}{A data frame containing numeric variables.}
 
-\item{output_path}{A character string specifying the output path for the Word document. Default is NULL, which sets the output path to "post_eval_summary.docx".}
+\item{output_path}{Optional. Character string specifying the DOCX output path.
+Default is "post_eval_summary.docx".}
 }
 \value{
-A flextable object containing the summary statistics.
+A \code{flextable} object with formatted summary statistics.
 }
 \description{
-This function calculates summary statistics (mean, standard deviation, standard error, quantiles) for numeric columns in a data frame,
-creates a flextable for formatted output, and saves the table in a Word document and CSV file.
+Computes summary statistics (mean, standard deviation, standard error, quartiles)
+for numeric columns of a data frame, generates a formatted flextable, and saves
+both DOCX and CSV versions of the table.
 }
 \examples{
-\donttest{
-if (requireNamespace("DspikeIn", quietly = TRUE) &&
- requireNamespace("microbiome", quietly = TRUE)) {
-  # Load necessary libraries
-  library(microbiome)
-
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  ## --- Phyloseq example ---
   data("physeq_16SOTU", package = "DspikeIn")
 
-  # Extract absolute counts using the microbiome package
-  absolute_count <- microbiome::meta(physeq_16SOTU)
+  absolute_count <- phyloseq::otu_table(physeq_16SOTU)
 
-  # Calculate summary statistics and save the table to a Word document
-  summary_table <- calculate_summary_stats_table(absolute_count, output_path = "summary.docx")
+  tmp_docx <- file.path(tempdir(), "physeq_summary.docx")
 
-  # Print the calculated summary table
-  print(summary_table)
+  summary_table_physeq <- calculate_summary_stats_table(
+    data = as.data.frame(absolute_count),
+    output_path = tmp_docx
+  )
+
+  print(summary_table_physeq)
+  if (file.exists(tmp_docx)) file.remove(tmp_docx)
+
+  ## --- TSE example ---
+  data("tse", package = "DspikeIn")
+
+  tse_counts <- SummarizedExperiment::assay(tse)
+
+  tmp_docx2 <- file.path(tempdir(), "tse_summary.docx")
+
+  summary_table_tse <- calculate_summary_stats_table(
+    data = as.data.frame(tse_counts),
+    output_path = tmp_docx2
+  )
+
+  print(summary_table_tse)
+  if (file.exists(tmp_docx2)) file.remove(tmp_docx2)
 }
-}
+
 }

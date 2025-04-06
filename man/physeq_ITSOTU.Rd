@@ -5,19 +5,34 @@
 \alias{physeq_ITSOTU}
 \title{Example Phyloseq Object for ITS OTUs}
 \format{
-A phyloseq object with taxonomic and abundance data.
+A \code{phyloseq} object with:
+\describe{
+\item{otu_table}{Operational Taxonomic Unit (OTU) abundance matrix.}
+\item{tax_table}{Taxonomic classification of OTUs.}
+\item{sample_data}{Metadata associated with the samples.}
+\item{phy_tree}{Phylogenetic tree relating OTUs (if available).}
+}
 }
 \source{
-internal dataset for microbiome analysis.
+Internal dataset for microbiome analysis.
 }
 \usage{
 data(physeq_ITSOTU)
 }
+\value{
+A \code{phyloseq} object containing ITS OTU data with taxonomy, sample metadata, and phylogeny.
+}
 \description{
-A phyloseq object containing ITS amplicon sequencing data.
+This dataset contains an example \code{phyloseq} object representing
+Internal Transcribed Spacer (ITS) amplicon sequencing data. It includes
+taxonomic annotations, OTU abundance counts, and associated sample metadata,
+suitable for downstream analysis of fungal communities.
 }
 \examples{
 data(physeq_ITSOTU)
 physeq_ITSOTU
+summary(physeq_ITSOTU)
+sample_data(physeq_ITSOTU)
+taxa_names(physeq_ITSOTU)
 }
 \keyword{datasets}
