@@ -437,11 +437,11 @@ result <- validate_spikein_clade(
 
 ```r
 
-Tip labels=	OTU/ASV names
-Branch length numbers=	Actual evolutionary distances (small = very similar)
-Prevalence stars	How frequently the OTU occurs across samples
-Blue bar ring=	Log10 mean abundance
-Outer colored tiles=	The metadata variable you choose (e.g., Animal.type)
+# Tip labels=	OTU/ASV names
+# Branch length numbers=	Actual evolutionary distances (small = very similar)
+# Prevalence stars	How frequently the OTU occurs across samples
+# Blue bar ring=	Log10 mean abundance
+# Outer colored tiles=	The metadata variable you choose (e.g., Animal.type)
 
 spikein <- phyloseq::subset_taxa(physeq_16SOTU, Genus == "Tetragenococcus")
 taxa_names(spikein) <- paste0("OTU", seq_len(ntaxa(spikein)))
