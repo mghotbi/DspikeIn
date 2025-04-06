@@ -6,7 +6,7 @@
 
 
 
-![CheatSheetDspikeIn](https://github.com/user-attachments/assets/1972dbe7-05b6-4d61-a683-d0ac02b2a219)
+![CheatSheetDspikeIn](https://github.com/user-attachments/assets/4bb5e460-527d-429f-b0de-311bc312fd2b)
 
 ---
 
