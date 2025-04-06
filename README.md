@@ -291,7 +291,7 @@ print(head(tax_table(ps)))
 
 ## Dataset for practicing DspikeIn Package
 
-You can download the practice dataset for the DspikeIn package by clicking the link below:  
+You can also download the practice dataset by clicking the link below:  
 👉 [Download Dataset](https://drive.google.com/drive/folders/164_K7MaFLCf5T8F9fsPAb1AndQ8mJOOP?usp=sharing)
 
 ### OR You can directly use the datasets provided in the DspikeIn package to practice and test the functions. These datasets include phyloseq objects for different marker-gene microbiome analyses:
