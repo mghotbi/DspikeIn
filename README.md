@@ -178,13 +178,13 @@ To install the required packages, use the following script:
 # Install missing CRAN packages
 install.packages(setdiff(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", 
                            "randomForest", "ggridges", "ggalluvial", "tibble", 
-                           "matrixStats", "RColorBrewer", "ape", "rlang", 
+                           "matrixStats", "RColorBrewer", "ape", "rlang", "ggstar",
                            "scales", "magrittr", "phangorn", "igraph", "tidyr", 
                            "xml2", "data.table", "reshape2","vegan", "patchwork", "officer"), 
                          installed.packages()[,"Package"]))
 
 # Load CRAN packages
-lapply(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", "randomForest", 
+lapply(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", "randomForest", "ggstar",
          "ggridges", "ggalluvial", "tibble", "matrixStats", "RColorBrewer", 
          "ape", "rlang", "scales", "magrittr", "phangorn", "igraph", "tidyr", 
          "xml2", "data.table", "reshape2","vegan", "patchwork", "officer"), library, character.only = TRUE)
@@ -209,29 +209,7 @@ lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings", "ggtree", "DECIPHER
        library, character.only = TRUE)
 
 ```
-#### GitHub Packages
 
-```r
-
-# Install remotes if not installed
-if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
-library(remotes)
-
-# Install missing GitHub packages
-remotes::install_github("mikemc/speedyseq")
-remotes::install_github("microsud/microbiomeutilities")
-# Optional
-#devtools::install_github("briatte/ggnet")
-#devtools::install_github("zdk123/SpiecEasi")
-
-# Load GitHub packages
-library(speedyseq)
-library(microbiomeutilities)
-#library(SpiecEasi)
-#library(ggnet)
-
-
-```
 ## Step 2: Install DspikeIn Package
 
 ```r
