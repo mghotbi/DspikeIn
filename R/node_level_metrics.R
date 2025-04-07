@@ -231,12 +231,12 @@ node_level_metrics <- function(graph, save_path = NULL) {
   community_colors <- setNames(color_palette[seq_len(length(unique_communities))], unique_communities)
   bg_colors <- community_colors[as.character(metrics$Community)]
 
-  table_flex <- flextable::qflextable(metrics) %>%
-    flextable::theme_booktabs() %>%
-    flextable::set_table_properties(layout = "autofit") %>%
-    flextable::bold(part = "header") %>%
-    flextable::color(j = "Community", color = "white", part = "body") %>%
-    flextable::bg(j = "Community", bg = bg_colors, part = "body") %>%
+  table_flex <- flextable::qflextable(metrics) |>
+    flextable::theme_booktabs() |>
+    flextable::set_table_properties(layout = "autofit") |>
+    flextable::bold(part = "header") |>
+    flextable::color(j = "Community", color = "white", part = "body") |>
+    flextable::bg(j = "Community", bg = bg_colors, part = "body") |>
     flextable::autofit()
 
   return(list(

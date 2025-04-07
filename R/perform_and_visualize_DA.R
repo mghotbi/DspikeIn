@@ -143,8 +143,8 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
     contrast_matrix <- limma::makeContrasts(contrasts = paste0(contrast_fixed[2], "-", contrast_fixed[1]), levels = design)
 
     lrt <- edgeR::glmLRT(fit, contrast = contrast_matrix)
-    res <- edgeR::topTags(lrt, n = Inf)$table %>%
-      dplyr::rename(pvalue = PValue) %>%
+    res <- edgeR::topTags(lrt, n = Inf)$table |>
+      dplyr::rename(pvalue = PValue) |>
       dplyr::mutate(
         FDR = p.adjust(pvalue, method = "BH"),
         padj = FDR,
@@ -178,8 +178,8 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
     #  Extract DE results
     res <- as.data.frame(DESeq2::results(dds, contrast = c(group_var, contrast_fixed[1], contrast_fixed[2])))
 
-    res <- res %>%
-      dplyr::rename(logFC = log2FoldChange, pvalue = pvalue) %>%
+    res <- res |>
+      dplyr::rename(logFC = log2FoldChange, pvalue = pvalue) |>
       dplyr::mutate(
         FDR = p.adjust(pvalue, method = "BH"),
         Significance = ifelse(padj < significance_level, "Significant", "Not Significant"),
@@ -200,8 +200,8 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
   }
 
   #  Remove NA & Apply Factor Levels
-  results <- results %>%
-    dplyr::filter(!is.na(Significance)) %>%
+  results <- results |>
+    dplyr::filter(!is.na(Significance)) |>
     dplyr::mutate(group = factor(group, levels = unique(group)))
 
   # Prune significant taxa
@@ -254,20 +254,20 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
   }
 
   # **one logFC per Genus (taking the mean)**
-  df_filtered <- results %>%
-    dplyr::group_by(Genus, group) %>%
+  df_filtered <- results |>
+    dplyr::group_by(Genus, group) |>
     dplyr::summarise(
       logFC = mean(logFC, na.rm = TRUE),
       lfcSE = mean(lfcSE, na.rm = TRUE),
       padj = ifelse(all(is.na(padj)), NA, min(padj, na.rm = TRUE)),
       .groups = "drop" # **grouping is removed after summarization**
-    ) %>%
-    dplyr::filter(!is.na(Genus)) %>%
+    ) |>
+    dplyr::filter(!is.na(Genus)) |>
     dplyr::filter(!is.na(padj) & padj < significance_level) # **Use dynamic p-value threshold**
 
   # **Check for duplicates before setting factor levels**
   if (BiocGenerics::anyDuplicated(df_filtered$Genus) > 0) {
-    df_filtered <- df_filtered %>%
+    df_filtered <- df_filtered |>
       dplyr::distinct(Genus, .keep_all = TRUE)
   }
 
@@ -278,7 +278,7 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
   any(BiocGenerics::duplicated(df_filtered$Genus))
 
   # Define LFC direction based on logFC values
-  df_filtered <- df_filtered %>%
+  df_filtered <- df_filtered |>
     dplyr::mutate(LFC_Direction = ifelse(logFC < 0, "Negative LFC", "Positive LFC"))
 
   bar_plot <- ggplot2::ggplot(df_filtered, ggplot2::aes(x = stats::reorder(Genus, logFC), y = logFC, fill = group)) +

@@ -45,7 +45,6 @@ Imports:
     grDevices,
     igraph,
     limma,
-    magrittr,
     matrixStats,
     methods,
     microbiome,
@@ -71,6 +70,7 @@ Imports:
     ggstar
 Suggests:
     Biobase,
+    magrittr,
     BiocManager,
     cluster,
     devtools,

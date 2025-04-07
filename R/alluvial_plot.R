@@ -21,7 +21,6 @@
 #' @importFrom ggplot2 ggplot aes geom_text theme scale_x_discrete scale_fill_manual ylab ggtitle guides guide_legend facet_grid
 #' @importFrom dplyr group_by summarise mutate ungroup arrange desc pull across filter
 #' @importFrom ggalluvial is_alluvia_form geom_alluvium geom_stratum
-#' @importFrom magrittr %>%
 #' @importFrom grid unit
 #' @importFrom rlang sym as_name
 #' @examples
@@ -102,14 +101,14 @@ alluvial_plot <- function(data, axes = NULL, abundance_threshold = 10000, fill_v
     if (!is.null(total_reads)) abundance_threshold <- abundance_threshold / total_reads
 
     # Normalize within each sample first (ensuring each sample sums to 100%)
-    data <- data %>%
-      dplyr::group_by(Sample) %>%
-      dplyr::mutate(RelativeAbundance = Abundance / sum(Abundance) * 100) %>%
+    data <- data |>
+      dplyr::group_by(Sample) |>
+      dplyr::mutate(RelativeAbundance = Abundance / sum(Abundance) * 100) |>
       dplyr::ungroup()
 
     # Summarize within each factor separately
-    data <- data %>%
-      dplyr::group_by(across(all_of(axes)), !!rlang::sym(fill_variable)) %>%
+    data <- data |>
+      dplyr::group_by(across(all_of(axes)), !!rlang::sym(fill_variable)) |>
       dplyr::summarise(RelativeAbundance = mean(RelativeAbundance, na.rm = TRUE), .groups = "drop")
 
     # Apply filtering
@@ -119,8 +118,8 @@ alluvial_plot <- function(data, axes = NULL, abundance_threshold = 10000, fill_v
 
   # Fix for Absolute Abundance (Ensure Correct Grouping Across Axes)
   if (abundance_type == "absolute") {
-    data <- data %>%
-      dplyr::group_by(across(all_of(axes)), !!rlang::sym(fill_variable)) %>%
+    data <- data |>
+      dplyr::group_by(across(all_of(axes)), !!rlang::sym(fill_variable)) |>
       dplyr::summarise(Abundance = sum(Abundance, na.rm = TRUE), .groups = "drop")
 
     # Apply the threshold filter
@@ -130,21 +129,21 @@ alluvial_plot <- function(data, axes = NULL, abundance_threshold = 10000, fill_v
 
   # Fix: Properly Select Top Taxa
   if (!is.null(top_taxa)) {
-    top_taxa_names <- data %>%
-      dplyr::group_by(!!rlang::sym(fill_variable)) %>%
-      dplyr::summarise(TotalAbundance = sum(!!rlang::sym(abundance_column))) %>%
-      dplyr::slice_max(n = top_taxa, order_by = TotalAbundance) %>%
+    top_taxa_names <- data |>
+      dplyr::group_by(!!rlang::sym(fill_variable)) |>
+      dplyr::summarise(TotalAbundance = sum(!!rlang::sym(abundance_column))) |>
+      dplyr::slice_max(n = top_taxa, order_by = TotalAbundance) |>
       dplyr::pull(!!rlang::sym(fill_variable))
 
-    data <- data %>%
+    data <- data |>
       dplyr::filter(!!rlang::sym(fill_variable) %in% top_taxa_names)
   }
 
   # Order the levels of the fill variable based on abundance
-  data <- data %>%
-    dplyr::group_by(!!rlang::sym(fill_variable)) %>%
-    dplyr::mutate(TotalAbundance = sum(!!rlang::sym(abundance_column))) %>%
-    dplyr::ungroup() %>%
+  data <- data |>
+    dplyr::group_by(!!rlang::sym(fill_variable)) |>
+    dplyr::mutate(TotalAbundance = sum(!!rlang::sym(abundance_column))) |>
+    dplyr::ungroup() |>
     dplyr::arrange(dplyr::desc(TotalAbundance))
   data[[fill_variable]] <- factor(data[[fill_variable]], levels = unique(data[[fill_variable]]))
 
@@ -157,7 +156,7 @@ alluvial_plot <- function(data, axes = NULL, abundance_threshold = 10000, fill_v
 
     # Warn if any colors are missing for specific taxa
     if (any(is.na(filtered_color_mapping))) {
-      warning("\U0000274C There are missing values in the color mapping.")
+      warning("There are missing values in the color mapping.")
     }
 
     color_palette <- filtered_color_mapping
@@ -169,12 +168,12 @@ alluvial_plot <- function(data, axes = NULL, abundance_threshold = 10000, fill_v
   } else if (!is.null(custom_colors)) {
     color_palette <- custom_colors
     if (length(unique(data[[fill_variable]])) > length(color_palette)) {
-      stop("\U0000274C Insufficient values in manual scale.")
+      stop("Insufficient values in manual scale.")
     }
   } else {
     color_palette <- color_palette$MG # Use MG by default
     if (length(unique(data[[fill_variable]])) > length(color_palette)) {
-      stop("\U0000274C Insufficient values in manual scale.")
+      stop("Insufficient values in manual scale.")
     }
   }
 

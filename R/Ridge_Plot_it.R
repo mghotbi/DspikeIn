@@ -63,15 +63,15 @@ ridge_plot_it <- function(obj, taxrank = "Genus", rarefaction_depth = NULL, top_
   colnames(otu_table_aggregated)[1] <- taxrank # Rename first column
 
   # Summarize total abundance per taxon and select top taxa
-  top_taxa <- otu_table_aggregated %>%
-    dplyr::group_by(!!rlang::sym(taxrank)) %>%
-    dplyr::summarise(TotalAbundance = sum(dplyr::across(where(is.numeric)))) %>%
-    dplyr::arrange(dplyr::desc(TotalAbundance)) %>%
-    dplyr::slice_head(n = top_n) %>%
+  top_taxa <- otu_table_aggregated |>
+    dplyr::group_by(!!rlang::sym(taxrank)) |>
+    dplyr::summarise(TotalAbundance = sum(dplyr::across(where(is.numeric)))) |>
+    dplyr::arrange(dplyr::desc(TotalAbundance)) |>
+    dplyr::slice_head(n = top_n) |>
     dplyr::pull(!!rlang::sym(taxrank))
 
   # Filter dataset for selected top taxa
-  otu_table_filtered <- otu_table_aggregated %>%
+  otu_table_filtered <- otu_table_aggregated |>
     dplyr::filter(!!rlang::sym(taxrank) %in% top_taxa)
 
   # Prepare data for plotting
@@ -79,7 +79,7 @@ ridge_plot_it <- function(obj, taxrank = "Genus", rarefaction_depth = NULL, top_
 
   # Generate ridge plot
   plot <- ggplot2::ggplot(
-    plot_data %>% dplyr::filter(Abundance > 0 & !is.na(!!rlang::sym(taxrank))),
+    plot_data |> dplyr::filter(Abundance > 0 & !is.na(!!rlang::sym(taxrank))),
     ggplot2::aes(y = !!rlang::sym(taxrank), x = log10(Abundance), fill = !!rlang::sym(taxrank))
   ) +
     ggridges::geom_density_ridges2(scale = 1, alpha = 0.8, show.legend = FALSE) +

@@ -4,10 +4,10 @@ library(phyloseq)
 library(randomForest)
 library(DspikeIn)
 
-test_that("RandomForest_selected_ASVs works correctly with phyloseq", {
+test_that("RandomForest_selected works correctly with phyloseq", {
   data("physeq_16SOTU", package = "DspikeIn")
 
-  result_phyloseq <- RandomForest_selected_ASVs(
+  result_phyloseq <- RandomForest_selected(
     physeq = physeq_16SOTU,
     response_var = "Host.genus",
     na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet")
