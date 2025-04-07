@@ -72,8 +72,11 @@ The DspikeIn package provides functions for:
 
 
 ### To get detailed examples and guidance, please use:
+
+```r
 browseVignettes("DspikeIn")
 
+```
 ### Data availability
 The DspikeIn package provides example datasets located in the data/ folder and inst/extdata/ folder. You can list the available datasets using the following commands:
 
