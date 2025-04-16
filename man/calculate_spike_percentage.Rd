@@ -30,7 +30,7 @@ A data frame containing:
 \item Total_Reads
 \item Spiked_Reads
 \item Percentage
-\item Result ("passed" or "failed")
+\item{\code{Result}}{\code{"passed"} or \code{"failed"}}
 }
 }
 \description{
@@ -88,4 +88,7 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   # Clean up temporary files
   if (file.exists(output.docx)) unlink(output.docx, force = TRUE)
 }
+}
+\seealso{
+\code{\link{Pre_processing_species}}, \code{\link{calculate_spike_percentage}}
 }

@@ -34,6 +34,7 @@
 #'
 #' # Merge species in TSE format and write to tempdir
 #' output_rds <- file.path(tempdir(), "merged_TSE_sum.rds")
+#'
 #' merged_TSE_sum <- Pre_processing_species(
 #'   tse_16SOTU,
 #'   species_name,

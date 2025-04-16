@@ -14,7 +14,7 @@ MG_shapes
 A numeric vector of shape codes.
 }
 \description{
-A numeric vector of point shapes (0–25) for use in ggplot2.
+A numeric vector of point shapes (0-25) for use in ggplot2.
 }
 \examples{
 # Example usage of MG_shapes in ggplot2

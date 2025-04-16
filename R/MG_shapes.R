@@ -1,5 +1,5 @@
 #' @title Predefined Shape Vector for Plot Styling
-#' @description A numeric vector of point shapes (0–25) for use in ggplot2.
+#' @description A numeric vector of point shapes (0-25) for use in ggplot2.
 #' @return A numeric vector of shape codes.
 #'
 #' @examples

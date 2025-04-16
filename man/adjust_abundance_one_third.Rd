@@ -2,34 +2,33 @@
 % Please edit documentation in R/adjust_abundance_one_third.R
 \name{adjust_abundance_one_third}
 \alias{adjust_abundance_one_third}
-\title{Adjust Abundance by One-Third}
+\title{Adjust Abundance by a Factor}
 \usage{
 adjust_abundance_one_third(obj, factor = 3, output_file = NULL)
 }
 \arguments{
 \item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing microbiome data.}
 
-\item{factor}{A numeric value specifying the factor by which to divide the abundance data. Default is 3.}
+\item{factor}{A numeric value \eqn{\ge 1} specifying the factor by which to divide the abundance data. Default is 3.}
 
-\item{output_file}{A character string specifying the output file name for the adjusted object. Default is NULL.}
+\item{output_file}{A character string specifying the output \code{.rds} file path for the adjusted object. Default is \code{NULL}.}
 }
 \value{
-A modified object of the same class (\code{phyloseq} or \code{TreeSummarizedExperiment}) with adjusted abundances.
+An adjusted object of the same class (\code{phyloseq} or \code{TreeSummarizedExperiment}).
 }
 \description{
-This function normalizes the abundance data in a \code{phyloseq} or \code{TreeSummarizedExperiment}
-object by dividing each value by a specified factor.
+This function normalizes abundance data in a \code{phyloseq} or \code{TreeSummarizedExperiment}
+object by dividing each value by a user-defined factor.
 }
 \details{
-This function extracts the OTU table (or assay in \code{TSE}), normalizes it by dividing by \code{factor},
-and updates the original object while maintaining its structure.
+This function extracts the OTU table (or assay in a \code{TSE}), normalizes it by dividing by \code{factor},
+and updates the object while preserving structure and metadata.
 }
 \examples{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
   adjusted_physeq <- adjust_abundance_one_third(physeq_16SOTU, factor = 3)
 
-  # Example with a TreeSummarizedExperiment object
   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
   adjusted_tse <- adjust_abundance_one_third(tse_16SOTU, factor = 3)
 }

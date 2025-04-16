@@ -118,7 +118,7 @@ conclusion <- function(obj, merged_spiked_species, max_passed_range = 11, output
   }
 
   # Compute summary stats
-  summary_stats_df <- spike_success_report %>%
+  summary_stats_df <- spike_success_report |>
     dplyr::summarize(
       mean_total_reads_spiked = mean(Total_Reads, na.rm = TRUE),
       sd_total_reads_spiked = sd(Total_Reads, na.rm = TRUE),

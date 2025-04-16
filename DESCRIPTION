@@ -3,19 +3,27 @@ Type: Package
 Title: Estimating absolute abundance from microbial spike-in controls
 Version: 0.99.0
 Authors@R: 
-    person(given = "Mitra", family = "Ghotbi", 
-           role = c("aut", "cre"), 
-           email = "mitra.ghotbi@gmail.com",
-           comment = c(ORCID = "0000-0001-9185-9993"))
-Description: Provides tools for absolute microbial quantification using both 
-    'phyloseq' and 'TreeSummarizedExperiment' (TSE) data structures. Supports 
-    single spike-in taxa or synthetic communities with flexible spike-in volumes 
-    and copy numbers. Implements a complete workflow including spike-in validation, 
-    data preprocessing, scaling factor estimation, conversion to absolute abundances, 
-    bias correction, normalization, and downstream analyses. Offers visualization 
-    and interactive plots via 'ggplot2' and 'ggtree'. Enables analysis with 
-    'DESeq2', 'edgeR', and other methods. Includes vignette tutorials, case 
-    studies, and comprehensive documentation.
+    c(
+        person(given = "Mitra", family = "Ghotbi", 
+               role = c("aut", "cre"), 
+               email = "mitra.ghotbi@gmail.com",
+               comment = c(ORCID = "0000-0001-9185-9993")),
+        person(given = "Marjan", family = "Ghotbi", 
+               role = "ctb",
+               email = "ghotbi.marjan@gmail.com",
+               comment = c(ORCID = "0000-0003-4655-6445"))
+    )
+Description: Provides a reproducible and modular workflow for absolute microbial 
+    quantification using spike-in controls. Supports both single spike-in taxa 
+    and synthetic microbial communities with user-defined spike-in volumes and 
+    genome copy numbers. Compatible with 'phyloseq' and 'TreeSummarizedExperiment' 
+    (TSE) data structures. The package implements methods for spike-in validation, 
+    preprocessing, scaling factor estimation, absolute abundance conversion, 
+    bias correction, and normalization. Facilitates downstream statistical 
+    analyses with 'DESeq2', 'edgeR', and other Bioconductor-compatible methods. 
+    Visualization tools are provided via 'ggplot2', 'ggtree', and related packages. 
+    Includes detailed vignettes, case studies, and function-level documentation 
+    to guide users through experimental design, quantification, and interpretation.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: false
@@ -78,8 +86,6 @@ Suggests:
     e1071,
     foreach,
     ggtext,
-    graphics,
-    grDevices,
     intergraph,
     knitr,
     optparse,

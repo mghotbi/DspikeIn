@@ -1315,7 +1315,7 @@ files_to_delete <- c(
   "plot_Spike.reads_Kruskal.pdf", "plot_Spike.reads_Kruskal.png",
   "plot_Total.reads_Kruskal.pdf", "plot_Total.reads_Kruskal.png",
   "proportion_adjusted_physeq.rds", "proportion_adjusted_tse.rds",
-  "randomsubsample_Trimmed_evenDepth.rds", "summary.csv", "summary.docx",
+  "randomsubsample_Trimmed_evenDepth.rds", "summary.csv", "summary.docx", "DspikeIn-manual.tex", "output.csv", "output.docx",
   "tree_with_bootstrap_and_cophenetic.png"
 )
 

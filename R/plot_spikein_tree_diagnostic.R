@@ -16,8 +16,8 @@
 #' @param output_prefix Character. Filename prefix for saved plot. Default = "spikein_diag".
 #' @param layout Character. Tree layout. Default = "circular".
 #' @param save_plot Logical. Save figure if TRUE.
-#' @param width, height Numeric. Width and height in inches.
-#'
+#' @param width Numeric. Width of the output plot in inches. Default = 10.
+#' @param height Numeric. Height of the output plot in inches. Default = 10.
 #' @return Invisibly returns the ggplot object.
 #'
 #' @importFrom phyloseq psmelt phy_tree sample_data

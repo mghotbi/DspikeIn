@@ -49,7 +49,7 @@ quadrant_plot <- function(metrics,
   if (is.null(y_threshold)) y_threshold <- median(metrics[[y_metric]], na.rm = TRUE)
 
   # Assign Quadrant Labels Dynamically Based on Metrics
-  metrics <- metrics %>%
+  metrics <- metrics |>
     mutate(
       Quadrant = case_when(
         .data[[x_metric]] >= x_threshold & .data[[y_metric]] >= y_threshold ~ paste("High", y_metric, "& High", x_metric),

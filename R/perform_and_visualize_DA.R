@@ -279,24 +279,70 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
 
   # Define LFC direction based on logFC values
   df_filtered <- df_filtered |>
-    dplyr::mutate(LFC_Direction = ifelse(logFC < 0, "Negative LFC", "Positive LFC"))
+    dplyr::mutate(
+      LFC_Direction = ifelse(logFC < 0, "Negative LFC", "Positive LFC"),
+      group_label = paste0(group, " (", LFC_Direction, ")")
+    )
 
-  bar_plot <- ggplot2::ggplot(df_filtered, ggplot2::aes(x = stats::reorder(Genus, logFC), y = logFC, fill = group)) +
-    ggplot2::geom_bar(stat = "identity", position = ggplot2::position_dodge(width = 0.7), alpha = 0.9, color = "black") +
-    ggplot2::geom_point(ggplot2::aes(color = LFC_Direction),
-      size = 1,
-      position = ggplot2::position_dodge(width = 0.7), shape = 21, stroke = 1.0
+  # ==== Create dynamic color mapping BEFORE ggplot ====
+  group_labels <- unique(df_filtered$group_label)
+  
+  default_palette <- c(
+    "Positive LFC" = "#33FFD1",
+    "Negative LFC" = "#9183E6"
+  )
+  
+  # Extract direction ("Positive LFC"/"Negative LFC") from group_label
+  lfc_directions <- vapply(
+    strsplit(as.character(group_labels), " \\("),
+    function(x) sub("\\)", "", x[2]),
+    character(1)
+  )
+  
+  # Map direction colors back to full group_label
+  bar_colors <- setNames(default_palette[lfc_directions], group_labels)
+  
+  # ==== Build the bar plot ====
+  bar_plot <- ggplot2::ggplot(
+    df_filtered,
+    ggplot2::aes(
+      x = Genus,
+      y = logFC,
+      fill = group_label,
+      color = group_label
+    )
+  ) +
+    ggplot2::geom_bar(
+      stat = "identity",
+      position = ggplot2::position_dodge(width = 0.7),
+      alpha = 0.9,
+      width = 0.8
     ) +
-    ggplot2::geom_errorbar(ggplot2::aes(ymin = logFC - lfcSE, ymax = logFC + lfcSE, color = LFC_Direction),
-      width = 0.1, position = ggplot2::position_dodge(width = 0.2), size = 1
+    ggplot2::geom_point(
+      size = 1,
+      position = ggplot2::position_dodge(width = 0.7),
+      shape = 21,
+      stroke = 1.0
+    ) +
+    ggplot2::geom_linerange(
+      ggplot2::aes(ymin = logFC - lfcSE, ymax = logFC + lfcSE),
+      color = "gray40",
+      size = 0.9
+    ) +
+    ggplot2::geom_vline(
+      xintercept = 0,
+      linetype = "dashed",
+      color = "gray80",
+      linewidth = 0.5
     ) +
     ggplot2::coord_flip() +
     ggplot2::labs(
       subtitle = paste("Significant taxa with padj <", significance_level),
+      caption = "Bars = log2 fold change; Lines = ±1 SE",
       x = "",
       y = "Log Fold Change",
-      fill = "Group",
-      color = "LFC Direction"
+      fill = "Group & LFC Direction",
+      color = "Group & LFC Direction"
     ) +
     ggplot2::theme_minimal(base_size = 16) +
     ggplot2::theme(
@@ -310,9 +356,10 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
       panel.grid.major.y = ggplot2::element_blank(),
       panel.grid.minor = ggplot2::element_blank()
     ) +
-    ggplot2::scale_fill_manual(values = c("#9183E6", "#33FFD1", "#EDF2F4", "#A3AC9A")) +
-    ggplot2::scale_color_manual(values = c("Positive LFC" = "navy", "Negative LFC" = "#20B2AA"))
-
+    ggplot2::scale_fill_manual(values = bar_colors) +
+    ggplot2::scale_color_manual(values = bar_colors)
+  
+  
   # **Convert back to TSE if needed**
   if (is_TSE) {
     obj_significant <- DspikeIn::convert_phyloseq_to_tse(obj_significant)

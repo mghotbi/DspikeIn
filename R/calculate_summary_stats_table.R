@@ -1,14 +1,15 @@
 #' @title Calculate Summary Statistics Table
 #'
-#' @description Computes summary statistics (mean, standard deviation, standard error, quartiles)
-#' for numeric columns of a data frame, generates a formatted flextable, and saves
-#' both DOCX and CSV versions of the table.
+#' @description
+#' Computes summary statistics (mean, standard deviation, standard error, and quartiles)
+#' for numeric columns of a data frame. Generates a formatted flextable, and saves
+#' both \code{.docx} and \code{.csv} versions of the table.
 #'
 #' @param data A data frame containing numeric variables.
 #' @param output_path Optional. Character string specifying the DOCX output path.
-#' Default is "post_eval_summary.docx".
+#' Default is \code{"post_eval_summary.docx"}.
 #'
-#' @return A `flextable` object with formatted summary statistics.
+#' @return A \code{flextable} object with formatted summary statistics.
 #'
 #' @importFrom flextable flextable fontsize font color bold italic save_as_docx
 #' @importFrom dplyr select_if summarise_all
@@ -17,33 +18,27 @@
 #'
 #' @examples
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
-#'   ## --- Phyloseq example ---
+#'   # --- Phyloseq example ---
 #'   data("physeq_16SOTU", package = "DspikeIn")
-#'
 #'   absolute_count <- phyloseq::otu_table(physeq_16SOTU)
 #'
 #'   tmp_docx <- file.path(tempdir(), "physeq_summary.docx")
-#'
 #'   summary_table_physeq <- calculate_summary_stats_table(
 #'     data = as.data.frame(absolute_count),
 #'     output_path = tmp_docx
 #'   )
-#'
 #'   print(summary_table_physeq)
 #'   if (file.exists(tmp_docx)) file.remove(tmp_docx)
 #'
-#'   ## --- TSE example ---
+#'   # --- TSE example ---
 #'   data("tse", package = "DspikeIn")
-#'
 #'   tse_counts <- SummarizedExperiment::assay(tse)
 #'
 #'   tmp_docx2 <- file.path(tempdir(), "tse_summary.docx")
-#'
 #'   summary_table_tse <- calculate_summary_stats_table(
 #'     data = as.data.frame(tse_counts),
 #'     output_path = tmp_docx2
 #'   )
-#'
 #'   print(summary_table_tse)
 #'   if (file.exists(tmp_docx2)) file.remove(tmp_docx2)
 #' }

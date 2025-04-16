@@ -5,7 +5,7 @@
 #' on user-specified prevalence thresholds derived from taxa abundance statistics.
 #'
 #' @param obj A `phyloseq` or `TreeSummarizedExperiment` object.
-#' @param method Character. Threshold method: one of `"min"`, `"mean"`, `"median"`, or `"max"`.
+#' @param method Character. Threshold method: one of \code{"min"}, \code{"mean"}, \code{"median"}, or \code{"max"}.
 #' @param output_file Optional. Character. Path to save the adjusted object as `.rds`.
 #' Default is `NULL`, meaning no file will be saved unless explicitly provided.
 #'
@@ -54,8 +54,8 @@ adjusted_prevalence <- function(obj, method = "min", output_file = NULL) {
   # Calculate prevalence threshold (default = present in ≥10% of samples)
   prevalence_counts <- rowSums(otu_mat > 0)
   prevalence_threshold <- ceiling(0.1 * ncol(otu_mat))
-
-  message("Prevalence threshold = taxa detected in ≥ ", prevalence_threshold, " samples.")
+  # (default = present in >= 10% of samples)
+  message("Prevalence threshold = taxa detected in >= ", prevalence_threshold, " samples.")
   message("Abundance threshold (", method, ") = ", round(abundance_threshold, 2), " reads.")
 
   # Filter

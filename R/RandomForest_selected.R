@@ -41,7 +41,7 @@
 #'   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 #'
 #'   # Perform Random Forest feature selection on TSE object
-#'   rf_tse <- RandomForest_selected_ASVs(
+#'   rf_tse <- RandomForest_selected(
 #'     tse_16SOTU,
 #'     response_var = "Host.genus",
 #'     na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet")

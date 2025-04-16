@@ -7,14 +7,13 @@
 #' Optionally, the result can be saved to disk as an `.rds` file.
 #'
 #' @param obj A `phyloseq` or `TreeSummarizedExperiment` object.
-#' @param reduction_factor A numeric value ≥ 1 to reduce counts. Default is 3.
+#' @param reduction_factor A numeric value \eqn{\ge 1} to reduce counts. Default is 3.
 #' @param output_file Optional. A character string specifying the `.rds` file path
 #'   to save the result. If `NULL`, no file will be saved. Default is `NULL`.
 #'
 #' @return A subsampled object of the same class as the input (`phyloseq` or `TreeSummarizedExperiment`).
 #'
 #' @examples
-#' # Subsampling phyloseq object
 #' data("physeq_16SOTU", package = "DspikeIn")
 #' red <- random_subsample_WithReductionFactor(physeq_16SOTU, reduction_factor = 10)
 #' summary_stats <- summ_phyloseq_sampleID(red)

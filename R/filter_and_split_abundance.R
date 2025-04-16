@@ -13,7 +13,7 @@
 #'   \item{high}{Subset with taxa having mean abundance > threshold}
 #'   \item{low}{Subset with taxa having mean abundance <= threshold}
 #' }
-#' Each returned element contains a single object of the same class as the input (`phyloseq` or `TSE`).
+#' Each returned element contains a single object of the same class as the input (either \code{phyloseq} or \code{TreeSummarizedExperiment}).
 #'
 #' @examples
 #' data("physeq_ITSOTU", package = "DspikeIn")
@@ -59,7 +59,7 @@ filter_and_split_abundance <- function(obj, threshold = 0.01, output_prefix = NU
     saveRDS(high_obj, paste0(output_prefix, "_high.rds"))
     saveRDS(low_obj, paste0(output_prefix, "_low.rds"))
 
-    message("\n✔ High- and low-abundance objects saved:")
+    message("\n[OK] High- and low-abundance objects saved:")
     message("High: ", output_prefix, "_high.rds")
     message("Low : ", output_prefix, "_low.rds")
   }

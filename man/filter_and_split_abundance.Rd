@@ -20,7 +20,7 @@ A named list with components:
 \item{high}{Subset with taxa having mean abundance > threshold}
 \item{low}{Subset with taxa having mean abundance <= threshold}
 }
-Each returned element contains a single object of the same class as the input (\code{phyloseq} or \code{TSE}).
+Each returned element contains a single object of the same class as the input (either \code{phyloseq} or \code{TreeSummarizedExperiment}).
 }
 \description{
 Filters low-abundance taxa from a \code{phyloseq} or \code{TreeSummarizedExperiment} object,

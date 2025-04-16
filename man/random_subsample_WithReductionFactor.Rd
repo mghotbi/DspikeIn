@@ -13,7 +13,7 @@ random_subsample_WithReductionFactor(
 \arguments{
 \item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
 
-\item{reduction_factor}{A numeric value ≥ 1 to reduce counts. Default is 3.}
+\item{reduction_factor}{A numeric value \eqn{\ge 1} to reduce counts. Default is 3.}
 
 \item{output_file}{Optional. A character string specifying the \code{.rds} file path
 to save the result. If \code{NULL}, no file will be saved. Default is \code{NULL}.}
@@ -28,7 +28,6 @@ by a specified reduction factor and rounding down to the nearest whole number.
 Optionally, the result can be saved to disk as an \code{.rds} file.
 }
 \examples{
-# Subsampling phyloseq object
 data("physeq_16SOTU", package = "DspikeIn")
 red <- random_subsample_WithReductionFactor(physeq_16SOTU, reduction_factor = 10)
 summary_stats <- summ_phyloseq_sampleID(red)

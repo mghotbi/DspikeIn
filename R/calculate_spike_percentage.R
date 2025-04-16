@@ -16,7 +16,7 @@
 #'   \item Total_Reads
 #'   \item Spiked_Reads
 #'   \item Percentage
-#'   \item Result ("passed" or "failed")
+#'   \item{\code{Result}}{\code{"passed"} or \code{"failed"}}
 #' }
 #'
 #' @importFrom phyloseq otu_table tax_table
@@ -24,6 +24,7 @@
 #' @importFrom flextable flextable fontsize font color bold italic save_as_docx
 #' @importFrom dplyr left_join mutate
 #' @importFrom utils write.csv
+#' @seealso \code{\link{Pre_processing_species}}, \code{\link{calculate_spike_percentage}}
 #' @examples
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   # Load example phyloseq object

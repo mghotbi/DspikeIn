@@ -25,7 +25,9 @@ plot_spikein_tree_diagnostic(
 
 \item{save_plot}{Logical. Save figure if TRUE.}
 
-\item{width, }{height Numeric. Width and height in inches.}
+\item{width}{Numeric. Width of the output plot in inches. Default = 10.}
+
+\item{height}{Numeric. Height of the output plot in inches. Default = 10.}
 }
 \value{
 Invisibly returns the ggplot object.
