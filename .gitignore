@@ -17,3 +17,4 @@
 ^grep$
 .Rproj.user/
 *.Rproj
+.DS_Store
