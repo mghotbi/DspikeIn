@@ -756,7 +756,7 @@ print(summary_stats)
 ```
 
 Here is an example of a success or failure report:
-![success report](https://github.com/mghotbi/DspikeIn/assets/29090547/017cfa65-8b75-4625-8d49-6e4a67146193)
+![success report](https://github.com/user-attachments/assets/0f2321a9-6996-4ac6-9a1c-765dba6ba3cb) 
 
 ```r
 
