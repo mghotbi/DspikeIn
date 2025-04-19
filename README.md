@@ -233,7 +233,6 @@ library(DspikeIn)
 # To access the DspikeIn vignette for a detailed tutorial, use vignette("DspikeIn"), or browse all available vignettes with browseVignettes("DspikeIn").
 devtools::install_github("mghotbi/DspikeIn", build_vignettes = TRUE, dependencies = TRUE)
 browseVignettes("DspikeIn")
-vignette("DspikeIn")
 
 ```
 
@@ -814,7 +813,7 @@ print(results_DESeq2$plot)
 # Significant taxa table
 head(results_DESeq2$results)
 # Filtered phyloseq object with significant taxa
-results_DESeq2$obj_significant
+results_DESeq2$bar_plot
 
 
 # Relative 
@@ -840,7 +839,7 @@ results_DESeq2_rel <- perform_and_visualize_DA(
 
 print(results_DESeq2_rel$plot)
 head(results_DESeq2_rel$results)
-results_DESeq2_rel$obj_significant
+results_DESeq2_rel$bar_plot
 
 
 ```
@@ -894,7 +893,7 @@ physeq_min <- adjusted_prevalence(ps, method = "min")
                           top_n_taxa = 30,                   # the top 30 taxa
                           xlab=NULL,                          
                           legend_columns = 1,
-                          palette = color_palette$MG)  # This is DspikeIn custom color palette (MG)
+                          palette = DspikeIn::color_palette$MG)  # This is DspikeIn custom color palette (MG)
  print(bp_free$barplot)
  
  #ps_rel= phyloseq object with relative counts
@@ -911,7 +910,7 @@ physeq_min <- adjusted_prevalence(ps, method = "min")
                         top_n_taxa = 30,
                         xlab=NULL,
                         legend_columns = 1,    # legend col
-                        palette = color_palette$MG)
+                        palette = DspikeIn::color_palette$MG)
  print(bp_fix$barplot)
  
  
