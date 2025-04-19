@@ -9,13 +9,13 @@
 #' @importFrom utils globalVariables write.csv install.packages capture.output
 #' @importFrom ggstar geom_star
 #' @importFrom grDevices rainbow
-#' @importFrom phyloseq phyloseq taxa_sums tax_table sample_sums sample_data tax_glom prune_taxa subset_taxa transform_sample_counts taxa_names psmelt taxa_names<- otu_table<-
+#' @importFrom phyloseq phyloseq taxa_sums tax_table sample_sums sample_data tax_glom prune_taxa subset_taxa transform_sample_counts taxa_names psmelt taxa_names<- otu_table<- refseq phy_tree sample_names
 #' @importFrom ggplot2 ggplot aes aes_string geom_bar geom_label geom_point geom_text ggtitle ggsave scale_fill_manual scale_color_manual theme theme_minimal element_blank element_line element_rect element_text guide_legend xlab ylab
 #' @importFrom dplyr filter mutate pull summarise group_by ungroup desc all_of top_n select rename bind_cols
 #' @importFrom DESeq2 DESeq DESeqDataSetFromMatrix estimateSizeFactorsForMatrix results
 #' @importFrom edgeR DGEList estimateDisp glmFit glmLRT topTags
 #' @importFrom randomForest randomForest importance
-#' @importFrom ape boot.phylo
+#' @importFrom ape boot.phylo is.monophyletic
 #' @importFrom ggtree ggtree theme_tree2 geom_tiplab geom_tippoint geom_text2
 #' @importFrom stats wilcox.test median quantile sd p.adjust reformulate setNames
 #' @importFrom flextable save_as_docx flextable fontsize font color bold italic save_as_docx
@@ -42,6 +42,8 @@
 #' @importFrom dplyr where
 #' @importFrom data.table :=
 #' @importFrom methods is
+#' @importFrom SummarizedExperiment assay rowData colData
+#' @importFrom microbiome meta
 utils::globalVariables(c(
   ".data", "Taxon_Label", "prevalence", "Metrics", "Value", "Label", "log_mean_abundance", "LR", "Genus", "lfcSE", "Degree", "prune_common_taxa", "reorder", "LFC_Direction", "read_spike_report", "Among_Module_Connectivity", "EigenvectorCentrality",
   "Within_Module_Connectivity", "group", "eq.label", "tail", "PageRank", "Closeness", "Betweenness", "Community",

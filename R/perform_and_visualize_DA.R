@@ -32,6 +32,7 @@
 #' @importFrom utils write.csv
 #' @importFrom stats reorder
 #' @importFrom BiocGenerics duplicated
+#' @importFrom grDevices col2rgb rgb
 #' @source Uses edgeR and DESeq2 for differential abundance modeling
 #' @source Inspired by Bioconductor workflows for microbiome DA analysis
 #' @examples
@@ -277,32 +278,37 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
   # Check for duplicates again
   any(BiocGenerics::duplicated(df_filtered$Genus))
 
-  # Define LFC direction based on logFC values
+  # Add group_label + LFC direction again if not done already
   df_filtered <- df_filtered |>
     dplyr::mutate(
       LFC_Direction = ifelse(logFC < 0, "Negative LFC", "Positive LFC"),
       group_label = paste0(group, " (", LFC_Direction, ")")
     )
 
-  # ==== Create dynamic color mapping BEFORE ggplot ====
-  group_labels <- unique(df_filtered$group_label)
-  
-  default_palette <- c(
-    "Positive LFC" = "#33FFD1",
-    "Negative LFC" = "#9183E6"
+  # === DEFINE BASE COLORS PER GROUP ===
+  fixed_group_colors <- c("#9183E6", "#33FFD1")
+  names(fixed_group_colors) <- contrast
+
+  # === BUILD color mappings for group_label ===
+  bar_colors <- setNames(fixed_group_colors[df_filtered$group], df_filtered$group_label)
+  bar_colors <- bar_colors[!duplicated(names(bar_colors))]
+
+  # === CREATE darker versions for linerange ===
+  darken_hex <- function(hex_vec, factor = 0.55) {
+    hex_vec <- as.character(hex_vec)
+    rgb_mat <- grDevices::col2rgb(hex_vec) / 255
+    rgb_dark <- apply(rgb_mat, 2, function(col) pmax(0, col * factor))
+    darkened_hex <- grDevices::rgb(rgb_dark[1, ], rgb_dark[2, ], rgb_dark[3, ])
+    if (!is.null(names(hex_vec))) names(darkened_hex) <- names(hex_vec)
+    return(darkened_hex)
+  }
+
+  linerange_colors <- setNames(
+    darken_hex(bar_colors),
+    names(bar_colors)
   )
-  
-  # Extract direction ("Positive LFC"/"Negative LFC") from group_label
-  lfc_directions <- vapply(
-    strsplit(as.character(group_labels), " \\("),
-    function(x) sub("\\)", "", x[2]),
-    character(1)
-  )
-  
-  # Map direction colors back to full group_label
-  bar_colors <- setNames(default_palette[lfc_directions], group_labels)
-  
-  # ==== Build the bar plot ====
+
+  # === BUILD BAR PLOT ===
   bar_plot <- ggplot2::ggplot(
     df_filtered,
     ggplot2::aes(
@@ -319,14 +325,13 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
       width = 0.8
     ) +
     ggplot2::geom_point(
-      size = 1,
+      size = 0.6,
       position = ggplot2::position_dodge(width = 0.7),
       shape = 21,
-      stroke = 1.0
+      stroke = 0.6
     ) +
     ggplot2::geom_linerange(
       ggplot2::aes(ymin = logFC - lfcSE, ymax = logFC + lfcSE),
-      color = "gray40",
       size = 0.9
     ) +
     ggplot2::geom_vline(
@@ -338,7 +343,7 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
     ggplot2::coord_flip() +
     ggplot2::labs(
       subtitle = paste("Significant taxa with padj <", significance_level),
-      caption = "Bars = log2 fold change; Lines = ±1 SE",
+      caption = "Bars = log2 fold change; Lines = ± 1 SE",
       x = "",
       y = "Log Fold Change",
       fill = "Group & LFC Direction",
@@ -357,9 +362,8 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
       panel.grid.minor = ggplot2::element_blank()
     ) +
     ggplot2::scale_fill_manual(values = bar_colors) +
-    ggplot2::scale_color_manual(values = bar_colors)
-  
-  
+    ggplot2::scale_color_manual(values = linerange_colors)
+
   # **Convert back to TSE if needed**
   if (is_TSE) {
     obj_significant <- DspikeIn::convert_phyloseq_to_tse(obj_significant)

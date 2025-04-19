@@ -96,7 +96,7 @@ tidy_phyloseq_tse <- function(obj) {
     return(obj)
   }
 
-  # Fix taxa names by removing "__" prefixes (e.g., "k__Bacteria" → "Bacteria")
+  # Fix taxa names by removing "__" prefixes (e.g., "k__Bacteria" becomes "Bacteria")
   tax_data <- as.data.frame(lapply(tax_data, function(col) gsub("[a-z]__\\s*", "", col)), stringsAsFactors = FALSE)
 
   # Define standard taxonomic ranks

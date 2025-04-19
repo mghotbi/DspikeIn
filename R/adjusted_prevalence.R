@@ -51,7 +51,8 @@ adjusted_prevalence <- function(obj, method = "min", output_file = NULL) {
     "max" = max(taxa_sums_vec)
   )
 
-  # Calculate prevalence threshold (default = present in ≥10% of samples)
+  # Calculate prevalence threshold (default = present in approx. 10% of samples)
+
   prevalence_counts <- rowSums(otu_mat > 0)
   prevalence_threshold <- ceiling(0.1 * ncol(otu_mat))
   # (default = present in >= 10% of samples)

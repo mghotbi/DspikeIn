@@ -24,13 +24,13 @@ calculate_spike_percentage(
 \item{passed_range}{A numeric vector of length 2 specifying the range of percentages to categorize results as "passed". Default is c(0.1, 11).}
 }
 \value{
-A data frame containing:
-\itemize{
-\item Sample
-\item Total_Reads
-\item Spiked_Reads
-\item Percentage
-\item{\code{Result}}{\code{"passed"} or \code{"failed"}}
+A data frame with the following columns:
+\describe{
+\item{Sample}{Sample identifier.}
+\item{Total_Reads}{Total number of reads in the sample.}
+\item{Spiked_Reads}{Number of reads mapped to the spike-in taxa.}
+\item{Percentage}{Percentage of spike-in reads (Spiked_Reads / Total_Reads * 100).}
+\item{Result}{Quality control result, either \code{"passed"} or \code{"failed"}, based on the specified range.}
 }
 }
 \description{
@@ -56,15 +56,13 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
 
   # Perform spike-in percentage calculation
   output_docx <- file.path(tempdir(), "spike_summary_physeq.docx")
-
   result_physeq <- calculate_spike_percentage(
     obj = merged_physeq,
     merged_spiked_species = merged_spiked_species,
-    output_file = "output.docx",
+    output_file = output_docx,
     passed_range = c(0.1, 20)
   )
   print(result_physeq)
-
 
   # ----------- TreeSummarizedExperiment Example -----------
   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
@@ -79,14 +77,14 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   result_tse <- calculate_spike_percentage(
     obj = merged_tse,
     merged_spiked_species = merged_spiked_species,
-    output_file = NULL,
+    output_file = output_docx_tse,
     passed_range = c(0.1, 20)
   )
-
   print(result_tse)
 
   # Clean up temporary files
-  if (file.exists(output.docx)) unlink(output.docx, force = TRUE)
+  if (file.exists(output_docx)) unlink(output_docx, force = TRUE)
+  if (file.exists(output_docx_tse)) unlink(output_docx_tse, force = TRUE)
 }
 }
 \seealso{

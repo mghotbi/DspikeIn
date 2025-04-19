@@ -1,6 +1,6 @@
 Package: DspikeIn
 Type: Package
-Title: Estimating absolute abundance from microbial spike-in controls
+Title: Estimating Absolute Abundance From Microbial Spike-In Controls
 Version: 0.99.0
 Authors@R: 
     c(
@@ -99,9 +99,9 @@ Suggests:
     vegan,
     viridis
 biocViews: 
-    Microbiome,
-    Preprocessing,
-    QualityControl,
+    Microbiome, 
+    Preprocessing, 
+    QualityControl, 
     DifferentialExpression, 
     Normalization, 
     Sequencing, 

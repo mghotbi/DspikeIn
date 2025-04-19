@@ -1,17 +1,25 @@
 #' @title Acceptable Range Data
 #'
 #' @description
-#' This dataset provides acceptable ranges for microbial abundance estimates,
-#' which can be used for validation and quality control purposes in microbiome analyses.
+#' This dataset provides reference ranges and sample-level metadata for microbial
+#' spike-in performance evaluation. It includes taxonomic annotations and summary
+#' statistics used in validation and quality control workflows.
 #'
 #' @format A data frame with the following columns:
 #' \describe{
-#'   \item{min_abundance}{The minimum acceptable abundance threshold.}
-#'   \item{max_abundance}{The maximum acceptable abundance threshold.}
-#'   \item{taxon}{Taxonomic identifier or group name.}
+#'   \item{Ecoregion_III}{EPA Level III ecoregion classification.}
+#'   \item{Genus}{Genus of the taxon.}
+#'   \item{Host_genus}{Host genus from which the sample was derived.}
+#'   \item{Percentage}{Observed spike-in percentage.}
+#'   \item{Phylum}{Phylum classification of the taxon.}
+#'   \item{Range}{Acceptable range category.}
+#'   \item{Total_Reads_spiked}{Number of reads matching the spike-in species.}
+#'   \item{Total_Reads_total}{Total number of reads per sample.}
+#'   \item{X}{Row identifier (optional, may be an index or artifact of data processing).}
+#'   \item{mean_abundance}{Mean abundance across all samples.}
 #' }
 #'
-#' @return A data frame with acceptable abundance thresholds by taxon.
+#' @return A data frame of spike-in evaluation metrics and taxonomy annotations.
 #'
 #' @usage data(AcceptableRange)
 #'
@@ -20,5 +28,5 @@
 #' @examples
 #' data(AcceptableRange)
 #' head(AcceptableRange)
-#' summary(AcceptableRange)
+#' summary(AcceptableRange$Percentage)
 "AcceptableRange"

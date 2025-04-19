@@ -37,7 +37,8 @@ tidy_phyloseq_tse <- function(obj) {
     return(obj)
   }
 
-  # Rename Domain → Kingdom
+  # Rename Domain to Kingdom
+
   if ("Domain" %in% colnames(tax_data)) {
     colnames(tax_data)[colnames(tax_data) == "Domain"] <- "Kingdom"
   }
