@@ -230,6 +230,7 @@ install.packages("remotes")
 remotes::install_github("mghotbi/DspikeIn")
 library(DspikeIn)
 
+# *** Please note that installing with build_vignettes = TRUE may take 2–4 minutes, depending on your computer’s processing power ***
 # To access the DspikeIn vignette for a detailed tutorial, use vignette("DspikeIn"), or browse all available vignettes with browseVignettes("DspikeIn").
 devtools::install_github("mghotbi/DspikeIn", build_vignettes = TRUE, dependencies = TRUE)
 browseVignettes("DspikeIn")
