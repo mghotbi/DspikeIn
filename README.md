@@ -60,6 +60,9 @@
 DspikeIn is designed for microbiome data analysis, seamlessly integrating with **phyloseq** (for marker-gene microbiome data) and **TreeSummarizedExperiment (TSE)** (for hierarchical biological data, including microbiomes). These objects must include seven taxonomic ranks.  
 For absolute abundance estimation, the metadata must contain **spiked.volume**.  
 
+DspikeIn accommodates either a single spike-in taxon or synthetic community taxa with variable or equal spike-in volumes and copy numbers. The package offers a comprehensive suite of tools for AA quantification, addressing challenges through ten core functions: 1) validation of spiked species, 2) data preprocessing, 3) system-specific spiked species retrieval, 4) scaling factor calculation, 5) conversion to absolute abundance, 6) bias correction and normalization, 7) performance assessment, and 8) taxa exploration and filtering 9) network topology assessment 10) further analyses and visualization. 
+
+
 ## Features of DspikeIn  
 The DspikeIn package provides functions for:  
 
@@ -240,8 +243,7 @@ browseVignettes("DspikeIn")
 
 ## Acknowledgement
 
-DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phyloseq) package.
-Requirements
+The development of the DspikeIn package was made possible through the invaluable contributions of the R and Bioconductor communities, whose open-source tools provided the foundation for this work. We are especially grateful to the developers of phyloseq, DESeq2, edgeR, ggplot2, ggtree, TreeSummarizedExperiment,vegan, ggtreeExtra and other essential packages that enable robust analysis and visualization of microbiome data. We further acknowledge the broader scientific community working on absolute microbial quantification and compositional data analysis, whose pioneering research inspired the design of DspikeIn.
 
 
 ### To Meet Taxonomic Ranks Requirements
