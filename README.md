@@ -245,7 +245,7 @@ browseVignettes("DspikeIn")
 ## Acknowledgement
 
 
-The development of the **DspikeIn** package was made possible through the invaluable contributions of the **R** community, including developers of both **CRAN** and **Bioconductor** packages. We are especially grateful for tools such as **phyloseq**, DESeq2, edgeR, ggplot2, ggtree, TreeSummarizedExperiment, vegan, ggtreeExtra, and many others that support the analysis and visualization of microbiome data.
+The development of the **DspikeIn** package was made possible through the invaluable contributions of the **R** community, including developers of both **Bioconductor** and **CRAN** packages. We are especially grateful for tools such as **phyloseq**, DESeq2, edgeR, ggplot2, ggtree, TreeSummarizedExperiment, vegan, ggtreeExtra, and many others that support the analysis and visualization of microbiome data.
 
 We also acknowledge the broader scientific community working on **absolute microbial quantification** and **compositional data analysis**, whose pioneering research inspired the design of **DspikeIn**.
 
