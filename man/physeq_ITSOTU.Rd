@@ -29,10 +29,12 @@ taxonomic annotations, OTU abundance counts, and associated sample metadata,
 suitable for downstream analysis of fungal communities.
 }
 \examples{
-data(physeq_ITSOTU)
-physeq_ITSOTU
-summary(physeq_ITSOTU)
-sample_data(physeq_ITSOTU)
-taxa_names(physeq_ITSOTU)
+if (requireNamespace("phyloseq", quietly = TRUE)) {
+  data(physeq_ITSOTU)
+  physeq_ITSOTU
+  summary(physeq_ITSOTU)
+  phyloseq::sample_data(physeq_ITSOTU)
+  phyloseq::taxa_names(physeq_ITSOTU)
+}
 }
 \keyword{datasets}

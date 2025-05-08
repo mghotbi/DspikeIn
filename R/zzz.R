@@ -1,5 +1,3 @@
-# File: zzz.R
-
 #' @title Package Startup Message
 #' @description Displays a message when the DspikeIn package is loaded.
 #' @param libname The library name (automatically passed by R).

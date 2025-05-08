@@ -29,10 +29,12 @@ abundance counts, sample metadata, and phylogenetic information.
 This object is intended for demonstration and testing of microbiome workflows.
 }
 \examples{
-data(physeq_16SOTU)
-physeq_16SOTU
-summary(physeq_16SOTU)
-sample_names(physeq_16SOTU)
-taxa_names(physeq_16SOTU)
+if (requireNamespace("phyloseq", quietly = TRUE)) {
+  data(physeq_16SOTU)
+  physeq_16SOTU
+  summary(physeq_16SOTU)
+  phyloseq::sample_names(physeq_16SOTU)
+  phyloseq::taxa_names(physeq_16SOTU)
+}
 }
 \keyword{datasets}

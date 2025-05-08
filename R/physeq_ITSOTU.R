@@ -21,9 +21,11 @@
 #' @source Internal dataset for microbiome analysis.
 #'
 #' @examples
-#' data(physeq_ITSOTU)
-#' physeq_ITSOTU
-#' summary(physeq_ITSOTU)
-#' sample_data(physeq_ITSOTU)
-#' taxa_names(physeq_ITSOTU)
+#' if (requireNamespace("phyloseq", quietly = TRUE)) {
+#'   data(physeq_ITSOTU)
+#'   physeq_ITSOTU
+#'   summary(physeq_ITSOTU)
+#'   phyloseq::sample_data(physeq_ITSOTU)
+#'   phyloseq::taxa_names(physeq_ITSOTU)
+#' }
 "physeq_ITSOTU"

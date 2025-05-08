@@ -46,31 +46,38 @@ Visual elements:
 }
 }
 \examples{
-if (requireNamespace("DspikeIn", quietly = TRUE)) {
-  # Load test data (16S OTU table with taxonomy, tree, and metadata)
+\dontrun{
+if (
+  requireNamespace("DspikeIn", quietly = TRUE) &&
+    requireNamespace("phyloseq", quietly = TRUE) &&
+    requireNamespace("TreeSummarizedExperiment", quietly = TRUE) &&
+    requireNamespace("ggplot2", quietly = TRUE) &&
+    requireNamespace("ggtree", quietly = TRUE) &&
+    requireNamespace("ggtreeExtra", quietly = TRUE) &&
+    requireNamespace("ggnewscale", quietly = TRUE)
+) {
+  # Load synthetic test dataset from DspikeIn
   data("physeq_16SOTU", package = "DspikeIn")
 
   # Filter to a known spike-in genus
   spikein <- phyloseq::subset_taxa(physeq_16SOTU, Genus == "Tetragenococcus")
 
-  # Plot using phyloseq object (preview only)
+  # Plot diagnostic using phyloseq object
   plot_spikein_tree_diagnostic(
     obj = spikein,
     metadata_var = "Animal.type",
     save_plot = FALSE
   )
 
-  # TreeSummarizedExperiment object
-  # To save the plot
-  # Use save_plot = TRUE & output_prefix = "tetragenococcus_diag"
-
+  # Convert to TreeSummarizedExperiment object
   tse_spikein <- convert_phyloseq_to_tse(spikein)
 
-  # Generate and save tree diagnostic plot
+  # Plot diagnostic using TSE object
   plot_spikein_tree_diagnostic(
     obj = tse_spikein,
     metadata_var = "Animal.type",
-    save_plot = FALSE,
+    save_plot = FALSE
   )
+}
 }
 }

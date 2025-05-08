@@ -9,7 +9,7 @@
 #' @importFrom utils globalVariables write.csv install.packages capture.output
 #' @importFrom ggstar geom_star
 #' @importFrom grDevices rainbow
-#' @importFrom phyloseq phyloseq taxa_sums tax_table sample_sums sample_data tax_glom prune_taxa subset_taxa transform_sample_counts taxa_names psmelt taxa_names<- otu_table<- refseq phy_tree sample_names
+#' @importFrom phyloseq phyloseq taxa_sums tax_table sample_names sample_sums sample_data tax_glom prune_taxa subset_taxa transform_sample_counts taxa_names psmelt taxa_names<- otu_table<- refseq phy_tree
 #' @importFrom ggplot2 ggplot aes aes_string geom_bar geom_label geom_point geom_text ggtitle ggsave scale_fill_manual scale_color_manual theme theme_minimal element_blank element_line element_rect element_text guide_legend xlab ylab
 #' @importFrom dplyr filter mutate pull summarise group_by ungroup desc all_of top_n select rename bind_cols
 #' @importFrom DESeq2 DESeq DESeqDataSetFromMatrix estimateSizeFactorsForMatrix results
@@ -45,7 +45,7 @@
 #' @importFrom SummarizedExperiment assay rowData colData
 #' @importFrom microbiome meta
 utils::globalVariables(c(
-  ".data", "Taxon_Label", "prevalence", "Metrics", "Value", "Label", "log_mean_abundance", "LR", "Genus", "lfcSE", "Degree", "prune_common_taxa", "reorder", "LFC_Direction", "read_spike_report", "Among_Module_Connectivity", "EigenvectorCentrality",
+  ".data", "Taxon_Label", "total_abundance", "prevalence", "Metrics", "Value", "Label", "log_mean_abundance", "LR", "Genus", "lfcSE", "Degree", "prune_common_taxa", "reorder", "LFC_Direction", "read_spike_report", "Among_Module_Connectivity", "EigenvectorCentrality",
   "Within_Module_Connectivity", "group", "eq.label", "tail", "PageRank", "Closeness", "Betweenness", "Community",
   "Strength", "Local_Efficiency", "Coreness", "Redundancy", "get_refseq",
   "Constraint", "Efficiency", "Z_Score", "Significance", "format_common_data", "FDR", "contrast", "model.matrix", "convert_phyloseq_to_tse", "aggregateByTaxonomy", "agglomerateByRank", "group_var",

@@ -26,35 +26,41 @@
 #' @importFrom ggtree ggtree theme_tree2 geom_tiplab geom_text2
 #' @importFrom ggtreeExtra geom_fruit
 #' @importFrom ggnewscale new_scale_fill
-#' @importFrom DspikeIn convert_tse_to_phyloseq
 #' @importFrom ggstar geom_star
 #' @examples
-#' if (requireNamespace("DspikeIn", quietly = TRUE)) {
-#'   # Load test data (16S OTU table with taxonomy, tree, and metadata)
+#' \dontrun{
+#' if (
+#'   requireNamespace("DspikeIn", quietly = TRUE) &&
+#'     requireNamespace("phyloseq", quietly = TRUE) &&
+#'     requireNamespace("TreeSummarizedExperiment", quietly = TRUE) &&
+#'     requireNamespace("ggplot2", quietly = TRUE) &&
+#'     requireNamespace("ggtree", quietly = TRUE) &&
+#'     requireNamespace("ggtreeExtra", quietly = TRUE) &&
+#'     requireNamespace("ggnewscale", quietly = TRUE)
+#' ) {
+#'   # Load synthetic test dataset from DspikeIn
 #'   data("physeq_16SOTU", package = "DspikeIn")
 #'
 #'   # Filter to a known spike-in genus
 #'   spikein <- phyloseq::subset_taxa(physeq_16SOTU, Genus == "Tetragenococcus")
 #'
-#'   # Plot using phyloseq object (preview only)
+#'   # Plot diagnostic using phyloseq object
 #'   plot_spikein_tree_diagnostic(
 #'     obj = spikein,
 #'     metadata_var = "Animal.type",
 #'     save_plot = FALSE
 #'   )
 #'
-#'   # TreeSummarizedExperiment object
-#'   # To save the plot
-#'   # Use save_plot = TRUE & output_prefix = "tetragenococcus_diag"
-#'
+#'   # Convert to TreeSummarizedExperiment object
 #'   tse_spikein <- convert_phyloseq_to_tse(spikein)
 #'
-#'   # Generate and save tree diagnostic plot
+#'   # Plot diagnostic using TSE object
 #'   plot_spikein_tree_diagnostic(
 #'     obj = tse_spikein,
 #'     metadata_var = "Animal.type",
-#'     save_plot = FALSE,
+#'     save_plot = FALSE
 #'   )
+#' }
 #' }
 #' @export
 plot_spikein_tree_diagnostic <- function(obj,
@@ -102,6 +108,8 @@ plot_spikein_tree_diagnostic <- function(obj,
   )
 
   # --- Prevalence (Star) ---
+  star_geom <- ggstar::geom_star
+
   p <- p + ggnewscale::new_scale_fill() +
     ggtreeExtra::geom_fruit(
       data = df_summary,
@@ -128,10 +136,18 @@ plot_spikein_tree_diagnostic <- function(obj,
       low = "white", high = "#3A86FF"
     )
 
-  # --- Metadata tile ring ---
+  # --- Metadata tile ring: assign each OTU to its most abundant group
+  df_group <- df |>
+    dplyr::group_by(OTU, group) |>
+    dplyr::summarise(total_abundance = sum(Abundance), .groups = "drop") |>
+    dplyr::group_by(OTU) |>
+    dplyr::slice_max(order_by = total_abundance, n = 1, with_ties = FALSE) |>
+    dplyr::ungroup()
+
+  # --- Metadata tile ring (stable)
   p <- p + ggnewscale::new_scale_fill() +
     ggtreeExtra::geom_fruit(
-      data = dplyr::distinct(df, OTU, group),
+      data = df_group,
       geom = geom_tile,
       mapping = aes(y = OTU, fill = group),
       width = 0.05,
@@ -153,13 +169,14 @@ plot_spikein_tree_diagnostic <- function(obj,
 }
 
 
+
 # Example
 # data("physeq_16SOTU", package = "DspikeIn")
 #  spikein <- phyloseq::subset_taxa(physeq_16SOTU, Genus == "Tetragenococcus")
 #  spikein@sam_data$well.location
 
-#  Sampale_spike<-plot_spikein_tree_diagnostic(
-#   obj = spikein,
-#   metadata_var = "Animal.type",
-#   save_plot = TRUE,
-#   output_prefix = "tetragenococcus_diag"  )
+# Sampale_spike<-plot_spikein_tree_diagnostic(
+#  obj = spikein,
+#  metadata_var = "Animal.type",
+#  save_plot = TRUE,
+#  output_prefix = "tetragenococcus_diag"  )

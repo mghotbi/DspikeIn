@@ -19,10 +19,22 @@ This function checks if a specified directory exists and creates it if it doesn'
 Optionally, it can also set the newly created or existing directory as the working directory.
 }
 \examples{
-# Create a new directory and set it as the working directory
-create_directory("new", set_working_dir = TRUE)
+if (interactive()) {
+  # Save the current working directory
+  old_wd <- getwd()
 
-# Clean up afterwards
-setwd(tempdir())
-unlink("new", recursive = TRUE)
+  # Use a temporary directory for safe example use
+  tmp_dir <- file.path(tempdir(), "example_new_dir")
+
+  # Create the directory and set it as the working directory
+  create_directory(tmp_dir, set_working_dir = TRUE)
+
+  # Do something inside tmp_dir...
+
+  # Restore the original working directory
+  setwd(old_wd)
+
+  # Remove the created directory
+  unlink(tmp_dir, recursive = TRUE, force = TRUE)
+}
 }

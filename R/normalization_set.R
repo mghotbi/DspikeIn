@@ -525,8 +525,6 @@ norm.med <- function(obj, groups) {
 #' @importFrom phyloseq otu_table taxa_are_rows sample_data
 #' @importFrom SummarizedExperiment assay colData
 #' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq sizeFactors counts estimateSizeFactors
-#' @importFrom stats model.matrix
-#'
 #' @param obj A `phyloseq` or `TreeSummarizedExperiment` object.
 #' @param groups A string specifying the grouping variable in sample data.
 #' @param pseudocount A numeric value added to avoid zeros in the dataset.
@@ -540,71 +538,78 @@ norm.med <- function(obj, groups) {
 #' }
 #' @export
 norm.DESeq <- function(obj, groups, pseudocount = 1) {
-  #  Ensure input is valid
+  # Ensure input is valid
   if (!inherits(obj, c("phyloseq", "TreeSummarizedExperiment"))) {
     stop("Error: Input must be a 'phyloseq' or 'TreeSummarizedExperiment' object.")
   }
 
-  #  Convert TSE to phyloseq if needed
+  # Patch for broken DESeq2 S4 class hierarchy in some R installs
+  if (!methods::isClass("ExpData")) {
+    setClass("ExpData", contains = "VIRTUAL")
+  }
+
+  # Convert TSE to phyloseq if needed
   input_class <- class(obj)
   if (inherits(obj, "TreeSummarizedExperiment")) {
     obj <- convert_tse_to_phyloseq(obj)
   }
 
-  #  Clean Data: Remove zero/negative counts and convert categories to factors
+  # Clean Data
   obj <- remove_zero_negative_count_samples(obj)
   obj <- convert_categorical_to_factors(obj)
 
-  #  Extract Count Table
-  raw <- as(phyloseq::otu_table(obj), "matrix") + pseudocount # Add pseudocount
-  raw <- round(raw) # Ensure integer counts (required by DESeq2)
+  # Extract Count Table
+  raw <- as(phyloseq::otu_table(obj), "matrix") + pseudocount
+  raw <- round(raw) # required by DESeq2
 
-  #  Extract Sample Data
+  # Extract Sample Data
   sample_data_df <- as.data.frame(phyloseq::sample_data(obj))
   if (!groups %in% colnames(sample_data_df)) {
     stop("Error: Specified 'groups' column not found in sample data.")
   }
-
-  # Convert group column to factor
   sample_data_df[[groups]] <- as.factor(sample_data_df[[groups]])
 
-  #  Check for Single Group Issue
-  unique_groups <- levels(sample_data_df[[groups]])
-  if (length(unique_groups) == 1) {
-    warning("Only one group detected! Using design ~ 1.")
-    design <- stats::model.matrix(~1)
-  } else {
-    design <- stats::model.matrix(~ sample_data_df[[groups]])
-  }
-
-  #  Create DESeq2 Dataset
-  condition <- data.frame(SampleName = colnames(raw), Condition = sample_data_df[[groups]])
+  # Create DESeq2 design formula dynamically
+  condition <- data.frame(Condition = sample_data_df[[groups]])
   rownames(condition) <- colnames(raw)
 
-  dat.DGE <- DESeq2::DESeqDataSetFromMatrix(countData = raw, colData = condition, design = design)
+  if (nlevels(condition$Condition) == 1) {
+    warning("Only one group detected! Using design ~ 1.")
+    design_formula <- ~1
+  } else {
+    design_formula <- ~Condition
+  }
 
-  #  Run DESeq Normalization
-  if (length(unique_groups) == 1) {
+  # Create DESeq2 object
+  dat.DGE <- DESeq2::DESeqDataSetFromMatrix(
+    countData = raw,
+    colData = condition,
+    design = design_formula
+  )
+
+  # Run DESeq normalization
+  if (nlevels(condition$Condition) == 1) {
     dat.DGE <- DESeq2::estimateSizeFactors(dat.DGE)
   } else {
     dat.DGE <- DESeq2::DESeq(dat.DGE, fitType = "local")
   }
 
-  #  Get Normalized Counts & Scaling Factors
+  # Extract results
   scaling.factor <- DESeq2::sizeFactors(dat.DGE)
   dat.normed <- DESeq2::counts(dat.DGE, normalized = TRUE)
 
-  #  Update Phyloseq Object
+  # Update phyloseq object
   phyloseq::otu_table(obj) <- phyloseq::otu_table(dat.normed, taxa_are_rows = TRUE)
   obj <- set_nf(obj, scaling.factor)
 
-  #  Convert back to TSE if needed
+  # Convert back to TSE if needed
   if (input_class == "TreeSummarizedExperiment") {
     obj <- convert_phyloseq_to_tse(obj)
   }
 
   return(list(dat.normed = obj, scaling.factor = scaling.factor))
 }
+
 # -----------------------------------------------------------
 #' @title Quantile Normalization (QN) for phyloseq object
 #' @name norm.QN

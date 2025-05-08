@@ -7,12 +7,24 @@
 #' @param set_working_dir A logical value indicating whether to set the directory as the working directory. Default is FALSE.
 #' @return NULL. The function prints messages indicating whether the directory was created or already exists, and if the working directory was set.
 #' @examples
-#' # Create a new directory and set it as the working directory
-#' create_directory("new", set_working_dir = TRUE)
+#' if (interactive()) {
+#'   # Save the current working directory
+#'   old_wd <- getwd()
 #'
-#' # Clean up afterwards
-#' setwd(tempdir())
-#' unlink("new", recursive = TRUE)
+#'   # Use a temporary directory for safe example use
+#'   tmp_dir <- file.path(tempdir(), "example_new_dir")
+#'
+#'   # Create the directory and set it as the working directory
+#'   create_directory(tmp_dir, set_working_dir = TRUE)
+#'
+#'   # Do something inside tmp_dir...
+#'
+#'   # Restore the original working directory
+#'   setwd(old_wd)
+#'
+#'   # Remove the created directory
+#'   unlink(tmp_dir, recursive = TRUE, force = TRUE)
+#' }
 #' @export
 create_directory <- function(directory_path, set_working_dir = FALSE) {
   if (!base::dir.exists(directory_path)) {

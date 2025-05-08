@@ -12,18 +12,20 @@
 #'   to save the result. If `NULL`, no file will be saved. Default is `NULL`.
 #'
 #' @return A subsampled object of the same class as the input (`phyloseq` or `TreeSummarizedExperiment`).
-#'
 #' @examples
-#' data("physeq_16SOTU", package = "DspikeIn")
-#' red <- random_subsample_WithReductionFactor(physeq_16SOTU, reduction_factor = 10)
-#' summary_stats <- summ_phyloseq_sampleID(red)
-#' print(summary_stats)
+#' if (requireNamespace("DspikeIn", quietly = TRUE) &&
+#'     requireNamespace("phyloseq", quietly = TRUE) &&
+#'     requireNamespace("TreeSummarizedExperiment", quietly = TRUE)) {
+#'   data("physeq_16SOTU", package = "DspikeIn")
+#'   red <- random_subsample_WithReductionFactor(physeq_16SOTU, reduction_factor = 10)
+#'   summary_stats <- summ_phyloseq_sampleID(red)
+#'   print(summary_stats)
 #'
-#' # Subsampling TSE object
-#' tse_16SOTU <- convert_phyloseq_to_tse("physeq_16SOTU")
-#' red <- random_subsample_WithReductionFactor(tse_16SOTU, reduction_factor = 10)
-#' summary_stats <- summ_phyloseq_sampleID(red)
-#' print(summary_stats)
+#'   tse <- convert_phyloseq_to_tse(physeq_16SOTU)
+#'   red_tse <- random_subsample_WithReductionFactor(tse, reduction_factor = 10)
+#'   summary_stats <- summ_phyloseq_sampleID(red_tse)
+#'   print(summary_stats)
+#' }
 #'
 #' @importFrom phyloseq otu_table phyloseq sample_data tax_table
 #' @importFrom SummarizedExperiment assay SummarizedExperiment colData rowData
@@ -63,14 +65,20 @@ random_subsample_WithReductionFactor <- function(obj,
       phyloseq::sample_data(obj),
       phyloseq::tax_table(obj)
     )
-  } else if (inherits(obj, "TreeSummarizedExperiment")) {
-    subsampled_obj <- SummarizedExperiment::SummarizedExperiment(
+  } else if (methods::is(obj, "TreeSummarizedExperiment")) {
+    subsampled_obj <- TreeSummarizedExperiment::TreeSummarizedExperiment(
       assays = list(counts = otu_table_mod),
       colData = SummarizedExperiment::colData(obj),
       rowData = SummarizedExperiment::rowData(obj),
-      metadata = S4Vectors::metadata(obj)
+      rowTree = TreeSummarizedExperiment::rowTree(obj),
+      metadata = c(
+        S4Vectors::metadata(obj),
+        list(refseq = S4Vectors::metadata(obj)$refseq)
+      )
     )
-  } else {
+    
+  }
+  else {
     stop("Unsupported object type. Must be `phyloseq` or `TreeSummarizedExperiment`.")
   }
 
@@ -89,7 +97,7 @@ random_subsample_WithReductionFactor <- function(obj,
 
 # Example usage:
 # Perform random subsampling with a reduction factor of 10
-# red <- random_subsample_WithReductionFactor(spiked_16S, reduction_factor = 10)
+# red <- random_subsample_WithReductionFactor(physeq_16SOTU, reduction_factor = 10)
 # Summarize the subsampled phyloseq object
 # summ_phyloseq_sampleID(red)
 # red_physeq <- random_subsample_WithReductionFactor(TSE_obj, reduction_factor = 10)

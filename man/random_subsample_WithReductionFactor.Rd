@@ -28,15 +28,18 @@ by a specified reduction factor and rounding down to the nearest whole number.
 Optionally, the result can be saved to disk as an \code{.rds} file.
 }
 \examples{
-data("physeq_16SOTU", package = "DspikeIn")
-red <- random_subsample_WithReductionFactor(physeq_16SOTU, reduction_factor = 10)
-summary_stats <- summ_phyloseq_sampleID(red)
-print(summary_stats)
+if (requireNamespace("DspikeIn", quietly = TRUE) &&
+    requireNamespace("phyloseq", quietly = TRUE) &&
+    requireNamespace("TreeSummarizedExperiment", quietly = TRUE)) {
+  data("physeq_16SOTU", package = "DspikeIn")
+  red <- random_subsample_WithReductionFactor(physeq_16SOTU, reduction_factor = 10)
+  summary_stats <- summ_phyloseq_sampleID(red)
+  print(summary_stats)
 
-# Subsampling TSE object
-tse_16SOTU <- convert_phyloseq_to_tse("physeq_16SOTU")
-red <- random_subsample_WithReductionFactor(tse_16SOTU, reduction_factor = 10)
-summary_stats <- summ_phyloseq_sampleID(red)
-print(summary_stats)
+  tse <- convert_phyloseq_to_tse(physeq_16SOTU)
+  red_tse <- random_subsample_WithReductionFactor(tse, reduction_factor = 10)
+  summary_stats <- summ_phyloseq_sampleID(red_tse)
+  print(summary_stats)
+}
 
 }

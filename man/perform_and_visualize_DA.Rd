@@ -56,7 +56,7 @@ For edgeR, standard error of log-fold change (lfcSE) is estimated using the form
 \code{lfcSE = logFC / sqrt(LR)}, based on the likelihood ratio test statistic.
 }
 \examples{
-if (requireNamespace("DspikeIn", quietly = TRUE)) {
+if (requireNamespace("phyloseq", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
   # Run edgeR analysis
@@ -69,13 +69,16 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
     significance_level = 0.05
   )
 
-  # Visualize results
-  print(results_edgeR$plot) # Volcano plot
-  print(results_edgeR$bar_plot) # Bar plot of significant taxa
-  results_edgeR$results
+  # Show plots
+  print(results_edgeR$plot)
+  print(results_edgeR$bar_plot)
 
-  # Convert to TreeSummarizedExperiment (TSE) and run DESeq2
+  # Show results table
+  head(results_edgeR$results)
+
+  # DESeq2 workflow
   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+
   results_DESeq2 <- perform_and_visualize_DA(
     obj = tse_16SOTU,
     method = "DESeq2",
@@ -85,9 +88,8 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
     significance_level = 0.05
   )
 
-  # Print and visualize DESeq2 results
   print(results_DESeq2$plot)
   print(results_DESeq2$bar_plot)
-  results_DESeq2$results
+  head(results_DESeq2$results)
 }
 }

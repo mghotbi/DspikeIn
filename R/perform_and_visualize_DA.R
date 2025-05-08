@@ -21,7 +21,7 @@
 #'   \item{obj_significant}{Filtered `phyloseq` or `TreeSummarizedExperiment` object.}
 #'   \item{plot}{`ggplot2` volcano plot for differentially abundant taxa.}
 #'   \item{bar_plot}{`ggplot2` bar plot of log fold changes for significant taxa.}
-#' @importFrom phyloseq otu_table sample_data tax_table prune_taxa tax_glom transform_sample_counts
+#' @importFrom phyloseq otu_table sample_data sample_names tax_table prune_taxa tax_glom transform_sample_counts
 #' @importFrom edgeR DGEList estimateDisp calcNormFactors glmFit glmLRT topTags
 #' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq results
 #' @importFrom dplyr mutate rename left_join filter select group_by summarise ungroup distinct
@@ -36,7 +36,7 @@
 #' @source Uses edgeR and DESeq2 for differential abundance modeling
 #' @source Inspired by Bioconductor workflows for microbiome DA analysis
 #' @examples
-#' if (requireNamespace("DspikeIn", quietly = TRUE)) {
+#' if (requireNamespace("phyloseq", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
 #'
 #'   # Run edgeR analysis
@@ -49,13 +49,16 @@
 #'     significance_level = 0.05
 #'   )
 #'
-#'   # Visualize results
-#'   print(results_edgeR$plot) # Volcano plot
-#'   print(results_edgeR$bar_plot) # Bar plot of significant taxa
-#'   results_edgeR$results
+#'   # Show plots
+#'   print(results_edgeR$plot)
+#'   print(results_edgeR$bar_plot)
 #'
-#'   # Convert to TreeSummarizedExperiment (TSE) and run DESeq2
+#'   # Show results table
+#'   head(results_edgeR$results)
+#'
+#'   # DESeq2 workflow
 #'   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+#'
 #'   results_DESeq2 <- perform_and_visualize_DA(
 #'     obj = tse_16SOTU,
 #'     method = "DESeq2",
@@ -65,10 +68,9 @@
 #'     significance_level = 0.05
 #'   )
 #'
-#'   # Print and visualize DESeq2 results
 #'   print(results_DESeq2$plot)
 #'   print(results_DESeq2$bar_plot)
-#'   results_DESeq2$results
+#'   head(results_DESeq2$results)
 #' }
 #' @export
 perform_and_visualize_DA <- function(obj, method, group_var, contrast,
@@ -168,7 +170,7 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
     metadata <- as.data.frame(microbiome::meta(obj))
 
     #  Ensure metadata matches OTU table
-    sample_ids <- sample_names(obj)
+    sample_ids <- phyloseq::sample_names(obj)
     metadata <- metadata[rownames(metadata) %in% sample_ids, , drop = FALSE]
     metadata <- metadata[match(sample_ids, rownames(metadata)), , drop = FALSE]
 
@@ -343,7 +345,7 @@ perform_and_visualize_DA <- function(obj, method, group_var, contrast,
     ggplot2::coord_flip() +
     ggplot2::labs(
       subtitle = paste("Significant taxa with padj <", significance_level),
-      caption = "Bars = log2 fold change; Lines = ± 1 SE",
+      caption = "Bars = log2 fold change; Lines = +/- 1 SE",
       x = "",
       y = "Log Fold Change",
       fill = "Group & LFC Direction",

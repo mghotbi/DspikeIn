@@ -27,10 +27,12 @@ simulated for testing and demonstration of microbiome workflows.
 It contains OTU abundances, taxonomic annotations, and sample metadata.
 }
 \examples{
-data(physeq)
-physeq
-sample_names(physeq)
-taxa_names(physeq)
-summary(physeq)
+if (requireNamespace("phyloseq", quietly = TRUE)) {
+  data(physeq)
+  physeq
+  phyloseq::sample_names(physeq)
+  phyloseq::taxa_names(physeq)
+  summary(physeq)
+}
 }
 \keyword{datasets}

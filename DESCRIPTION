@@ -1,7 +1,7 @@
 Package: DspikeIn
 Type: Package
-Title: Estimating Absolute Abundance From Microbial Spike-In Controls
-Version: 0.99.0
+Title: Estimating Absolute Abundance from Microbial Spike-in Controls
+Version: 0.99.1
 Authors@R: 
     c(
         person(given = "Mitra", family = "Ghotbi", 
@@ -26,10 +26,10 @@ Description: Provides a reproducible and modular workflow for absolute microbial
     to guide users through experimental design, quantification, and interpretation.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: false
+LazyData: true
 LazyDataCompression: xz
 Depends: 
-    R (>= 4.3.0)
+    R (>= 4.5.0)
 Imports:
     ape,
     BiocGenerics,

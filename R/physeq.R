@@ -19,9 +19,11 @@
 #' @source Simulated dataset for microbiome analysis.
 #'
 #' @examples
-#' data(physeq)
-#' physeq
-#' sample_names(physeq)
-#' taxa_names(physeq)
-#' summary(physeq)
+#' if (requireNamespace("phyloseq", quietly = TRUE)) {
+#'   data(physeq)
+#'   physeq
+#'   phyloseq::sample_names(physeq)
+#'   phyloseq::taxa_names(physeq)
+#'   summary(physeq)
+#' }
 "physeq"

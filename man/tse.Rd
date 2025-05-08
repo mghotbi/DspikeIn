@@ -27,11 +27,13 @@ The TSE structure combines abundance data, sample metadata, and optional feature
 suitable for downstream statistical analysis of microbiome datasets.
 }
 \examples{
-data(tse)
-tse
-assay(tse)
-colData(tse)
-rowData(tse)
+if (requireNamespace("TreeSummarizedExperiment", quietly = TRUE)) {
+  data(tse)
+  tse
+  SummarizedExperiment::assay(tse)
+  SummarizedExperiment::colData(tse)
+  SummarizedExperiment::rowData(tse)
+}
 }
 \seealso{
 \code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-constructor]{TreeSummarizedExperiment::TreeSummarizedExperiment()}}

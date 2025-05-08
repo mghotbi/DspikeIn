@@ -34,8 +34,10 @@ spike-in performance evaluation. It includes taxonomic annotations and summary
 statistics used in validation and quality control workflows.
 }
 \examples{
-data(AcceptableRange)
-head(AcceptableRange)
-summary(AcceptableRange$Percentage)
+if (requireNamespace("DspikeIn", quietly = TRUE)) {
+  data("AcceptableRange", package = "DspikeIn")
+  head(AcceptableRange)
+  summary(AcceptableRange$Percentage)
+}
 }
 \keyword{datasets}

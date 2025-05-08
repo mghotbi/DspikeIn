@@ -20,9 +20,11 @@
 #' @source Example dataset for microbiome analysis.
 #'
 #' @examples
-#' data(tse)
-#' tse
-#' assay(tse)
-#' colData(tse)
-#' rowData(tse)
+#' if (requireNamespace("TreeSummarizedExperiment", quietly = TRUE)) {
+#'   data(tse)
+#'   tse
+#'   SummarizedExperiment::assay(tse)
+#'   SummarizedExperiment::colData(tse)
+#'   SummarizedExperiment::rowData(tse)
+#' }
 "tse"

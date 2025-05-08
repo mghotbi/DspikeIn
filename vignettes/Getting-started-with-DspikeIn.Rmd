@@ -479,7 +479,6 @@ Perc <- calculate_spike_percentage(
 #                      CALCULATE SCALING FACTORS
 # =====================================================================
 
-# Calculate scaling factors
 
 # Calculate spike-in scaling factors
 result <- calculate_spikeIn_factors(
@@ -505,7 +504,7 @@ head(scaling_factors) # Vector of scaling factors per sample
 #             Convert relative counts to absolute counts
 # =====================================================================
 
-# absolute counts=relative counts×sample-specific scaling factor
+# absolute counts=relative counts×sample-specific scaling factor
 
 
 # Convert to absolute counts
@@ -580,7 +579,7 @@ The goal is to identify the range where, for example, the evenness of your commu
 
 
 ```{r}
-# ** The acceptable range of spiked species retrieval is system-dependent**
+#  The acceptable range of spiked species retrieval is system-dependent
 # Spiked species become centroid of the community (Distance to Centroid)
 # Spiked species become dominant and imbalance the community (Evenness)
 
@@ -1098,23 +1097,23 @@ head(result2$summary)
 
  | **Metric**                     | **Description** |
  |--------------------------------|-----------------------------------------------------------|
- | `Node`                         | Node name (character format) |
- | `Degree`                       | Number of edges connected to the node |
- | `Strength`                     | Sum of edge weights connected to the node |
- | `Closeness`                    | Closeness centrality (normalized, based on shortest paths) |
- | `Betweenness`                  | Betweenness centrality (normalized, measures control over network flow) |
- | `EigenvectorCentrality`        | Eigenvector centrality (importance based on connections to influential nodes) |
- | `PageRank`                     | PageRank score (importance based on incoming links) |
- | `Transitivity`                 | Local clustering coefficient (tendency of a node to form triangles) |
- | `Coreness`                     | Node's coreness (from k-core decomposition) |
- | `Constraint`                   | Burt's constraint (measures structural holes in a node's ego network) |
- | `EffectiveSize`                | Inverse of constraint (larger values = more non-redundant connections) |
- | `Redundancy`                   | Sum of constraint values of a node's alters |
- | `Community`                    | Community assignment from Louvain clustering |
- | `Efficiency`                   | Global efficiency (average inverse shortest path length) |
- | `Local_Efficiency`             | Local efficiency (subgraph efficiency for a node's neighbors) |
- | `Within_Module_Connectivity`   | Proportion of neighbors in the same community |
- | `Among_Module_Connectivity`    | Proportion of neighbors in different communities |
+ | 'Node'                         | Node name (character format) |
+ | 'Degree'                       | Number of edges connected to the node |
+ | 'Strength'                     | Sum of edge weights connected to the node |
+ | 'Closeness'                    | Closeness centrality (normalized, based on shortest paths) |
+ | 'Betweenness'                  | Betweenness centrality (normalized, measures control over network flow) |
+ | 'EigenvectorCentrality'        | Eigenvector centrality (importance based on connections to influential nodes) |
+ | 'PageRank'                     | PageRank score (importance based on incoming links) |
+ | 'Transitivity'                 | Local clustering coefficient (tendency of a node to form triangles) |
+ | 'Coreness'                     | Node's coreness (from k-core decomposition) |
+ | 'Constraint'                   | Burt's constraint (measures structural holes in a node's ego network) |
+ | 'EffectiveSize'                | Inverse of constraint (larger values = more non-redundant connections) |
+ | 'Redundancy'                   | Sum of constraint values of a node's alters |
+ | 'Community'                    | Community assignment from Louvain clustering |
+ | 'Efficiency'                   | Global efficiency (average inverse shortest path length) |
+ | 'Local_Efficiency'             | Local efficiency (subgraph efficiency for a node's neighbors) |
+ | 'Within_Module_Connectivity'   | Proportion of neighbors in the same community |
+ | 'Among_Module_Connectivity'    | Proportion of neighbors in different communities |
  
  
 ```{r}

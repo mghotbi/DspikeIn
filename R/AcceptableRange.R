@@ -26,7 +26,9 @@
 #' @source Internal package dataset.
 #'
 #' @examples
-#' data(AcceptableRange)
-#' head(AcceptableRange)
-#' summary(AcceptableRange$Percentage)
+#' if (requireNamespace("DspikeIn", quietly = TRUE)) {
+#'   data("AcceptableRange", package = "DspikeIn")
+#'   head(AcceptableRange)
+#'   summary(AcceptableRange$Percentage)
+#' }
 "AcceptableRange"

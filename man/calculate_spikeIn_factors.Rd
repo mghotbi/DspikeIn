@@ -47,7 +47,8 @@ applies them to the OTU table, and returns bias-corrected absolute counts along 
 }
 }
 \examples{
-if (requireNamespace("DspikeIn", quietly = TRUE)) {
+if (requireNamespace("DspikeIn", quietly = TRUE) &&
+  requireNamespace("phyloseq", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
   spiked_cells <- 1847
@@ -94,5 +95,4 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
 
   print(result_tse$scaling_factors)
 }
-
 }

@@ -27,7 +27,7 @@
 #' - If no spiked species are detected in a sample, a default scaling factor of 1 is applied (to prevent division by zero).
 #' - If `TreeSummarizedExperiment` is entered and `rowTree(obj)` is invalid, the tree will be omitted.
 #'
-#' @importFrom phyloseq prune_taxa merge_taxa taxa_names sample_data sample_sums phy_tree otu_table tax_table phyloseq
+#' @importFrom phyloseq prune_taxa merge_taxa taxa_names sample_data sample_names sample_sums phy_tree otu_table tax_table phyloseq
 #' @importFrom SummarizedExperiment assay rowData colData SummarizedExperiment
 #' @importFrom flextable flextable fontsize font color bold italic save_as_docx
 #' @importFrom utils write.csv
@@ -35,7 +35,8 @@
 #' @importFrom ape drop.tip
 #' @importFrom S4Vectors metadata
 #' @examples
-#' if (requireNamespace("DspikeIn", quietly = TRUE)) {
+#' if (requireNamespace("DspikeIn", quietly = TRUE) &&
+#'   requireNamespace("phyloseq", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
 #'
 #'   spiked_cells <- 1847
@@ -82,7 +83,6 @@
 #'
 #'   print(result_tse$scaling_factors)
 #' }
-#'
 #' @export
 calculate_spikeIn_factors <- function(obj, spiked_cells, merged_spiked_species, output_path = NULL) {
   if (!is.null(output_path) && !dir.exists(output_path)) {
@@ -120,7 +120,7 @@ calculate_spikeIn_factors <- function(obj, spiked_cells, merged_spiked_species, 
   if (phyloseq::ntaxa(spiked_species) == 0) {
     warning("No spiked species found. Returning default values.")
     return(list(
-      scaling_factors = setNames(rep(1, nsamples(obj)), sample_names(obj)),
+      scaling_factors = setNames(rep(1, nsamples(obj)), phyloseq::sample_names(obj)),
       filtered_obj = obj,
       spiked_total_reads = NULL,
       Total_reads = total_reads,
