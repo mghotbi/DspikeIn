@@ -1,8 +1,9 @@
 ## Welcome to the DspikeIn R package repository!
 
 **Author:** Mitra Ghotbi  
- **Version:** 1.2.3  
- **Date:** March 8, 2025  
+**Version:** v0.99.0  
+**Date:** March 8, 2025  
+
 
 
 
@@ -59,6 +60,9 @@
 
 DspikeIn is designed for microbiome data analysis, seamlessly integrating with **phyloseq** (for marker-gene microbiome data) and **TreeSummarizedExperiment (TSE)** (for hierarchical biological data, including microbiomes). These objects must include seven taxonomic ranks.  
 For absolute abundance estimation, the metadata must contain **spiked.volume**.  
+
+DspikeIn accommodates either a single spike-in taxon or synthetic community taxa with variable or equal spike-in volumes and copy numbers. The package offers a comprehensive suite of tools for AA quantification, addressing challenges through ten core functions: 1) validation of spiked species, 2) data preprocessing, 3) system-specific spiked species retrieval, 4) scaling factor calculation, 5) conversion to absolute abundance, 6) bias correction and normalization, 7) performance assessment, and 8) taxa exploration and filtering 9) network topology assessment 10) further analyses and visualization. 
+
 
 ## Features of DspikeIn  
 The DspikeIn package provides functions for:  
@@ -230,6 +234,7 @@ install.packages("remotes")
 remotes::install_github("mghotbi/DspikeIn")
 library(DspikeIn)
 
+# *** Please note that installing with build_vignettes = TRUE may take 2–4 minutes, depending on your computer’s processing power ***
 # To access the DspikeIn vignette for a detailed tutorial, use vignette("DspikeIn"), or browse all available vignettes with browseVignettes("DspikeIn").
 devtools::install_github("mghotbi/DspikeIn", build_vignettes = TRUE, dependencies = TRUE)
 browseVignettes("DspikeIn")
@@ -239,8 +244,16 @@ browseVignettes("DspikeIn")
 
 ## Acknowledgement
 
-DspikeIn builds on the excellent [**phyloseq**](https://github.com/joey711/phyloseq) package.
-Requirements
+
+The development of the **DspikeIn** package was made possible through the invaluable contributions of the **R** community, including developers of both **Bioconductor** and **CRAN** packages. We are especially grateful for tools such as **phyloseq**, DESeq2, edgeR, ggplot2, ggtree, TreeSummarizedExperiment, vegan, ggtreeExtra, and many others that support the analysis and visualization of microbiome data.
+
+We also acknowledge the broader scientific community working on **absolute microbial quantification** and **compositional data analysis**, whose pioneering research inspired the design of **DspikeIn**.
+
+**Special thanks to the [Herptile Microbiome Team](https://herptilemicrobiomes.org/research/)** for their collaborative support and contributions to this work.
+
+
+---
+
 
 
 ### To Meet Taxonomic Ranks Requirements
@@ -443,7 +456,7 @@ result <- validate_spikein_clade(
 # Branch length numbers=	Actual evolutionary distances (small = very similar)
 # Prevalence stars	How frequently the OTU occurs across samples
 # Blue bar ring=	Log10 mean abundance
-# Outer colored tiles=	The metadata variable you choose (e.g., Animal.type)
+# Outer colored tiles=	The metadata variable (e.g., Animal.type)
 
 spikein <- phyloseq::subset_taxa(physeq_16SOTU, Genus == "Tetragenococcus")
 taxa_names(spikein) <- paste0("OTU", seq_len(ntaxa(spikein)))
