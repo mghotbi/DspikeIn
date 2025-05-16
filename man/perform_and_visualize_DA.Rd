@@ -3,11 +3,6 @@
 \name{perform_and_visualize_DA}
 \alias{perform_and_visualize_DA}
 \title{Perform and Visualize Differential Abundance Analysis with edgeR or DESeq2}
-\source{
-Uses edgeR and DESeq2 for differential abundance modeling
-
-Inspired by Bioconductor workflows for microbiome DA analysis
-}
 \usage{
 perform_and_visualize_DA(
   obj,
@@ -18,78 +13,131 @@ perform_and_visualize_DA(
   significance_level = 0.05,
   output_csv_path = NULL,
   target_glom = "Genus",
-  palette = c("#FFEB3B", "#073B4C")
+  palette = c("#FFEB3B", "#073B4C"),
+  global_fdr = FALSE
 )
 }
 \arguments{
 \item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
 
-\item{method}{A string: \code{"edgeR"} or \code{"DESeq2"}.}
+\item{method}{A string: either \code{"edgeR"} or \code{"DESeq2"}.}
 
-\item{group_var}{A string: The grouping variable in the sample metadata.}
+\item{group_var}{A string specifying the grouping variable in the sample metadata.
+Not required if \code{contrast} is a named list for multiple variables.}
 
-\item{contrast}{A character vector: Levels to compare (e.g., \code{c("Control", "Treated")}).}
+\item{contrast}{One of the following:
+\itemize{
+\item A character vector of two levels to compare (e.g., \code{c("Control", "Treated")}).
+\item A list of such character vectors for multiple contrasts within one grouping variable.
+\item A named list of such lists (e.g., \code{list(Treatment = list(c("A", "B"), c("A", "C")), Genotype = list(...))}).
+}}
 
-\item{pseudocount}{A numeric: Pseudocount for zero handling (default = \code{1}).}
+\item{pseudocount}{A numeric value used to replace zero or negative counts (default = \code{1}).}
 
-\item{significance_level}{A numeric: FDR threshold for significance (default = \code{0.05}).}
+\item{significance_level}{A numeric value for the FDR threshold to determine significance (default = \code{0.05}).}
 
-\item{output_csv_path}{A string: File path to save results CSV (optional).}
+\item{output_csv_path}{Optional path to save results as CSV files. For multiple contrasts, each is saved separately.}
 
-\item{target_glom}{A string: Taxonomic rank to aggregate taxa (default = \code{"Genus"}).}
+\item{target_glom}{A string specifying the taxonomic rank to aggregate taxa (default = \code{"Genus"}).}
 
-\item{palette}{A vector: Colors for significant and non-significant points (default = \code{c("#FFEB3B", "#073B4C")}).}
+\item{palette}{A vector of colors for plotting significant and non-significant points (default = \code{c("#FFEB3B", "#073B4C")}).}
+
+\item{global_fdr}{Logical. If \code{TRUE}, applies FDR correction across all contrasts (default = \code{FALSE}).}
 }
 \value{
-A list containing:
-\item{results}{Data frame of differential abundance results.}
-\item{obj_significant}{Filtered \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
-\item{plot}{\code{ggplot2} volcano plot for differentially abundant taxa.}
-\item{bar_plot}{\code{ggplot2} bar plot of log fold changes for significant taxa.}
+A list of result objects, or a single result if a single contrast is given. Each result includes:
+\item{results}{A \code{data.frame} of differential abundance results with taxonomic annotations.}
+\item{obj_significant}{A filtered \code{phyloseq} or \code{TreeSummarizedExperiment} object with significant taxa.}
+\item{plot}{A \code{ggplot2} volcano plot.}
+\item{bar_plot}{A \code{ggplot2} bar plot of log fold changes and standard errors.}
+\item{bar_abundance_plot}{A \code{ggplot2} bar plot showing relative abundance of significant taxa across groups.}
 }
 \description{
-Performs differential abundance analysis using edgeR or DESeq2, processes data,
-and creates a volcano plot and bar plot for visualization.
+Performs differential abundance analysis using edgeR or DESeq2, and visualizes results
+with a volcano plot, a log-fold change bar plot, and a relative abundance bar plot
+for significantly enriched taxa. Supports comparisons across one or more variables and
+allows global FDR correction across multiple contrasts.
 }
 \details{
-For edgeR, standard error of log-fold change (lfcSE) is estimated using the formula:
+For edgeR, the standard error of log-fold change (lfcSE) is estimated using the formula:
 \code{lfcSE = logFC / sqrt(LR)}, based on the likelihood ratio test statistic.
+
+When providing multiple contrasts, FDR correction can be applied globally using the
+\code{global_fdr = TRUE} option.
 }
 \examples{
 if (requireNamespace("phyloseq", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
-  # Run edgeR analysis
-  results_edgeR <- perform_and_visualize_DA(
+  # Single contrast (DESeq2)
+  res_single <- perform_and_visualize_DA(
     obj = physeq_16SOTU,
-    method = "edgeR",
-    group_var = "Diet",
-    contrast = c("Insectivore", "Carnivore"),
-    target_glom = "Genus",
-    significance_level = 0.05
-  )
-
-  # Show plots
-  print(results_edgeR$plot)
-  print(results_edgeR$bar_plot)
-
-  # Show results table
-  head(results_edgeR$results)
-
-  # DESeq2 workflow
-  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
-
-  results_DESeq2 <- perform_and_visualize_DA(
-    obj = tse_16SOTU,
     method = "DESeq2",
     group_var = "Diet",
     contrast = c("Insectivore", "Carnivore"),
-    target_glom = "Genus",
-    significance_level = 0.05
+    target_glom = "Genus"
   )
 
-  print(results_DESeq2$plot)
-  print(results_DESeq2$bar_plot)
-  head(results_DESeq2$results)
+  # Multiple contrasts for one group_var
+  contrast_list <- list(
+    c("Insectivore", "Carnivore"),
+    c("Omnivore", "Herbivore")
+  )
+
+  res_multi <- perform_and_visualize_DA(
+    obj = physeq_16SOTU,
+    method = "DESeq2",
+    group_var = "Diet",
+    contrast = contrast_list,
+    global_fdr = TRUE
+  )
+
+  # Named contrast list for multiple group_vars
+  contrast_named <- list(
+    Diet = list(
+      c("Insectivore", "Carnivore"),
+      c("Omnivore", "Carnivore")
+    ),
+    Animal.type = list(
+      c("Frog", "Salamander")
+    )
+  )
+
+  res_multi_factor <- perform_and_visualize_DA(
+    obj = physeq_16SOTU,
+    method = "DESeq2",
+    significance_level = 0.01,
+    contrast = contrast_named,
+    target_glom = "Genus",
+    global_fdr = TRUE
+  )
+
+  # Create a combined factor of Animal.type and Diet
+  phyloseq::sample_data(physeq_16SOTU)$ComboGroup <- factor(interaction(
+    phyloseq::sample_data(physeq_16SOTU)$Animal.type,
+    phyloseq::sample_data(physeq_16SOTU)$Diet,
+    drop = TRUE
+  ))
+
+  # Define valid contrasts with sufficient sample sizes
+  contrast_list <- list(
+    c("Salamander.Insectivore", "Lizard.Insectivore"),
+    c("Salamander.Carnivore", "Snake.Carnivore"),
+    c("Salamander.Carnivore", "Frog.Carnivore")
+  )
+
+  # Perform multi-contrast DA analysis on the ComboGroup
+  res_combo <- perform_and_visualize_DA(
+    obj = physeq_16SOTU,
+    method = "DESeq2",
+    group_var = "ComboGroup",
+    contrast = contrast_list,
+    target_glom = "Genus",
+    global_fdr = TRUE
+  )
+
+  # Example: view one of the plots
+  res_combo$Frog.Insectivore_vs_Lizard.Insectivore$bar_plot
 }
+
 }

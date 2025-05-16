@@ -14,8 +14,8 @@
 #' @return A subsampled object of the same class as the input (`phyloseq` or `TreeSummarizedExperiment`).
 #' @examples
 #' if (requireNamespace("DspikeIn", quietly = TRUE) &&
-#'     requireNamespace("phyloseq", quietly = TRUE) &&
-#'     requireNamespace("TreeSummarizedExperiment", quietly = TRUE)) {
+#'   requireNamespace("phyloseq", quietly = TRUE) &&
+#'   requireNamespace("TreeSummarizedExperiment", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
 #'   red <- random_subsample_WithReductionFactor(physeq_16SOTU, reduction_factor = 10)
 #'   summary_stats <- summ_phyloseq_sampleID(red)
@@ -76,9 +76,7 @@ random_subsample_WithReductionFactor <- function(obj,
         list(refseq = S4Vectors::metadata(obj)$refseq)
       )
     )
-    
-  }
-  else {
+  } else {
     stop("Unsupported object type. Must be `phyloseq` or `TreeSummarizedExperiment`.")
   }
 

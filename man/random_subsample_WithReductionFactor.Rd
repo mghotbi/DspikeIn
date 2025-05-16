@@ -29,8 +29,8 @@ Optionally, the result can be saved to disk as an \code{.rds} file.
 }
 \examples{
 if (requireNamespace("DspikeIn", quietly = TRUE) &&
-    requireNamespace("phyloseq", quietly = TRUE) &&
-    requireNamespace("TreeSummarizedExperiment", quietly = TRUE)) {
+  requireNamespace("phyloseq", quietly = TRUE) &&
+  requireNamespace("TreeSummarizedExperiment", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
   red <- random_subsample_WithReductionFactor(physeq_16SOTU, reduction_factor = 10)
   summary_stats <- summ_phyloseq_sampleID(red)
