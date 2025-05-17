@@ -27,7 +27,8 @@
 #'   result1 <- extract_neighbors(graph = Complete, target_node = "OTU69:Basidiobolus_sp")
 #'   print(result1$summary)
 #'
-#'   # for an **external** GraphML file (enter full address please)
+#'   # for an external GraphML file (enter full address please)
+#'   
 #'   # Use an already loaded igraph object
 #'   Nohubs <- load_graphml("Nohubs.graphml")
 #'   result3 <- extract_neighbors(graph = Nohubs, target_node = "OTU1:Lilapila_jurana")

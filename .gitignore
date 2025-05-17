@@ -20,3 +20,4 @@
 .DS_Store
 docs
 ^new$
+vignettes/.Rhistory
