@@ -22,3 +22,5 @@ docs
 ^new$
 vignettes/.Rhistory
 .RData
+DspikeIn.Rcheck/
+*.tar.gz
