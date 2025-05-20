@@ -1,0 +1,132 @@
+AcceptableRange         Acceptable Range Data
+MG_shapes               Predefined Shape Vector for Plot Styling
+Pre_processing_hashcodes
+                        Pre-process phyloseq or TSE object based on
+                        hashcodes
+Pre_processing_species
+                        Pre-process taxa in a phyloseq or TSE object by
+                        merging ASVs/OTUs
+Pre_processing_species_list
+                        Preprocess and Merge Spike-in Species in a
+                        Phyloseq or TSE Object
+RandomForest_selected   Select Important ASVs/OTUs Using Random Forest
+adjust_abundance_one_third
+                        Adjust Abundance by a Factor
+adjusted_prevalence     Adjust Prevalence in a Microbiome Object
+alluvial_plot           Generate an Alluvial Plot for Microbiome Data
+calculate_list_average_scaling_factors
+                        Calculate Sample-specific Average Scaling
+                        Factors for Multiple Spike-in Groups
+calculate_spikeIn_factors
+                        Calculate Scaling Factors for Spiked Species in
+                        Phyloseq or TSE Object
+calculate_spike_percentage
+                        Calculate Spike Percentage for Specified Taxa
+                        in a Phyloseq or TSE Object
+calculate_spike_percentage_list
+                        Calculate Spike-in Percentage for Specified
+                        Taxa
+calculate_summary_stats_table
+                        Calculate Summary Statistics Table
+color_palette           Original, Extended, and Nature-Inspired Color
+                        Palette Sequence
+conclusion              Compute Summary Statistics for Spiked Species
+convert_categorical_to_factors
+                        Convert Categorical Columns to Factors in
+                        Sample Data
+convert_phyloseq_to_tse
+                        Convert a 'phyloseq' Object to a
+                        'TreeSummarizedExperiment'
+convert_to_absolute_counts
+                        Convert Relative ASV/OTU Counts to Absolute
+                        Counts
+convert_tse_to_phyloseq
+                        Convert a 'TreeSummarizedExperiment' to a
+                        'phyloseq' Object
+create_directory        Create a Directory and Optionally Set as
+                        Working Directory
+create_list             Create a List from a Phyloseq or TSE Object
+degree_network          Analyze and Visualize a Microbial Network
+detect_common_asvs_taxa
+                        Detect Common ASVs and Taxa from Multiple
+                        Phyloseq or TSE Objects
+extract_neighbors       Extract First and Second Neighbors of a Target
+                        Node
+filter_and_split_abundance
+                        Filter and Split Abundance Data by Threshold
+get_long_format_data    Convert a Phyloseq or TSE Object into a
+                        Long-Format Data Frame
+get_otu_table           Extract OTU Tax Metadata from Object
+get_phy_tree            Extract Phylogenetic Tree
+get_reference_seq       Extract Reference Sequences
+get_sample_data         Extract Sample Data
+get_sample_sums         Extract Sample Sums from Object
+get_tax_table           Extract Taxonomy Table
+gm_mean                 Calculate Geometric Mean
+load_graphml            Load GraphML Without 'id' Conflicts
+metadata_full           Metadata for Microbiome Samples
+my_custom_theme         Custom ggplot2 Theme with Consistent Aesthetics
+node_level_metrics      Compute and Visualize Node-Level Network
+                        Metrics
+norm.DESeq              DESeq Normalization with Pseudocount and
+                        Integer Conversion
+norm.Poisson            Poisson Normalization and Differential
+                        Abundance Function
+norm.QN                 Quantile Normalization (QN) for phyloseq object
+norm.TC                 TC Normalization (Total Count Scaling)
+norm.TMM                TMM Normalization (Trimmed Mean of M component)
+norm.UQ                 UQ Normalization (Upper Quartile)
+norm.clr                CLR Normalization (Centered Log-Ratio
+                        Transformation)
+norm.css                CSS Normalization (Cumulative Sum Scaling)
+norm.med                Median Normalization
+norm.rar                Rarefying
+norm.rle                RLE Normalization (Relative Log Expression)
+norm.tss                TSS Normalization (Total Sum Scaling)
+normalization_set       Apply the Selected Normalization Method to the
+                        Phyloseq and TSE Objects
+perform_and_visualize_DA
+                        Perform and Visualize Differential Abundance
+                        Analysis with edgeR or DESeq2
+physeq                  General Example Phyloseq Object
+physeq_16SOTU           Example Phyloseq Object for 16S OTUs
+physeq_ITSOTU           Example Phyloseq Object for ITS OTUs
+plot_core_microbiome_custom
+                        Plot Core Microbiome Prevalence Heatmap
+                        (Phyloseq & TSE Compatible)
+plot_spikein_tree_diagnostic
+                        Spike-in Tree Diagnostic Plot
+plotbar_abundance       Taxa Bar Plot Without Aggregation (Relative or
+                        Absolute Abundance)
+proportion_adj          Proportionally Adjust Abundance
+quadrant_plot           Generate Custom Quadrant Plots for Node Metrics
+random_subsample_WithReductionFactor
+                        Random Subsampling with Reduction Factor
+randomsubsample_Trimmed_evenDepth
+                        Subsampling to an Equal Sequencing Depth
+regression_plot         Create a Regression Plot with Faceting by Range
+relativized_filtered_taxa
+                        Filter Taxa from a Phyloseq or TSE Object Based
+                        on Custom Thresholds
+remove_zero_negative_count_samples
+                        Remove Samples with Zero, Negative Counts, or
+                        NA Values and Add Pseudocount
+ridge_plot_it           Generate Ridge Plots for Taxonomic Abundance
+                        Distribution
+set_nf                  Set Normalization Factors in the Sample Data of
+                        the Phyloseq Object
+simulate_network_robustness
+                        Simulate Network Robustness under Node Removal
+summ_ASV_OTUID          Summarize ASV Data Based on ASV_ID
+summ_count_phyloseq     Summary Statistics of a Phyloseq or TSE Object
+summ_phyloseq_sampleID
+                        Generate Summary Statistics for Each Sample
+taxa_barplot            Generate a Taxa Barplot with Relative or
+                        Absolute Abundance
+tidy_phyloseq_tse       Tidy a Phyloseq or TreeSummarizedExperiment
+                        Object
+tse                     Example TreeSummarizedExperiment (TSE) Object
+validate_spikein_clade
+                        Validate Spike-In Clade Consistency with NJ
+                        Tree and Bootstrap
+weight_Network          Analyze and Visualize a Microbial Network

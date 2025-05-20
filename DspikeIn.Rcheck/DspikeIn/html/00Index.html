@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Estimating Absolute Abundance from Microbial Spike-in Controls</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+<h1> Estimating Absolute Abundance from Microbial Spike-in Controls
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]" />
+</h1>
+<hr/>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
+</div><h2>Documentation for package &lsquo;DspikeIn&rsquo; version 0.99.2</h2>
+
+<ul><li><a href="../DESCRIPTION" type="text/plain; charset=utf-8">DESCRIPTION file</a>.</li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation.</a></li>
+<li><a href="../NEWS.md">Package NEWS</a>.</li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="AcceptableRange.html">AcceptableRange</a></td>
+<td>Acceptable Range Data</td></tr>
+<tr><td style="width: 25%;"><a href="adjusted_prevalence.html">adjusted_prevalence</a></td>
+<td>Adjust Prevalence in a Microbiome Object</td></tr>
+<tr><td style="width: 25%;"><a href="adjust_abundance_one_third.html">adjust_abundance_one_third</a></td>
+<td>Adjust Abundance by a Factor</td></tr>
+<tr><td style="width: 25%;"><a href="alluvial_plot.html">alluvial_plot</a></td>
+<td>Generate an Alluvial Plot for Microbiome Data</td></tr>
+<tr><td style="width: 25%;"><a href="calculate_list_average_scaling_factors.html">calculate_list_average_scaling_factors</a></td>
+<td>Calculate Sample-specific Average Scaling Factors for Multiple Spike-in Groups</td></tr>
+<tr><td style="width: 25%;"><a href="calculate_spikeIn_factors.html">calculate_spikeIn_factors</a></td>
+<td>Calculate Scaling Factors for Spiked Species in Phyloseq or TSE Object</td></tr>
+<tr><td style="width: 25%;"><a href="calculate_spike_percentage.html">calculate_spike_percentage</a></td>
+<td>Calculate Spike Percentage for Specified Taxa in a Phyloseq or TSE Object</td></tr>
+<tr><td style="width: 25%;"><a href="calculate_spike_percentage_list.html">calculate_spike_percentage_list</a></td>
+<td>Calculate Spike-in Percentage for Specified Taxa</td></tr>
+<tr><td style="width: 25%;"><a href="calculate_summary_stats_table.html">calculate_summary_stats_table</a></td>
+<td>Calculate Summary Statistics Table</td></tr>
+<tr><td style="width: 25%;"><a href="color_palette.html">color_palette</a></td>
+<td>Original, Extended, and Nature-Inspired Color Palette Sequence</td></tr>
+<tr><td style="width: 25%;"><a href="conclusion.html">conclusion</a></td>
+<td>Compute Summary Statistics for Spiked Species</td></tr>
+<tr><td style="width: 25%;"><a href="convert_categorical_to_factors.html">convert_categorical_to_factors</a></td>
+<td>Convert Categorical Columns to Factors in Sample Data</td></tr>
+<tr><td style="width: 25%;"><a href="convert_phyloseq_to_tse.html">convert_phyloseq_to_tse</a></td>
+<td>Convert a 'phyloseq' Object to a 'TreeSummarizedExperiment'</td></tr>
+<tr><td style="width: 25%;"><a href="convert_to_absolute_counts.html">convert_to_absolute_counts</a></td>
+<td>Convert Relative ASV/OTU Counts to Absolute Counts</td></tr>
+<tr><td style="width: 25%;"><a href="convert_tse_to_phyloseq.html">convert_tse_to_phyloseq</a></td>
+<td>Convert a 'TreeSummarizedExperiment' to a 'phyloseq' Object</td></tr>
+<tr><td style="width: 25%;"><a href="create_directory.html">create_directory</a></td>
+<td>Create a Directory and Optionally Set as Working Directory</td></tr>
+<tr><td style="width: 25%;"><a href="create_list.html">create_list</a></td>
+<td>Create a List from a Phyloseq or TSE Object</td></tr>
+<tr><td style="width: 25%;"><a href="degree_network.html">degree_network</a></td>
+<td>Analyze and Visualize a Microbial Network</td></tr>
+<tr><td style="width: 25%;"><a href="detect_common_asvs_taxa.html">detect_common_asvs_taxa</a></td>
+<td>Detect Common ASVs and Taxa from Multiple Phyloseq or TSE Objects</td></tr>
+<tr><td style="width: 25%;"><a href="extract_neighbors.html">extract_neighbors</a></td>
+<td>Extract First and Second Neighbors of a Target Node</td></tr>
+<tr><td style="width: 25%;"><a href="filter_and_split_abundance.html">filter_and_split_abundance</a></td>
+<td>Filter and Split Abundance Data by Threshold</td></tr>
+<tr><td style="width: 25%;"><a href="get_long_format_data.html">get_long_format_data</a></td>
+<td>Convert a Phyloseq or TSE Object into a Long-Format Data Frame</td></tr>
+<tr><td style="width: 25%;"><a href="get_otu_table.html">get_otu_table</a></td>
+<td>Extract OTU Tax Metadata from Object</td></tr>
+<tr><td style="width: 25%;"><a href="get_phy_tree.html">get_phy_tree</a></td>
+<td>Extract Phylogenetic Tree</td></tr>
+<tr><td style="width: 25%;"><a href="get_reference_seq.html">get_reference_seq</a></td>
+<td>Extract Reference Sequences</td></tr>
+<tr><td style="width: 25%;"><a href="get_sample_data.html">get_sample_data</a></td>
+<td>Extract Sample Data</td></tr>
+<tr><td style="width: 25%;"><a href="get_sample_sums.html">get_sample_sums</a></td>
+<td>Extract Sample Sums from Object</td></tr>
+<tr><td style="width: 25%;"><a href="get_tax_table.html">get_tax_table</a></td>
+<td>Extract Taxonomy Table</td></tr>
+<tr><td style="width: 25%;"><a href="gm_mean.html">gm_mean</a></td>
+<td>Calculate Geometric Mean</td></tr>
+<tr><td style="width: 25%;"><a href="load_graphml.html">load_graphml</a></td>
+<td>Load GraphML Without 'id' Conflicts</td></tr>
+<tr><td style="width: 25%;"><a href="metadata_full.html">metadata_full</a></td>
+<td>Metadata for Microbiome Samples</td></tr>
+<tr><td style="width: 25%;"><a href="MG_shapes.html">MG_shapes</a></td>
+<td>Predefined Shape Vector for Plot Styling</td></tr>
+<tr><td style="width: 25%;"><a href="my_custom_theme.html">my_custom_theme</a></td>
+<td>Custom ggplot2 Theme with Consistent Aesthetics</td></tr>
+<tr><td style="width: 25%;"><a href="node_level_metrics.html">node_level_metrics</a></td>
+<td>Compute and Visualize Node-Level Network Metrics</td></tr>
+<tr><td style="width: 25%;"><a href="norm.clr.html">norm.clr</a></td>
+<td>CLR Normalization (Centered Log-Ratio Transformation)</td></tr>
+<tr><td style="width: 25%;"><a href="norm.css.html">norm.css</a></td>
+<td>CSS Normalization (Cumulative Sum Scaling)</td></tr>
+<tr><td style="width: 25%;"><a href="norm.DESeq.html">norm.DESeq</a></td>
+<td>DESeq Normalization with Pseudocount and Integer Conversion</td></tr>
+<tr><td style="width: 25%;"><a href="norm.med.html">norm.med</a></td>
+<td>Median Normalization</td></tr>
+<tr><td style="width: 25%;"><a href="norm.Poisson.html">norm.Poisson</a></td>
+<td>Poisson Normalization and Differential Abundance Function</td></tr>
+<tr><td style="width: 25%;"><a href="norm.QN.html">norm.QN</a></td>
+<td>Quantile Normalization (QN) for phyloseq object</td></tr>
+<tr><td style="width: 25%;"><a href="norm.rar.html">norm.rar</a></td>
+<td>Rarefying</td></tr>
+<tr><td style="width: 25%;"><a href="norm.rle.html">norm.rle</a></td>
+<td>RLE Normalization (Relative Log Expression)</td></tr>
+<tr><td style="width: 25%;"><a href="norm.TC.html">norm.TC</a></td>
+<td>TC Normalization (Total Count Scaling)</td></tr>
+<tr><td style="width: 25%;"><a href="norm.TMM.html">norm.TMM</a></td>
+<td>TMM Normalization (Trimmed Mean of M component)</td></tr>
+<tr><td style="width: 25%;"><a href="norm.tss.html">norm.tss</a></td>
+<td>TSS Normalization (Total Sum Scaling)</td></tr>
+<tr><td style="width: 25%;"><a href="norm.UQ.html">norm.UQ</a></td>
+<td>UQ Normalization (Upper Quartile)</td></tr>
+<tr><td style="width: 25%;"><a href="normalization_set.html">normalization_set</a></td>
+<td>Apply the Selected Normalization Method to the Phyloseq and TSE Objects</td></tr>
+<tr><td style="width: 25%;"><a href="perform_and_visualize_DA.html">perform_and_visualize_DA</a></td>
+<td>Perform and Visualize Differential Abundance Analysis with edgeR or DESeq2</td></tr>
+<tr><td style="width: 25%;"><a href="physeq.html">physeq</a></td>
+<td>General Example Phyloseq Object</td></tr>
+<tr><td style="width: 25%;"><a href="physeq_16SOTU.html">physeq_16SOTU</a></td>
+<td>Example Phyloseq Object for 16S OTUs</td></tr>
+<tr><td style="width: 25%;"><a href="physeq_ITSOTU.html">physeq_ITSOTU</a></td>
+<td>Example Phyloseq Object for ITS OTUs</td></tr>
+<tr><td style="width: 25%;"><a href="plotbar_abundance.html">plotbar_abundance</a></td>
+<td>Taxa Bar Plot Without Aggregation (Relative or Absolute Abundance)</td></tr>
+<tr><td style="width: 25%;"><a href="plot_core_microbiome_custom.html">plot_core_microbiome_custom</a></td>
+<td>Plot Core Microbiome Prevalence Heatmap (Phyloseq &amp; TSE Compatible)</td></tr>
+<tr><td style="width: 25%;"><a href="plot_spikein_tree_diagnostic.html">plot_spikein_tree_diagnostic</a></td>
+<td>Spike-in Tree Diagnostic Plot</td></tr>
+<tr><td style="width: 25%;"><a href="Pre_processing_hashcodes.html">Pre_processing_hashcodes</a></td>
+<td>Pre-process phyloseq or TSE object based on hashcodes</td></tr>
+<tr><td style="width: 25%;"><a href="Pre_processing_species.html">Pre_processing_species</a></td>
+<td>Pre-process taxa in a phyloseq or TSE object by merging ASVs/OTUs</td></tr>
+<tr><td style="width: 25%;"><a href="Pre_processing_species_list.html">Pre_processing_species_list</a></td>
+<td>Preprocess and Merge Spike-in Species in a Phyloseq or TSE Object</td></tr>
+<tr><td style="width: 25%;"><a href="proportion_adj.html">proportion_adj</a></td>
+<td>Proportionally Adjust Abundance</td></tr>
+<tr><td style="width: 25%;"><a href="quadrant_plot.html">quadrant_plot</a></td>
+<td>Generate Custom Quadrant Plots for Node Metrics</td></tr>
+<tr><td style="width: 25%;"><a href="RandomForest_selected.html">RandomForest_selected</a></td>
+<td>Select Important ASVs/OTUs Using Random Forest</td></tr>
+<tr><td style="width: 25%;"><a href="randomsubsample_Trimmed_evenDepth.html">randomsubsample_Trimmed_evenDepth</a></td>
+<td>Subsampling to an Equal Sequencing Depth</td></tr>
+<tr><td style="width: 25%;"><a href="random_subsample_WithReductionFactor.html">random_subsample_WithReductionFactor</a></td>
+<td>Random Subsampling with Reduction Factor</td></tr>
+<tr><td style="width: 25%;"><a href="regression_plot.html">regression_plot</a></td>
+<td>Create a Regression Plot with Faceting by Range</td></tr>
+<tr><td style="width: 25%;"><a href="relativized_filtered_taxa.html">relativized_filtered_taxa</a></td>
+<td>Filter Taxa from a Phyloseq or TSE Object Based on Custom Thresholds</td></tr>
+<tr><td style="width: 25%;"><a href="remove_zero_negative_count_samples.html">remove_zero_negative_count_samples</a></td>
+<td>Remove Samples with Zero, Negative Counts, or NA Values and Add Pseudocount</td></tr>
+<tr><td style="width: 25%;"><a href="ridge_plot_it.html">ridge_plot_it</a></td>
+<td>Generate Ridge Plots for Taxonomic Abundance Distribution</td></tr>
+<tr><td style="width: 25%;"><a href="set_nf.html">set_nf</a></td>
+<td>Set Normalization Factors in the Sample Data of the Phyloseq Object</td></tr>
+<tr><td style="width: 25%;"><a href="simulate_network_robustness.html">simulate_network_robustness</a></td>
+<td>Simulate Network Robustness under Node Removal</td></tr>
+<tr><td style="width: 25%;"><a href="summ_ASV_OTUID.html">summ_ASV_OTUID</a></td>
+<td>Summarize ASV Data Based on ASV_ID</td></tr>
+<tr><td style="width: 25%;"><a href="summ_count_phyloseq.html">summ_count_phyloseq</a></td>
+<td>Summary Statistics of a Phyloseq or TSE Object</td></tr>
+<tr><td style="width: 25%;"><a href="summ_phyloseq_sampleID.html">summ_phyloseq_sampleID</a></td>
+<td>Generate Summary Statistics for Each Sample</td></tr>
+<tr><td style="width: 25%;"><a href="taxa_barplot.html">taxa_barplot</a></td>
+<td>Generate a Taxa Barplot with Relative or Absolute Abundance</td></tr>
+<tr><td style="width: 25%;"><a href="tidy_phyloseq_tse.html">tidy_phyloseq_tse</a></td>
+<td>Tidy a Phyloseq or TreeSummarizedExperiment Object</td></tr>
+<tr><td style="width: 25%;"><a href="tse.html">tse</a></td>
+<td>Example TreeSummarizedExperiment (TSE) Object</td></tr>
+<tr><td style="width: 25%;"><a href="validate_spikein_clade.html">validate_spikein_clade</a></td>
+<td>Validate Spike-In Clade Consistency with NJ Tree and Bootstrap</td></tr>
+<tr><td style="width: 25%;"><a href="weight_Network.html">weight_Network</a></td>
+<td>Analyze and Visualize a Microbial Network</td></tr>
+</table>
+</div></body></html>

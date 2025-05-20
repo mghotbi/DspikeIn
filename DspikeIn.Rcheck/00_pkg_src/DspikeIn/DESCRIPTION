@@ -1,0 +1,58 @@
+Package: DspikeIn
+Type: Package
+Title: Estimating Absolute Abundance from Microbial Spike-in Controls
+Version: 0.99.2
+Authors@R: 
+    c(
+        person(given = "Mitra", family = "Ghotbi", 
+               role = c("aut", "cre"), 
+               email = "mitra.ghotbi@gmail.com",
+               comment = c(ORCID = "0000-0001-9185-9993")),
+        person(given = "Marjan", family = "Ghotbi", 
+               role = "ctb",
+               email = "ghotbi.marjan@gmail.com",
+               comment = c(ORCID = "0000-0003-4655-6445"))
+    )
+Description: Provides a reproducible and modular workflow for absolute microbial 
+    quantification using spike-in controls. Supports both single spike-in taxa 
+    and synthetic microbial communities with user-defined spike-in volumes and 
+    genome copy numbers. Compatible with 'phyloseq' and 'TreeSummarizedExperiment' 
+    (TSE) data structures. The package implements methods for spike-in validation, 
+    preprocessing, scaling factor estimation, absolute abundance conversion, 
+    bias correction, and normalization. Facilitates downstream statistical 
+    analyses with 'DESeq2', 'edgeR', and other Bioconductor-compatible methods. 
+    Visualization tools are provided via 'ggplot2', 'ggtree', and related packages. 
+    Includes detailed vignettes, case studies, and function-level documentation 
+    to guide users through experimental design, quantification, and interpretation.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+LazyDataCompression: xz
+Depends: R (>= 4.5.0)
+Imports: ape, Biostrings, data.table, DECIPHER, DESeq2, dplyr, edgeR,
+        flextable, ggalluvial, ggnewscale, ggplot2, ggpubr, ggraph,
+        ggrepel, ggridges, ggtree, ggtreeExtra, graphics, grDevices,
+        igraph, limma, matrixStats, methods, microbiome, officer, grid,
+        reshape2, patchwork, phangorn, phyloseq, randomForest,
+        RColorBrewer, rlang, S4Vectors, scales, stats,
+        SummarizedExperiment, tibble, tidyr, TreeSummarizedExperiment,
+        utils, msa, xml2, ggstar
+Suggests: Biobase, BiocGenerics, magrittr, BiocManager, cluster,
+        devtools, DT, e1071, foreach, ggtext, intergraph, knitr,
+        optparse, plyr, preprocessCore, qpdf, remotes, rmarkdown,
+        ShortRead, testthat (>= 3.0.0), vegan, viridis
+biocViews: Microbiome, Preprocessing, QualityControl,
+        DifferentialExpression, Normalization, Sequencing,
+        Visualization, Phylogenetics, ExperimentalDesign, DataImport,
+        Software
+URL: https://github.com/mghotbi/DspikeIn
+BugReports: https://github.com/mghotbi/DspikeIn/issues
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+VignetteBuilder: knitr
+NeedsCompilation: no
+Packaged: 2025-05-20 20:08:25 UTC; mitraghotbi
+Author: Mitra Ghotbi [aut, cre] (ORCID:
+    <https://orcid.org/0000-0001-9185-9993>),
+  Marjan Ghotbi [ctb] (ORCID: <https://orcid.org/0000-0003-4655-6445>)
+Maintainer: Mitra Ghotbi <mitra.ghotbi@gmail.com>
