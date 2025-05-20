@@ -878,19 +878,17 @@ results_DESeq2_rel <- perform_and_visualize_DA(
 
 # select some levels
 contrast_named <- list(
-  Host.taxon = list(
-    c("Desmognathus adatsihi", "Desmognathus aeneus"),
-    c("Desmognathus adatsihi", "Desmognathus conanti"),
-    c("Desmognathus adatsihi", "Desmognathus imitator")
-  )
+  c("Desmognathus.adatsihi", "Desmognathus.imitator"),
+  c("Desmognathus.monticola", "Desmognathus.quadramaculatus"),
+  c("Desmognathus.ocoee", "Desmognathus.wrighti")
 )
 
 multi_lev_results <- perform_and_visualize_DA(
   obj = Desmog_Blue_Ins_16_rel,
   method = "DESeq2",
+  group_var = "Host.taxon",
   contrast = contrast_named,
   target_glom = "Genus",
-  global_fdr = TRUE,
   output_csv_path = "DA_multi.csv"
 )
 

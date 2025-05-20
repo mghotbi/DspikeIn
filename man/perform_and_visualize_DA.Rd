@@ -14,7 +14,7 @@ perform_and_visualize_DA(
   output_csv_path = NULL,
   target_glom = "Genus",
   palette = c("#FFEB3B", "#073B4C"),
-  global_fdr = FALSE
+  global_fdr = TRUE
 )
 }
 \arguments{
