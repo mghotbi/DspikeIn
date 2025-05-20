@@ -46,7 +46,7 @@
 #' @importFrom microbiome meta
 utils::globalVariables(c(
   ".data", "Taxon_Label", "total_abundance", "prevalence", "Metrics", "Value", "Label", "log_mean_abundance", "LR", "Genus", "lfcSE", "Degree", "prune_common_taxa", "reorder", "LFC_Direction", "read_spike_report", "Among_Module_Connectivity", "EigenvectorCentrality",
-  "Within_Module_Connectivity", "group", "eq.label", "tail", "PageRank", "Closeness", "Betweenness", "Community",
+  "Within_Module_Connectivity", "group","network_colors", "eq.label", "tail", "PageRank", "Closeness", "Betweenness", "Community",
   "Strength", "Local_Efficiency", "Coreness", "Redundancy", "get_refseq",
   "Constraint", "Efficiency", "Z_Score", "Significance", "format_common_data", "FDR", "contrast", "model.matrix", "convert_phyloseq_to_tse", "aggregateByTaxonomy", "agglomerateByRank", "group_var",
   "taxa_sums", "perform_edgeR", "perform_DESeq2", "diff_abn", "glom_taxa_at_rank", "Class", "..eq.label..", "..rr.label..", "..p.label..", "Sample", "Family", "Species",

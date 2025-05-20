@@ -21,3 +21,4 @@
 docs
 ^new$
 vignettes/.Rhistory
+.RData

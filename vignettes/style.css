@@ -1,84 +1,134 @@
-writeLines(
-/* General document styling */
-body {
-  font-family: "Arial", sans-serif;
-  font-size: 16px;  /* Larger base font */
-  line-height: 1.8; /* Better spacing */
-  background-color: #f9f9f9; /* Light gray background */
-  color: #333; /* Darker text for readability */
-  max-width: 95%;  /* Expand content width */
-  margin: auto; /* Center content */
+/* === Base Document === */
+body, .main-container {
+  max-width: 96%;
+  margin: auto;
+  font-family: "Segoe UI", "Arial", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #222;
+  background: linear-gradient(to right, #fdfbfb, #ebedee);
 }
 
-/* Headings */
+/* === Headings === */
 h1 {
-  color: #003366;
-  font-size: 28px; /* Bigger title */
-  font-weight: bold;
-  text-align: center; /* Center main title */
-  padding: 10px;
+  font-size: 34px;
+  color: #2a2f4a;
+  text-align: left;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  border-bottom: 3px solid #ff6f61;
+  padding-bottom: 10px;
 }
-
 h2 {
-  color: #005599;
-  font-size: 24px;
-  font-weight: bold;
-  padding: 8px;
+  font-size: 26px;
+  color: #3b6ea5;
+  border-bottom: 2px solid #ccc;
+  margin-top: 30px;
+  margin-bottom: 15px;
 }
-
 h3 {
-  color: #0077AA;
   font-size: 20px;
-  font-weight: bold;
-  padding: 5px;
+  color: #4e91c2;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
-/* Tables */
+/* === Paragraphs === */
+p {
+  margin-bottom: 1em;
+}
+
+/* === Figures === */
+img {
+  display: block;
+  margin: 20px auto;
+  max-width: 90%;
+  height: auto;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  border-radius: 6px;
+}
+
+/* === Code Blocks === */
+pre {
+  background: #f0f5fa;
+  border-left: 4px solid #3b6ea5;
+  padding: 12px;
+  overflow-x: auto;
+  font-size: 14px;
+  line-height: 1.4;
+  border-radius: 4px;
+}
+code {
+  background-color: #eef;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-family: Consolas, monospace;
+  color: #005;
+}
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+/* === Tables === */
 table {
+  width: 100%;
   border-collapse: collapse;
-  width: 100%; /* Expand tables */
-  background-color: #fff;
+  margin: 20px 0;
+  font-size: 15px;
 }
-
 th, td {
   border: 1px solid #ddd;
   padding: 10px;
+  text-align: left;
 }
-
 th {
-  background-color: #005599;
-  color: white;
+  background-color: #3b6ea5;
+  color: #fff;
+}
+td {
+  background-color: #fdfdfd;
 }
 
-/* Code Blocks */
-pre {
-  background-color: #f4f4f4;
-  border-left: 4px solid #005599;
-  padding: 10px;
-  overflow-x: auto;
-  font-size: 14px;
-}
-
-code {
-  background-color: #e8e8e8;
-  padding: 2px 5px;
+/* === Blockquotes === */
+blockquote {
+  border-left: 5px solid #ff6f61;
+  padding-left: 15px;
+  margin-left: 0;
+  color: #444;
+  font-style: italic;
+  background-color: #fff8f4;
+  padding: 10px 15px;
   border-radius: 4px;
 }
 
-/* Figure Styling */
-img, figure {
-  max-width: 90%; /* Prevent squeezing */
-  height: auto; /* Maintain aspect ratio */
-  display: block;
-  margin: auto; /* Center figures */
+/* === Table of Contents === */
+.tocify {
+  font-size: 14px;
+  background-color: #f4f6f8;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+}
+.tocify ul {
+  padding-left: 15px;
+}
+.tocify li a {
+  color: #3b6ea5;
+  text-decoration: none;
+}
+.tocify li a:hover {
+  color: #ff6f61;
 }
 
-/* Additional Formatting */
-blockquote {
-  font-style: italic;
-  color: #555;
-  border-left: 5px solid #005599;
-  padding-left: 10px;
-  margin-left: 20px;
+/* === Links === */
+a {
+  color: #3b6ea5;
+  text-decoration: none;
 }
-)
+a:hover {
+  color: #ff6f61;
+  text-decoration: underline;
+}

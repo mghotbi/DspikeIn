@@ -4,43 +4,34 @@ author: "Mitra Ghotbi"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
   rmarkdown::html_vignette:
+    css: style.css
     toc: true
     toc_depth: 3
     number_sections: true
     highlight: tango
     df_print: tibble
-    css: "style.css"
 vignette: >
   %\VignetteIndexEntry{Getting started with DspikeIn}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-
-
+  
 ---
 
+```{r setup, include = FALSE}
 
-```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  echo = TRUE,
-  message = FALSE,
-  warning = FALSE
+  fig.path = "figures/",        
+  dev = "png",                  
+  dpi = 300,                     
+  fig.width = 7,               
+  fig.height = 4,               
+  fig.align = "center",          
+  out.width = "70%",           
+  message = FALSE,              
+  warning = FALSE               
 )
-```
 
 
-
-```{r figure_setup, include=FALSE}
-knitr::opts_chunk$set(
-  fig.width = 8,
-  fig.height = 5,
-  fig.align = "center",
-  dpi = 300,
-  out.width = "60%",
-  cache = TRUE,
-  dev = "png"
-)
 ```
 
 
@@ -306,7 +297,7 @@ result <- validate_spikein_clade(
   output_prefix = NULL
 )
 
-result$tree_plot
+# result$tree_plot
 ```
 
 
@@ -344,14 +335,13 @@ ps <- plot_spikein_tree_diagnostic(
   output_prefix = "tetragenococcus_diag"
 )
 
-ps
 ```
 
 
 #                Pre_processing
 merges monophyletic ASVs/OTUs
 
-```{r}
+```{r, out.width="70%"}
 # merges monophyletic ASVs/OTUs
 
 # The function Pre_processing_species() merges ASVs/OTUs
@@ -436,9 +426,7 @@ Perc <- calculate_spike_percentage(
 ```
 
 
-
 #          Spiked species and related parameters for ITS
-
 
 
 ```{r, eval=FALSE}
@@ -626,7 +614,6 @@ plot_object <- regression_plot(
   plot_title = NULL
 )
 
-plot_object
 ```
 
 
@@ -670,7 +657,7 @@ passed_physeq <- phyloseq::prune_samples(passed_samples, absolute_abundance_16S_
 #  Abundance-based Core microbiome
 
 
-```{r}
+```{r, out.width="70%"}
 physeq_absolute <- absolute$obj_adj
 pps_Abs <- get_long_format_data(physeq_absolute)
 
@@ -692,7 +679,7 @@ alluvial_plot_abs <- alluvial_plot(
   custom_colors = DspikeIn::color_palette$light_MG # Use the color palette from DspikeIn
 )
 
-alluvial_plot_abs
+
 ```
 
 
@@ -797,7 +784,7 @@ scaling_factors_rle <- result_rle$scaling.factor
  Ridge plot
 
 
-```{r}
+```{r, out.width="50%"}
 rf_physeq <- RandomForest_selected(
   physeq_16SOTU,
   response_var = "Host.genus",
@@ -805,7 +792,7 @@ rf_physeq <- RandomForest_selected(
 )
 
 ridge_physeq <- ridge_plot_it(rf_physeq, taxrank = "Family", top_n = 10) + scale_fill_manual(values = DspikeIn::color_palette$cool_MG)
-ridge_physeq
+# ridge_physeq
 
 result_css <- normalization_set(rf_physeq, method = "css")
 normalized_ps_css <- result_css$dat.normed
@@ -842,8 +829,8 @@ results_DESeq2 <- perform_and_visualize_DA(
 
 head(results_DESeq2$results)
 results_DESeq2$obj_significant
-results_DESeq2$plot
-results_DESeq2$bar_plot
+# results_DESeq2$plot
+# results_DESeq2$bar_plot
 ```
 
 
@@ -907,9 +894,9 @@ multi_lev_results <- perform_and_visualize_DA(
   output_csv_path = "DA_multi.csv"
 )
 
-multi_lev_results$Host.taxon_Desmognathus.adatsihi_vs_Desmognathus.aeneus$bar_plot
-multi_lev_results$Host.taxon_Desmognathus.adatsihi_vs_Desmognathus.conanti$bar_plot
-multi_lev_results$Host.taxon_Desmognathus.adatsihi_vs_Desmognathus.imitator$bar_plot
+# multi_lev_results$Host.taxon_Desmognathus.adatsihi_vs_Desmognathus.aeneus$bar_plot
+# multi_lev_results$Host.taxon_Desmognathus.adatsihi_vs_Desmognathus.conanti$bar_plot
+# multi_lev_results$Host.taxon_Desmognathus.adatsihi_vs_Desmognathus.imitator$bar_plot
 ```
 
 
@@ -930,7 +917,7 @@ Prok_OTU_sal <- phyloseq::subset_samples(Prok_OTU_spiked, Animal.type == "Salama
 
 Prok_OTU_sal <- tidy_phyloseq_tse(Prok_OTU_sal)
 
-taxa_barplot(
+TB<-taxa_barplot(
   Prok_OTU_sal,
   target_glom = "Genus",
   custom_tax_names = NULL,
@@ -947,8 +934,8 @@ taxa_barplot(
   x_scale = "free",
   xlab = NULL
 )
-```
 
+```
 
 
 
@@ -989,8 +976,6 @@ result_kk <- degree_network(
 )
 # print(result_kk$plot)
 ```
-
-
 
 
 
@@ -1092,7 +1077,7 @@ comparisons <- list(
 networks_in_data <- unique(metrics_long_filtered$Network)
 comparisons <- comparisons[sapply(comparisons, function(pair) all(pair %in% networks_in_data))]
 
-ggplot(metrics_long_filtered, aes(x = Network, y = Value, fill = Network)) +
+met <- ggplot(metrics_long_filtered, aes(x = Network, y = Value, fill = Network)) +
   geom_boxplot(outlier.shape = NA) +
   geom_jitter(aes(color = Network),
     position = position_jitter(0.2), alpha = 0.2, size = 1.5
@@ -1166,7 +1151,7 @@ completeMetrics <- node_level_metrics(Complete)
 NoHubsMetrics <- node_level_metrics(NoHubs)
 NoBasidMetrics <- node_level_metrics(NoBasid)
 
-completeMetrics$facet_plot
+# completeMetrics$facet_plot
 
 # Ensure each dataset has a "Network" column before combining
 completeMetrics$metrics <- completeMetrics$metrics %>% mutate(Network = "Complete Network")
@@ -1197,16 +1182,16 @@ combined_data$Network <- factor(combined_data$Network, levels = c(
 metrics_long <- combined_data %>%
   pivot_longer(
     cols = c("Redundancy", "Efficiency", "Betweenness"),
-    names_to = "Metric", values_to = "Value"
-  )
+    names_to = "Metric", values_to = "Value")
+
 
 # Define Custom Colors and Shapes
-network_colors <- c(
+  network_colors <- c(
   "Complete Network" = "#F1E0C5",
   "Network & Module Hubs Removed" = "#D2A5A1",
   "Basidiobolus Subnetwork Removed" = "#B2C3A8"
 )
-
+  
 network_shapes <- c(
   "Complete Network" = 21,
   "Network & Module Hubs Removed" = 22,
@@ -1281,8 +1266,8 @@ plot_betweenness <- create_metric_plot("Betweenness", metrics_long, "Betweenness
 # Options: `"stress"` (default), `"graphopt"`, `"fr"`
 
 result <- degree_network(graph_path = Complete, save_metrics = TRUE)
-print(result$metrics)
-print(result$plot)
+# print(result$metrics)
+# print(result$plot)
 
 
 # Compute network weights for different graph structures
@@ -1309,7 +1294,7 @@ df_bar <- df %>%
   summarise(Total_Value = sum(Value), .groups = "drop")
 
 # Plot the metrics comparison
-ggplot(df_bar, aes(x = Metric, y = log1p(Total_Value), fill = Group)) +
+pg<-ggplot(df_bar, aes(x = Metric, y = log1p(Total_Value), fill = Group)) +
   geom_bar(stat = "identity", position = "dodge", alpha = 0.8) +
   theme_minimal(base_size = 14) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +

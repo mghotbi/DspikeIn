@@ -34,18 +34,17 @@ Extracts the first and second neighbors of a given target node in an \code{igrap
 Users can provide either an \code{igraph} object or a GraphML file path (internal or external).
 }
 \examples{
-if (requireNamespace("DspikeIn", quietly = TRUE)) {
-  Complete <- load_graphml("Complete.graphml")
+# Load the built-in Complete graph
+complete_graph <- load_graphml("Complete.graphml")
+result1 <- extract_neighbors(
+  graph = complete_graph,
+  target_node = "OTU69:Basidiobolus_sp"
+)
+print(result1$summary)
 
-  # Extract neighbors of a specific node from the loaded GraphML file
-  result1 <- extract_neighbors(graph = Complete, target_node = "OTU69:Basidiobolus_sp")
-  print(result1$summary)
 
-  # for an **external** GraphML file (enter full address please)
-  # Use an already loaded igraph object
-  Nohubs <- load_graphml("Nohubs.graphml")
-  result3 <- extract_neighbors(graph = Nohubs, target_node = "OTU1:Lilapila_jurana")
-  print(result3$summary)
-}
+# Load from an external GraphML file (ensure the file path is correct)
+# external_graph <- load_graphml("~/custom_network.graphml")
+# extract_neighbors(external_graph, target_node = "SomeNode")
 
 }

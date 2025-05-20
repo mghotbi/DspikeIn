@@ -3,3 +3,4 @@
 ^pkgdown$
 ^dev$
 ^LICENSE\.md$
+^vignettes/figures$
