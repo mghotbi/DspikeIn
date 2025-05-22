@@ -1,7 +1,7 @@
 ## Welcome to the DspikeIn R package repository!
 
 **Author:** Mitra Ghotbi  
-**Version:** v0.99.3  
+**Version:** 0.99.3  
 **Date:** March 8, 2025  
 
 
