@@ -1,7 +1,7 @@
 Package: DspikeIn
 Type: Package
 Title: Estimating Absolute Abundance from Microbial Spike-in Controls
-Version: 0.99.2
+Version: 0.99.3
 Authors@R: 
     c(
         person(given = "Mitra", family = "Ghotbi", 
@@ -29,7 +29,7 @@ Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz
 Depends: 
-    R (>= 4.5.0)
+    R (>= 4.1.0)
 Imports:
     ape,
     Biostrings,
