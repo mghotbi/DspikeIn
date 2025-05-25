@@ -10,8 +10,8 @@ Based on public API usage of randomForest and phyloseq packages.
 RandomForest_selected(
   physeq,
   response_var,
-  minlib = 15000,
-  prunescale = 1e-04,
+  minlib = 5000,
+  prunescale = 1e-05,
   ntree = 100,
   n_top_predictors = 100,
   output_csv = NULL,
@@ -51,9 +51,13 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
 
   # Perform Random Forest feature selection
   rf_physeq <- RandomForest_selected(
-    physeq_16SOTU,
-    response_var = "Host.genus",
-    na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet")
+   physeq_16SOTU,
+   prunescale = 0.00001 ,  
+   minlib = 5000,
+   ntree = 30,
+   n_top_predictors = 30,
+   response_var = "Host.genus",
+   na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet")
   )
 
   # Load TreeSummarizedExperiment (TSE) object
