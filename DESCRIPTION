@@ -1,7 +1,7 @@
 Package: DspikeIn
 Type: Package
 Title: Estimating Absolute Abundance from Microbial Spike-in Controls
-Version: 0.99.6
+Version: 0.99.7
 Authors@R: 
     c(
         person(given = "Mitra", family = "Ghotbi", 
