@@ -1,4 +1,4 @@
-# DspikeIn 0.99.1
+# DspikeIn 0.99.6
 
 ## Changes
 
