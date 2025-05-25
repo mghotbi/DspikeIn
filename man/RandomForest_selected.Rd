@@ -10,8 +10,8 @@ Based on public API usage of randomForest and phyloseq packages.
 RandomForest_selected(
   physeq,
   response_var,
-  minlib = 15000,
-  prunescale = 1e-04,
+  minlib = 5000,
+  prunescale = 1e-05,
   ntree = 100,
   n_top_predictors = 100,
   output_csv = NULL,
@@ -55,7 +55,25 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
     response_var = "Host.genus",
     na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet")
   )
-
+  # Less aggressive pruning (retain rare taxa)
+  rf_physeq_relaxed <- RandomForest_selected(
+    physeq_16SOTU,
+    response_var = "Host.genus",
+    minlib = 5000,
+    prunescale = 0.00001,
+    na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet")
+  )
+  
+  rf_physeq_strict <- RandomForest_selected(
+    physeq_16SOTU,
+    response_var = "Host.genus",
+    minlib = 20000,
+    prunescale = 0.0002,
+    ntree = 200,
+    n_top_predictors = 30,
+    na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet")
+  )
+  
   # Load TreeSummarizedExperiment (TSE) object
   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 
