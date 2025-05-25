@@ -56,8 +56,8 @@
 #' if (requireNamespace("phyloseq", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
 #'
-#'   # Single contrast (DESeq2)
-#'   res_single <- perform_and_visualize_DA(
+#'   # Fast example — keep this one runnable for Bioconductor checks
+#'   perform_and_visualize_DA(
 #'     obj = physeq_16SOTU,
 #'     method = "DESeq2",
 #'     group_var = "Diet",
@@ -65,66 +65,66 @@
 #'     target_glom = "Genus"
 #'   )
 #'
-#'   # Multiple contrasts for one group_var
-#'   contrast_list <- list(
-#'     c("Insectivore", "Carnivore"),
-#'     c("Omnivore", "Herbivore")
-#'   )
-#'
-#'   res_multi <- perform_and_visualize_DA(
-#'     obj = physeq_16SOTU,
-#'     method = "DESeq2",
-#'     group_var = "Diet",
-#'     contrast = contrast_list,
-#'     global_fdr = TRUE
-#'   )
-#'
-#'   # Named contrast list for multiple group_vars
-#'   contrast_named <- list(
-#'     Diet = list(
+#'   \dontrun{
+#'     # Multiple contrasts for one group_var
+#'     contrast_list <- list(
 #'       c("Insectivore", "Carnivore"),
-#'       c("Omnivore", "Carnivore")
-#'     ),
-#'     Animal.type = list(
-#'       c("Frog", "Salamander")
+#'       c("Omnivore", "Herbivore")
 #'     )
-#'   )
+#'     res_multi <- perform_and_visualize_DA(
+#'       obj = physeq_16SOTU,
+#'       method = "DESeq2",
+#'       group_var = "Diet",
+#'       contrast = contrast_list,
+#'       global_fdr = TRUE
+#'     )
 #'
-#'   res_multi_factor <- perform_and_visualize_DA(
-#'     obj = physeq_16SOTU,
-#'     method = "DESeq2",
-#'     significance_level = 0.01,
-#'     contrast = contrast_named,
-#'     target_glom = "Genus",
-#'     global_fdr = TRUE
-#'   )
+#'     # Named contrast list for multiple group_vars
+#'     contrast_named <- list(
+#'       Diet = list(
+#'         c("Insectivore", "Carnivore"),
+#'         c("Omnivore", "Carnivore")
+#'       ),
+#'       Animal.type = list(
+#'         c("Frog", "Salamander")
+#'       )
+#'     )
+#'     res_multi_factor <- perform_and_visualize_DA(
+#'       obj = physeq_16SOTU,
+#'       method = "DESeq2",
+#'       significance_level = 0.01,
+#'       contrast = contrast_named,
+#'       target_glom = "Genus",
+#'       global_fdr = TRUE
+#'     )
 #'
-#'   # Create a combined factor of Animal.type and Diet
-#'   phyloseq::sample_data(physeq_16SOTU)$ComboGroup <- factor(interaction(
-#'     phyloseq::sample_data(physeq_16SOTU)$Animal.type,
-#'     phyloseq::sample_data(physeq_16SOTU)$Diet,
-#'     drop = TRUE
-#'   ))
+#'     # Create a combined factor of Animal.type and Diet
+#'     phyloseq::sample_data(physeq_16SOTU)$ComboGroup <- factor(interaction(
+#'       phyloseq::sample_data(physeq_16SOTU)$Animal.type,
+#'       phyloseq::sample_data(physeq_16SOTU)$Diet,
+#'       drop = TRUE
+#'     ))
 #'
-#'   # Define valid contrasts with sufficient sample sizes
-#'   contrast_list <- list(
-#'     c("Salamander.Insectivore", "Lizard.Insectivore"),
-#'     c("Salamander.Carnivore", "Snake.Carnivore"),
-#'     c("Salamander.Carnivore", "Frog.Carnivore")
-#'   )
+#'     # Define valid contrasts with sufficient sample sizes
+#'     contrast_list <- list(
+#'       c("Salamander.Insectivore", "Lizard.Insectivore"),
+#'       c("Salamander.Carnivore", "Snake.Carnivore"),
+#'       c("Salamander.Carnivore", "Frog.Carnivore")
+#'     )
 #'
-#'   # Perform multi-contrast DA analysis on the ComboGroup
-#'   res_combo <- perform_and_visualize_DA(
-#'     obj = physeq_16SOTU,
-#'     method = "DESeq2",
-#'     group_var = "ComboGroup",
-#'     contrast = contrast_list,
-#'     target_glom = "Genus",
-#'     global_fdr = TRUE
-#'   )
+#'     # Perform multi-contrast DA analysis on the ComboGroup
+#'     res_combo <- perform_and_visualize_DA(
+#'       obj = physeq_16SOTU,
+#'       method = "DESeq2",
+#'       group_var = "ComboGroup",
+#'       contrast = contrast_list,
+#'       target_glom = "Genus",
+#'       global_fdr = TRUE
+#'     )
 #'
-#'   # Example: view one of the plots
-#'   res_combo$Frog.Insectivore_vs_Lizard.Insectivore$bar_plot
+#'     # Example: view one of the plots
+#'     res_combo$Frog.Insectivore_vs_Lizard.Insectivore$bar_plot
+#'   }
 #' }
 #'
 #' @export

@@ -17,3 +17,17 @@ A phyloseq object with updated sample data.
 \description{
 Set Normalization Factors in the Sample Data of the Phyloseq Object
 }
+\examples{
+if (requireNamespace("phyloseq", quietly = TRUE)) {
+  data("physeq_ITSOTU", package = "DspikeIn")
+
+  # Create normalization factors (e.g., all ones)
+  nf <- rep(1, phyloseq::nsamples(physeq_ITSOTU))
+
+  # Apply normalization factors
+  physeq_ITSOTU <- DspikeIn::set_nf(physeq_ITSOTU, scaling.factor = nf)
+
+  # Check the updated sample data
+  head(phyloseq::sample_data(physeq_ITSOTU)$norm_factors)
+}
+}

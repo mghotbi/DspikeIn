@@ -38,6 +38,19 @@ gm_mean <- function(x, na.rm = TRUE) {
 #' @param obj A `phyloseq` or `TreeSummarizedExperiment` object containing microbial data.
 #' @param scaling.factor A vector of normalization factors.
 #' @return A phyloseq object with updated sample data.
+#' @examples
+#' if (requireNamespace("phyloseq", quietly = TRUE)) {
+#'   data("physeq_ITSOTU", package = "DspikeIn")
+#'
+#'   # Create normalization factors (e.g., all ones)
+#'   nf <- rep(1, phyloseq::nsamples(physeq_ITSOTU))
+#'
+#'   # Apply normalization factors
+#'   physeq_ITSOTU <- DspikeIn::set_nf(physeq_ITSOTU, scaling.factor = nf)
+#'
+#'   # Check the updated sample data
+#'   head(phyloseq::sample_data(physeq_ITSOTU)$norm_factors)
+#' }
 #' @export
 set_nf <- function(obj, scaling.factor) {
   if (!inherits(obj, c("phyloseq", "TreeSummarizedExperiment"))) {

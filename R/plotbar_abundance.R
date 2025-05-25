@@ -27,6 +27,7 @@
 #' @importFrom dplyr filter
 #'
 #' @examples
+#' \dontrun{
 #' # Load required package
 #' if (requireNamespace("phyloseq", quietly = TRUE)) {
 #'
@@ -58,6 +59,7 @@
 #'     x_scale = "free",
 #'     xlab = NULL
 #'   )
+#' }
 #' }
 #'
 #' @export

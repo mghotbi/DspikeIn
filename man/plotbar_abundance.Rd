@@ -55,6 +55,7 @@ Create a bar plot of relative or absolute abundances of microbial taxa
 \strong{without using taxonomic glomming} (\code{tax_glom}). Works on raw or normalized data.
 }
 \examples{
+\dontrun{
 # Load required package
 if (requireNamespace("phyloseq", quietly = TRUE)) {
 
@@ -86,6 +87,7 @@ if (requireNamespace("phyloseq", quietly = TRUE)) {
     x_scale = "free",
     xlab = NULL
   )
+}
 }
 
 }
