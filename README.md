@@ -86,6 +86,10 @@ Or
 Or view the vignettes here:
 [Markdown Vignette](https://drive.google.com/file/d/1a3tD98bVN--L34V5nT5X6d9aCpi8MLVL/view?usp=sharing) | [PDF Vignette](https://drive.google.com/file/d/1UYUbTReCMlKCtu5mEtmG31d0YqeUkDAr/view?usp=sharing)
 
+[![PDF Vignette](https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg)](https://drive.google.com/file/d/1a3tD98bVN--L34V5nT5X6d9aCpi8MLVL/view?usp=sharing)
+[![Markdown Vignette](https://upload.wikimedia.org/wikipedia/commons/4/48/Markdown-mark.svg)](https://drive.google.com/file/d/1UYUbTReCMlKCtu5mEtmG31d0YqeUkDAr/view?usp=sharing)
+
+
 ### Data availability
 The DspikeIn package provides example datasets located in the data/ folder and inst/extdata/ folder. You can list the available datasets using the following commands:
 
