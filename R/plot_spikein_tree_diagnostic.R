@@ -23,10 +23,11 @@
 #' @importFrom phyloseq psmelt phy_tree sample_data
 #' @importFrom dplyr group_by summarise ungroup distinct
 #' @importFrom ggplot2 aes theme ggsave scale_fill_manual scale_alpha_continuous scale_size_continuous scale_fill_gradient
+#' @importFrom ggplot2 geom_tile geom_bar
 #' @importFrom ggtree ggtree theme_tree2 geom_tiplab geom_text2
 #' @importFrom ggtreeExtra geom_fruit
 #' @importFrom ggnewscale new_scale_fill
-#' @importFrom ggstar geom_star
+#' @importFrom ggstar geom_star 
 #' @examples
 #' \dontrun{
 #' if (
@@ -36,6 +37,7 @@
 #'     requireNamespace("ggplot2", quietly = TRUE) &&
 #'     requireNamespace("ggtree", quietly = TRUE) &&
 #'     requireNamespace("ggtreeExtra", quietly = TRUE) &&
+#'     requireNamespace("ggstar", quietly = TRUE) &&
 #'     requireNamespace("ggnewscale", quietly = TRUE)
 #' ) {
 #'   # Load synthetic test dataset from DspikeIn
@@ -109,7 +111,8 @@ plot_spikein_tree_diagnostic <- function(obj,
 
   # --- Prevalence (Star) ---
   star_geom <- ggstar::geom_star
-
+  tile_geom <- ggplot2::geom_tile
+  
   p <- p + ggnewscale::new_scale_fill() +
     ggtreeExtra::geom_fruit(
       data = df_summary,
