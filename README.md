@@ -1,8 +1,7 @@
 ## Welcome to the DspikeIn R package repository!
 
 **Author:** Mitra Ghotbi  
-**Version:** 0.99.4  
-**Date:** March 8, 2025  
+
 
 
 
@@ -81,6 +80,14 @@ The DspikeIn package provides functions for:
 browseVignettes("DspikeIn")
 
 ```
+Or
+
+Or view the vignettes here:
+[Markdown Vignette](https://drive.google.com/file/d/1a3tD98bVN--L34V5nT5X6d9aCpi8MLVL/view?usp=sharing) | [PDF Vignette](https://drive.google.com/file/d/1UYUbTReCMlKCtu5mEtmG31d0YqeUkDAr/view?usp=sharing)
+
+
+
+
 ### Data availability
 The DspikeIn package provides example datasets located in the data/ folder and inst/extdata/ folder. You can list the available datasets using the following commands:
 
@@ -244,10 +251,20 @@ browseVignettes("DspikeIn")
 
 ## Acknowledgement
 
+The development of the **DspikeIn** full pipeline was made possible through the generous and pioneering efforts of the R and Bioconductor communities. We gratefully acknowledge the developers and maintainers of the following open-source packages, whose tools and infrastructure underpin our work:
+**Core infrastructure & data manipulation:**
+methods, stats, utils, graphics, grDevices, data.table, dplyr, tibble, tidyr, reshape2, matrixStats, rlang, S4Vectors, grid, officer, xml2
+**Statistical analysis & modeling:**
+DESeq2, edgeR, limma, randomForest, microbiome
+**Phylogenetics & microbiome structure:**
+phyloseq, TreeSummarizedExperiment, SummarizedExperiment, phangorn, ape, DECIPHER, msa, Biostrings
+**Network and graph analysis:**
+igraph, ggraph
+**Visualization & layout design:**
+ggplot2, ggrepel, ggpubr, ggnewscale, ggalluvial, ggtree, ggtreeExtra, ggstar, ggridges, patchwork, scales, RColorBrewer, flextable
 
-The development of the **DspikeIn** package was made possible through the invaluable contributions of the **R** community, including developers of both **Bioconductor** and **CRAN** packages. We are especially grateful for tools such as **phyloseq**, DESeq2, edgeR, ggplot2, ggtree, TreeSummarizedExperiment, vegan, ggtreeExtra, and many others that support the analysis and visualization of microbiome data.
-
-We also acknowledge the broader scientific community working on **absolute microbial quantification** and **compositional data analysis**, whose pioneering research inspired the design of **DspikeIn**.
+These tools collectively empowered us to build a reproducible, modular, and extensible platform for robust absolute abundance quantification in microbial community analysis.
+We further acknowledge the broader scientific community working on absolute microbial quantification, spike-in calibration, and compositional data analysis, whose foundational insights directly informed the design and conceptual framework of DspikeIn.
 
 **Special thanks to the [Herptile Microbiome Team](https://herptilemicrobiomes.org/research/)** for their collaborative support and contributions to this work.
 
