@@ -1,0 +1,134 @@
+/* === Base Document === */
+body, .main-container {
+  max-width: 96%;
+  margin: auto;
+  font-family: "Segoe UI", "Arial", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #222;
+  background: linear-gradient(to right, #fdfbfb, #ebedee);
+}
+
+/* === Headings === */
+h1 {
+  font-size: 34px;
+  color: #2a2f4a;
+  text-align: left;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  border-bottom: 3px solid #ff6f61;
+  padding-bottom: 10px;
+}
+h2 {
+  font-size: 26px;
+  color: #3b6ea5;
+  border-bottom: 2px solid #ccc;
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+h3 {
+  font-size: 20px;
+  color: #4e91c2;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+/* === Paragraphs === */
+p {
+  margin-bottom: 1em;
+}
+
+/* === Figures === */
+img {
+  display: block;
+  margin: 20px auto;
+  max-width: 90%;
+  height: auto;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  border-radius: 6px;
+}
+
+/* === Code Blocks === */
+pre {
+  background: #f0f5fa;
+  border-left: 4px solid #3b6ea5;
+  padding: 12px;
+  overflow-x: auto;
+  font-size: 14px;
+  line-height: 1.4;
+  border-radius: 4px;
+}
+code {
+  background-color: #eef;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-family: Consolas, monospace;
+  color: #005;
+}
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+/* === Tables === */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 15px;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+th {
+  background-color: #3b6ea5;
+  color: #fff;
+}
+td {
+  background-color: #fdfdfd;
+}
+
+/* === Blockquotes === */
+blockquote {
+  border-left: 5px solid #ff6f61;
+  padding-left: 15px;
+  margin-left: 0;
+  color: #444;
+  font-style: italic;
+  background-color: #fff8f4;
+  padding: 10px 15px;
+  border-radius: 4px;
+}
+
+/* === Table of Contents === */
+.tocify {
+  font-size: 14px;
+  background-color: #f4f6f8;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+}
+.tocify ul {
+  padding-left: 15px;
+}
+.tocify li a {
+  color: #3b6ea5;
+  text-decoration: none;
+}
+.tocify li a:hover {
+  color: #ff6f61;
+}
+
+/* === Links === */
+a {
+  color: #3b6ea5;
+  text-decoration: none;
+}
+a:hover {
+  color: #ff6f61;
+  text-decoration: underline;
+}
