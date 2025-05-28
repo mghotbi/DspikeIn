@@ -4,6 +4,8 @@
 #' @return A matrix containing OTU count data.
 #' @importFrom phyloseq otu_table
 #' @importFrom SummarizedExperiment assay
+#' @details This is a thin wrapper that unifies access to `assay()` (for TreeSummarizedExperiment) and `otu_table()` (for phyloseq) into a single function for format-agnostic use.
+#' @seealso \code{\link[phyloseq]{otu_table}}, \code{\link[SummarizedExperiment]{assay}}
 #' @export
 get_otu_table <- function(obj) {
   if (inherits(obj, "phyloseq")) {
@@ -21,6 +23,9 @@ get_otu_table <- function(obj) {
 #' @return A data frame containing taxonomy annotations.
 #' @importFrom phyloseq tax_table
 #' @importFrom SummarizedExperiment rowData
+#' @details This is a thin wrapper around `rowData()` or `tax_table()` to ensure compatibility across data structures.
+#' @seealso \code{\link[phyloseq]{tax_table}}, \code{\link[SummarizedExperiment]{rowData}}
+
 #' @export
 get_tax_table <- function(obj) {
   if (inherits(obj, "phyloseq")) {
@@ -39,6 +44,8 @@ get_tax_table <- function(obj) {
 #' @importFrom phyloseq sample_data
 #' @importFrom microbiome meta
 #' @importFrom SummarizedExperiment colData
+#' @details Thin wrapper over `colData()` or `sample_data()` for unified metadata access across formats.
+#' @seealso \code{\link[phyloseq]{sample_data}}, \code{\link[SummarizedExperiment]{colData}}, \code{\link[microbiome]{meta}}
 #' @export
 get_sample_data <- function(obj) {
   if (inherits(obj, "phyloseq")) {
@@ -56,6 +63,8 @@ get_sample_data <- function(obj) {
 #' @return A phylogenetic tree object.
 #' @importFrom phyloseq phy_tree
 #' @importFrom TreeSummarizedExperiment rowTree
+#' @details This function wraps `phy_tree()` and `rowTree()` for compatibility with both frameworks.
+#' @seealso \code{\link[phyloseq]{phy_tree}}, \code{\link[TreeSummarizedExperiment]{rowTree}}
 #' @export
 get_phy_tree <- function(obj) {
   if (inherits(obj, "phyloseq")) {
@@ -80,6 +89,8 @@ get_phy_tree <- function(obj) {
 #' @return A `DNAStringSet` object containing the reference sequences.
 #' @importFrom phyloseq refseq
 #' @importFrom S4Vectors metadata
+#' @details Thin wrapper around `refseq()` or `metadata(obj)$refseq` for unified sequence retrieval.
+#' @seealso \code{\link[phyloseq]{refseq}}, \code{\link[S4Vectors]{metadata}}
 #' @export
 get_reference_seq <- function(obj) {
   if (inherits(obj, "phyloseq")) {

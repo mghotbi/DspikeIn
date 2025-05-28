@@ -15,3 +15,9 @@ A data frame with sample metadata.
 \description{
 Retrieves the sample metadata.
 }
+\details{
+Thin wrapper over \code{colData()} or \code{sample_data()} for unified metadata access across formats.
+}
+\seealso{
+\code{\link[phyloseq]{sample_data}}, \code{\link[SummarizedExperiment]{colData}}, \code{\link[microbiome]{meta}}
+}

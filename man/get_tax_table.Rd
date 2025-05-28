@@ -15,3 +15,9 @@ A data frame containing taxonomy annotations.
 \description{
 Retrieves the taxonomy table from an object.
 }
+\details{
+This is a thin wrapper around \code{rowData()} or \code{tax_table()} to ensure compatibility across data structures.
+}
+\seealso{
+\code{\link[phyloseq]{tax_table}}, \code{\link[SummarizedExperiment]{rowData}}
+}

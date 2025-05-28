@@ -1,21 +1,23 @@
 ---
 title: "Getting started with DspikeIn"
 author: "Mitra Ghotbi"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
+date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
-    css: style.css
     toc: true
     toc_depth: 3
     number_sections: true
     highlight: tango
     df_print: tibble
+    fontsize: 11pt
+mainfont: "Arial"
+geometry: margin=1in
 vignette: >
   %\VignetteIndexEntry{Getting started with DspikeIn}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-  
 ---
+
 
 ```{r setup, include = FALSE}
 
@@ -39,9 +41,8 @@ knitr::opts_chunk$set(
 
 
 ```{r, eval=FALSE}
-# ============================================================================
+
 #                         INSTALL CRAN PACKAGES
-# ============================================================================
 
 # Install missing CRAN packages
 install.packages(setdiff(
@@ -63,9 +64,9 @@ lapply(c(
   "xml2", "data.table", "reshape2", "vegan", "patchwork", "officer"
 ), library, character.only = TRUE)
 
-# ============================================================================
+
 #                         INSTALL BIOCONDUCTOR PACKAGES
-# ============================================================================
+
 
 # Install BiocManager if not installed
 if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
@@ -90,9 +91,9 @@ lapply(
   character.only = TRUE
 )
 
-# ============================================================================
+
 #                         INSTALL DspikeIn FROM GITHUB
-# ============================================================================
+
 
 # To access the DspikeIn vignette for a detailed tutorial, use vignette("DspikeIn"), or browse all available vignettes with browseVignettes("DspikeIn").
 devtools::install_github("mghotbi/DspikeIn", build_vignettes = TRUE, dependencies = TRUE)
@@ -115,7 +116,21 @@ if ("DspikeIn" %in% installed.packages()[, "Package"]) {
 
 
 #    Acknowledgments
-The development of the DspikeIn package was made possible through the invaluable contributions of the R and Bioconductor communities, whose open-source tools provided the foundation for this work. We are especially grateful to the developers of phyloseq, DESeq2, edgeR, ggplot2, ggtree, TreeSummarizedExperiment,vegan, ggtreeExtra and other essential packages that enable robust analysis and visualization of microbiome data. We further acknowledge the broader scientific community working on absolute microbial quantification and compositional data analysis, whose pioneering research inspired the design of DspikeIn.
+The development of the DspikeIn package was made possible through the generous and pioneering efforts of the R and Bioconductor communities. We gratefully acknowledge the developers and maintainers of the following open-source packages, whose tools and infrastructure underpin our work:
+**Core infrastructure & data manipulation:**
+methods, stats, utils, graphics, grDevices, data.table, dplyr, tibble, tidyr, reshape2, matrixStats, rlang, S4Vectors, grid, officer, xml2
+**Statistical analysis & modeling:**
+DESeq2, edgeR, limma, randomForest, microbiome
+**Phylogenetics & microbiome structure:**
+phyloseq, TreeSummarizedExperiment, SummarizedExperiment, phangorn, ape, DECIPHER, msa, Biostrings
+**Network and graph analysis:**
+igraph, ggraph
+**Visualization & layout design:**
+ggplot2, ggrepel, ggpubr, ggnewscale, ggalluvial, ggtree, ggtreeExtra, ggstar, ggridges, patchwork, scales, RColorBrewer, flextable
+
+These tools collectively empowered us to build a reproducible, modular, and extensible platform for robust absolute abundance quantification in microbial community analysis.
+We further acknowledge the broader scientific community working on absolute microbial quantification, spike-in calibration, and compositional data analysis, whose foundational insights directly informed the design and conceptual framework of DspikeIn.
+
 
 
 #     DspikeIn
@@ -127,9 +142,9 @@ DspikeIn works with 7 taxonomic ranks
 
 
 ```{r, eval=FALSE}
-# =====================================================================
+
 #             To remove strain from the taxonomic ranks
-# =====================================================================
+
 # DspikeIn works with 7 taxonomic ranks
 # colnames(taxmat) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
 
@@ -159,9 +174,9 @@ tax_table(ps) <- cleaned_taxonomy
 print(head(tax_table(ps))) # Display the first few rows
 
 
-# =====================================================================
+
 #             To add species rank to the taxonomic ranks
-# =====================================================================
+
 
 library(phyloseq)
 
@@ -187,9 +202,10 @@ https://github.com/markrobinsonuzh/TreeSummarizedExperiment
 
 
 ```{r, eval=FALSE}
-# =====================================================================
+
 #                     Build phyloseq
-# =====================================================================
+
+
 otu <- read.csv("otu.csv", header = TRUE, sep = ",", row.names = 1)
 # taxonomic rank need to be capilalized, only the first letter of each rank
 tax <- read.csv("tax.csv", header = TRUE, sep = ",", row.names = 1)
@@ -221,9 +237,9 @@ saveRDS(physeq_16SOTU, file = "physeq_16SOTU.rds")
 physeq_16SOTU <- readRDS("physeq_16SOTU.rds")
 
 
-# =====================================================================
+
 #                       Build TreeSummarizedExperiment (TSE)
-# =====================================================================
+
 
 otu <- read.csv("otu.csv", header = TRUE, sep = ",", row.names = 1)
 otu_mat <- as.matrix(otu) # Convert to matrix
@@ -294,8 +310,7 @@ result <- validate_spikein_clade(
   reference_fasta = ref_fasta,
   sample_fasta = sample_fasta,
   bootstrap = 200,
-  output_prefix = NULL
-)
+  output_prefix = NULL)
 
 # result$tree_plot
 ```
@@ -348,9 +363,9 @@ merges monophyletic ASVs/OTUs
 # of a species using "sum" or "max" methods, preserving taxonomic,
 # phylogenetic, and sequencing data.
 
-# =====================================================================
+
 #                      Load the phyloseq objs/ TSE obj
-# =====================================================================
+
 
 library(phyloseq)
 library(DspikeIn)
@@ -374,9 +389,11 @@ colnames(sample_data(physeq_16SOTU))
 
 
 ```{r}
-# =====================================================================
+
+
 #                      PREREQUISITE FOR 16S & CALCULATE SPIKED %
-# =====================================================================
+
+
 # Define spiked species and related parameters**
 
 library(flextable)
@@ -430,9 +447,10 @@ Perc <- calculate_spike_percentage(
 
 
 ```{r, eval=FALSE}
-# =====================================================================
+
 #                      PREREQUISITE FOR ITS & CALCULATE SPIKED %
-# =====================================================================
+
+
 # Define spiked species and related parameters**
 
 
@@ -463,9 +481,9 @@ Perc <- calculate_spike_percentage(
 
 ```{r}
 #
-# =====================================================================
+
 #                      CALCULATE SCALING FACTORS
-# =====================================================================
+
 
 
 # Calculate spike-in scaling factors
@@ -488,9 +506,10 @@ head(scaling_factors) # Vector of scaling factors per sample
 
 
 ```{r}
-# =====================================================================
+
+
 #             Convert relative counts to absolute counts
-# =====================================================================
+
 
 # absolute counts=relative counts×sample-specific scaling factor
 
@@ -513,9 +532,10 @@ head(absolute_counts)
 
 
 ```{r}
-# =====================================================================
+
+
 #                      CALCULATE SPIKE PERCENTAGE & summary stat
-# =====================================================================
+
 
 # ** Calculate spike percentage & Generate summary statistics for absolute counts**
 
@@ -862,39 +882,134 @@ results_DESeq2_rel <- perform_and_visualize_DA(
 # results_DESeq2_rel$obj_significant
 ```
 
-# Multilayer Pairwise DA 
+# DA full Examples
+# Single and Multilayer Pairwise DA
 
-```{r}
-#  for all levels
+```{r, eval=FALSE}
 
-# Ensure Host.taxon is a factor
-# sample_data(Desmog_Blue_Ins_16_rel)$Host.taxon <- as.factor(sample_data(Desmog_Blue_Ins_16_rel)$Host.taxon)
-# # Get all unique levels
-# host_levels <- levels(sample_data(Desmog_Blue_Ins_16_rel)$Host.taxon)
-# # Build pairwise contrasts
-# contrast_named <- list(
-#   Host.taxon = combn(levels(sample_data(Desmog_Blue_Ins_16_rel)$Host.taxon), 2, simplify = FALSE)
-# )
 
-# select some levels
+# DspikeIn: Differential Abundance Examples
+# Using perform_and_visualize_DA() with multiple contrast scenarios
+
+
+# Load example dataset from the package
+data("physeq_16SOTU", package = "DspikeIn")
+
+
+
+# 1. Single Contrast
+
+res_single <- perform_and_visualize_DA(
+  obj = physeq_16SOTU,
+  method = "DESeq2",
+  group_var = "Diet",
+  contrast = c("Insectivore", "Carnivore"),
+  target_glom = "Genus")
+
+
+
+# 2. Single Factor — All Pairwise Contrasts
+
+# level names for DESeq2 compatibility
+sample_data(physeq_16SOTU)$Host.taxon <- factor(make.names(sample_data(physeq_16SOTU)$Host.taxon))
+
+# Get unique levels
+host_levels <- levels(sample_data(physeq_16SOTU)$Host.taxon)
+
+# contrast list
 contrast_named <- list(
-  c("Desmognathus.adatsihi", "Desmognathus.imitator"),
-  c("Desmognathus.monticola", "Desmognathus.quadramaculatus"),
-  c("Desmognathus.ocoee", "Desmognathus.wrighti")
-)
+  Host.taxon = combn(host_levels, 2, simplify = FALSE))
 
-multi_lev_results <- perform_and_visualize_DA(
-  obj = Desmog_Blue_Ins_16_rel,
+# multiple pairwise contrasts
+res_multi <- perform_and_visualize_DA(
+  obj = physeq_16SOTU,
   method = "DESeq2",
   group_var = "Host.taxon",
   contrast = contrast_named,
-  target_glom = "Genus",
-  output_csv_path = "DA_multi.csv"
-)
+  target_glom = "Genus")
 
-# multi_lev_results$Host.taxon_Desmognathus.adatsihi_vs_Desmognathus.aeneus$bar_plot
-# multi_lev_results$Host.taxon_Desmognathus.adatsihi_vs_Desmognathus.conanti$bar_plot
-# multi_lev_results$Host.taxon_Desmognathus.adatsihi_vs_Desmognathus.imitator$bar_plot
+
+
+# 3. Single Factor — Selected Contrasts
+
+contrast_list <- list(
+  c("Insectivore", "Carnivore"),
+  c("Omnivore", "Herbivore"))
+
+res_selected <- perform_and_visualize_DA(
+  obj = physeq_16SOTU,
+  method = "DESeq2",
+  group_var = "Diet",
+  contrast = contrast_list,
+  global_fdr = TRUE)
+
+
+
+# 4. Multiple Factors — Selected Contrasts
+
+contrast_named <- list(
+  Diet = list(
+    c("Insectivore", "Carnivore"),
+    c("Omnivore", "Carnivore") ),
+  Animal.type = list(
+    c("Frog", "Salamander") ))
+
+res_multi_factor <- perform_and_visualize_DA(
+  obj = physeq_16SOTU,
+  method = "DESeq2",
+  contrast = contrast_named,
+  target_glom = "Genus",
+  significance_level = 0.01,
+  global_fdr = TRUE)
+
+
+
+# 5. Multiple Factors — all pairwise contrasts
+
+# Ensure clean factor levels
+sample_data(physeq_16SOTU)$Host.taxon <- droplevels(factor(sample_data(physeq_16SOTU)$Host.taxon))
+sample_data(physeq_16SOTU)$Habitat <- droplevels(factor(sample_data(physeq_16SOTU)$Habitat))
+
+#  pairwise contrasts
+host_levels <- levels(sample_data(physeq_16SOTU)$Host.taxon)
+habitat_levels <- levels(sample_data(physeq_16SOTU)$Habitat)
+
+contrast_named <- list(
+  Host.taxon = combn(host_levels, 2, simplify = FALSE),
+  Habitat = combn(habitat_levels, 2, simplify = FALSE))
+
+results_multi_factor <- perform_and_visualize_DA(
+  obj = physeq_16SOTU,
+  method = "DESeq2",
+  contrast = contrast_named,
+  target_glom = "Genus",
+  significance_level = 0.01)
+
+
+
+# 6. Multiple Factors - combined group contrasts (interactions)
+
+# Create a combined grouping variable
+sample_data(physeq_16SOTU)$ComboGroup <- factor(interaction(
+  sample_data(physeq_16SOTU)$Animal.type,
+  sample_data(physeq_16SOTU)$Diet,
+  drop = TRUE))
+
+#  selected contrasts
+contrast_list <- list(
+  c("Salamander.Insectivore", "Lizard.Insectivore"),
+  c("Salamander.Carnivore", "Snake.Carnivore"),
+  c("Salamander.Carnivore", "Frog.Carnivore"))
+
+#  multi-contrast analysis
+res_combo <- perform_and_visualize_DA(
+  obj = physeq_16SOTU,
+  method = "DESeq2",
+  group_var = "ComboGroup",
+  contrast = contrast_list,
+  target_glom = "Genus",
+  global_fdr = TRUE)
+
 ```
 
 
@@ -903,9 +1018,8 @@ multi_lev_results <- perform_and_visualize_DA(
 
 
 ```{r}
-# ===========================================================
-#  Visualization of community composition
-# ===========================================================
+
+#   Visualization of community composition
 
 
 Rel <- phyloseq::subset_taxa(physeq_16SOTU, Genus != "Tetragenococcus")
@@ -926,12 +1040,11 @@ TB<-taxa_barplot(
   fill_variable = "Family",
   facet_variable = "Diet",
   top_n_taxa = 20,
-  palette = DspikeIn::color_palette$MG,
+  palette = DspikeIn::color_palette$mix_MG,
   legend_size = 11,
   legend_columns = 1,
   x_scale = "free",
-  xlab = NULL
-)
+  xlab = NULL)
 
 ```
 
@@ -941,9 +1054,9 @@ TB<-taxa_barplot(
 
 
 ```{r}
-# ===========================================================
+
 # 1. Initialization and loading NetWorks for Comparision
-# ===========================================================
+
 
 # library(SpiecEasi)
 # library(ggnet)
@@ -973,6 +1086,7 @@ result_kk <- degree_network(
   layout_type = "stress"
 )
 # print(result_kk$plot)
+
 ```
 
 
@@ -981,9 +1095,9 @@ result_kk <- degree_network(
 
 
 ```{r}
-# ===========================================================
+
 # 2. Metrics Calculation
-# ===========================================================
+
 
 result_Complete <- node_level_metrics(Complete)
 result_NoHubs <- node_level_metrics(NoHubs)
@@ -1025,9 +1139,10 @@ bind the metrics to plot them
 
 
 ```{r}
-# ===========================================================
+
+
 # 3. Visualization
-# ===========================================================
+
 
 # Remove missing values
 metrics_long_scaled <- na.omit(metrics_long_scaled)
@@ -1045,32 +1160,26 @@ metrics_long_filtered <- metrics_long_scaled %>%
     Network = recode(Network,
       "Complete" = "Complete Network",
       "NoHubs" = "Network & Module Hubs Removed",
-      "NoBasid" = "Basidiobolus Subnetwork Removed"
-    )
-  ) %>%
+      "NoBasid" = "Basidiobolus Subnetwork Removed" ) ) %>%
   na.omit() # Remove any NA if any
 
 metrics_long_filtered$Network <- factor(metrics_long_filtered$Network,
   levels = c(
     "Complete Network",
     "Network & Module Hubs Removed",
-    "Basidiobolus Subnetwork Removed"
-  )
-)
+    "Basidiobolus Subnetwork Removed" ))
 
 # DspikeIn::color_palette$light_MG
 network_colors <- c(
   "Complete Network" = "#F1E0C5",
   "Network & Module Hubs Removed" = "#D2A5A1",
-  "Basidiobolus Subnetwork Removed" = "#B2C3A8"
-)
+  "Basidiobolus Subnetwork Removed" = "#B2C3A8")
 
 # statistical comparisons a vs b
 comparisons <- list(
   c("Complete Network", "Network & Module Hubs Removed"),
   c("Complete Network", "Basidiobolus Subnetwork Removed"),
-  c("Network & Module Hubs Removed", "Basidiobolus Subnetwork Removed")
-)
+  c("Network & Module Hubs Removed", "Basidiobolus Subnetwork Removed"))
 
 networks_in_data <- unique(metrics_long_filtered$Network)
 comparisons <- comparisons[sapply(comparisons, function(pair) all(pair %in% networks_in_data))]
@@ -1078,8 +1187,7 @@ comparisons <- comparisons[sapply(comparisons, function(pair) all(pair %in% netw
 met <- ggplot(metrics_long_filtered, aes(x = Network, y = Value, fill = Network)) +
   geom_boxplot(outlier.shape = NA) +
   geom_jitter(aes(color = Network),
-    position = position_jitter(0.2), alpha = 0.2, size = 1.5
-  ) +
+    position = position_jitter(0.2), alpha = 0.2, size = 1.5 ) +
   scale_fill_manual(values = network_colors) +
   scale_color_manual(values = network_colors) +
   facet_wrap(~Metric, scales = "free_y", labeller = label_wrap_gen(width = 20)) +
@@ -1094,8 +1202,7 @@ met <- ggplot(metrics_long_filtered, aes(x = Network, y = Value, fill = Network)
     legend.text = element_text(size = 13),
     legend.title = element_text(size = 13, face = "bold"),
     plot.title = element_text(size = 13, face = "bold")
-  ) +
-  labs(title = "Selected Node Metrics Across Networks", fill = "Network Type", color = "Network Type")
+  ) + labs(title = "Selected Node Metrics Across Networks", fill = "Network Type", color = "Network Type")
 ```
 
 
@@ -1106,8 +1213,7 @@ met <- ggplot(metrics_long_filtered, aes(x = Network, y = Value, fill = Network)
 Complete <- load_graphml("Complete.graphml")
 result2 <- extract_neighbors(
   graph = Complete,
-  target_node = "OTU69:Basidiobolus_sp", mode = "all"
-)
+  target_node = "OTU69:Basidiobolus_sp", mode = "all")
 head(result2$summary)
 ```
 
@@ -1173,8 +1279,7 @@ if (!"Node" %in% colnames(combined_data)) {
 combined_data$Network <- factor(combined_data$Network, levels = c(
   "Complete Network",
   "Network & Module Hubs Removed",
-  "Basidiobolus Subnetwork Removed"
-))
+  "Basidiobolus Subnetwork Removed"))
 
 # Convert Data to Long Format
 metrics_long <- combined_data %>%
@@ -1187,14 +1292,12 @@ metrics_long <- combined_data %>%
   network_colors <- c(
   "Complete Network" = "#F1E0C5",
   "Network & Module Hubs Removed" = "#D2A5A1",
-  "Basidiobolus Subnetwork Removed" = "#B2C3A8"
-)
+  "Basidiobolus Subnetwork Removed" = "#B2C3A8")
   
 network_shapes <- c(
   "Complete Network" = 21,
   "Network & Module Hubs Removed" = 22,
-  "Basidiobolus Subnetwork Removed" = 23
-)
+  "Basidiobolus Subnetwork Removed" = 23)
 
 # Determine Top 30% of Nodes to Label/Optional
 metrics_long <- metrics_long %>%
@@ -1222,8 +1325,7 @@ create_metric_plot <- function(metric_name, data, title) {
       x = "Degree",
       y = metric_name,
       fill = "Network",
-      shape = "Network"
-    ) +
+      shape = "Network" ) +
     theme_minimal() +
     theme(
       plot.title = element_text(
@@ -1233,8 +1335,7 @@ create_metric_plot <- function(metric_name, data, title) {
       axis.title = element_text(size = 14, face = "bold"),
       legend.position = "top",
       legend.title = element_text(size = 14, face = "bold"),
-      legend.text = element_text(size = 12)
-    )
+      legend.text = element_text(size = 12)  )
 }
 
 
@@ -1282,8 +1383,7 @@ NoBasidM <- NB$metrics
 df <- bind_rows(
   CompleteM %>% mutate(Group = "CompleteM"),
   NoHubsM %>% mutate(Group = "NoHubsM"),
-  NoBasidM %>% mutate(Group = "NoBasidM")
-) %>%
+  NoBasidM %>% mutate(Group = "NoBasidM")) %>%
   pivot_longer(cols = -Group, names_to = "Metric", values_to = "Value")
 
 # Aggregate the total values by metric and group
@@ -1301,8 +1401,7 @@ pg<-ggplot(df_bar, aes(x = Metric, y = log1p(Total_Value), fill = Group)) +
     title = "Total Network Metrics Comparison",
     x = "Metric",
     y = "Total Value (log-scaled)",
-    fill = "Group"
-  )
+    fill = "Group" )
 ```
 
 
