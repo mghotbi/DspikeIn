@@ -21,20 +21,17 @@ vignette: >
 
 
 ```{r setup, include = FALSE}
-
 knitr::opts_chunk$set(
-  fig.path = "figures/",        
-  dev = "png",                  
-  dpi = 300,                     
-  fig.width = 7,               
-  fig.height = 4,               
-  fig.align = "center",          
-  out.width = "70%",           
-  message = FALSE,              
-  warning = FALSE               
+  fig.path = "figures/",
+  dev = "png",
+  dpi = 300,
+  fig.width = 7,
+  fig.height = 4,
+  fig.align = "center",
+  out.width = "70%",
+  message = FALSE,
+  warning = FALSE
 )
-
-
 ```
 
 
@@ -42,7 +39,6 @@ knitr::opts_chunk$set(
 
 
 ```{r, eval=FALSE}
-
 #                         INSTALL CRAN PACKAGES
 
 # Install missing CRAN packages
@@ -145,7 +141,6 @@ DspikeIn works with 7 taxonomic ranks
 
 
 ```{r, eval=FALSE}
-
 #             To remove strain from the taxonomic ranks
 
 # DspikeIn works with 7 taxonomic ranks
@@ -205,7 +200,6 @@ https://github.com/markrobinsonuzh/TreeSummarizedExperiment
 
 
 ```{r, eval=FALSE}
-
 #                     Build phyloseq
 
 
@@ -313,7 +307,8 @@ result <- validate_spikein_clade(
   reference_fasta = ref_fasta,
   sample_fasta = sample_fasta,
   bootstrap = 200,
-  output_prefix = NULL)
+  output_prefix = NULL
+)
 
 # result$tree_plot
 ```
@@ -352,7 +347,6 @@ ps <- plot_spikein_tree_diagnostic(
   metadata_var = "Animal.type",
   output_prefix = "tetragenococcus_diag"
 )
-
 ```
 
 
@@ -392,8 +386,6 @@ colnames(sample_data(physeq_16SOTU))
 
 
 ```{r}
-
-
 #                      PREREQUISITE FOR 16S & CALCULATE SPIKED %
 
 
@@ -450,7 +442,6 @@ Perc <- calculate_spike_percentage(
 
 
 ```{r, eval=FALSE}
-
 #                      PREREQUISITE FOR ITS & CALCULATE SPIKED %
 
 
@@ -509,8 +500,6 @@ head(scaling_factors) # Vector of scaling factors per sample
 
 
 ```{r}
-
-
 #             Convert relative counts to absolute counts
 
 
@@ -535,8 +524,6 @@ head(absolute_counts)
 
 
 ```{r}
-
-
 #                      CALCULATE SPIKE PERCENTAGE & summary stat
 
 
@@ -636,7 +623,6 @@ plot_object <- regression_plot(
   custom_range = c(0.1, 20, 30, 50, 100),
   plot_title = NULL
 )
-
 ```
 
 

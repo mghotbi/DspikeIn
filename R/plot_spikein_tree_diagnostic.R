@@ -27,7 +27,7 @@
 #' @importFrom ggtree ggtree theme_tree2 geom_tiplab geom_text2
 #' @importFrom ggtreeExtra geom_fruit
 #' @importFrom ggnewscale new_scale_fill
-#' @importFrom ggstar geom_star 
+#' @importFrom ggstar geom_star
 #' @examples
 #' \dontrun{
 #' if (
@@ -112,7 +112,7 @@ plot_spikein_tree_diagnostic <- function(obj,
   # --- Prevalence (Star) ---
   star_geom <- ggstar::geom_star
   tile_geom <- ggplot2::geom_tile
-  
+
   p <- p + ggnewscale::new_scale_fill() +
     ggtreeExtra::geom_fruit(
       data = df_summary,

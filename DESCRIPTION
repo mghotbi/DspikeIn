@@ -1,23 +1,23 @@
 Type: Package
 Package: DspikeIn
 Title: Estimating Absolute Abundance from Microbial Spike-in Controls
-Version: 0.99.8
+Version: 0.99.9
 Authors@R: c(
     person("Mitra", "Ghotbi", , "mitra.ghotbi@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9185-9993")),
     person("Marjan", "Ghotbi", , "ghotbi.marjan@gmail.com", role = "ctb",
            comment = c(ORCID = "0000-0003-4655-6445"))
   )
-Description: Provides a reproducible and modular workflow for absolute microbial 
-    quantification using spike-in controls. Supports both single spike-in 
-    taxa and synthetic microbial communities with user-defined spike-in 
-    volumes and gene copy numbers. Compatible with 'phyloseq' and 
-    'TreeSummarizedExperiment' (TSE) data structures. The package 
-    implements core methods for spike-in validation, scaling factor 
-    estimation, absolute abundance conversion, and bias correction. 
-    Visualization tools are provided via 'ggplot2', 'ggtree', and related 
-    packages. This streamlined version focuses on core functionality and 
-    quantification. For helper utilities and extended pipelines, refer to 
+Description: Provides a reproducible and modular workflow for absolute
+    microbial quantification using spike-in controls. Supports both single
+    spike-in taxa and synthetic microbial communities with user-defined
+    spike-in volumes and gene copy numbers. Compatible with 'phyloseq' and
+    'TreeSummarizedExperiment' (TSE) data structures. The package
+    implements core methods for spike-in validation, scaling factor
+    estimation, absolute abundance conversion, and bias correction.
+    Visualization tools are provided via 'ggplot2', 'ggtree', and related
+    packages. This streamlined version focuses on core functionality and
+    quantification. For helper utilities and extended pipelines, refer to
     the 'MGhotbi' branch on GitHub.
 License: MIT + file LICENSE
 URL: https://github.com/mghotbi/DspikeIn
@@ -28,8 +28,8 @@ Imports:
     ape,
     Biostrings,
     data.table,
-    DESeq2,
     DECIPHER,
+    DESeq2,
     dplyr,
     edgeR,
     flextable,
@@ -40,7 +40,9 @@ Imports:
     ggstar,
     ggtree,
     ggtreeExtra,
+    graphics,
     grDevices,
+    grid,
     limma,
     matrixStats,
     methods,
