@@ -15,3 +15,9 @@ A phylogenetic tree object.
 \description{
 Retrieves the phylogenetic tree.
 }
+\details{
+This function wraps \code{phy_tree()} and \code{rowTree()} for compatibility with both frameworks.
+}
+\seealso{
+\code{\link[phyloseq]{phy_tree}}, \code{\link[TreeSummarizedExperiment]{rowTree}}
+}

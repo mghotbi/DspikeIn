@@ -34,3 +34,9 @@ Retrieves the OTU table from a \code{phyloseq} or \code{TreeSummarizedExperiment
 
 Retrieves the OTU table from a \code{phyloseq} or \code{TreeSummarizedExperiment} object.
 }
+\details{
+This is a thin wrapper that unifies access to \code{assay()} (for TreeSummarizedExperiment) and \code{otu_table()} (for phyloseq) into a single function for format-agnostic use.
+}
+\seealso{
+\code{\link[phyloseq]{otu_table}}, \code{\link[SummarizedExperiment]{assay}}
+}
