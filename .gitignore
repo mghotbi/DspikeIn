@@ -26,3 +26,5 @@ DspikeIn.Rcheck/
 *.tar.gz
 ^extras$
 .Rcheck/
+.Rcheck/
+..Rcheck/
