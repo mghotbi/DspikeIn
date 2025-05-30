@@ -1,3 +1,11 @@
+# DspikeIn 0.99.11
+
+-Bump version to 0.99.10 for resubmission
+
+# DspikeIn 0.99.10
+
+- vignettes clean up
+
 # DspikeIn 0.99.9
 
 - Cleaned up Rcheck.
