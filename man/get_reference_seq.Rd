@@ -16,8 +16,8 @@ A \code{DNAStringSet} object containing the reference sequences.
 Retrieves the reference sequences (if available) from an object.
 }
 \details{
-Thin wrapper around \code{refseq()} or \code{metadata(obj)$refseq} for unified sequence retrieval.
+Thin wrapper around \code{refseq()} or \code{referenceSeq()} for unified sequence retrieval.
 }
 \seealso{
-\code{\link[phyloseq]{refseq}}, \code{\link[S4Vectors]{metadata}}
+\code{\link[phyloseq]{refseq}}, \code{\link[TreeSummarizedExperiment]{referenceSeq}}
 }

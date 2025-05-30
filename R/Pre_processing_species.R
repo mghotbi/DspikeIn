@@ -12,7 +12,7 @@
 #' @return A processed `phyloseq` or `TreeSummarizedExperiment` object with merged ASVs/OTUs.
 #'
 #' @importFrom phyloseq otu_table tax_table sample_data phy_tree phyloseq refseq
-#' @importFrom TreeSummarizedExperiment TreeSummarizedExperiment rowTree
+#' @importFrom TreeSummarizedExperiment TreeSummarizedExperiment rowTree referenceSeq referenceSeq<-
 #' @importFrom SummarizedExperiment assay rowData colData
 #' @importFrom S4Vectors metadata
 #' @importFrom ape drop.tip
@@ -45,41 +45,48 @@
 Pre_processing_species <- function(obj, species_name, merge_method = c("sum", "max"), output_file = NULL) {
   merge_method <- match.arg(merge_method)
   message("Starting pre-processing...")
-
+  
   # Detect object type
   is_physeq <- inherits(obj, "phyloseq")
   is_tse <- inherits(obj, "TreeSummarizedExperiment")
-
+  
   if (!is_physeq && !is_tse) {
     stop("Input must be `phyloseq` or `TreeSummarizedExperiment`.")
   }
-
+  
   # Extract components
   otu_table_data <- get_otu_table(obj)
   tax_data <- as.data.frame(get_tax_table(obj))
   sample_metadata <- get_sample_data(obj)
   phy_tree <- tryCatch(if (is_physeq) phyloseq::phy_tree(obj) else TreeSummarizedExperiment::rowTree(obj), error = function(e) NULL)
-  ref_sequences <- tryCatch(if (is_physeq) phyloseq::refseq(obj) else S4Vectors::metadata(obj)$refseq, error = function(e) NULL)
-
+  ref_sequences <- tryCatch(
+    if (is_physeq) {
+      phyloseq::refseq(obj)
+    } else {
+      TreeSummarizedExperiment::referenceSeq(obj)
+    },
+    error = function(e) NULL
+  )
+  
   # Convert all taxonomy columns to character
   tax_data[] <- lapply(tax_data, as.character)
   message("Checking taxonomy table...")
-
+  
   # Process each species
   for (species in species_name) {
     message("Processing taxon: ", species)
-
+    
     # Exact matching across ALL taxonomy levels
     species_asvs <- rownames(tax_data)[apply(tax_data, 1, function(x) any(x %in% species))]
-
+    
     if (length(species_asvs) == 0) {
       warning("No ASVs found matching exactly: ", species)
       next
     }
-
+    
     if (length(species_asvs) > 1) {
       message("Merging ", length(species_asvs), " ASVs for: ", species)
-
+      
       if (merge_method == "sum") {
         sum_abundances <- colSums(otu_table_data[species_asvs, , drop = FALSE])
         otu_table_data[species_asvs[1], ] <- sum_abundances
@@ -87,17 +94,17 @@ Pre_processing_species <- function(obj, species_name, merge_method = c("sum", "m
         max_abundance_asv <- which.max(rowSums(otu_table_data[species_asvs, , drop = FALSE]))
         otu_table_data[species_asvs[1], ] <- otu_table_data[species_asvs[max_abundance_asv], ]
       }
-
+      
       # Remove redundant ASVs
       otu_table_data <- otu_table_data[setdiff(rownames(otu_table_data), species_asvs[-1]), , drop = FALSE]
       tax_data <- tax_data[setdiff(rownames(tax_data), species_asvs[-1]), , drop = FALSE]
-
+      
       message("Merging completed for: ", species)
     } else {
       message("Single ASV found for: ", species, ". No merging needed.")
     }
   }
-
+  
   # Prune Phylogenetic Tree to Match Remaining Taxa
   if (!is.null(phy_tree)) {
     common_tips <- intersect(phy_tree$tip.label, rownames(otu_table_data))
@@ -111,7 +118,7 @@ Pre_processing_species <- function(obj, species_name, merge_method = c("sum", "m
       }
     }
   }
-
+  
   # Prune Reference Sequences to Match Remaining Taxa
   if (!is.null(ref_sequences)) {
     common_seqs <- intersect(names(ref_sequences), rownames(otu_table_data))
@@ -125,7 +132,7 @@ Pre_processing_species <- function(obj, species_name, merge_method = c("sum", "m
       }
     }
   }
-
+  
   # Reconstruct Object
   if (is_physeq) {
     obj <- phyloseq::phyloseq(
@@ -140,17 +147,21 @@ Pre_processing_species <- function(obj, species_name, merge_method = c("sum", "m
       assays = list(counts = otu_table_data),
       rowData = tax_data,
       colData = sample_metadata,
-      rowTree = if (!is.null(phy_tree)) phy_tree else NULL,
-      metadata = if (!is.null(ref_sequences)) list(refseq = ref_sequences) else list()
+      rowTree = if (!is.null(phy_tree)) phy_tree else NULL
     )
+    
+    if (!is.null(ref_sequences)) {
+      TreeSummarizedExperiment::referenceSeq(obj) <- ref_sequences
+    }
+    
   }
-
+  
   # Save if requested
   if (!is.null(output_file)) {
     saveRDS(obj, file = output_file)
     message("Merged object saved to: ", output_file)
   }
-
+  
   message("Pre-processing complete.")
   return(obj)
 }

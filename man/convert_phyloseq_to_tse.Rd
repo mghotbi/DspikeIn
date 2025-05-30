@@ -7,28 +7,37 @@
 convert_phyloseq_to_tse(physeq)
 }
 \arguments{
-\item{physeq}{A \code{phyloseq} object containing:
-\itemize{
-\item \strong{OTU Table}: Feature abundance matrix.
-\item \strong{Taxonomy Table} (optional): Taxonomic classification of features.
-\item \strong{Sample Metadata} (optional): Experimental sample data.
-\item \strong{Phylogenetic Tree} (optional).
-\item \strong{Reference Sequences} (optional).
-}}
+\item{physeq}{A valid \code{phyloseq} object.}
 }
 \value{
-A \code{TreeSummarizedExperiment} object preserving all components.
+A \code{TreeSummarizedExperiment} object with one or more of the following slots:
+\itemize{
+\item \code{assays}: OTU count matrix.
+\item \code{rowData}: Taxonomy table.
+\item \code{colData}: Sample metadata.
+\item \code{rowTree}: Phylogenetic tree (if present).
+\item \code{referenceSeq}: Reference sequences (if present).
+}
 }
 \description{
-Converts a \code{phyloseq} object into a \code{TreeSummarizedExperiment}
-(TSE) object, ensuring phylogenetic tree and reference sequences
-are preserved in \code{rowTree} and \code{metadata} if they exist.
+Converts a \code{phyloseq} object into a \code{TreeSummarizedExperiment} (TSE),
+preserving key biological data components. The function supports retention of:
+\itemize{
+\item OTU abundance matrix (as assay).
+\item Taxonomic classifications (as \code{rowData}).
+\item Sample metadata (as \code{colData}).
+\item Phylogenetic tree (as \code{rowTree}, if available).
+\item Reference sequences (as \code{referenceSeq}, if available).
+}
+This allows seamless interoperability between \code{phyloseq} and Bioconductor ecosystems.
 }
 \examples{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
-  # Convert phyloseq object to TreeSummarizedExperiment
+  # Convert phyloseq object to TSE
   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+  print(tse_16SOTU)
 }
+
 }

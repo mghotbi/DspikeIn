@@ -2,80 +2,74 @@
 % Please edit documentation in R/Pre_processing_hashcodes.R
 \name{Pre_processing_hashcodes}
 \alias{Pre_processing_hashcodes}
-\title{Pre-process phyloseq or TSE object based on hashcodes}
+\title{Pre-process taxa in a phyloseq or TSE object by merging ASVs/OTUs using hashcodes}
 \usage{
 Pre_processing_hashcodes(
   obj,
   hashcodes,
   merge_method = c("sum", "max"),
-  output_prefix = "merged_physeq"
+  output_file = NULL
 )
 }
 \arguments{
 \item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
 
-\item{hashcodes}{A character vector of taxon hashcodes (OTU row names).}
+\item{hashcodes}{A character vector of OTU hashcodes to be merged.}
 
-\item{merge_method}{The method to merge taxa: "sum" or "max".}
+\item{merge_method}{Merge strategy to apply to counts: \code{"sum"} (default) or \code{"max"}.}
 
-\item{output_prefix}{A prefix for the output file names.}
+\item{output_file}{Optional path to save the resulting object as an \code{.rds} file.}
 }
 \value{
-A processed phyloseq or TSE object.
+A processed \code{phyloseq} or \code{TreeSummarizedExperiment} object with merged ASVs/OTUs.
 }
 \description{
-Subsets, merges, and saves taxa based on hashcodes and a specified merge method ("sum" or "max").
-This function pre-processes a \code{phyloseq} or \code{TreeSummarizedExperiment} (TSE) object by subsetting, merging,
-and saving taxa based on provided hashcodes. It retains taxonomic information and creates intermediate datasets
-for further downstream analysis.
+Merges ASVs/OTUs using a list of exact hashcodes (typically OTU IDs from QIIME2).
+Supports both \code{phyloseq} and \code{TreeSummarizedExperiment} (TSE) objects. Ensures that
+phylogenetic trees and reference sequences are retained and pruned as needed to remain
+consistent with merged taxa.
 }
 \examples{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
-  # Subset phyloseq object to include only Tetragenococcus species
-  Tetragenococcus <- phyloseq::subset_taxa(
+  # Example 1: phyloseq input
+  subset_physeq <- phyloseq::subset_taxa(
     physeq_16SOTU,
-    Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp."
+    Species \%in\% c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
+  )
+  hashcodes_phy <- rownames(phyloseq::otu_table(subset_physeq))
+
+  merged_physeq <- Pre_processing_hashcodes(
+    obj = physeq_16SOTU,
+    hashcodes = hashcodes_phy,
+    merge_method = "sum"
   )
 
-  # Extract hashcodes (OTU IDs)
-  hashcodes <- row.names(phyloseq::otu_table(Tetragenococcus))
-
-  # Temp file paths
-  sum_prefix <- file.path(tempdir(), "merged_physeq_sum")
-  max_prefix <- file.path(tempdir(), "merged_physeq_max")
-
-  # Process data using the "sum" merging method
-  processed_data_sum <- Pre_processing_hashcodes(
-    physeq_16SOTU,
-    hashcodes,
-    merge_method = "sum",
-    output_prefix = sum_prefix
-  )
-
-  # Convert to TreeSummarizedExperiment (TSE)
-  Tetragenococcus_TSE <- convert_phyloseq_to_tse(Tetragenococcus)
-
-  # Extract hashcodes for TSE
-  hashcodes <- rownames(get_otu_table(Tetragenococcus_TSE))
-
-  # Convert full phyloseq object to TSE format
+  # Example 2: TreeSummarizedExperiment (TSE) input
   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+  row_annots <- SummarizedExperiment::rowData(tse_16SOTU)
+  subset_tse <- tse_16SOTU[
+    which(row_annots$Species \%in\% c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")),
+  ]
+  hashcodes_tse <- rownames(SummarizedExperiment::assay(subset_tse, "counts"))
 
-  # Load precomputed TSE object (optional)
-  data("tse_16SOTU", package = "DspikeIn")
-
-  # Process data using the "max" merging method
-  processed_data_max <- Pre_processing_hashcodes(
-    tse_16SOTU,
-    hashcodes,
-    merge_method = "max",
-    output_prefix = max_prefix
+  merged_tse <- Pre_processing_hashcodes(
+    obj = tse_16SOTU,
+    hashcodes = hashcodes_tse,
+    merge_method = "max"
   )
 
-  # Clean up
-  files_to_delete <- paste0(c(sum_prefix, max_prefix), "_processed.rds")
-  invisible(file.remove(files_to_delete[file.exists(files_to_delete)]))
+  # Optional cleanup
+  output_files <- c(
+    file.path(tempdir(), "merged_physeq_sum_processed.rds"),
+    file.path(tempdir(), "merged_tse_max_processed.rds")
+  )
+  for (f in output_files) {
+    if (file.exists(f)) file.remove(f)
+  }
+
+  rm(subset_physeq, hashcodes_phy, merged_physeq,
+     tse_16SOTU, subset_tse, hashcodes_tse, merged_tse, output_files, row_annots)
 }
 }

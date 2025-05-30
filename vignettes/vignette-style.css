@@ -10,7 +10,7 @@ body, .main-container {
 }
 
 /* === Headings === */
-h1 {
+h1, .title {
   font-size: 34px;
   color: #2a2f4a;
   text-align: left;

@@ -7,32 +7,32 @@
 convert_tse_to_phyloseq(tse)
 }
 \arguments{
-\item{tse}{A \code{TreeSummarizedExperiment} object containing:
+\item{tse}{A \code{TreeSummarizedExperiment} object, expected to contain:
 \itemize{
-\item \strong{OTU Table (\code{counts})}.
-\item \strong{Taxonomy Table (\code{rowData})}.
-\item \strong{Sample Metadata (\code{colData})}.
-\item \strong{Phylogenetic Tree (\code{rowTree}, optional)}.
-\item \strong{Reference Sequences (\code{metadata}, optional)}.
+\item OTU abundance matrix (assay named \code{"counts"}).
+\item Taxonomy data (as \code{rowData}).
+\item Sample metadata (as \code{colData}).
+\item Optional phylogenetic tree (from \code{rowTree()}).
+\item Optional reference sequences (\code{referenceSeq()} accessor).
 }}
 }
 \value{
-A \code{phyloseq} object containing all preserved components.
+A \code{phyloseq} object with all available components (\code{otu_table}, \code{tax_table},
+\code{sample_data}, \code{phy_tree}, \code{refseq}) populated accordingly.
 }
 \description{
-Converts a \code{TreeSummarizedExperiment} (TSE) object back
-into a \code{phyloseq} object, ensuring the phylogenetic tree and
-reference sequences are restored, if present.
+Converts a \code{TreeSummarizedExperiment} (TSE) object into a \code{phyloseq} object,
+preserving key components such as the OTU table, taxonomy, sample metadata, phylogenetic tree,
+and reference sequences (if present). This enables seamless interoperability between Bioconductor
+and \code{phyloseq} workflows.
 }
 \examples{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
-  # Convert phyloseq to TSE
-  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
-
-  # Convert TSE back to phyloseq
-  phy_M <- convert_tse_to_phyloseq(tse_16SOTU)
-  print(phy_M)
+  # Convert to TSE and back to phyloseq
+  tse <- convert_phyloseq_to_tse(physeq_16SOTU)
+  phy <- convert_tse_to_phyloseq(tse)
+  print(phy)
 }
 }

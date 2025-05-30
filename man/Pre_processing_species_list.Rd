@@ -14,35 +14,37 @@ Pre_processing_species_list(
 \arguments{
 \item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
 
-\item{spiked_species}{Character vector of species names to be processed (match \code{Species} column).}
+\item{spiked_species}{Character vector of species names to be processed (matched against the \code{Species} column in taxonomy).}
 
-\item{merge_method}{Either \code{"sum"} (default) to sum counts across ASVs or \code{"max"} to keep the most abundant ASV.}
+\item{merge_method}{Either \code{"sum"} (default) to sum counts across ASVs or \code{"max"} to retain only the most abundant ASV.}
 
-\item{output_file}{Optional. Character string specifying the path to save the merged object as \code{.rds}.}
+\item{output_file}{Optional. File path to save the merged object as an \code{.rds} file.}
 }
 \value{
-A merged object of the same class as input (\code{phyloseq} or \code{TreeSummarizedExperiment}).
+A merged object of the same class as the input (\code{phyloseq} or \code{TreeSummarizedExperiment}).
 }
 \description{
 Merges ASVs belonging to user-defined spike-in species by summing or selecting maximum counts,
-while preserving all available metadata (taxonomy, sample data, tree, and reference sequences).
+while preserving all available metadata (taxonomy, sample data, phylogenetic tree, and reference sequences).
 This function works for both \code{phyloseq} and \code{TreeSummarizedExperiment} objects.
 }
 \examples{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
-  data("tse", package = "DspikeIn")
   data("physeq", package = "DspikeIn")
+  data("tse", package = "DspikeIn")
 
   spiked_species <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
 
-  merged_TSE <- Pre_processing_species_list(
-    tse,
+  # Merge in phyloseq object
+  merged_physeq <- Pre_processing_species_list(
+    physeq,
     spiked_species = spiked_species,
     merge_method = "sum"
   )
 
-  merged_physeq <- Pre_processing_species_list(
-    physeq,
+  # Merge in TreeSummarizedExperiment object
+  merged_tse <- Pre_processing_species_list(
+    tse,
     spiked_species = spiked_species,
     merge_method = "sum"
   )

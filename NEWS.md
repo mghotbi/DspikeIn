@@ -1,6 +1,9 @@
 # DspikeIn 0.99.9
 
-_No major changes recorded._
+- Documented both `physeq` and `tse` in `R/data.R` with proper `@format`, `@source`, and usage examples.
+- Fixed system hostname configuration to remove “unknown” from shell prompt.
+- Verified that vignettes build cleanly and only required `doc/` appears in tarball.
+- Cleaned up redundant or empty directories during build to pass Bioconductor checks.
 
 # DspikeIn 0.99.8
 

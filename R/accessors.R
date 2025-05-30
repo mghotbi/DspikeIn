@@ -82,30 +82,31 @@ get_phy_tree <- function(obj) {
   }
 }
 
-
 #' @title Extract Reference Sequences
 #' @description Retrieves the reference sequences (if available) from an object.
 #' @param obj A `phyloseq` or `TreeSummarizedExperiment` object.
 #' @return A `DNAStringSet` object containing the reference sequences.
 #' @importFrom phyloseq refseq
 #' @importFrom S4Vectors metadata
-#' @details Thin wrapper around `refseq()` or `metadata(obj)$refseq` for unified sequence retrieval.
-#' @seealso \code{\link[phyloseq]{refseq}}, \code{\link[S4Vectors]{metadata}}
+#' @importFrom TreeSummarizedExperiment referenceSeq
+#' @details Thin wrapper around `refseq()` or `referenceSeq()` for unified sequence retrieval.
+#' @seealso \code{\link[phyloseq]{refseq}}, \code{\link[TreeSummarizedExperiment]{referenceSeq}}
 #' @export
 get_reference_seq <- function(obj) {
   if (inherits(obj, "phyloseq")) {
-    if (!is.null(phyloseq::refseq(obj))) {
-      return(phyloseq::refseq(obj))
-    } else {
-      stop(" No reference sequences found in the phyloseq object.")
-    }
+    ref <- phyloseq::refseq(obj)
+    if (!is.null(ref)) return(ref)
+    stop("No reference sequences found in the phyloseq object.")
   } else if (inherits(obj, "TreeSummarizedExperiment")) {
-    if ("refseq" %in% names(S4Vectors::metadata(obj))) {
-      return(S4Vectors::metadata(obj)$refseq)
-    } else {
-      stop(" No reference sequences found in the TreeSummarizedExperiment object.")
-    }
+    ref <- TreeSummarizedExperiment::referenceSeq(obj)
+    if (!is.null(ref)) return(ref)
+    stop("No reference sequences found in the TreeSummarizedExperiment object.")
   } else {
     stop("Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
   }
 }
+
+
+
+
+

@@ -543,11 +543,18 @@ norm.med <- function(obj, groups) {
 #' @param pseudocount A numeric value added to avoid zeros in the dataset.
 #' @return A list containing the normalized object (same format as input) and scaling factors.
 #' @examples
-#' \donttest{
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
-#'   result_DESeq <- norm.DESeq(physeq_16SOTU, groups = "Animal.type", pseudocount = 1)
-#' }
+#'
+#'   # Example 1: phyloseq input (subset to Animal.type == "Frog")
+#'   physeq_frog <- phyloseq::subset_samples(physeq_16SOTU, Animal.type == "Frog")
+#'   result_DESeq_phy <- norm.DESeq(physeq_frog, groups = "Animal.type", pseudocount = 1)
+#'
+#'   # Example 2: TSE input (convert and subset to Animal.type == "Frog")
+#'   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+#'   col_meta <- SummarizedExperiment::colData(tse_16SOTU)
+#'   tse_frog <- tse_16SOTU[, which(col_meta$Animal.type == "Frog")]
+#'   result_DESeq_tse <- norm.DESeq(tse_frog, groups = "Animal.type", pseudocount = 1)
 #' }
 #' @export
 norm.DESeq <- function(obj, groups, pseudocount = 1) {
