@@ -25,3 +25,4 @@ vignettes/.Rhistory
 DspikeIn.Rcheck/
 *.tar.gz
 ^extras$
+.Rcheck/
