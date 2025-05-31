@@ -1,7 +1,7 @@
 ## Welcome to the DspikeIn R package repository!
 
 **Author:** Mitra Ghotbi  
-**Version:** 0.99.4  
+**Version:** 0.99.10 
 **Date:** March 8, 2025  
 
 
@@ -76,6 +76,11 @@ The DspikeIn package provides functions for:
 
 
 ### To get detailed examples and guidance, please use:
+## 📘 Vignettes
+
+[![PDF Vignette](https://img.shields.io/badge/Vignette-PDF-blue)](https://drive.google.com/file/d/1UYUbTReCMlKCtu5mEtmG31d0YqeUkDAr/view)  
+[![HTML Vignette](https://img.shields.io/badge/Vignette-HTML-brightgreen)](https://drive.google.com/file/d/1a3tD98bVN--L34V5nT5X6d9aCpi8MLVL/view)
+
 
 ```r
 browseVignettes("DspikeIn")
@@ -224,20 +229,40 @@ lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings", "ggtree", "DECIPHER
 # Installation
 #Instructions for how to install the DspikeIn package.
 
-# Using devtools
+# Install devtools if needed
 install.packages("devtools")
-devtools::install_github("mghotbi/DspikeIn")
+
+# Install the full DspikeIn pipeline from the MGhotbi branch
+devtools::install_github(
+  "mghotbi/DspikeIn@MGhotbi",
+  build_vignettes = TRUE,
+  dependencies = TRUE)
+
 library(DspikeIn)
 
-# Or using remotes
+
+# Install remotes if needed
 install.packages("remotes")
-remotes::install_github("mghotbi/DspikeIn")
+
+# Install just the core functions from the devel branch
+remotes::install_github(
+  "mghotbi/DspikeIn@devel",
+  build_vignettes = TRUE,
+  dependencies = TRUE)
+
 library(DspikeIn)
+
 
 # *** Please note that installing with build_vignettes = TRUE may take 2–4 minutes, depending on your computer’s processing power ***
 # To access the DspikeIn vignette for a detailed tutorial, use vignette("DspikeIn"), or browse all available vignettes with browseVignettes("DspikeIn").
-devtools::install_github("mghotbi/DspikeIn", build_vignettes = TRUE, dependencies = TRUE)
+devtools::install_github("mghotbi/DspikeIn@MGhotbi", build_vignettes = TRUE, dependencies = TRUE)
+
+# Open the main vignette
+vignette("Getting-started-with-DspikeIn")
+
+# Or list all available tutorials
 browseVignettes("DspikeIn")
+
 
 ```
 
@@ -245,9 +270,24 @@ browseVignettes("DspikeIn")
 ## Acknowledgement
 
 
-The development of the **DspikeIn** package was made possible through the invaluable contributions of the **R** community, including developers of both **Bioconductor** and **CRAN** packages. We are especially grateful for tools such as **phyloseq**, DESeq2, edgeR, ggplot2, ggtree, TreeSummarizedExperiment, vegan, ggtreeExtra, and many others that support the analysis and visualization of microbiome data.
+The development of the DspikeIn package was made possible through the generous and pioneering efforts of the R and Bioconductor communities. We gratefully acknowledge the developers and maintainers of the following open-source packages, whose tools and infrastructure underpin our work:
+**Core infrastructure & data manipulation:**
+methods, stats, utils, graphics, grDevices, data.table, dplyr, tibble, tidyr, reshape2, matrixStats, rlang, S4Vectors, grid, officer, xml2
+**Statistical analysis & modeling:**
+DESeq2, edgeR, limma, randomForest, microbiome
+**Phylogenetics & microbiome structure:**
+phyloseq, TreeSummarizedExperiment, SummarizedExperiment, phangorn, ape, DECIPHER, msa, Biostrings
+**Network and graph analysis:**
+igraph, ggraph
+**Visualization & layout design:**
+ggplot2, ggrepel, ggpubr, ggnewscale, ggalluvial, ggtree, ggtreeExtra, ggstar, ggridges, patchwork, scales, RColorBrewer, flextable
 
-We also acknowledge the broader scientific community working on **absolute microbial quantification** and **compositional data analysis**, whose pioneering research inspired the design of **DspikeIn**.
+These tools collectively empowered us to build a reproducible, modular, and extensible platform for robust absolute abundance quantification in microbial community analysis.
+We further acknowledge the broader scientific community working on absolute microbial quantification, spike-in calibration, and compositional data analysis, whose foundational insights directly informed the design and conceptual framework of DspikeIn.
+
+#  DspikeIn full pipeline 
+For complete exploratory tools, differential abundance (DA), and network analyses, refer to the MGhotbi https://github.com/mghotbi/DspikeIn/tree/MGhotbi branch of the GitHub repository, which contains the full extended pipeline.
+
 
 **Special thanks to the [Herptile Microbiome Team](https://herptilemicrobiomes.org/research/)** for their collaborative support and contributions to this work.
 
