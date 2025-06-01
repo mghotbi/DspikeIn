@@ -83,7 +83,7 @@ To explore comprehensive tutorials, code examples, and explanations on using `Ds
   *Interactive HTML guide - open in your browser.*
 
 - [![📄 PDF Vignette](https://img.shields.io/badge/Vignette-PDF-blue)](https://mghotbi.github.io/DspikeIn/Getting-started-with-DspikeIn.pdf)  
-  *Downloadable PDF version - ideal for offline reading.*
+  *Downloadable PDF version - for offline reading.*
 
 
 ```r
