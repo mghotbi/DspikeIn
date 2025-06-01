@@ -80,10 +80,10 @@ The DspikeIn package provides functions for:
 To explore comprehensive tutorials, code examples, and explanations on using `DspikeIn`, view or download the official vignette below:
 
 - [![🌐 HTML Vignette](https://img.shields.io/badge/Vignette-HTML-brightgreen)](https://mghotbi.github.io/DspikeIn/)  
-  *Interactive HTML guide — open in your browser.*
+  *Interactive HTML guide - open in your browser.*
 
 - [![📄 PDF Vignette](https://img.shields.io/badge/Vignette-PDF-blue)](https://mghotbi.github.io/DspikeIn/Getting-started-with-DspikeIn.pdf)  
-  *Downloadable PDF version — ideal for offline reading.*
+  *Downloadable PDF version - ideal for offline reading.*
 
 
 ```r
