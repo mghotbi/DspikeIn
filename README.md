@@ -86,6 +86,8 @@ To explore comprehensive tutorials, code examples, and explanations on using `Ds
   *Downloadable PDF version - for offline reading.*
 
 
+---
+
 
 ### Data availability
 The DspikeIn package provides example datasets located in the data/ folder and inst/extdata/ folder. You can list the available datasets using the following commands:
