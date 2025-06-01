@@ -412,17 +412,19 @@ microbiome</a></li>
 <li><a href="#data-transform-normalization" id="toc-data-transform-normalization"><span class="toc-section-number">18</span> Data transform &amp;
 Normalization</a></li>
 <li><a href="#further-analysis" id="toc-further-analysis"><span class="toc-section-number">19</span> Further analysis</a></li>
-<li><a href="#visualization" id="toc-visualization"><span class="toc-section-number">20</span> Visualization</a></li>
-<li><a href="#microbial-dynamics-network-comparision" id="toc-microbial-dynamics-network-comparision"><span class="toc-section-number">21</span> Microbial dynamics &amp; NetWork
+<li><a href="#differential-abundance-single-and-multilayer-pairwise" id="toc-differential-abundance-single-and-multilayer-pairwise"><span class="toc-section-number">20</span> Differential abundance (Single and
+Multilayer Pairwise)</a></li>
+<li><a href="#visualization" id="toc-visualization"><span class="toc-section-number">21</span> Visualization</a></li>
+<li><a href="#microbial-dynamics-network-comparision" id="toc-microbial-dynamics-network-comparision"><span class="toc-section-number">22</span> Microbial dynamics &amp; NetWork
 comparision</a></li>
-<li><a href="#network-topological-metrics" id="toc-network-topological-metrics"><span class="toc-section-number">22</span> Network Topological
+<li><a href="#network-topological-metrics" id="toc-network-topological-metrics"><span class="toc-section-number">23</span> Network Topological
 Metrics</a></li>
-<li><a href="#to-find-first-and-second-neighbors-your-target-node" id="toc-to-find-first-and-second-neighbors-your-target-node"><span class="toc-section-number">23</span> To find first and second neighbors
+<li><a href="#to-find-first-and-second-neighbors-your-target-node" id="toc-to-find-first-and-second-neighbors-your-target-node"><span class="toc-section-number">24</span> To find first and second neighbors
 your target node</a></li>
-<li><a href="#compute-node-level-metrics" id="toc-compute-node-level-metrics"><span class="toc-section-number">24</span> Compute Node-Level Metrics</a></li>
-<li><a href="#compute-degree-metrics-and-visualize-the-network" id="toc-compute-degree-metrics-and-visualize-the-network"><span class="toc-section-number">25</span> Compute degree metrics and
+<li><a href="#compute-node-level-metrics" id="toc-compute-node-level-metrics"><span class="toc-section-number">25</span> Compute Node-Level Metrics</a></li>
+<li><a href="#compute-degree-metrics-and-visualize-the-network" id="toc-compute-degree-metrics-and-visualize-the-network"><span class="toc-section-number">26</span> Compute degree metrics and
 visualize the network</a></li>
-<li><a href="#dspikein-volume-protocol" id="toc-dspikein-volume-protocol"><span class="toc-section-number">26</span> DspikeIn volume protocol</a></li>
+<li><a href="#dspikein-volume-protocol" id="toc-dspikein-volume-protocol"><span class="toc-section-number">27</span> DspikeIn volume protocol</a></li>
 </ul>
 </div>
 
@@ -1080,7 +1082,7 @@ percentage of spiked species retrieval</h1>
 ## 10 UHM1007.20622_S48       86418          924      1.07  passed
 ## # ℹ 250 more rows</code></pre>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>conc<span class="sc">$</span>summary_stats</span></code></pre></div>
-<div class="tabwid"><style>.cl-5850aa54{table-layout:auto;width:80%;}.cl-584eb5fa{font-family:'Helvetica';font-size:12pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-584eb604{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-584f869c{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-584f8ef8{background-color:rgba(0, 100, 0, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-584f8ef9{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-5850aa54"><caption style="display:table-caption;margin:0pt;text-align:center;border-bottom: 0.00pt solid transparent;border-top: 0.00pt solid transparent;border-left: 0.00pt solid transparent;border-right: 0.00pt solid transparent;padding-top:3pt;padding-bottom:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;"><span> Summary Statistics of Spiked Species</span></caption><thead><tr style="overflow-wrap:break-word;"><th class="cl-584f8ef8"><p class="cl-584f869c"><span class="cl-584eb5fa">mean_total_reads_spiked</span></p></th><th class="cl-584f8ef8"><p class="cl-584f869c"><span class="cl-584eb5fa">sd_total_reads_spiked</span></p></th><th class="cl-584f8ef8"><p class="cl-584f869c"><span class="cl-584eb5fa">median_total_reads_spiked</span></p></th><th class="cl-584f8ef8"><p class="cl-584f869c"><span class="cl-584eb5fa">mean_percentage</span></p></th><th class="cl-584f8ef8"><p class="cl-584f869c"><span class="cl-584eb5fa">sd_percentage</span></p></th><th class="cl-584f8ef8"><p class="cl-584f869c"><span class="cl-584eb5fa">median_percentage</span></p></th><th class="cl-584f8ef8"><p class="cl-584f869c"><span class="cl-584eb5fa">passed_count</span></p></th><th class="cl-584f8ef8"><p class="cl-584f869c"><span class="cl-584eb5fa">failed_count</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-584f8ef9"><p class="cl-584f869c"><span class="cl-584eb604">113,281.1</span></p></td><td class="cl-584f8ef9"><p class="cl-584f869c"><span class="cl-584eb604">306,326.4</span></p></td><td class="cl-584f8ef9"><p class="cl-584f869c"><span class="cl-584eb604">29,339.5</span></p></td><td class="cl-584f8ef9"><p class="cl-584f869c"><span class="cl-584eb604">20.21071</span></p></td><td class="cl-584f8ef9"><p class="cl-584f869c"><span class="cl-584eb604">32.43013</span></p></td><td class="cl-584f8ef9"><p class="cl-584f869c"><span class="cl-584eb604">4.156814</span></p></td><td class="cl-584f8ef9"><p class="cl-584f869c"><span class="cl-584eb604">178</span></p></td><td class="cl-584f8ef9"><p class="cl-584f869c"><span class="cl-584eb604">82</span></p></td></tr></tbody></table></div>
+<div class="tabwid"><style>.cl-1ee641be{table-layout:auto;width:80%;}.cl-1ee45b9c{font-family:'Helvetica';font-size:12pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-1ee45ba6{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-1ee5227a{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-1ee52a36{background-color:rgba(0, 100, 0, 1.00);vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-1ee52a37{background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-1ee641be"><caption style="display:table-caption;margin:0pt;text-align:center;border-bottom: 0.00pt solid transparent;border-top: 0.00pt solid transparent;border-left: 0.00pt solid transparent;border-right: 0.00pt solid transparent;padding-top:3pt;padding-bottom:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;"><span> Summary Statistics of Spiked Species</span></caption><thead><tr style="overflow-wrap:break-word;"><th class="cl-1ee52a36"><p class="cl-1ee5227a"><span class="cl-1ee45b9c">mean_total_reads_spiked</span></p></th><th class="cl-1ee52a36"><p class="cl-1ee5227a"><span class="cl-1ee45b9c">sd_total_reads_spiked</span></p></th><th class="cl-1ee52a36"><p class="cl-1ee5227a"><span class="cl-1ee45b9c">median_total_reads_spiked</span></p></th><th class="cl-1ee52a36"><p class="cl-1ee5227a"><span class="cl-1ee45b9c">mean_percentage</span></p></th><th class="cl-1ee52a36"><p class="cl-1ee5227a"><span class="cl-1ee45b9c">sd_percentage</span></p></th><th class="cl-1ee52a36"><p class="cl-1ee5227a"><span class="cl-1ee45b9c">median_percentage</span></p></th><th class="cl-1ee52a36"><p class="cl-1ee5227a"><span class="cl-1ee45b9c">passed_count</span></p></th><th class="cl-1ee52a36"><p class="cl-1ee5227a"><span class="cl-1ee45b9c">failed_count</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-1ee52a37"><p class="cl-1ee5227a"><span class="cl-1ee45ba6">113,281.1</span></p></td><td class="cl-1ee52a37"><p class="cl-1ee5227a"><span class="cl-1ee45ba6">306,326.4</span></p></td><td class="cl-1ee52a37"><p class="cl-1ee5227a"><span class="cl-1ee45ba6">29,339.5</span></p></td><td class="cl-1ee52a37"><p class="cl-1ee5227a"><span class="cl-1ee45ba6">20.21071</span></p></td><td class="cl-1ee52a37"><p class="cl-1ee5227a"><span class="cl-1ee45ba6">32.43013</span></p></td><td class="cl-1ee52a37"><p class="cl-1ee5227a"><span class="cl-1ee45ba6">4.156814</span></p></td><td class="cl-1ee52a37"><p class="cl-1ee5227a"><span class="cl-1ee45ba6">178</span></p></td><td class="cl-1ee52a37"><p class="cl-1ee5227a"><span class="cl-1ee45ba6">82</span></p></td></tr></tbody></table></div>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co"># you may keep only passed data</span></span>
 <span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="co"># Filter to get only the samples that passed</span></span>
 <span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>passed_samples <span class="ot">&lt;-</span> result_perc<span class="sc">$</span>Sample[result_perc<span class="sc">$</span>Result <span class="sc">==</span> <span class="st">&quot;passed&quot;</span>]</span>
@@ -1285,7 +1287,10 @@ Differential Abundance</p>
 <span id="cb37-22"><a href="#cb37-22" tabindex="-1"></a><span class="co"># results_DESeq2_rel$plot</span></span>
 <span id="cb37-23"><a href="#cb37-23" tabindex="-1"></a><span class="co"># results_DESeq2_rel$bar_plot</span></span>
 <span id="cb37-24"><a href="#cb37-24" tabindex="-1"></a><span class="co"># results_DESeq2_rel$obj_significant</span></span></code></pre></div>
-<p>DA full Examples # Single and Multilayer Pairwise DA</p>
+</div>
+<div id="differential-abundance-single-and-multilayer-pairwise" class="section level1" number="20">
+<h1><span class="header-section-number">20</span> Differential abundance
+(Single and Multilayer Pairwise)</h1>
 <div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a><span class="co"># DspikeIn: Differential Abundance Examples</span></span>
 <span id="cb38-2"><a href="#cb38-2" tabindex="-1"></a><span class="co"># Using perform_and_visualize_DA() with multiple contrast scenarios</span></span>
 <span id="cb38-3"><a href="#cb38-3" tabindex="-1"></a></span>
@@ -1408,8 +1413,8 @@ Differential Abundance</p>
 <span id="cb38-120"><a href="#cb38-120" tabindex="-1"></a>  <span class="at">target_glom =</span> <span class="st">&quot;Genus&quot;</span>,</span>
 <span id="cb38-121"><a href="#cb38-121" tabindex="-1"></a>  <span class="at">global_fdr =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 </div>
-<div id="visualization" class="section level1" number="20">
-<h1><span class="header-section-number">20</span> Visualization</h1>
+<div id="visualization" class="section level1" number="21">
+<h1><span class="header-section-number">21</span> Visualization</h1>
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="co">#   Visualization of community composition</span></span>
 <span id="cb39-2"><a href="#cb39-2" tabindex="-1"></a></span>
 <span id="cb39-3"><a href="#cb39-3" tabindex="-1"></a></span>
@@ -1437,8 +1442,8 @@ Differential Abundance</p>
 <span id="cb39-25"><a href="#cb39-25" tabindex="-1"></a>  <span class="at">x_scale =</span> <span class="st">&quot;free&quot;</span>,</span>
 <span id="cb39-26"><a href="#cb39-26" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="cn">NULL</span>)</span></code></pre></div>
 </div>
-<div id="microbial-dynamics-network-comparision" class="section level1" number="21">
-<h1><span class="header-section-number">21</span> Microbial dynamics
+<div id="microbial-dynamics-network-comparision" class="section level1" number="22">
+<h1><span class="header-section-number">22</span> Microbial dynamics
 &amp; NetWork comparision</h1>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="co"># 1. Initialization and loading NetWorks for Comparision</span></span>
 <span id="cb40-2"><a href="#cb40-2" tabindex="-1"></a></span>
@@ -1472,8 +1477,8 @@ Differential Abundance</p>
 <span id="cb40-30"><a href="#cb40-30" tabindex="-1"></a>)</span>
 <span id="cb40-31"><a href="#cb40-31" tabindex="-1"></a><span class="co"># print(result_kk$plot)</span></span></code></pre></div>
 </div>
-<div id="network-topological-metrics" class="section level1" number="22">
-<h1><span class="header-section-number">22</span> Network Topological
+<div id="network-topological-metrics" class="section level1" number="23">
+<h1><span class="header-section-number">23</span> Network Topological
 Metrics</h1>
 <div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a><span class="co"># 2. Metrics Calculation</span></span>
 <span id="cb41-2"><a href="#cb41-2" tabindex="-1"></a></span>
@@ -1576,8 +1581,8 @@ Metrics</h1>
 <span id="cb54-61"><a href="#cb54-61" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>)</span>
 <span id="cb54-62"><a href="#cb54-62" tabindex="-1"></a>  ) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Selected Node Metrics Across Networks&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;Network Type&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Network Type&quot;</span>)</span></code></pre></div>
 </div>
-<div id="to-find-first-and-second-neighbors-your-target-node" class="section level1" number="23">
-<h1><span class="header-section-number">23</span> To find first and
+<div id="to-find-first-and-second-neighbors-your-target-node" class="section level1" number="24">
+<h1><span class="header-section-number">24</span> To find first and
 second neighbors your target node</h1>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a>Complete <span class="ot">&lt;-</span> <span class="fu">load_graphml</span>(<span class="st">&quot;Complete.graphml&quot;</span>)</span>
 <span id="cb55-2"><a href="#cb55-2" tabindex="-1"></a>result2 <span class="ot">&lt;-</span> <span class="fu">extract_neighbors</span>(</span>
@@ -1594,8 +1599,8 @@ second neighbors your target node</h1>
 ## 5 First Neighbor OTU18:Helotiales_sp           
 ## 6 First Neighbor OTU19:Margaritispora_monticola</code></pre>
 </div>
-<div id="compute-node-level-metrics" class="section level1" number="24">
-<h1><span class="header-section-number">24</span> Compute Node-Level
+<div id="compute-node-level-metrics" class="section level1" number="25">
+<h1><span class="header-section-number">25</span> Compute Node-Level
 Metrics</h1>
 <table>
 <colgroup>
@@ -1795,8 +1800,8 @@ connections)</td>
 <span id="cb57-109"><a href="#cb57-109" tabindex="-1"></a><span class="co"># print(plot_efficiency)</span></span>
 <span id="cb57-110"><a href="#cb57-110" tabindex="-1"></a><span class="co"># print(plot_betweenness)</span></span></code></pre></div>
 </div>
-<div id="compute-degree-metrics-and-visualize-the-network" class="section level1" number="25">
-<h1><span class="header-section-number">25</span> Compute degree metrics
+<div id="compute-degree-metrics-and-visualize-the-network" class="section level1" number="26">
+<h1><span class="header-section-number">26</span> Compute degree metrics
 and visualize the network</h1>
 <div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a><span class="co"># Compute degree metrics and visualize the network</span></span>
 <span id="cb58-2"><a href="#cb58-2" tabindex="-1"></a><span class="co"># Options: `&quot;stress&quot;` (default), `&quot;graphopt&quot;`, `&quot;fr&quot;`</span></span>
@@ -1858,8 +1863,8 @@ and visualize the network</h1>
 ## [1] stats4    stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] ggrepel_0.9.6                   igraph_2.1.4                    ggpubr_0.6.0                   
-##  [4] tidyr_1.3.1                     DspikeIn_0.99.10                vegan_2.6-10                   
+##  [1] DspikeIn_0.99.10                ggrepel_0.9.6                   igraph_2.1.4                   
+##  [4] ggpubr_0.6.0                    tidyr_1.3.1                     vegan_2.6-10                   
 ##  [7] lattice_0.22-7                  permute_0.9-7                   microbiome_1.30.0              
 ## [10] tibble_3.2.1                    dplyr_1.1.4                     flextable_0.9.8                
 ## [13] ggplot2_3.5.2                   ggstar_1.0.4                    remotes_2.5.0                  
@@ -1922,8 +1927,8 @@ and visualize the network</h1>
 ## [193] gert_2.1.5                  uuid_1.2-1                  RUnit_0.4.33                ggnewscale_0.5.1           
 ## [197] phangorn_2.12.1             Cairo_1.6-2</code></pre>
 </div>
-<div id="dspikein-volume-protocol" class="section level1" number="26">
-<h1><span class="header-section-number">26</span> DspikeIn volume
+<div id="dspikein-volume-protocol" class="section level1" number="27">
+<h1><span class="header-section-number">27</span> DspikeIn volume
 protocol</h1>
 <p>Spike-in volume Protocol;</p>
 <p>The species Tetragenococcus halophilus (bacterial spike; ATCC33315)
