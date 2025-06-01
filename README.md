@@ -75,11 +75,15 @@ The DspikeIn package provides functions for:
 - Performing data transformation, differential abundance analysis, and visualization.  
 
 
-### To get detailed examples and guidance, please use:
-## 📘 Vignettes
+### 📘 Vignettes — Detailed Usage Examples & Guidance
 
-[![PDF Vignette](https://img.shields.io/badge/Vignette-PDF-blue)](https://drive.google.com/file/d/1UYUbTReCMlKCtu5mEtmG31d0YqeUkDAr/view)  
-[![HTML Vignette](https://img.shields.io/badge/Vignette-HTML-brightgreen)](https://drive.google.com/file/d/1a3tD98bVN--L34V5nT5X6d9aCpi8MLVL/view)
+To explore comprehensive tutorials, code examples, and explanations on using `DspikeIn`, view or download the official vignette below:
+
+- [![🌐 HTML Vignette](https://img.shields.io/badge/Vignette-HTML-brightgreen)](https://mghotbi.github.io/DspikeIn/)  
+  *Interactive HTML guide — open in your browser.*
+
+- [![📄 PDF Vignette](https://img.shields.io/badge/Vignette-PDF-blue)](https://mghotbi.github.io/DspikeIn/Getting-started-with-DspikeIn.pdf)  
+  *Downloadable PDF version — ideal for offline reading.*
 
 
 ```r
