@@ -233,6 +233,8 @@ lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings", "ggtree", "DECIPHER
 # Installation
 #Instructions for how to install the DspikeIn package.
 
+# *** Please note that installing with build_vignettes = TRUE may take 2–4 minutes, depending on your computer’s processing power ***
+
 # Install devtools if needed
 install.packages("devtools")
 
@@ -255,11 +257,6 @@ remotes::install_github(
   dependencies = TRUE)
 
 library(DspikeIn)
-
-
-# *** Please note that installing with build_vignettes = TRUE may take 2–4 minutes, depending on your computer’s processing power ***
-# To access the DspikeIn vignette for a detailed tutorial, use vignette("DspikeIn"), or browse all available vignettes with browseVignettes("DspikeIn").
-devtools::install_github("mghotbi/DspikeIn@MGhotbi", build_vignettes = TRUE, dependencies = TRUE)
 
 # Open the main vignette
 vignette("Getting-started-with-DspikeIn")
