@@ -17,7 +17,7 @@
    DspikeIn Package
    - [DspikeIn](#DspikeIn-Package)
    - [Installation](#Installation)
-   - [Vignettes](#vignettes-Detailed-Usage-Examples-&-Guidance) 
+   - [Vignettes](#Vignettes) 
    - [Requirements](#To-Meet-Taxonomic-Ranks-Requirements)
    - [GCN Correction](#GCN-Normalization-with-QIIME2-Plugin)
    - [Dataset for training](#dataset-for-practicing-dspikein-package)
@@ -76,8 +76,8 @@ The DspikeIn package provides functions for:
 - Performing data transformation, differential abundance analysis, and visualization.  
 
 
-###  📘 Vignettes — Detailed Usage Examples & Guidance
-
+### Vignettes 
+📘 Detailed Usage Examples & Guidance
 To explore comprehensive tutorials, code examples, and explanations on using `DspikeIn`, view or download the official vignette below:
 
 - [![🌐 HTML Vignette](https://img.shields.io/badge/Vignette-HTML-brightgreen)](https://mghotbi.github.io/DspikeIn/)  
