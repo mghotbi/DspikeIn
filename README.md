@@ -18,7 +18,6 @@
    - [DspikeIn](#DspikeIn-Package)
    - [Installation](#Installation)
    - [Vignettes](#Vignettes)
-
    - [Requirements](#To-Meet-Taxonomic-Ranks-Requirements)
    - [GCN Correction](#GCN-Normalization-with-QIIME2-Plugin)
    - [Dataset for training](#dataset-for-practicing-dspikein-package)
