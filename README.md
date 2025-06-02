@@ -76,7 +76,7 @@ The DspikeIn package provides functions for:
 - Performing data transformation, differential abundance analysis, and visualization.  
 
 
-### 📘 Vignettes — Detailed Usage Examples & Guidance
+### Vignettes  📘 — Detailed Usage Examples & Guidance
 
 To explore comprehensive tutorials, code examples, and explanations on using `DspikeIn`, view or download the official vignette below:
 
