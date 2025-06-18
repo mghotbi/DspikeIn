@@ -17,6 +17,7 @@
    DspikeIn Package
    - [DspikeIn](#DspikeIn-Package)
    - [Installation](#Installation)
+   - [Vignettes](#Vignettes) 
    - [Requirements](#To-Meet-Taxonomic-Ranks-Requirements)
    - [GCN Correction](#GCN-Normalization-with-QIIME2-Plugin)
    - [Dataset for training](#dataset-for-practicing-dspikein-package)
@@ -51,7 +52,7 @@
    - [Detect common ASVs/OTUs](#Detect-common-asvs-otus)
 
 7. **Credits**
-   - [Acknowledgement](#Acknowledgement)
+   - [Acknowledgements](#Acknowledgement)
    - [Citing DspikeIn](#if-you-use-this-package-and-find-it-useful)
 
 ---
@@ -75,8 +76,8 @@ The DspikeIn package provides functions for:
 - Performing data transformation, differential abundance analysis, and visualization.  
 
 
-### 📘 Vignettes — Detailed Usage Examples & Guidance
-
+### Vignettes 
+📘 Detailed Usage Examples & Guidance
 To explore comprehensive tutorials, code examples, and explanations on using `DspikeIn`, view or download the official vignette below:
 
 - [![🌐 HTML Vignette](https://img.shields.io/badge/Vignette-HTML-brightgreen)](https://mghotbi.github.io/DspikeIn/)  
@@ -86,10 +87,9 @@ To explore comprehensive tutorials, code examples, and explanations on using `Ds
   *Downloadable PDF version - for offline reading.*
 
 
-```r
-browseVignettes("DspikeIn")
+---
 
-```
+
 ### Data availability
 The DspikeIn package provides example datasets located in the data/ folder and inst/extdata/ folder. You can list the available datasets using the following commands:
 
