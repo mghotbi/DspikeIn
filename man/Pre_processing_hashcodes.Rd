@@ -50,9 +50,7 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   processed_data_sum <- Pre_processing_hashcodes(
     physeq_16SOTU,
     hashcodes,
-    merge_method = "sum",
-    output_prefix = sum_prefix
-  )
+    merge_method = "sum")
 
   # Convert to TreeSummarizedExperiment (TSE)
   Tetragenococcus_TSE <- convert_phyloseq_to_tse(Tetragenococcus)
@@ -70,9 +68,7 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   processed_data_max <- Pre_processing_hashcodes(
     tse_16SOTU,
     hashcodes,
-    merge_method = "max",
-    output_prefix = max_prefix
-  )
+    merge_method = "max" )
 
   # Clean up
   files_to_delete <- paste0(c(sum_prefix, max_prefix), "_processed.rds")

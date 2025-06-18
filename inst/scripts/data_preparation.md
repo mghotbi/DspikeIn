@@ -21,12 +21,20 @@ All datasets were generated using reproducible R-based workflows and include tax
 
 ---
   
-  ## Source and Archiving
-  
-  - **Author**: Mitra Ghotbi  
+## Source and Archiving
+
+- **Author**: Mitra Ghotbi  
 - **Institution**: [Herptile Microbiomes](https://herptilemicrobiomes.org/research/)  
 - **Funding**: National Science Foundation (NSF) grants EF-2125065, EF-2125066, EF-2125067  
-- **Manuscript**: Under review at *ISME Journal*. Preprint available on [bioRxiv](https://doi.org/10.1101/2024.12.27.630554)
+- **Manuscript**: Under review at *ISME Journal*  
+- **Preprint**: Available on [bioRxiv](https://doi.org/10.1101/2024.12.27.630554)
+
+For full methodological and biological context, see the preprint:
+
+ Ghotbi M. *et al.* (2024). *DspikeIn: A spike-in controlled absolute abundance framework for microbial community analysis*.  
+ *bioRxiv*. https://doi.org/10.1101/2024.12.27.630554
+
+
 
 ---
   

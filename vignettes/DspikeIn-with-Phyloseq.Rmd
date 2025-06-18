@@ -1,5 +1,5 @@
 ---
-title: "Getting started with DspikeIn"
+title: "DspikeIn with Phyloseq"
 author: "Mitra Ghotbi"
 date: "`r Sys.Date()`"
 output:
@@ -14,7 +14,7 @@ fontsize: 11pt
 mainfont: "Arial"
 geometry: margin=1in
 vignette: >
-  %\VignetteIndexEntry{Getting started with DspikeIn}
+  %\VignetteIndexEntry{DspikeIn with Phyloseq}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -382,12 +382,15 @@ data("physeq_16SOTU", package = "DspikeIn")
 
 physeq_16SOTU <- DspikeIn::tidy_phyloseq_tse(physeq_16SOTU) # make it tidy
 
+# for those prefer to use TSE format
+tse_16SOTU<-convert_phyloseq_to_tse(physeq_16SOTU)
+
 # Check if metadata contains spiked volumes with this format
 colnames(sample_data(physeq_16SOTU))
 ```
 
 
-#          Spiked species and related parameters for 16S
+#          Spiked species and related parameters for 16S (Phyloseq format)
 
 
 ```{r}
@@ -445,6 +448,7 @@ Perc <- calculate_spike_percentage(
 ```
 
 
+
 #          Spiked species and related parameters for ITS
 
 
@@ -478,14 +482,12 @@ Perc <- calculate_spike_percentage(
 
 
 
-#         Calculating Scaling Factors
+#         Calculating Scaling Factors (Phyloseq object)
 
 
 ```{r}
-#
 
 #                      CALCULATE SCALING FACTORS
-
 
 
 # Calculate spike-in scaling factors
@@ -501,8 +503,6 @@ result$spiked_species_reads # Total reads detected for the spike
 scaling_factors <- result$scaling_factors
 head(scaling_factors) # Vector of scaling factors per sample
 ```
-
-
 
 #                Convert relative counts to absolute counts
 
@@ -586,58 +586,130 @@ sample_data(physeq_absolute) <- filtered_sample_data
 
 #           spiked species retrieval is system-dependent
 The goal is to identify the range where, for example, the evenness of your community remains independent of spiked species retrieval—meaning the p-value should not be significant, and the R² value should be low, indicating minimal influence.
-
+Hill number is interpretable as "effective diversity" (number of abundant species).
 
 ```{r}
-#  The acceptable range of spiked species retrieval is system-dependent
+
+# The acceptable range of spiked species retrieval is system-dependent
 # Spiked species become centroid of the community (Distance to Centroid)
 # Spiked species become dominant and imbalance the community (Evenness)
 
 # What range of spiked species retrieval is appropriate for your system?
-
 # Calculate Pielou's Evenness using Shannon index and species richness (Observed)
-# Load required libraries
+# Hill number q = 1 = exp(Shannon index), representing the effective number of equally abundant species. Hill is weighted by relative abundance, so dominant species have more influence.
+# Unlike Pielou's evenness, this metric is not normalized by richness and it shows Effective number of common species
+
+
+library(phyloseq)
 library(vegan)
-# physeq_ab <- normalization_set(physeq_absolute, method = "rar")
-# physeq_absolute <- physeq_ab$dat.normed
+library(dplyr)
+library(microbiome)
+library(DspikeIn)
 
-# Calculate Pielou's Evenness using Shannon index and species richness (Observed)
-alphab <- phyloseq::estimate_richness(physeq_absolute, measures = c("Observed", "Shannon"))
+# 1. Alpha Diversity: Pielou’s Evenness and Hill Number (q = 1)
+
+# Estimate richness and Shannon index
+alphab <- estimate_richness(
+  physeq_absolute,
+  measures = c("Observed", "Shannon")
+)
+
+# Calculate Pielou's Evenness = H' / S
 alphab$Pielou_evenness <- alphab$Shannon / alphab$Observed
 
-# Normalize values
-alphab <- alphab %>%
-  mutate(across(c("Observed", "Shannon", "Pielou_evenness"), ~ as.numeric(scale(.))))
+# Extract OTU matrix
+otu_mat <- otu_table(physeq_absolute)
+if (taxa_are_rows(physeq_absolute)) {
+  otu_mat <- t(otu_mat)
+}
+otu_mat <- as(otu_mat, "matrix")
 
-metadata <- as.data.frame(microbiome::meta(physeq_absolute))
+# Calculate Hill number q = 1
+alphab$Hill_q1 <- exp(vegan::diversity(otu_mat, index = "shannon"))
 
-metadata$Sample <- rownames(metadata)
+# Add sample ID
 alphab$Sample <- rownames(alphab)
 
-# Merge alpha diversity metrics into metadata
-metadata <- dplyr::left_join(metadata, alphab[, c("Sample", "Observed", "Shannon", "Pielou_evenness")], by = "Sample")
 
-metadata <- metadata %>%
-  column_to_rownames(var = "Sample")
+# 2. Merge Alpha Diversity with Metadata
+# ============================================================================
 
-# Updated metadata back to the phyloseq obj
+metadata <- as.data.frame(microbiome::meta(physeq_absolute))
+metadata$Sample <- rownames(metadata)
+
+metadata <- left_join(
+  metadata,
+  alphab[, c("Sample", "Observed", "Shannon", "Pielou_evenness", "Hill_q1")],
+  by = "Sample"
+)
+metadata <- column_to_rownames(metadata, var = "Sample")
 sample_data(physeq_absolute) <- sample_data(metadata)
 
+# Check presence of spike-in reads
 if (!"Spiked_Reads" %in% colnames(metadata)) {
   stop("Column 'Spiked_Reads' not found in metadata.")
 }
 
-# Generate regression plot
-plot_object <- regression_plot(
+
+# 3. Beta Diversity: Distance to Global Centroid (Full Bray-Curtis)
+# ============================================================================
+
+# Convert OTU table to relative abundances
+otu_mat_rel <- vegan::decostand(otu_mat, method = "total")
+
+# centroid profile
+centroid_profile <- colMeans(otu_mat_rel)
+
+# Compute Bray-Curtis distance to centroid for each sample
+dist_to_centroid <- apply(otu_mat_rel, 1, function(x) {
+  vegan::vegdist(rbind(x, centroid_profile), method = "bray")[1]
+})
+
+# Add distance to metadata
+metadata$Dist_to_Centroid <- dist_to_centroid[rownames(metadata)]
+
+# Update phyloseq object
+sample_data(physeq_absolute) <- sample_data(metadata)
+
+
+# 4. Regression Plots: Diversity vs. Spike-in Reads
+# ============================================================================
+
+# Pielou’s Evenness
+plot_object_pielou <- regression_plot(
   data = metadata,
   x_var = "Pielou_evenness",
   y_var = "Spiked_Reads",
-  custom_range = c(0.1, 20, 30, 50, 100),
+  custom_range = c(0.1, 20, 30, 40, 50, 60, 100),
   plot_title = NULL
 )
 
-```
+# Hill Number (q = 1)
+plot_object_hill <- regression_plot(
+  data = metadata,
+  x_var = "Hill_q1",
+  y_var = "Spiked_Reads",
+  custom_range = c(0.1,10, 20, 30, 100),
+  plot_title = NULL
+)
 
+# Distance to Global Centroid
+plot_object_centroid <- regression_plot(
+  data = metadata,
+  x_var = "Dist_to_Centroid",
+  y_var = "Spiked_Reads",
+  custom_range = c(0.1, 20, 30, 40, 50, 60, 100),
+  plot_title = NULL
+)
+
+
+# Interpretation
+# ============================================================================
+# - Pielou's evenness is normalized by richness; useful for detecting imbalance.
+# - Hill number q = 1 gives effective number of common species; sensitive to dominance.
+# - Distance to centroid in full Bray-Curtis space shows deviation from the average community.
+
+```
 
 
 #            Calculate the percentage of spiked species retrieval
@@ -680,8 +752,9 @@ passed_physeq <- phyloseq::prune_samples(passed_samples, absolute_abundance_16S_
 
 
 ```{r, out.width="70%"}
+
 physeq_absolute <- absolute$obj_adj
-pps_Abs <- get_long_format_data(physeq_absolute)
+pps_Abs <- DspikeIn::get_long_format_data(physeq_absolute)
 
 # calculation for relative abundance needs sum of total reads
 # total_reads <- sum(pps_Abs$Abundance)
@@ -690,9 +763,9 @@ pps_Abs <- get_long_format_data(physeq_absolute)
 
 alluvial_plot_abs <- alluvial_plot(
   data = pps_Abs,
-  axes = c("Host.genus", "Ecoregion.III", "Diet"),
+  axes = c("Host.genus", "Ecoregion.III","Diet", "Animal.ecomode"),
   abundance_threshold = 10000,
-  fill_variable = "Family",
+  fill_variable = "Class",
   silent = TRUE,
   abundance_type = "absolute",
   top_taxa = 15,
@@ -855,8 +928,6 @@ results_DESeq2$obj_significant
 # results_DESeq2$bar_plot
 ```
 
-
-
 ```{r}
 # Relative abundance
 data("physeq_16SOTU", package = "DspikeIn")
@@ -884,8 +955,62 @@ results_DESeq2_rel <- perform_and_visualize_DA(
 # results_DESeq2_rel$obj_significant
 ```
 
-# DA full Examples
-# Single and Multilayer Pairwise DA
+
+# Turnover (Presence/absence analysis)
+taxonomic detection consistency between RA and AA OTU tables
+Presence/absence analysis to detect concordance between AA and RA profiles
+
+```{r}
+# --------------------------------------------
+# 1. Extract OTU tables
+# --------------------------------------------
+otu_rel <- otu_table(Desmog_Blue_Ins_16_rel)
+otu_abs <- otu_table(Desmog_Blue_Ins_16_abs)
+
+if (taxa_are_rows(Desmog_Blue_Ins_16_rel)) {
+  otu_rel <- t(otu_rel)
+  otu_abs <- t(otu_abs)
+}
+
+otu_rel <- as.matrix(otu_rel)
+otu_abs <- as.matrix(otu_abs)
+
+# --------------------------------------------
+# 2. Convert to Presence/Absence 
+# --------------------------------------------
+otu_rel_pa <- (otu_rel > 0) * 1
+otu_abs_pa <- (otu_abs > 0) * 1
+
+# --------------------------------------------
+# 3. Identify common samples & taxa
+# --------------------------------------------
+shared_samples <- intersect(rownames(otu_rel_pa), rownames(otu_abs_pa))
+shared_taxa <- intersect(colnames(otu_rel_pa), colnames(otu_abs_pa))
+
+# Subset to common set
+otu_rel_pa <- otu_rel_pa[shared_samples, shared_taxa]
+otu_abs_pa <- otu_abs_pa[shared_samples, shared_taxa]
+
+# --------------------------------------------
+# 4. Compare presence/absence profiles
+# --------------------------------------------
+# Shared presence across both AA and RA
+shared_pa <- (otu_rel_pa + otu_abs_pa) == 2
+total_present <- (otu_rel_pa + otu_abs_pa) >= 1
+
+# Calculate percent agreement (global)
+percent_shared <- sum(shared_pa) / sum(total_present)
+
+cat("percent of shared taxa detections (AA vs RA):",
+    round(100 * percent_shared, 1), "%\n")
+
+
+
+```
+
+
+
+# Differential abundance (Single and Multilayer Pairwise)
 
 ```{r, eval=FALSE}
 
@@ -1406,6 +1531,77 @@ pg<-ggplot(df_bar, aes(x = Metric, y = log1p(Total_Value), fill = Group)) +
     fill = "Group" )
 ```
 
+# Small-World Index Analysis 
+To determine whether the complete network exhibited small-world topology, we computed the Small-World Index (SWI; σ) following the quantitative framework established by Humphries M, Gurney K, 2008. PLoS ONE 4
+(Eq.1) (SWI; σ) = (Global clustering coefficient real/Global clustering coefficient random)/(Avg Path real/Avg Path random))
+
+```{r, eval=FALSE}
+library(igraph)
+library(tidygraph)
+library(ggraph)
+library(DspikeIn)
+
+
+# AA abundance
+Complete<-load_graphml("Complete.graphml")
+# NoHubs<-load_graphml("NoHubs.graphml")
+# NoBasid<-load_graphml("NoBasid.graphml")
+
+# RA abundance
+# Complete_Rel<-load_graphml("~/Downloads/herp.spiecsym.Rel.graphml")
+
+# Degree distribution
+# deg <- degree(Complete_Rel)
+deg <- degree(Complete)
+
+hist(deg, breaks = 30, main = "Degree Distribution", xlab = "Degree")
+fit <- fit_power_law(deg + 1)  # Avoid zero degrees
+print(fit)
+
+
+# ---- empirical network ----
+g_empirical = Complete
+g_empirical = Complete_Rel
+
+
+
+# ---- Calculate real network metrics ----
+creal <- transitivity(g_empirical, type = "global")
+E(g_empirical)$weight <- abs(E(g_empirical)$weight)
+lreal <- mean_distance(g_empirical, directed = FALSE, unconnected = TRUE, weights = E(g_empirical)$weight)
+
+# ---- Generate 1000 Erdős-Rényi random graphs with same size ----
+set.seed(42)  # for reproducibility
+n_nodes <- vcount(g_empirical)
+n_edges <- ecount(g_empirical)
+
+crand_vals <- numeric(1000)
+lrand_vals <- numeric(1000)
+
+for (i in 1:1000) {
+g_rand <- sample_gnm(n = n_nodes, m = n_edges, directed = FALSE)
+if (!is_connected(g_rand)) next
+  
+  crand_vals[i] <- transitivity(g_rand, type = "global")
+  lrand_vals[i] <- mean_distance(g_rand, directed = FALSE, unconnected = TRUE)
+}
+
+# ---- Calculate mean values across random graphs ----
+crand <- mean(crand_vals, na.rm = TRUE)
+lrand <- mean(lrand_vals, na.rm = TRUE)
+
+# ---- Compute Small-World Index (σ) ----
+sigma <- (creal / crand) / (lreal / lrand)
+
+
+cat("Global clustering coefficient (real):", creal, "\n")
+cat("Average path length (real):", lreal, "\n")
+cat("Mean clustering coefficient (random):", crand, "\n")
+cat("Mean path length (random):", lrand, "\n")
+cat("Small-World Index (σ):", round(sigma, 2), "\n")
+
+```
+
 
 ```{r}
 sessionInfo()
@@ -1428,7 +1624,7 @@ files_to_delete <- c(
   "abundance_analysis_high_abundance_phyloseq.rds", "abundance_analysis_high_abundance_tse.rds",
   "abundance_analysis_low_abundance_phyloseq.rds", "abundance_analysis_low_abundance_tse.rds",
   "adjusted_prevalence.rds", "core_microbiome.csv", "core_microbiome.rds", "comp_spikein_patristic_distances.csv", "comp_spikein_branch_lengths.pdf", "comp_spikein_patristic_distances_hist.pdf",
-  "merged_data.csv", "merged_data.docx", "comp_spikein.nwk", "comp_spikein_tree.png", "comp_spikein_patristic_distances_hist.pfd",
+  "merged_data.csv", "merged_data.docx", "comp_spikein.nwk", "comp_spikein_tree.png", "comp_spikein_patristic_distances_hist.pfd","post_eval_summary.csv","post_eval_summary.docx",
   "merged_physeq_max_processed.rds", "merged_physeq_sum.rds",
   "merged_physeq_sum_processed.rds", "spikeIn_factors_output",
   "plot_Spike.percentage_Kruskal.pdf", "plot_Spike.percentage_Kruskal.png",

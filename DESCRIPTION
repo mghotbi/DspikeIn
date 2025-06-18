@@ -1,7 +1,7 @@
 Package: DspikeIn
 Type: Package
 Title: Estimating Absolute Abundance from Microbial Spike-in Controls
-Version: 0.99.10
+Version: 0.99.11
 Authors@R: 
     c(
         person(given = "Mitra", family = "Ghotbi", 
@@ -77,6 +77,7 @@ Imports:
     ggstar
 Suggests:
     Biobase,
+        mia,
     BiocGenerics,
     magrittr,
     BiocManager,

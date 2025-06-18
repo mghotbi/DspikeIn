@@ -54,6 +54,7 @@ if (
     requireNamespace("ggplot2", quietly = TRUE) &&
     requireNamespace("ggtree", quietly = TRUE) &&
     requireNamespace("ggtreeExtra", quietly = TRUE) &&
+    requireNamespace("ggstar", quietly = TRUE) &&
     requireNamespace("ggnewscale", quietly = TRUE)
 ) {
   # Load synthetic test dataset from DspikeIn

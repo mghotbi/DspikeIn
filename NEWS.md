@@ -1,3 +1,7 @@
+# Version: 0.99.11
+- Adding TSE Examples
+- Including TSE vignettes
+
 # DspikeIn 0.99.10
 
 _No major changes recorded._

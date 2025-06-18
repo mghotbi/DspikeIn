@@ -75,11 +75,15 @@ The DspikeIn package provides functions for:
 - Performing data transformation, differential abundance analysis, and visualization.  
 
 
-### To get detailed examples and guidance, please use:
-## 📘 Vignettes
+### 📘 Vignettes — Detailed Usage Examples & Guidance
 
-[![PDF Vignette](https://img.shields.io/badge/Vignette-PDF-blue)](https://drive.google.com/file/d/1UYUbTReCMlKCtu5mEtmG31d0YqeUkDAr/view)  
-[![HTML Vignette](https://img.shields.io/badge/Vignette-HTML-brightgreen)](https://drive.google.com/file/d/1a3tD98bVN--L34V5nT5X6d9aCpi8MLVL/view)
+To explore comprehensive tutorials, code examples, and explanations on using `DspikeIn`, view or download the official vignette below:
+
+- [![🌐 HTML Vignette](https://img.shields.io/badge/Vignette-HTML-brightgreen)](https://mghotbi.github.io/DspikeIn/)  
+  *Interactive HTML guide - open in your browser.*
+
+- [![📄 PDF Vignette](https://img.shields.io/badge/Vignette-PDF-blue)](https://mghotbi.github.io/DspikeIn/Getting-started-with-DspikeIn.pdf)  
+  *Downloadable PDF version - for offline reading.*
 
 
 ```r
@@ -229,6 +233,8 @@ lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings", "ggtree", "DECIPHER
 # Installation
 #Instructions for how to install the DspikeIn package.
 
+# *** Please note that installing with build_vignettes = TRUE may take 2–4 minutes, depending on your computer’s processing power ***
+
 # Install devtools if needed
 install.packages("devtools")
 
@@ -251,11 +257,6 @@ remotes::install_github(
   dependencies = TRUE)
 
 library(DspikeIn)
-
-
-# *** Please note that installing with build_vignettes = TRUE may take 2–4 minutes, depending on your computer’s processing power ***
-# To access the DspikeIn vignette for a detailed tutorial, use vignette("DspikeIn"), or browse all available vignettes with browseVignettes("DspikeIn").
-devtools::install_github("mghotbi/DspikeIn@MGhotbi", build_vignettes = TRUE, dependencies = TRUE)
 
 # Open the main vignette
 vignette("Getting-started-with-DspikeIn")

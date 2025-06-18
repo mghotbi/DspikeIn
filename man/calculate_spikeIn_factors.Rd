@@ -14,37 +14,25 @@ calculate_spikeIn_factors(
 \arguments{
 \item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object containing microbiome data.}
 
-\item{spiked_cells}{A numeric value specifying the number of spiked cells.}
+\item{spiked_cells}{A numeric value for the number of spiked cells per unit volume.}
 
-\item{merged_spiked_species}{A character vector of spiked species to merge in the object.}
+\item{merged_spiked_species}{A character vector of spiked taxon names (species or genus).}
 
-\item{output_path}{A character string specifying the path to save the DOCX output file.
-Default is \code{NULL}, which disables file writing.}
+\item{output_path}{Optional directory path to save intermediate files (default is NULL).}
 }
 \value{
-A list containing:
-\item{scaling_factors}{A numeric vector of calculated scaling factors, with a default factor of 1 for samples where no spiked species were detected (to prevent division by zero).}
-\item{filtered_obj}{Filtered \code{phyloseq} or \code{TreeSummarizedExperiment} object with spiked species removed.}
-\item{spiked_16S_total_reads}{A data frame containing total reads per sample.}
-\item{spiked_species}{The extracted spiked species from the input object.}
-\item{spiked_species_merged}{A merged version of the spiked species.}
-\item{spiked_species_reads}{A data frame with read counts for merged spiked species.}
-\item{absolute_counts}{The bias-corrected OTU table converted from relative to absolute counts.}
-\item{normalized_obj}{The corrected \code{phyloseq} or \code{TreeSummarizedExperiment} object with all original components intact.}
-\item{tree}{The phylogenetic tree from the input object, if present. NULL otherwise.}
+A list with:
+\item{scaling_factors}{Named numeric vector of scaling factors per sample.}
+\item{filtered_obj}{Input object with spike-in taxa removed.}
+\item{spiked_species_reads}{Data frame with spike-in reads per sample.}
+\item{total_reads}{Data frame with total reads per sample.}
+\item{spiked_species_merged}{The merged spike-in taxa as a phyloseq object.}
+\item{tree}{Original phylogenetic tree, if available.}
 }
 \description{
-This function calculates scaling factors for specified spiked species
-in a \code{phyloseq} or \code{TreeSummarizedExperiment (TSE)} object.
-It removes spiked species, merges them, computes scaling factors,
-applies them to the OTU table, and returns bias-corrected absolute counts along with relevant outputs.
-}
-\details{
-\itemize{
-\item The metadata must contain a column named \code{"spiked.volume"} with appropriate values.
-\item If no spiked species are detected in a sample, a default scaling factor of 1 is applied (to prevent division by zero).
-\item If \code{TreeSummarizedExperiment} is entered and \code{rowTree(obj)} is invalid, the tree will be omitted.
-}
+Calculates scaling factors for specified spike-in species or genera in
+a \code{phyloseq} or \code{TreeSummarizedExperiment (TSE)} object. It supports genus/species-level detection,
+removes spike-ins, merges them, computes scaling factors, and returns a bias-corrected absolute count matrix.
 }
 \examples{
 if (requireNamespace("DspikeIn", quietly = TRUE) &&
