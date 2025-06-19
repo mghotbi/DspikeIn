@@ -23,8 +23,8 @@ both \code{.docx} and \code{.csv} versions of the table.
 \examples{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   # --- Phyloseq example ---
-  data("physeq_16SOTU", package = "DspikeIn")
-  absolute_count <- phyloseq::otu_table(physeq_16SOTU)
+  data("physeq", package = "DspikeIn")
+  absolute_count <- phyloseq::otu_table(physeq)
 
   tmp_docx <- file.path(tempdir(), "physeq_summary.docx")
   summary_table_physeq <- calculate_summary_stats_table(

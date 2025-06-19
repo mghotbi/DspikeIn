@@ -32,31 +32,28 @@
 #' \dontrun{
 #' if (
 #'   requireNamespace("DspikeIn", quietly = TRUE) &&
-#'     requireNamespace("phyloseq", quietly = TRUE) &&
-#'     requireNamespace("TreeSummarizedExperiment", quietly = TRUE) &&
-#'     requireNamespace("ggplot2", quietly = TRUE) &&
-#'     requireNamespace("ggtree", quietly = TRUE) &&
-#'     requireNamespace("ggtreeExtra", quietly = TRUE) &&
-#'     requireNamespace("ggstar", quietly = TRUE) &&
-#'     requireNamespace("ggnewscale", quietly = TRUE)
+#'   requireNamespace("phyloseq", quietly = TRUE) &&
+#'   requireNamespace("TreeSummarizedExperiment", quietly = TRUE) &&
+#'   requireNamespace("ggplot2", quietly = TRUE) &&
+#'   requireNamespace("ggtree", quietly = TRUE) &&
+#'   requireNamespace("ggtreeExtra", quietly = TRUE) &&
+#'   requireNamespace("ggstar", quietly = TRUE) &&
+#'   requireNamespace("ggnewscale", quietly = TRUE)
 #' ) {
-#'   # Load synthetic test dataset from DspikeIn
+#'
+#'   # ----------- Phyloseq Example -----------
 #'   data("physeq_16SOTU", package = "DspikeIn")
+#'   spikein_ps <- phyloseq::subset_taxa(physeq_16SOTU, Genus == "Tetragenococcus")
 #'
-#'   # Filter to a known spike-in genus
-#'   spikein <- phyloseq::subset_taxa(physeq_16SOTU, Genus == "Tetragenococcus")
-#'
-#'   # Plot diagnostic using phyloseq object
 #'   plot_spikein_tree_diagnostic(
-#'     obj = spikein,
+#'     obj = spikein_ps,
 #'     metadata_var = "Animal.type",
 #'     save_plot = FALSE
 #'   )
 #'
-#'   # Convert to TreeSummarizedExperiment object
-#'   tse_spikein <- convert_phyloseq_to_tse(spikein)
+#'   # ----------- TSE Example -----------
+#'   tse_spikein <- convert_phyloseq_to_tse(spikein_ps)
 #'
-#'   # Plot diagnostic using TSE object
 #'   plot_spikein_tree_diagnostic(
 #'     obj = tse_spikein,
 #'     metadata_var = "Animal.type",

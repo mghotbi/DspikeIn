@@ -64,9 +64,8 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   )
   print(result_physeq)
 
-  # ----------- TreeSummarizedExperiment Example -----------
+  # ----------- TSE Example -----------
   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
-
   merged_tse <- Pre_processing_species(
     tse_16SOTU,
     species_name = species_name,

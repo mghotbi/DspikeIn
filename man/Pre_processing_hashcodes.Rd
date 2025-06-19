@@ -2,74 +2,72 @@
 % Please edit documentation in R/Pre_processing_hashcodes.R
 \name{Pre_processing_hashcodes}
 \alias{Pre_processing_hashcodes}
-\title{Pre-process taxa in a phyloseq or TSE object by merging ASVs/OTUs using hashcodes}
+\title{Pre-process phyloseq or TSE object based on hashcodes}
 \usage{
 Pre_processing_hashcodes(
   obj,
   hashcodes,
   merge_method = c("sum", "max"),
-  output_file = NULL
+  output_prefix = "merged_physeq"
 )
 }
 \arguments{
 \item{obj}{A \code{phyloseq} or \code{TreeSummarizedExperiment} object.}
 
-\item{hashcodes}{A character vector of OTU hashcodes to be merged.}
+\item{hashcodes}{A character vector of taxon hashcodes (OTU row names).}
 
-\item{merge_method}{Merge strategy to apply to counts: \code{"sum"} (default) or \code{"max"}.}
+\item{merge_method}{The method to merge taxa: "sum" or "max".}
 
-\item{output_file}{Optional path to save the resulting object as an \code{.rds} file.}
+\item{output_prefix}{A prefix for the output file names.}
 }
 \value{
-A processed \code{phyloseq} or \code{TreeSummarizedExperiment} object with merged ASVs/OTUs.
+A processed phyloseq or TSE object.
 }
 \description{
-Merges ASVs/OTUs using a list of exact hashcodes (typically OTU IDs from QIIME2).
-Supports both \code{phyloseq} and \code{TreeSummarizedExperiment} (TSE) objects. Ensures that
-phylogenetic trees and reference sequences are retained and pruned as needed to remain
-consistent with merged taxa.
+Subsets, merges, and saves taxa based on hashcodes and a specified merge method ("sum" or "max").
+This function pre-processes a \code{phyloseq} or \code{TreeSummarizedExperiment} (TSE) object by subsetting, merging,
+and saving taxa based on provided hashcodes. It retains taxonomic information and creates intermediate datasets
+for further downstream analysis.
 }
 \examples{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
-  # Example 1: phyloseq input
-  subset_physeq <- phyloseq::subset_taxa(
+  # Subset to Tetragenococcus species
+  tetragenococcus_physeq <- phyloseq::subset_taxa(
     physeq_16SOTU,
     Species \%in\% c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
   )
-  hashcodes_phy <- rownames(phyloseq::otu_table(subset_physeq))
 
-  merged_physeq <- Pre_processing_hashcodes(
-    obj = physeq_16SOTU,
-    hashcodes = hashcodes_phy,
+  # Extract OTU IDs (hashcodes) for phyloseq object
+  hashcodes_physeq <- rownames(phyloseq::otu_table(tetragenococcus_physeq))
+
+  # Remove previous output file if exists
+  if (file.exists("merged_physeq_processed.rds"))
+    file.remove("merged_physeq_processed.rds")
+
+  # Run merging with "sum" method for phyloseq
+  processed_sum <- Pre_processing_hashcodes(
+    physeq_16SOTU,
+    hashcodes = hashcodes_physeq,
     merge_method = "sum"
   )
 
-  # Example 2: TreeSummarizedExperiment (TSE) input
+  # Convert to TreeSummarizedExperiment (TSE)
   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
-  row_annots <- SummarizedExperiment::rowData(tse_16SOTU)
-  subset_tse <- tse_16SOTU[
-    which(row_annots$Species \%in\% c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")),
-  ]
-  hashcodes_tse <- rownames(SummarizedExperiment::assay(subset_tse, "counts"))
+  tetragenococcus_TSE <- convert_phyloseq_to_tse(tetragenococcus_physeq)
 
-  merged_tse <- Pre_processing_hashcodes(
-    obj = tse_16SOTU,
+  # Extract hashcodes for TSE
+  hashcodes_tse <- rownames(tetragenococcus_TSE)
+
+  # Run merging with "max" method for TSE
+  processed_max <- Pre_processing_hashcodes(
+    tse_16SOTU,
     hashcodes = hashcodes_tse,
     merge_method = "max"
   )
 
-  # Optional cleanup
-  output_files <- c(
-    file.path(tempdir(), "merged_physeq_sum_processed.rds"),
-    file.path(tempdir(), "merged_tse_max_processed.rds")
-  )
-  for (f in output_files) {
-    if (file.exists(f)) file.remove(f)
-  }
-
-  rm(subset_physeq, hashcodes_phy, merged_physeq,
-     tse_16SOTU, subset_tse, hashcodes_tse, merged_tse, output_files, row_annots)
+  # Final cleanup of written file
+  file.remove("merged_physeq_processed.rds")
 }
 }

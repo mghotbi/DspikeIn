@@ -14,11 +14,16 @@
 #' @return A cleaned and filtered object of the same class with updated taxonomy.
 #'
 #' @examples
-#'
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
+#'   # Load example phyloseq object
 #'   data("physeq_16SOTU", package = "DspikeIn")
 #'
+#'   # ----------- Tidy phyloseq object -----------
 #'   tidy_physeq <- tidy_phyloseq_tse(physeq_16SOTU)
+#'
+#'   # ----------- Tidy TSE object -----------
+#'   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+#'   tidy_tse <- tidy_phyloseq_tse(tse_16SOTU)
 #' }
 #'
 #' @importFrom phyloseq prune_taxa tax_table tax_table<-

@@ -1,159 +1,127 @@
-#' @title Pre-process taxa in a phyloseq or TSE object by merging ASVs/OTUs using hashcodes
-#'
-#' @description
-#' Merges ASVs/OTUs using a list of exact hashcodes (typically OTU IDs from QIIME2).
-#' Supports both `phyloseq` and `TreeSummarizedExperiment` (TSE) objects. Ensures that
-#' phylogenetic trees and reference sequences are retained and pruned as needed to remain
-#' consistent with merged taxa.
+#' @title Pre-process phyloseq or TSE object based on hashcodes
+#' @description Subsets, merges, and saves taxa based on hashcodes and a specified merge method ("sum" or "max").
+#' This function pre-processes a `phyloseq` or `TreeSummarizedExperiment` (TSE) object by subsetting, merging,
+#' and saving taxa based on provided hashcodes. It retains taxonomic information and creates intermediate datasets
+#' for further downstream analysis.
 #'
 #' @param obj A `phyloseq` or `TreeSummarizedExperiment` object.
-#' @param hashcodes A character vector of OTU hashcodes to be merged.
-#' @param merge_method Merge strategy to apply to counts: `"sum"` (default) or `"max"`.
-#' @param output_file Optional path to save the resulting object as an `.rds` file.
+#' @param hashcodes A character vector of taxon hashcodes (OTU row names).
+#' @param merge_method The method to merge taxa: "sum" or "max".
+#' @param output_prefix A prefix for the output file names.
+#' @return A processed phyloseq or TSE object.
 #'
-#' @return A processed `phyloseq` or `TreeSummarizedExperiment` object with merged ASVs/OTUs.
-#'
-#' @importFrom phyloseq phyloseq otu_table tax_table sample_data phy_tree refseq merge_phyloseq
-#' @importFrom TreeSummarizedExperiment TreeSummarizedExperiment rowTree referenceSeq referenceSeq<-
-#' @importFrom SummarizedExperiment assay rowData colData
-#' @importFrom ape drop.tip
-#'
+#' @importFrom phyloseq taxa_names tax_table otu_table merge_taxa prune_taxa merge_phyloseq sample_data
+#' @importFrom TreeSummarizedExperiment rowTree
 #' @examples
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
 #'
-#'   # Example 1: phyloseq input
-#'   subset_physeq <- phyloseq::subset_taxa(
+#'   # Subset to Tetragenococcus species
+#'   tetragenococcus_physeq <- phyloseq::subset_taxa(
 #'     physeq_16SOTU,
 #'     Species %in% c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
 #'   )
-#'   hashcodes_phy <- rownames(phyloseq::otu_table(subset_physeq))
 #'
-#'   merged_physeq <- Pre_processing_hashcodes(
-#'     obj = physeq_16SOTU,
-#'     hashcodes = hashcodes_phy,
+#'   # Extract OTU IDs (hashcodes) for phyloseq object
+#'   hashcodes_physeq <- rownames(phyloseq::otu_table(tetragenococcus_physeq))
+#'
+#'   # Remove previous output file if exists
+#'   if (file.exists("merged_physeq_processed.rds"))
+#'     file.remove("merged_physeq_processed.rds")
+#'
+#'   # Run merging with "sum" method for phyloseq
+#'   processed_sum <- Pre_processing_hashcodes(
+#'     physeq_16SOTU,
+#'     hashcodes = hashcodes_physeq,
 #'     merge_method = "sum"
 #'   )
 #'
-#'   # Example 2: TreeSummarizedExperiment (TSE) input
+#'   # Convert to TreeSummarizedExperiment (TSE)
 #'   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
-#'   row_annots <- SummarizedExperiment::rowData(tse_16SOTU)
-#'   subset_tse <- tse_16SOTU[
-#'     which(row_annots$Species %in% c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")),
-#'   ]
-#'   hashcodes_tse <- rownames(SummarizedExperiment::assay(subset_tse, "counts"))
+#'   tetragenococcus_TSE <- convert_phyloseq_to_tse(tetragenococcus_physeq)
 #'
-#'   merged_tse <- Pre_processing_hashcodes(
-#'     obj = tse_16SOTU,
+#'   # Extract hashcodes for TSE
+#'   hashcodes_tse <- rownames(tetragenococcus_TSE)
+#'
+#'   # Run merging with "max" method for TSE
+#'   processed_max <- Pre_processing_hashcodes(
+#'     tse_16SOTU,
 #'     hashcodes = hashcodes_tse,
 #'     merge_method = "max"
 #'   )
+
 #'
-#'   # Optional cleanup
-#'   output_files <- c(
-#'     file.path(tempdir(), "merged_physeq_sum_processed.rds"),
-#'     file.path(tempdir(), "merged_tse_max_processed.rds")
-#'   )
-#'   for (f in output_files) {
-#'     if (file.exists(f)) file.remove(f)
-#'   }
-#'
-#'   rm(subset_physeq, hashcodes_phy, merged_physeq,
-#'      tse_16SOTU, subset_tse, hashcodes_tse, merged_tse, output_files, row_annots)
+#'   # Final cleanup of written file
+#'   file.remove("merged_physeq_processed.rds")
 #' }
 #' @export
-Pre_processing_hashcodes <- function(obj, hashcodes, merge_method = c("sum", "max"), output_file = NULL) {
+Pre_processing_hashcodes <- function(obj, hashcodes, merge_method = c("sum", "max"), output_prefix = "merged_physeq") {
   merge_method <- match.arg(merge_method)
   message("Starting pre-processing...")
   
-  is_physeq <- inherits(obj, "phyloseq")
-  is_tse <- inherits(obj, "TreeSummarizedExperiment")
-  
-  if (!is_physeq && !is_tse) {
-    stop("Input must be `phyloseq` or `TreeSummarizedExperiment`.")
+  #  Convert TSE to phyloseq if necessary
+  if (inherits(obj, "TreeSummarizedExperiment")) {
+    message("Converting TSE to phyloseq...")
+    obj <- convert_tse_to_phyloseq(obj)
   }
   
-  # Extract components
-  otu_table_data <- get_otu_table(obj)
-  tax_data <- as.data.frame(get_tax_table(obj))
+  #  Extract data using accessors
+  otu_matrix <- get_otu_table(obj)
+  tax_table_df <- get_tax_table(obj)
   sample_metadata <- get_sample_data(obj)
-  phy_tree <- tryCatch(if (is_physeq) phyloseq::phy_tree(obj) else TreeSummarizedExperiment::rowTree(obj), error = function(e) NULL)
-  ref_sequences <- tryCatch(
-    if (is_physeq) phyloseq::refseq(obj) else TreeSummarizedExperiment::referenceSeq(obj),
-    error = function(e) NULL
-  )
   
-  # Validate input hashcodes
-  hashcodes <- intersect(hashcodes, rownames(otu_table_data))
-  if (length(hashcodes) < 2) {
-    stop("At least two matching hashcodes are required for merging.")
+  # Ensure valid data
+  if (is.null(otu_matrix) || nrow(otu_matrix) == 0) {
+    stop("Error: OTU table is empty or missing.")
   }
   
-  # Merge selected ASVs/OTUs
+  if (!all(hashcodes %in% rownames(otu_matrix))) {
+    stop("Error: One or more hashcodes not found in the dataset.")
+  }
+  
+  #  Merge method: "sum" (sum abundances)
   if (merge_method == "sum") {
-    merged_counts <- colSums(otu_table_data[hashcodes, , drop = FALSE])
-    otu_table_data[hashcodes[1], ] <- merged_counts
-  } else {
-    max_idx <- which.max(rowSums(otu_table_data[hashcodes, , drop = FALSE]))
-    otu_table_data[hashcodes[1], ] <- otu_table_data[hashcodes[max_idx], ]
+    message("Merging taxa using 'sum' method...")
+    obj_merged <- phyloseq::merge_taxa(obj, hashcodes)
   }
   
-  # Drop redundant rows
-  otu_table_data <- otu_table_data[setdiff(rownames(otu_table_data), hashcodes[-1]), , drop = FALSE]
-  tax_data <- tax_data[setdiff(rownames(tax_data), hashcodes[-1]), , drop = FALSE]
-  
-  # Prune tree if needed
-  if (!is.null(phy_tree)) {
-    common_tips <- intersect(phy_tree$tip.label, rownames(otu_table_data))
-    if (length(common_tips) > 1) {
-      phy_tree <- ape::drop.tip(phy_tree, setdiff(phy_tree$tip.label, common_tips))
-    } else {
-      warning("Too few taxa remain for tree. Tree removed.")
-      phy_tree <- NULL
-    }
-  }
-  
-  # Prune refseq if needed
-  if (!is.null(ref_sequences)) {
-    common_names <- intersect(names(ref_sequences), rownames(otu_table_data))
-    if (length(common_names) > 1) {
-      ref_sequences <- ref_sequences[common_names]
-    } else {
-      warning("Too few sequences left. RefSeq removed.")
-      ref_sequences <- NULL
-    }
-  }
-  
-  # Rebuild object
-  if (is_physeq) {
-    obj <- phyloseq::phyloseq(
-      phyloseq::otu_table(otu_table_data, taxa_are_rows = TRUE),
-      phyloseq::tax_table(as.matrix(tax_data)),
-      phyloseq::sample_data(sample_metadata),
-      if (!is.null(phy_tree)) phy_tree else NULL,
-      if (!is.null(ref_sequences)) phyloseq::refseq(ref_sequences) else NULL
-    )
-  } else {
-    obj <- TreeSummarizedExperiment::TreeSummarizedExperiment(
-      assays = list(counts = otu_table_data),
-      rowData = tax_data,
-      colData = sample_metadata,
-      rowTree = if (!is.null(phy_tree)) phy_tree else NULL
+  #  Merge method: "max" (keep max abundance per sample)
+  else if (merge_method == "max") {
+    message("Merging taxa using 'max' method...")
+    
+    # Extract and process OTU table
+    otu_selected <- otu_matrix[hashcodes, , drop = FALSE]
+    max_abundances <- apply(otu_selected, 2, max)
+    max_hashcodes <- hashcodes[apply(otu_selected, 2, which.max)]
+    
+    # Create a new OTU table with max abundances
+    new_otu_table <- otu_selected[max_hashcodes[1], , drop = FALSE]
+    new_otu_table[] <- max_abundances
+    
+    # Retain taxonomic info
+    new_tax_table <- tax_table_df[max_hashcodes[1], , drop = FALSE]
+    
+    #  Build a new phyloseq object with max-abundance taxa
+    max_phyloseq <- phyloseq::phyloseq(
+      phyloseq::otu_table(new_otu_table, taxa_are_rows = TRUE),
+      phyloseq::tax_table(as.matrix(new_tax_table)),
+      phyloseq::sample_data(sample_metadata)
     )
     
-    if (!is.null(ref_sequences)) {
-      TreeSummarizedExperiment::referenceSeq(obj) <- ref_sequences
-    }
+    # Remove original hashcodes from dataset
+    obj_pruned <- phyloseq::prune_taxa(!rownames(otu_matrix) %in% hashcodes, obj)
+    
+    # Merge pruned object with max-abundance taxa
+    obj_merged <- phyloseq::merge_phyloseq(obj_pruned, max_phyloseq)
   }
   
-  # Save if needed
-  if (!is.null(output_file)) {
-    saveRDS(obj, file = output_file)
-    message("Saved processed object to: ", output_file)
-  }
+  #  Save processed data
+  processed_data_path <- paste0(output_prefix, "_processed.rds")
+  saveRDS(obj_merged, processed_data_path)
+  message("Saved processed data file: ", processed_data_path)
   
   message("Pre-processing complete.")
-  return(obj)
+  return(obj_merged)
 }
 
 

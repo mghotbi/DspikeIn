@@ -40,20 +40,38 @@
 #'
 #' @examples
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
+#'   # Load example phyloseq and TSE objects
 #'   data("physeq", package = "DspikeIn")
-#'   spiked_species_list <- c("Pseudomonas aeruginosa", "Escherichia coli", "Clostridium difficile")
+#'   data("tse", package = "DspikeIn")
 #'
+#'   # Define merged spike-in species list
+#'   spiked_species_list <- c(
+#'     "Pseudomonas aeruginosa",
+#'     "Escherichia coli",
+#'     "Clostridium difficile"
+#'   )
+#'
+#'   # Create temporary output paths
 #'   temp_docx <- file.path(tempdir(), "merged_result.docx")
 #'   temp_csv <- sub(".docx", ".csv", temp_docx)
 #'
-#'   result <- calculate_spike_percentage_list(
+#'   # --- Phyloseq Example ---
+#'   result_physeq <- calculate_spike_percentage_list(
 #'     obj = physeq,
 #'     merged_spiked_species = spiked_species_list,
 #'     output_path = temp_docx,
 #'     passed_range = c(0.1, 10)
 #'   )
+#'   print(result_physeq)
 #'
-#'   print(result)
+#'   # --- TSE Example ---
+#'   result_tse <- calculate_spike_percentage_list(
+#'     obj = tse,
+#'     merged_spiked_species = spiked_species_list,
+#'     output_path = temp_docx,
+#'     passed_range = c(0.1, 10)
+#'   )
+#'   print(result_tse)
 #'
 #'   # Clean up
 #'   if (file.exists(temp_docx)) unlink(temp_docx, force = TRUE)

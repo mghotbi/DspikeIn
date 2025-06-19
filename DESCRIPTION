@@ -22,58 +22,28 @@ Description: Provides a reproducible and modular workflow for absolute
 License: MIT + file LICENSE
 URL: https://github.com/mghotbi/DspikeIn
 BugReports: https://github.com/mghotbi/DspikeIn/issues
-Depends: 
-    R (>= 4.1.0)
-Imports:
-    ape,
-    Biostrings,
-    data.table,
-    DECIPHER,
-    DESeq2,
-    dplyr,
-    edgeR,
-    flextable,
-    ggalluvial,
-    ggnewscale,
-    ggplot2,
-    ggpubr,
-    ggstar,
-    ggtree,
-    ggtreeExtra,
-    graphics,
-    grDevices,
-    grid,
-    limma,
-    matrixStats,
-    methods,
-    microbiome,
-    msa,
-    officer,
-    phangorn,
-    phyloseq,
-    randomForest,
-    RColorBrewer,
-    S4Vectors,
-    scales,
-    stats,
-    SummarizedExperiment,
-    tibble,
-    tidyr,
-    TreeSummarizedExperiment,
-    utils
-Suggests:
-    knitr,
-    rmarkdown,
-    testthat (>= 3.0.0),
-    vegan
-VignetteBuilder: 
-    knitr
+Depends: R (>= 4.1.0)
+Imports: ape, Biostrings, data.table, DECIPHER, DESeq2, dplyr, edgeR,
+        flextable, ggalluvial, ggnewscale, ggplot2, ggpubr, ggstar,
+        ggtree, ggtreeExtra, graphics, grDevices, grid, limma,
+        matrixStats, methods, microbiome, msa, officer, phangorn,
+        phyloseq, randomForest, RColorBrewer, S4Vectors, scales, stats,
+        SummarizedExperiment, tibble, tidyr, TreeSummarizedExperiment,
+        utils
+Suggests: mia, BiocStyle, knitr, rmarkdown, testthat (>= 3.0.0), vegan
+VignetteBuilder: knitr
 biocViews: Microbiome, Preprocessing, QualityControl,
-    DifferentialExpression, Normalization, Sequencing, Visualization,
-    Phylogenetics, ExperimentalDesign, DataImport, Software
+        DifferentialExpression, Normalization, Sequencing,
+        Visualization, Phylogenetics, ExperimentalDesign, DataImport,
+        Software
 Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz
 NeedsCompilation: no
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+Packaged: 2025-06-19 18:38:14 UTC; mitraghotbi
+Author: Mitra Ghotbi [aut, cre] (ORCID:
+    <https://orcid.org/0000-0001-9185-9993>),
+  Marjan Ghotbi [ctb] (ORCID: <https://orcid.org/0000-0003-4655-6445>)
+Maintainer: Mitra Ghotbi <mitra.ghotbi@gmail.com>
