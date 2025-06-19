@@ -1,3 +1,7 @@
+# Version: 0.99.12
+- Cleaned up Rcheck.
+
+
 # Version: 0.99.11
 - Adding TSE Examples
 - Including TSE vignettes
