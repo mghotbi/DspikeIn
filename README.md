@@ -76,16 +76,18 @@ The DspikeIn package provides functions for:
 - Performing data transformation, differential abundance analysis, and visualization.  
 
 
-### Vignettes 
-📘 Detailed Usage Examples & Guidance
-To explore comprehensive tutorials, code examples, and explanations on using `DspikeIn`, view or download the official vignette below:
+## Vignettes
 
-- [![🌐 HTML Vignette](https://img.shields.io/badge/Vignette-HTML-brightgreen)](https://mghotbi.github.io/DspikeIn/)  
-  *Interactive HTML guide - open in your browser.*
+Explore comprehensive tutorials and examples for using the DspikeIn package:
 
-- [![📄 PDF Vignette](https://img.shields.io/badge/Vignette-PDF-blue)](https://mghotbi.github.io/DspikeIn/Getting-started-with-DspikeIn.pdf)  
-  *Downloadable PDF version - for offline reading.*
+- [DspikeIn with Phyloseq (HTML)](https://mghotbi.github.io/DspikeIn/DspikeIn-with-Phyloseq.html)
+- [DspikeIn with TSE (HTML)](https://mghotbi.github.io/DspikeIn/DspikeIn-with-TSE.html)
+- [📄 Download PDF: DspikeIn with Phyloseq](https://mghotbi.github.io/DspikeIn/DspikeIn-with-Phyloseq.pdf)
+- [📄 Download PDF: DspikeIn with TSE](https://mghotbi.github.io/DspikeIn/DspikeIn-with-TSE.pdf)
 
+Or visit the full documentation homepage:
+
+👉 [**Interactive Docs Homepage**](https://mghotbi.github.io/DspikeIn/index.html)
 
 ---
 
