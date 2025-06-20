@@ -90,3 +90,4 @@ tidy_phyloseq_tse <- function(obj) {
 # tidy_Mt_tse <- tidy_phyloseq_tse(mt)
 # taxonomy_table <- SummarizedExperiment::rowData(tidy_M19_tse)
 # phylo_tree <- S4Vectors::metadata(tidy_M19_tse)$tree
+# 

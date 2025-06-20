@@ -88,3 +88,4 @@ calculate_summary_stats_table <- function(data, output_path = NULL) {
 # summary_table <- calculate_summary_stats_table(absolute_counts, output_path = "summary.docx")
 # print(summary_table)
 # post_eval_summary <- read.csv("summary.csv")
+# 

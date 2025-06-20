@@ -187,3 +187,4 @@ RandomForest_selected <- function(physeq, response_var, minlib = 5000, prunescal
 # na_vars = c("Habitat", "Ecoregion.III", "Host.genus","Animal.type", "Diet"))
 # saveRDS(rf_physeq,"rf_physeq.rds")
 # rf_physeq@tax_table
+# 

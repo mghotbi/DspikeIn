@@ -145,3 +145,4 @@ plotbar_abundance <- function(physeq, tax_level = "Genus", normalize = TRUE,
 #                                 treatment_variable = "Host.taxon",
 #                                 x_angle = 6, abundance_type = "absolute")
 
+# 

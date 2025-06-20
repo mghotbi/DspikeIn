@@ -184,4 +184,4 @@ calculate_spikeIn_factors <- function(obj, spiked_cells, merged_spiked_species, 
 # result <- calculate_spikeIn_factors(merged_physeq_sum, 1874, merged_spiked_species)
 #
 # # Access the results
-# scaling_factors <- result$scaling_factors
+# scaling_factors <- result$scaling_factors# 

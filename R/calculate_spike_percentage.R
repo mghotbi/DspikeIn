@@ -172,3 +172,4 @@ calculate_spike_percentage <- function(obj,
 # calculate_spike_percentage(physeq,
 # merged_spiked_hashcodes = merged_spiked_hashcodes,
 # passed_range = c(0.1, 10))
+# 

@@ -140,3 +140,4 @@ Pre_processing_hashcodes <- function(obj, hashcodes, merge_method = c("sum", "ma
 # tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 # processed_data_max <- Pre_processing_hashcodes(tse_16SOTU, hashcodes, merge_method = "max",
 # output_prefix = "merged_physeq_max")
+# 

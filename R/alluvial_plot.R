@@ -242,3 +242,4 @@ alluvial_plot <- function(data, axes = NULL, abundance_threshold = 10000, fill_v
 
 # Print the alluvial plot for absolute abundance
 # print(alluvial_plot_abs)
+# 

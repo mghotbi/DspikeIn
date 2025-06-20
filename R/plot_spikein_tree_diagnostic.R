@@ -183,3 +183,4 @@ plot_spikein_tree_diagnostic <- function(obj,
 #  metadata_var = "Animal.type",
 #  save_plot = TRUE,
 #  output_prefix = "tetragenococcus_diag"  )
+# 

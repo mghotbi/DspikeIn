@@ -173,3 +173,4 @@ calculate_list_average_scaling_factors <- function(obj, spiked_species_list, spi
 # spiked_species_list, spiked_cells_list, merge_method = "sum") # or max
 # # Print the scaling factors for each OTU
 # print(scaling_factors)
+# 

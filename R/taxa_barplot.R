@@ -249,3 +249,4 @@ taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL,
 #  legend_columns = 1,
 #  palette = color_palette$light_MG)
 # print(bp_free$barplot)
+# 

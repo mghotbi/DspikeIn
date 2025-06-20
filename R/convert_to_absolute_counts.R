@@ -212,3 +212,4 @@ convert_to_absolute_counts <- function(obj, scaling_factors, output_dir = NULL) 
 # result_tse <- convert_to_absolute_counts(tse_obj, scaling_factors)
 # abs_counts_tse <- result_tse$absolute_counts
 # tse_adj <- result_tse$obj_adj
+# 

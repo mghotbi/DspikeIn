@@ -73,3 +73,4 @@ utils::globalVariables(c(
   "write.csv", "xlab", "ylab", ".data", "taxa_sums", "Class", "Family", "Species", "Abundance",
   "pvalue", "branch.length", "stratum", "label", "node", "visualize_differential_abundance"
 ))
+# 

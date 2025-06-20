@@ -71,3 +71,4 @@ get_otu_table <- function(obj) {
     stop("\U0000274C Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
   }
 }
+# 

@@ -976,3 +976,4 @@ norm.rle <- function(obj, locfunc = stats::median, type = c("poscounts", "ratio"
 # scaling_factors_rle <- result_rle$scaling.factor
 
 # -----------------------------------------------------------
+# 

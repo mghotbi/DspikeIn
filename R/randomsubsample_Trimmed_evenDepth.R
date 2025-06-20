@@ -96,3 +96,4 @@ randomsubsample_Trimmed_evenDepth <- function(obj,
 # Example usage:
 # tse_ITSOTU <- convert_phyloseq_to_tse(physeq_ITSOTU)
 # ITS_evenDepth <- randomsubsample_Trimmed_evenDepth(tse_ITSOTU, smalltrim = 0.001)
+# 

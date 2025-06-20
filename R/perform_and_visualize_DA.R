@@ -555,3 +555,4 @@ perform_and_visualize_DA <- function(obj,
 # head(results_DESeq2$results)  # View significant taxa
 # results_DESeq2$obj_significant
 # results_DESeq2$bar_plot
+# 

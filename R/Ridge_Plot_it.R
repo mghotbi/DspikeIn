@@ -94,3 +94,4 @@ ridge_plot_it <- function(obj, taxrank = "Genus", rarefaction_depth = NULL, top_
 # Usage Example
 # ridge_tse <- ridge_plot_it(M19_tse, taxrank = "Family", top_n = 10)
 # ridge_phy <- ridge_plot_it(M19, taxrank = "Family", top_n = 10)
+# 

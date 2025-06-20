@@ -32,3 +32,4 @@
 #'   summary(AcceptableRange$Percentage)
 #' }
 "AcceptableRange"
+# 
