@@ -6,3 +6,5 @@
 ^vignettes/figures$
 ^data-raw/
 ^.*\.csv$
+^inst/docs$
+^README\.Rmd$
