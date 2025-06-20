@@ -78,18 +78,29 @@ The DspikeIn package provides functions for:
 
 ## Vignettes
 
-Explore comprehensive tutorials and examples for using the DspikeIn package:
 
-- [DspikeIn with Phyloseq (HTML)](https://mghotbi.github.io/DspikeIn/DspikeIn-with-Phyloseq.html)
-- [DspikeIn with TSE (HTML)](https://mghotbi.github.io/DspikeIn/DspikeIn-with-TSE.html)
-- [📄 Download PDF: DspikeIn with Phyloseq](https://mghotbi.github.io/DspikeIn/DspikeIn-with-Phyloseq.pdf)
-- [📄 Download PDF: DspikeIn with TSE](https://mghotbi.github.io/DspikeIn/DspikeIn-with-TSE.pdf)
+## 📘 Official Vignettes & Documentation
 
-Or visit the full documentation homepage:
+DspikeIn comes with detailed guides and examples to help you get started quickly with both **Phyloseq** and **TreeSummarizedExperiment (TSE)** formats.
 
-👉 [**Interactive Docs Homepage**](https://mghotbi.github.io/DspikeIn/index.html)
+###  Explore Online
+
+- 📗 [**Interactive Guide: DspikeIn with Phyloseq**](https://mghotbi.github.io/DspikeIn/DspikeIn-with-Phyloseq.html)  
+  Step-by-step usage of DspikeIn with `phyloseq` objects.
+
+- 📘 [**Interactive Guide: DspikeIn with TSE**](https://mghotbi.github.io/DspikeIn/DspikeIn-with-TSE.html)  
+  Full walkthrough using `TreeSummarizedExperiment` format.
+
+- 🏠 [**Documentation Homepage**](https://mghotbi.github.io/DspikeIn/index.html)  
+  One-click access to all tutorials, stylesheets, and embedded visuals.
+
+###  Download for Offline Use
+
+- 🧾 [Download PDF: DspikeIn with Phyloseq](https://mghotbi.github.io/DspikeIn/DspikeIn-with-Phyloseq.pdf)  
+- 🧾 [Download PDF: DspikeIn with TSE](https://mghotbi.github.io/DspikeIn/DspikeIn-with-TSE.pdf)
 
 ---
+
 
 
 ### Data availability
