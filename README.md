@@ -259,6 +259,11 @@ devtools::install_github(
   dependencies = TRUE)
 
 library(DspikeIn)
+# Open the main vignette
+vignette("Getting-started-with-DspikeIn")
+
+# Or list all available tutorials
+browseVignettes("DspikeIn")
 
 ```
 
@@ -276,12 +281,6 @@ remotes::install_github(
   dependencies = TRUE)
 
 library(DspikeIn)
-
-# Open the main vignette
-vignette("Getting-started-with-DspikeIn")
-
-# Or list all available tutorials
-browseVignettes("DspikeIn")
 
 
 ```
