@@ -260,7 +260,7 @@ devtools::install_github(
 
 library(DspikeIn)
 # Open the main vignette
-vignette("Getting-started-with-DspikeIn")
+vignette("DspikeIn-with-TSE")
 
 # Or list all available tutorials
 browseVignettes("DspikeIn")
