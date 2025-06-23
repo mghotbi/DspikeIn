@@ -227,19 +227,20 @@ lapply(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", "randomForest", "gg
 if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 
 # Install missing Bioconductor packages
-BiocManager::install(setdiff(c("phyloseq", "msa", "DESeq2", "ggtree", "edgeR", 
+BiocManager::install(setdiff(c("phyloseq", "msa","mia", "DESeq2", "ggtree", "edgeR", 
                                "Biostrings", "DECIPHER", "microbiome", "limma", 
                                "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
                              installed.packages()[,"Package"]))
 
 # Load Bioconductor packages
-lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings", "ggtree", "DECIPHER", 
+lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "mia","Biostrings", "ggtree", "DECIPHER", 
          "microbiome", "limma", "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
        library, character.only = TRUE)
 
 ```
 
 ## Step 2: Install DspikeIn Package
+**Full Pipeline**
 
 ```r
 
@@ -259,6 +260,11 @@ devtools::install_github(
 
 library(DspikeIn)
 
+```
+
+***core functions***
+
+```r
 
 # Install remotes if needed
 install.packages("remotes")
