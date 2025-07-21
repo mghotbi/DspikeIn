@@ -1124,12 +1124,17 @@ results <- detect_common_asvs_taxa(list(rf_physeq, FTspiked_16S , core.microbiom
 
 ```
 
-## If you use this package and find it useful:
+## If you use this package and find it useful, please:
 
 - ⭐ **Give us stars on GitHub!**
 - 🖋️ **Cite us using the link below:**
 
-[Citing DspikeIn](https://academic.oup.com/ismej/advance-article/doi/10.1093/ismejo/wraf150/8209741)
+**Ghotbi, M.**, Stajich, J. E., Dallas, J. W., Rurik, A. J., Cummins, C., Vargas-Gastélum, L., Ghotbi, M., Spatafora, J. W., Kelly, K., Alexander, N. R., Barnes, K. M., Ladner, J. T., & Walker, D. M. (2025).
+**Absolute abundance unveils *Basidiobolus* as a cross-domain bridge indirectly bolstering gut microbiome homeostasis.**
+*The ISME Journal*, wraf150. [https://doi.org/10.1093/ismejo/wraf150](https://doi.org/10.1093/ismejo/wraf150)
+
+📄 [Read the article (Open Access)](https://doi.org/10.1093/ismejo/wraf150)
+
 
 ![Thank You](https://img.shields.io/badge/Thank-You-brightgreen?style=for-the-badge)
 
