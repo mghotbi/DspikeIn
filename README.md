@@ -1129,7 +1129,7 @@ results <- detect_common_asvs_taxa(list(rf_physeq, FTspiked_16S , core.microbiom
 - ⭐ **Give us stars on GitHub!**
 - 🖋️ **Cite us using the link below:**
 
-[Citing DspikeIn](https://www.biorxiv.org/content/10.1101/2024.12.27.630554v1)
+[Citing DspikeIn](https://academic.oup.com/ismej/advance-article/doi/10.1093/ismejo/wraf150/8209741)
 
 ![Thank You](https://img.shields.io/badge/Thank-You-brightgreen?style=for-the-badge)
 
