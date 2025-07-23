@@ -26,8 +26,9 @@
 #'   hashcodes_physeq <- rownames(phyloseq::otu_table(tetragenococcus_physeq))
 #'
 #'   # Remove previous output file if exists
-#'   if (file.exists("merged_physeq_processed.rds"))
+#'   if (file.exists("merged_physeq_processed.rds")) {
 #'     file.remove("merged_physeq_processed.rds")
+#'   }
 #'
 #'   # Run merging with "sum" method for phyloseq
 #'   processed_sum <- Pre_processing_hashcodes(
@@ -49,7 +50,6 @@
 #'     hashcodes = hashcodes_tse,
 #'     merge_method = "max"
 #'   )
-
 #'
 #'   # Final cleanup of written file
 #'   file.remove("merged_physeq_processed.rds")

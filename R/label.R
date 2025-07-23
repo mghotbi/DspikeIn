@@ -22,16 +22,20 @@
 #'
 #'   # Create dummy tax_table with hashcodes
 #'   tax_mat <- matrix(
-#'     data = c("Bacteria", NA,
-#'              "Bacteria", NA,
-#'              "Bacteria", NA,
-#'              "Bacteria", NA),
+#'     data = c(
+#'       "Bacteria", NA,
+#'       "Bacteria", NA,
+#'       "Bacteria", NA,
+#'       "Bacteria", NA
+#'     ),
 #'     nrow = 4,
 #'     dimnames = list(
-#'       c("8ac7ad6e4b6501eb143d97f10bcc2b6d",
+#'       c(
+#'         "8ac7ad6e4b6501eb143d97f10bcc2b6d",
 #'         "5a92565231c6df8f58871c0df2d1a12a",
 #'         "8bf5a7b04cb725bc3d2627b971eb03fb",
-#'         "7ae171e44f46ddadcbb53ee6b34a483b"),
+#'         "7ae171e44f46ddadcbb53ee6b34a483b"
+#'       ),
 #'       c("Kingdom", "Species")
 #'     )
 #'   )
@@ -56,26 +60,28 @@
 #' @export
 label <- function(obj, hashcode_label_map, tax_rank = "Species") {
   tax_df <- as.data.frame(phyloseq::tax_table(obj))
-  
+
   # Add the taxonomic rank if missing
   if (!tax_rank %in% colnames(tax_df)) {
     warning("Taxonomic rank '", tax_rank, "' not found in tax_table. Adding it and filling with NA.")
     tax_df[[tax_rank]] <- NA
   }
-  
+
   # Check that hashcodes exist
   missing <- setdiff(names(hashcode_label_map), rownames(tax_df))
   if (length(missing) > 0) {
-    stop("The following hashcodes were not found in the tax_table: ",
-         paste(missing, collapse = ", "))
+    stop(
+      "The following hashcodes were not found in the tax_table: ",
+      paste(missing, collapse = ", ")
+    )
   }
-  
+
   # Update tax_table entries at the specified rank
   tax_df[names(hashcode_label_map), tax_rank] <- hashcode_label_map
-  
+
   # Update the tax_table in the phyloseq object
   phyloseq::tax_table(obj) <- phyloseq::tax_table(as.matrix(tax_df))
-  
+
   message("Updated taxonomic rank '", tax_rank, "' for matched ASV hashcodes.")
   return(obj)
 }

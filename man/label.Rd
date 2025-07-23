@@ -32,16 +32,20 @@ if (requireNamespace("phyloseq", quietly = TRUE)) {
 
   # Create dummy tax_table with hashcodes
   tax_mat <- matrix(
-    data = c("Bacteria", NA,
-             "Bacteria", NA,
-             "Bacteria", NA,
-             "Bacteria", NA),
+    data = c(
+      "Bacteria", NA,
+      "Bacteria", NA,
+      "Bacteria", NA,
+      "Bacteria", NA
+    ),
     nrow = 4,
     dimnames = list(
-      c("8ac7ad6e4b6501eb143d97f10bcc2b6d",
+      c(
+        "8ac7ad6e4b6501eb143d97f10bcc2b6d",
         "5a92565231c6df8f58871c0df2d1a12a",
         "8bf5a7b04cb725bc3d2627b971eb03fb",
-        "7ae171e44f46ddadcbb53ee6b34a483b"),
+        "7ae171e44f46ddadcbb53ee6b34a483b"
+      ),
       c("Kingdom", "Species")
     )
   )

@@ -1,0 +1,26 @@
+citHeader("To cite DspikeIn in publications, please use:")
+
+bibentry(
+  bibtype = "Article",
+  title = "Absolute abundance unveils Basidiobolus as a cross-domain bridge indirectly bolstering gut microbiome homeostasis",
+  author = c(
+    person("Mitra", "Ghotbi"),
+    person("Jason E", "Stajich"),
+    person("Jason W", "Dallas"),
+    person("Alexander J", "Rurik"),
+    person("Chloe", "Cummins"),
+    person("Lluvia", "Vargas-Gastélum"),
+    person("Marjan", "Ghotbi"),
+    person("Joseph W", "Spatafora"),
+    person("Kian", "Kelly"),
+    person("N Reed", "Alexander"),
+    person("Kylie C", "Moe"),
+    person("Kimberly C", "Syring"),
+    person("Leila", "Shadmani"),
+    person("Julissa", "Perez-Marron"),
+    person("Donald M", "Walker")
+  ),
+  journal = "The ISME Journal",
+  year = 2025,
+  doi = "10.1093/ismejo/wraf150"
+)

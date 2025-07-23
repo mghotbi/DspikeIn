@@ -261,7 +261,7 @@ The clade is strongly supported (bootstrap around 100 percentage).
 The branch lengths and distances are in a biologically plausible range.
 
 
-```{r}
+```{r load-packages}
 # Use the Neighbor-Joining method  based on a Jukes-Cantor distance matrix and plot the tree with bootstrap values.
 # we compare the Sanger read of Tetragenococcus halophilus with the FASTA sequence of Tetragenococcus halophilus from our phyloseq object.
 
