@@ -47,25 +47,25 @@ Pre_processing_species_list <- function(obj,
                                         output_file = NULL) {
   merge_method <- match.arg(merge_method)
   message("\u25B6 Starting pre-processing...")
-  
+
   is_physeq <- inherits(obj, "phyloseq")
   is_tse <- inherits(obj, "TreeSummarizedExperiment")
-  
+
   if (!is_physeq && !is_tse) {
     stop("Input object must be a 'phyloseq' or 'TreeSummarizedExperiment'.")
   }
-  
+
   # --- Accessors ---
   otu_table_data <- get_otu_table(obj)
   tax_data <- as.data.frame(get_tax_table(obj))
   sample_metadata <- get_sample_data(obj)
-  
+
   # --- Optional Tree ---
   phy_tree <- tryCatch(
     if (is_physeq) phyloseq::phy_tree(obj) else TreeSummarizedExperiment::rowTree(obj),
     error = function(e) NULL
   )
-  
+
   # --- Optional RefSeq ---
   ref_sequences <- tryCatch(
     if (is_physeq) {
@@ -75,30 +75,30 @@ Pre_processing_species_list <- function(obj,
     },
     error = function(e) NULL
   )
-  
+
   # --- Check Taxonomy ---
   if (!"Species" %in% colnames(tax_data)) {
     stop("'Species' column not found in taxonomy table.")
   }
-  
+
   tax_data$Species <- as.character(tax_data$Species)
-  
+
   # --- Process each species ---
   for (species in spiked_species) {
     message("   > Processing: ", species)
-    
+
     species_asvs <- rownames(tax_data)[tax_data$Species == species]
-    
+
     if (length(species_asvs) > 1) {
       message("     Merging ", length(species_asvs), " ASVs for: ", species)
-      
+
       if (merge_method == "sum") {
         otu_table_data[species_asvs[1], ] <- colSums(otu_table_data[species_asvs, , drop = FALSE])
       } else {
         max_asv <- species_asvs[which.max(rowSums(otu_table_data[species_asvs, , drop = FALSE]))]
         otu_table_data[species_asvs[1], ] <- otu_table_data[max_asv, ]
       }
-      
+
       keep <- setdiff(rownames(otu_table_data), species_asvs[-1])
       otu_table_data <- otu_table_data[keep, , drop = FALSE]
       tax_data <- tax_data[keep, , drop = FALSE]
@@ -108,7 +108,7 @@ Pre_processing_species_list <- function(obj,
       warning("No ASVs found for species: ", species)
     }
   }
-  
+
   # --- Prune Tree ---
   if (!is.null(phy_tree)) {
     common_tips <- intersect(phy_tree$tip.label, rownames(otu_table_data))
@@ -120,7 +120,7 @@ Pre_processing_species_list <- function(obj,
       message("   > Tree removed due to insufficient taxa.")
     }
   }
-  
+
   # --- Prune RefSeq ---
   if (!is.null(ref_sequences)) {
     common_seqs <- intersect(names(ref_sequences), rownames(otu_table_data))
@@ -132,7 +132,7 @@ Pre_processing_species_list <- function(obj,
       message("   > Reference sequences removed due to insufficient taxa.")
     }
   }
-  
+
   # --- Reconstruct ---
   if (is_physeq) {
     components <- list(
@@ -158,13 +158,13 @@ Pre_processing_species_list <- function(obj,
       TreeSummarizedExperiment::referenceSeq(obj) <- ref_sequences
     }
   }
-  
+
   # --- Optional Save ---
   if (!is.null(output_file)) {
     saveRDS(obj, file = output_file)
     message("\u2713 Merged object saved to: ", output_file)
   }
-  
+
   message("\u2713 Pre-processing complete.")
   return(obj)
 }

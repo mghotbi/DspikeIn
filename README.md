@@ -17,6 +17,7 @@
    DspikeIn Package
    - [DspikeIn](#DspikeIn-Package)
    - [Installation](#Installation)
+   - [Vignettes](#Vignettes) 
    - [Requirements](#To-Meet-Taxonomic-Ranks-Requirements)
    - [GCN Correction](#GCN-Normalization-with-QIIME2-Plugin)
    - [Dataset for training](#dataset-for-practicing-dspikein-package)
@@ -51,7 +52,7 @@
    - [Detect common ASVs/OTUs](#Detect-common-asvs-otus)
 
 7. **Credits**
-   - [Acknowledgement](#Acknowledgement)
+   - [Acknowledgements](#Acknowledgement)
    - [Citing DspikeIn](#if-you-use-this-package-and-find-it-useful)
 
 ---
@@ -75,21 +76,33 @@ The DspikeIn package provides functions for:
 - Performing data transformation, differential abundance analysis, and visualization.  
 
 
-### 📘 Vignettes — Detailed Usage Examples & Guidance
-
-To explore comprehensive tutorials, code examples, and explanations on using `DspikeIn`, view or download the official vignette below:
-
-- [![🌐 HTML Vignette](https://img.shields.io/badge/Vignette-HTML-brightgreen)](https://mghotbi.github.io/DspikeIn/)  
-  *Interactive HTML guide - open in your browser.*
-
-- [![📄 PDF Vignette](https://img.shields.io/badge/Vignette-PDF-blue)](https://mghotbi.github.io/DspikeIn/Getting-started-with-DspikeIn.pdf)  
-  *Downloadable PDF version - for offline reading.*
+## Vignettes
 
 
-```r
-browseVignettes("DspikeIn")
+## 📘 Official Vignettes & Documentation
 
-```
+DspikeIn comes with detailed guides and examples to help you get started quickly with both **Phyloseq** and **TreeSummarizedExperiment (TSE)** formats.
+
+###  Explore Online
+
+-  [**Interactive Guide: DspikeIn with Phyloseq**](https://mghotbi.github.io/DspikeIn/DspikeIn-with-Phyloseq.html)  
+  Step-by-step usage of DspikeIn with `phyloseq` objects.
+
+-  [**Interactive Guide: DspikeIn with TSE**](https://mghotbi.github.io/DspikeIn/DspikeIn-with-TSE.html)  
+  Full walkthrough using `TreeSummarizedExperiment` format.
+
+-  [**Documentation Homepage**](https://mghotbi.github.io/DspikeIn/index.html)  
+  One-click access to all tutorials, stylesheets, and embedded visuals.
+
+###  Download for Offline Use
+
+-  [Download PDF: DspikeIn with Phyloseq](https://mghotbi.github.io/DspikeIn/DspikeIn-with-Phyloseq.pdf)  
+-  [Download PDF: DspikeIn with TSE](https://mghotbi.github.io/DspikeIn/DspikeIn-with-TSE.pdf)
+
+---
+
+
+
 ### Data availability
 The DspikeIn package provides example datasets located in the data/ folder and inst/extdata/ folder. You can list the available datasets using the following commands:
 
@@ -161,7 +174,7 @@ tse <- TreeSummarizedExperiment(
 
 ```
 **Whole-Cell Spike-In Protocol,**
-*Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples based on our previous studies WalkerLab.
+*Tetragenococcus halophilus* and *Dekkera bruxellensis* were selected as taxa to spike into gut microbiome samples based on our previous studies [WalkerLab](https://walkerlabmtsu.weebly.com/personnel.html).
 
 ---
 ### GCN Normalization with QIIME2 Plugin
@@ -214,19 +227,20 @@ lapply(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", "randomForest", "gg
 if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 
 # Install missing Bioconductor packages
-BiocManager::install(setdiff(c("phyloseq", "msa", "DESeq2", "ggtree", "edgeR", 
+BiocManager::install(setdiff(c("phyloseq", "msa","mia", "DESeq2", "ggtree", "edgeR", 
                                "Biostrings", "DECIPHER", "microbiome", "limma", 
                                "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
                              installed.packages()[,"Package"]))
 
 # Load Bioconductor packages
-lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "Biostrings", "ggtree", "DECIPHER", 
+lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "mia","Biostrings", "ggtree", "DECIPHER", 
          "microbiome", "limma", "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
        library, character.only = TRUE)
 
 ```
 
 ## Step 2: Install DspikeIn Package
+**Full Pipeline**
 
 ```r
 
@@ -245,7 +259,17 @@ devtools::install_github(
   dependencies = TRUE)
 
 library(DspikeIn)
+# Open the main vignette
+vignette("DspikeIn-with-TSE")
 
+# Or list all available tutorials
+browseVignettes("DspikeIn")
+
+```
+
+***core functions***
+
+```r
 
 # Install remotes if needed
 install.packages("remotes")
@@ -257,12 +281,6 @@ remotes::install_github(
   dependencies = TRUE)
 
 library(DspikeIn)
-
-# Open the main vignette
-vignette("Getting-started-with-DspikeIn")
-
-# Or list all available tutorials
-browseVignettes("DspikeIn")
 
 
 ```
@@ -1106,12 +1124,18 @@ results <- detect_common_asvs_taxa(list(rf_physeq, FTspiked_16S , core.microbiom
 
 ```
 
-## If you use this package and find it useful:
+## If you use this package and find it useful
 
-- ⭐ **Give us stars on GitHub!**
-- 🖋️ **Cite us using the link below:**
 
-[Citing DspikeIn](https://doi.org/10.1101/2024.12.27.630554)
+- ⭐ **Please give us stars on GitHub!**
+- 🖋️ **Please cite us using the link below:**
+
+Ghotbi, M., Stajich, J. E., Dallas, J. W., Rurik, A. J., Cummins, C., Vargas-Gastélum, L., Ghotbi, M., Spatafora, J. W., Kelly, K., Alexander, N. R., Moe, K. C., Syring, K. C., Shadmani, L., Perez-Marron, J., & Walker, D. M. (2025).
+**Absolute abundance unveils *Basidiobolus* as a cross-domain bridge indirectly bolstering gut microbiome homeostasis.**
+*The ISME Journal* . [https://doi.org/10.1093/ismejo/wraf150](https://doi.org/10.1093/ismejo/wraf150)
+
+📄 [Read the article (Open Access)](https://doi.org/10.1093/ismejo/wraf150)
+
 
 ![Thank You](https://img.shields.io/badge/Thank-You-brightgreen?style=for-the-badge)
 

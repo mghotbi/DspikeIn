@@ -23,7 +23,7 @@ All datasets were generated using reproducible R-based workflows and include tax
 - **Institution**: [Herptile Microbiomes](https://herptilemicrobiomes.org/research/)  
 - **Funding**: National Science Foundation (NSF) grants EF-2125065, EF-2125066, EF-2125067  
 - **Manuscript**: Under review at *ISME Journal*  
-- **Preprint**: Available at [bioRxiv](https://doi.org/10.1101/2024.12.27.630554)
+- **Open Access**: Available at [The ISME Journal](https://doi.org/10.1093/ismejo/wraf150)
 
 For full methodological and biological context, see:
 

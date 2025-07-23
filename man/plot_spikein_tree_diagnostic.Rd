@@ -49,15 +49,14 @@ Visual elements:
 \dontrun{
 if (
   requireNamespace("DspikeIn", quietly = TRUE) &&
-  requireNamespace("phyloseq", quietly = TRUE) &&
-  requireNamespace("TreeSummarizedExperiment", quietly = TRUE) &&
-  requireNamespace("ggplot2", quietly = TRUE) &&
-  requireNamespace("ggtree", quietly = TRUE) &&
-  requireNamespace("ggtreeExtra", quietly = TRUE) &&
-  requireNamespace("ggstar", quietly = TRUE) &&
-  requireNamespace("ggnewscale", quietly = TRUE)
+    requireNamespace("phyloseq", quietly = TRUE) &&
+    requireNamespace("TreeSummarizedExperiment", quietly = TRUE) &&
+    requireNamespace("ggplot2", quietly = TRUE) &&
+    requireNamespace("ggtree", quietly = TRUE) &&
+    requireNamespace("ggtreeExtra", quietly = TRUE) &&
+    requireNamespace("ggstar", quietly = TRUE) &&
+    requireNamespace("ggnewscale", quietly = TRUE)
 ) {
-
   # ----------- Phyloseq Example -----------
   data("physeq_16SOTU", package = "DspikeIn")
   spikein_ps <- phyloseq::subset_taxa(physeq_16SOTU, Genus == "Tetragenococcus")

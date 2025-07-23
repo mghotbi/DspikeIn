@@ -36,7 +36,7 @@ removes spike-ins, merges them, computes scaling factors, and returns a bias-cor
 }
 \examples{
 if (requireNamespace("DspikeIn", quietly = TRUE) &&
-    requireNamespace("phyloseq", quietly = TRUE)) {
+  requireNamespace("phyloseq", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
   spiked_cells <- 1847

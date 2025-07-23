@@ -18,20 +18,17 @@ vignette: >
 
 
 ```{r setup, include = FALSE}
-
 knitr::opts_chunk$set(
-  fig.path = "figures/",        
-  dev = "png",                  
-  dpi = 300,                     
-  fig.width = 7,               
-  fig.height = 4,               
-  fig.align = "center",          
-  out.width = "70%",           
-  message = FALSE,              
-  warning = FALSE               
+  fig.path = "figures/",
+  dev = "png",
+  dpi = 300,
+  fig.width = 7,
+  fig.height = 4,
+  fig.align = "center",
+  out.width = "70%",
+  message = FALSE,
+  warning = FALSE
 )
-
-
 ```
 
 
@@ -39,7 +36,6 @@ knitr::opts_chunk$set(
 
 
 ```{r, eval=FALSE}
-
 #                         INSTALL CRAN PACKAGES
 
 # Install missing CRAN packages
@@ -140,7 +136,6 @@ DspikeIn works with 7 taxonomic ranks
 
 
 ```{r, eval=FALSE}
-
 #             To remove strain from the taxonomic ranks
 
 # DspikeIn works with 7 taxonomic ranks
@@ -200,7 +195,6 @@ https://github.com/markrobinsonuzh/TreeSummarizedExperiment
 
 
 ```{r, eval=FALSE}
-
 #                     Build phyloseq
 
 
@@ -308,7 +302,8 @@ result <- validate_spikein_clade(
   reference_fasta = ref_fasta,
   sample_fasta = sample_fasta,
   bootstrap = 200,
-  output_prefix = NULL)
+  output_prefix = NULL
+)
 
 # result$tree_plot
 ```
@@ -347,7 +342,6 @@ ps <- plot_spikein_tree_diagnostic(
   metadata_var = "Animal.type",
   output_prefix = "tetragenococcus_diag"
 )
-
 ```
 
 
@@ -379,7 +373,7 @@ data("physeq_16SOTU", package = "DspikeIn")
 physeq_16SOTU <- DspikeIn::tidy_phyloseq_tse(physeq_16SOTU) # make it tidy
 
 # for those prefer to use TSE format
-tse_16SOTU<-convert_phyloseq_to_tse(physeq_16SOTU)
+tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 
 # Check if metadata contains spiked volumes with this format
 colnames(sample_data(physeq_16SOTU))
@@ -390,8 +384,6 @@ colnames(sample_data(physeq_16SOTU))
 
 
 ```{r}
-
-
 #                      PREREQUISITE FOR 16S & CALCULATE SPIKED %
 
 
@@ -449,7 +441,6 @@ Perc <- calculate_spike_percentage(
 
 
 ```{r, eval=FALSE}
-
 #                      PREREQUISITE FOR ITS & CALCULATE SPIKED %
 
 
@@ -482,7 +473,6 @@ Perc <- calculate_spike_percentage(
 
 
 ```{r}
-
 #                      CALCULATE SCALING FACTORS
 
 
@@ -504,8 +494,6 @@ head(scaling_factors) # Vector of scaling factors per sample
 
 
 ```{r}
-
-
 #             Convert relative counts to absolute counts
 
 
@@ -530,8 +518,6 @@ head(absolute_counts)
 
 
 ```{r}
-
-
 #                      CALCULATE SPIKE PERCENTAGE & summary stat
 
 
@@ -585,7 +571,6 @@ The goal is to identify the range where, for example, the evenness of your commu
 Hill number is interpretable as "effective diversity" (number of abundant species).
 
 ```{r}
-
 # The acceptable range of spiked species retrieval is system-dependent
 # Spiked species become centroid of the community (Distance to Centroid)
 # Spiked species become dominant and imbalance the community (Evenness)
@@ -685,7 +670,7 @@ plot_object_hill <- regression_plot(
   data = metadata,
   x_var = "Hill_q1",
   y_var = "Spiked_Reads",
-  custom_range = c(0.1,10, 20, 30, 100),
+  custom_range = c(0.1, 10, 20, 30, 100),
   plot_title = NULL
 )
 
@@ -704,7 +689,6 @@ plot_object_centroid <- regression_plot(
 # - Pielou's evenness is normalized by richness; useful for detecting imbalance.
 # - Hill number q = 1 gives effective number of common species; sensitive to dominance.
 # - Distance to centroid in full Bray-Curtis space shows deviation from the average community.
-
 ```
 
 
@@ -856,12 +840,12 @@ sessionInfo()
 
 # List of all files possibly written by example functions
 files_to_delete <- c(
-  "Global_Network_Metrics.csv", "absolute_counts.csv","merged_physeq_processed.rds",
+  "Global_Network_Metrics.csv", "absolute_counts.csv", "merged_physeq_processed.rds",
   "abundance_analysis_filtered_phyloseq.rds", "abundance_analysis_filtered_tse.rds",
   "abundance_analysis_high_abundance_phyloseq.rds", "abundance_analysis_high_abundance_tse.rds",
   "abundance_analysis_low_abundance_phyloseq.rds", "abundance_analysis_low_abundance_tse.rds",
   "adjusted_prevalence.rds", "core_microbiome.csv", "core_microbiome.rds", "comp_spikein_patristic_distances.csv", "comp_spikein_branch_lengths.pdf", "comp_spikein_patristic_distances_hist.pdf",
-  "merged_data.csv", "merged_data.docx", "comp_spikein.nwk", "comp_spikein_tree.png", "comp_spikein_patristic_distances_hist.pfd","post_eval_summary.csv","post_eval_summary.docx",
+  "merged_data.csv", "merged_data.docx", "comp_spikein.nwk", "comp_spikein_tree.png", "comp_spikein_patristic_distances_hist.pfd", "post_eval_summary.csv", "post_eval_summary.docx",
   "merged_physeq_max_processed.rds", "merged_physeq_sum.rds",
   "merged_physeq_sum_processed.rds", "spikeIn_factors_output",
   "plot_Spike.percentage_Kruskal.pdf", "plot_Spike.percentage_Kruskal.png",
