@@ -1,3 +1,11 @@
+# DspikeIn 0.99.18
+
+* retrying citation
+
+# DspikeIn 0.99.17
+
+* updating citation
+
 # DspikeIn 0.99.16
 
 * Triggered rebuild after upstream push.
