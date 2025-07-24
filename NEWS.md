@@ -1,5 +1,7 @@
-# Version: 0.99.15
-changing LazyData to false
+# DspikeIn 0.99.15
+
+* Added `inst/CITATION` file referencing peer-reviewed article in _The ISME Journal_ (Ghotbi et al., 2025).
+* Set `LazyData: false` in `DESCRIPTION` to improve package installation efficiency and avoid Bioconductor NOTE.
 
 # Version: 0.99.14
 - update
