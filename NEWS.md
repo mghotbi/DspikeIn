@@ -1,3 +1,7 @@
+# DspikeIn 0.99.16
+
+* Triggered rebuild after upstream push.
+
 # DspikeIn 0.99.15
 
 * Added `inst/CITATION` file referencing peer-reviewed article in _The ISME Journal_ (Ghotbi et al., 2025).
