@@ -192,39 +192,43 @@ qiime gcn-norm copy-num-normalize \
   --o-gcn-norm-table table-normalized.qza
 
 ```
-To install the DspikeIn package, follow these steps...
-*If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:*
+Before installing the full DspikeIn pipeline from GitHub, please ensure that the following CRAN and Bioconductor packages are installed.
+If you encounter installation issues due to missing dependencies, follow the steps below to install all required packages first.
+
 #### Install missing CRAN packages
-install.packages(setdiff(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", 
-                           "randomForest", "ggridges", "ggalluvial", "tibble", 
-                           "matrixStats", "RColorBrewer", "ape", "rlang", "ggstar",
-                           "scales", "magrittr", "phangorn", "igraph", "tidyr", 
-                           "xml2", "data.table", "reshape2","vegan", "patchwork", "officer"), 
-                         installed.packages()[,"Package"]))
+install.packages(setdiff(
+  c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", 
+    "randomForest", "ggridges", "ggalluvial", "tibble", 
+    "matrixStats", "RColorBrewer", "ape", "rlang", "ggstar",
+    "scales", "magrittr", "phangorn", "igraph", "tidyr", 
+    "xml2", "data.table", "reshape2", "vegan", "patchwork", "officer"),
+  installed.packages()[, "Package"]))
 
 #### Load CRAN packages
-lapply(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", "randomForest", "ggstar",
-         "ggridges", "ggalluvial", "tibble", "matrixStats", "RColorBrewer", 
-         "ape", "rlang", "scales", "magrittr", "phangorn", "igraph", "tidyr", 
-         "xml2", "data.table", "reshape2","vegan", "patchwork", "officer"), library, character.only = TRUE)
+   lapply( c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", "randomForest", "ggstar",
+   "ggridges", "ggalluvial", "tibble", "matrixStats", "RColorBrewer", 
+   "ape", "rlang", "scales", "magrittr", "phangorn", "igraph", "tidyr", 
+   "xml2", "data.table", "reshape2", "vegan", "patchwork", "officer"),
+   library, character.only = TRUE)
+   
+---
 #### Bioconductor Packages
-
 #### Install BiocManager if not installed
 if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 
 ##### Install missing Bioconductor packages
-BiocManager::install(setdiff(c("phyloseq", "msa","mia", "DESeq2", "ggtree", "edgeR", 
-                               "Biostrings", "DECIPHER", "microbiome", "limma", 
-                               "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
-                             installed.packages()[,"Package"]))
+BiocManager::install(setdiff(
+  c("phyloseq", "msa", "mia", "DESeq2", "ggtree", "edgeR", 
+    "Biostrings", "DECIPHER", "microbiome", "limma", 
+    "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"),
+  installed.packages()[, "Package"]))
 
 # Load Bioconductor packages
-lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "mia","Biostrings", "ggtree", "DECIPHER", 
-         "microbiome", "limma", "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
-       library, character.only = TRUE)
-       
-
-
+lapply( c("phyloseq", "msa", "DESeq2", "edgeR", "mia", "Biostrings", "ggtree", "DECIPHER", 
+    "microbiome", "limma", "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"),
+  library, character.only = TRUE)
+  
+ ---      
 ##  Installing DspikeIn full pipeline from Github
 **Full Pipeline**
 
