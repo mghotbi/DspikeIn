@@ -192,8 +192,10 @@ qiime gcn-norm copy-num-normalize \
   --o-gcn-norm-table table-normalized.qza
 
 ```
-Before installing the full DspikeIn pipeline from GitHub, please ensure that the following CRAN and Bioconductor packages are installed.
+
+#### Before installing the full DspikeIn pipeline from GitHub, please ensure that the following CRAN and Bioconductor packages are installed.
 If you encounter installation issues due to missing dependencies, follow the steps below to install all required packages first.
+
 ```r
 #### Install missing CRAN packages
 install.packages(setdiff(
@@ -203,12 +205,15 @@ install.packages(setdiff(
     "scales", "magrittr", "phangorn", "igraph", "tidyr", 
     "xml2", "data.table", "reshape2", "vegan", "patchwork", "officer"),
   installed.packages()[, "Package"]))
+
 #### Load CRAN packages
    lapply( c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", "randomForest", "ggstar",
    "ggridges", "ggalluvial", "tibble", "matrixStats", "RColorBrewer", 
    "ape", "rlang", "scales", "magrittr", "phangorn", "igraph", "tidyr", 
    "xml2", "data.table", "reshape2", "vegan", "patchwork", "officer"),
    library, character.only = TRUE)
+
+
 #### Bioconductor Packages
 #### Install BiocManager if not installed
 if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
@@ -218,10 +223,12 @@ BiocManager::install(setdiff(
     "Biostrings", "DECIPHER", "microbiome", "limma", 
     "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"),
   installed.packages()[, "Package"]))
+
 # Load Bioconductor packages
 lapply( c("phyloseq", "msa", "DESeq2", "edgeR", "mia", "Biostrings", "ggtree", "DECIPHER", 
     "microbiome", "limma", "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"),
   library, character.only = TRUE)
+
 ```
  ---     
  
@@ -258,7 +265,7 @@ browseVignettes("DspikeIn")
 # Install remotes if needed
 options(repos = BiocManager::repositories())
 
-# 1) Install DspikeIn with only required deps; skip vignettes; don't auto-update everything
+# 1) Install DspikeIn with only required deps
 BiocManager::install(
   "mghotbi/DspikeIn",
   dependencies   = c("Depends","Imports"),
@@ -270,7 +277,8 @@ library(DspikeIn)
 packageVersion("DspikeIn")
 
 
-# Install with vignette
+
+# Or Install with vignette
 # Use standard Bioconductor repos
 options(repos = BiocManager::repositories())
 
