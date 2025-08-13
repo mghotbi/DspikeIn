@@ -216,7 +216,8 @@ install.packages(setdiff(
 
 #### Bioconductor Packages
 #### Install BiocManager if not installed
-if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+install.packages("BiocManager")
 ##### Install missing Bioconductor packages
 BiocManager::install(setdiff(
   c("phyloseq", "msa", "mia", "DESeq2", "ggtree", "edgeR", 
