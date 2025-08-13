@@ -259,7 +259,7 @@ browseVignettes("DspikeIn")
 
 ```
 ## Installing DspikeIn Core Functions from Bioconductor
-***core functions***
+**Core functions**
 
 ```r
 
