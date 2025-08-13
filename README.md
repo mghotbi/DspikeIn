@@ -16,7 +16,8 @@
 1. **Getting Started**
    DspikeIn Package
    - [DspikeIn](#DspikeIn-Package)
-   - [Installation](#Installation)
+   - [DspikeIn full pipeline installation](#Installing-DspikeIn-full-pipeline-from-Github)
+   - [DspikeIn core functions installation](#Installing-DspikeIn-Core-Functions-from-Bioconductor)
    - [Vignettes](#Vignettes) 
    - [Requirements](#To-Meet-Taxonomic-Ranks-Requirements)
    - [GCN Correction](#GCN-Normalization-with-QIIME2-Plugin)
@@ -191,20 +192,9 @@ qiime gcn-norm copy-num-normalize \
   --o-gcn-norm-table table-normalized.qza
 
 ```
-
-## Installation
-
 To install the DspikeIn package, follow these steps...
 *If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:*
-
-## Step 1: Install Required Packages
-To install the required packages, use the following script:
-
----
-#### CRAN packages
-
-```r
-# Install missing CRAN packages
+#### Install missing CRAN packages
 install.packages(setdiff(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", 
                            "randomForest", "ggridges", "ggalluvial", "tibble", 
                            "matrixStats", "RColorBrewer", "ape", "rlang", "ggstar",
@@ -212,21 +202,17 @@ install.packages(setdiff(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr",
                            "xml2", "data.table", "reshape2","vegan", "patchwork", "officer"), 
                          installed.packages()[,"Package"]))
 
-# Load CRAN packages
+#### Load CRAN packages
 lapply(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", "randomForest", "ggstar",
          "ggridges", "ggalluvial", "tibble", "matrixStats", "RColorBrewer", 
          "ape", "rlang", "scales", "magrittr", "phangorn", "igraph", "tidyr", 
          "xml2", "data.table", "reshape2","vegan", "patchwork", "officer"), library, character.only = TRUE)
-
-```
 #### Bioconductor Packages
 
-```r 
-
-# Install BiocManager if not installed
+#### Install BiocManager if not installed
 if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 
-# Install missing Bioconductor packages
+##### Install missing Bioconductor packages
 BiocManager::install(setdiff(c("phyloseq", "msa","mia", "DESeq2", "ggtree", "edgeR", 
                                "Biostrings", "DECIPHER", "microbiome", "limma", 
                                "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
@@ -236,16 +222,14 @@ BiocManager::install(setdiff(c("phyloseq", "msa","mia", "DESeq2", "ggtree", "edg
 lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "mia","Biostrings", "ggtree", "DECIPHER", 
          "microbiome", "limma", "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
        library, character.only = TRUE)
+       
 
-```
 
-## Step 2: Install DspikeIn Package
+##  Installing DspikeIn full pipeline from Github
 **Full Pipeline**
 
 ```r
-
-# Installation
-#Instructions for how to install the DspikeIn package.
+#Instructions for how to install the DspikeIn complete pipeline package from Github.
 
 # *** Please note that installing with build_vignettes = TRUE may take 2–4 minutes, depending on your computer’s processing power ***
 
@@ -266,21 +250,43 @@ vignette("DspikeIn-with-TSE")
 browseVignettes("DspikeIn")
 
 ```
-
+## Installing DspikeIn Core Functions from Bioconductor
 ***core functions***
 
 ```r
 
 # Install remotes if needed
-install.packages("remotes")
+options(repos = BiocManager::repositories())
 
-# Install just the core functions from the devel branch
-remotes::install_github(
-  "mghotbi/DspikeIn@devel",
-  build_vignettes = TRUE,
-  dependencies = TRUE)
+# 1) Install DspikeIn with only required deps; skip vignettes; don't auto-update everything
+BiocManager::install(
+  "mghotbi/DspikeIn",
+  dependencies   = c("Depends","Imports"),
+  build_vignettes = FALSE,
+  update          = FALSE)
 
+# 2) Load & verify
 library(DspikeIn)
+packageVersion("DspikeIn")
+
+
+# Install with vignette
+# Use standard Bioconductor repos
+options(repos = BiocManager::repositories())
+
+# Ensure vignette builders are present
+install.packages(c("knitr","rmarkdown"))
+BiocManager::install("BiocStyle", update = FALSE)
+
+# Install DspikeIn and build vignettes
+BiocManager::install(
+  "mghotbi/DspikeIn",
+  dependencies    = c("Depends","Imports","Suggests"),
+  build_vignettes = TRUE,
+  update          = FALSE)
+
+# Open the vignettes
+browseVignettes("DspikeIn")   # or: vignette(package = "DspikeIn")
 
 
 ```
