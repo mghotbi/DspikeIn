@@ -205,7 +205,6 @@ install.packages(setdiff(
     "scales", "magrittr", "phangorn", "igraph", "tidyr", 
     "xml2", "data.table", "reshape2", "vegan", "patchwork", "officer"),
   installed.packages()[, "Package"]))
-
 #### Load CRAN packages
    lapply( c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", "randomForest", "ggstar",
    "ggridges", "ggalluvial", "tibble", "matrixStats", "RColorBrewer", 
@@ -224,7 +223,6 @@ BiocManager::install(setdiff(
     "Biostrings", "DECIPHER", "microbiome", "limma", 
     "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"),
   installed.packages()[, "Package"]))
-
 # Load Bioconductor packages
 lapply( c("phyloseq", "msa", "DESeq2", "edgeR", "mia", "Biostrings", "ggtree", "DECIPHER", 
     "microbiome", "limma", "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"),
@@ -319,7 +317,6 @@ ggplot2, ggrepel, ggpubr, ggnewscale, ggalluvial, ggtree, ggtreeExtra, ggstar, g
 These tools collectively empowered us to build a reproducible, modular, and extensible platform for robust absolute abundance quantification in microbial community analysis.
 We further acknowledge the broader scientific community working on absolute microbial quantification, spike-in calibration, and compositional data analysis, whose foundational insights directly informed the design and conceptual framework of DspikeIn.
 
-#  DspikeIn full pipeline 
 For complete exploratory tools, differential abundance (DA), and network analyses, refer to the MGhotbi https://github.com/mghotbi/DspikeIn/tree/MGhotbi branch of the GitHub repository, which contains the full extended pipeline.
 
 
