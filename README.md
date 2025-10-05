@@ -16,6 +16,7 @@
 1. **Getting Started**
    DspikeIn Package
    - [DspikeIn](#DspikeIn-Package)
+   - [DspikeIn core functions installation](#Installing-DspikeIn-Core-Functions-from-Bioconductor)
    - [DspikeIn full pipeline installation](#Installing-DspikeIn-full-pipeline-from-Github)
    - [DspikeIn core functions installation](#Installing-DspikeIn-Core-Functions-from-Bioconductor)
    - [Vignettes](#Vignettes) 
