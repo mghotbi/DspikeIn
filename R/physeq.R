@@ -7,11 +7,7 @@
 #'
 #' @format A \code{phyloseq} object with:
 #' \describe{
-<<<<<<< HEAD
-#'   \item{otu_table}{OTU abundance matrix (ASVs × samples).}
-=======
 #'   \item{otu_table}{OTU abundance matrix (ASVs  samples).}
->>>>>>> bioc-rev1
 #'   \item{tax_table}{Taxonomic classification of ASVs.}
 #'   \item{sample_data}{Sample-level metadata.}
 #'   \item{phy_tree}{A rooted phylogenetic tree of ASVs.}

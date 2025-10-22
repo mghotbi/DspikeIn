@@ -1,11 +1,5 @@
 #' @title Calculate Spike Percentage for Specified Taxa in a Phyloseq or TSE Object
 #'
-<<<<<<< HEAD
-#' @description This function calculates the percentage of reads from specified spiked species or hashcodes in a microbiome dataset.
-#' It merges the spiked taxa into one ASV/OTU, calculates the percentage of reads, categorizes the results as passed or failed,
-#' and optionally saves the results as DOCX and CSV files.
-#'
-=======
 #' @description
 #' In spike-in based absolute quantitation workflows, the acceptable recovery range of spike-in reads
 #' is system dependent, varying with sequencing platform, extraction protocol, and microbial community structure.
@@ -13,7 +7,6 @@
 #' optionally saves the results as DOCX and CSV files.It also visualizes the relationship between observed spike-in abundance and total reads,
 #' stratified across user-defined recovery intervals, to empirically determine the optimal range for quality control.
 
->>>>>>> bioc-rev1
 #' @param obj A `phyloseq` or `TreeSummarizedExperiment` object containing the microbial data.
 #' @param merged_spiked_species A character vector of spiked taxa names (can be from any taxonomic level).
 #' @param merged_spiked_hashcodes A character vector of spiked hashcodes (ASV/OTU IDs) to check in the dataset. Default is NULL.

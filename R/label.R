@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-#' @title Label Taxonomic Ranks by Hashcode
-=======
 #' @title Label Taxonomic Ranks by Hashcode 
->>>>>>> bioc-rev1
 #'
 #' @description
 #' Labels ASVs/OTUs in a `phyloseq` object using a named vector mapping hashcodes

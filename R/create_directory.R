@@ -6,11 +6,7 @@
 #' @param directory_path A character string specifying the path of the directory to create.
 #' @param set_working_dir A logical value indicating whether to set the directory as the working directory. Default is FALSE.
 #' @return NULL. The function prints messages indicating whether the directory was created or already exists, and if the working directory was set.
-<<<<<<< HEAD
-#' @examples
-=======
 #' @examples 
->>>>>>> bioc-rev1
 #' if (interactive()) {
 #'   # Save the current working directory
 #'   old_wd <- getwd()

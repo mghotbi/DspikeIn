@@ -4,14 +4,11 @@ export(MG_shapes)
 export(Pre_processing_hashcodes)
 export(Pre_processing_species)
 export(Pre_processing_species_list)
-<<<<<<< HEAD
-=======
 export(RandomForest_selected)
 export(adjust_abundance_by_factor)
 export(adjust_abundance_one_third)
 export(adjusted_prevalence)
 export(alluvial_plot)
->>>>>>> bioc-rev1
 export(calculate_list_average_scaling_factors)
 export(calculate_spikeIn_factors)
 export(calculate_spike_percentage)
@@ -24,35 +21,15 @@ export(convert_phyloseq_to_tse)
 export(convert_to_absolute_counts)
 export(convert_tse_to_phyloseq)
 export(create_directory)
-<<<<<<< HEAD
-=======
 export(degree_network)
 export(detect_common_asvs_taxa)
 export(extract_neighbors)
 export(filter_and_split_abundance)
 export(get_long_format_data)
->>>>>>> bioc-rev1
 export(get_otu_table)
 export(get_phy_tree)
 export(get_reference_seq)
 export(get_sample_data)
-<<<<<<< HEAD
-export(get_tax_table)
-export(gm_mean)
-export(label)
-export(my_custom_theme)
-export(norm.DESeq)
-export(normalization_set)
-export(plot_spikein_tree_diagnostic)
-export(regression_plot)
-export(remove_zero_negative_count_samples)
-export(set_nf)
-export(summ_ASV_OTUID)
-export(summ_count_phyloseq)
-export(summ_phyloseq_sampleID)
-export(tidy_phyloseq_tse)
-export(validate_spikein_clade)
-=======
 export(get_sample_sums)
 export(get_tax_table)
 export(gm_mean)
@@ -84,18 +61,10 @@ export(taxa_barplot)
 export(tidy_phyloseq_tse)
 export(validate_spikein_clade)
 export(weight_Network)
->>>>>>> bioc-rev1
 exportClasses(ExpData)
 importFrom(Biostrings,DNAStringSet)
 importFrom(Biostrings,readDNAStringSet)
 importFrom(DECIPHER,AlignSeqs)
-<<<<<<< HEAD
-importFrom(DESeq2,DESeq)
-importFrom(DESeq2,DESeqDataSetFromMatrix)
-importFrom(DESeq2,counts)
-importFrom(DESeq2,estimateSizeFactors)
-importFrom(DESeq2,estimateSizeFactorsForMatrix)
-=======
 importFrom(DESeq2,"dispersions<-")
 importFrom(DESeq2,DESeq)
 importFrom(DESeq2,DESeqDataSetFromMatrix)
@@ -104,18 +73,11 @@ importFrom(DESeq2,estimateDispersionsGeneEst)
 importFrom(DESeq2,estimateSizeFactors)
 importFrom(DESeq2,estimateSizeFactorsForMatrix)
 importFrom(DESeq2,nbinomWaldTest)
->>>>>>> bioc-rev1
 importFrom(DESeq2,results)
 importFrom(DESeq2,sizeFactors)
 importFrom(RColorBrewer,brewer.pal)
 importFrom(S4Vectors,DataFrame)
 importFrom(S4Vectors,metadata)
-<<<<<<< HEAD
-importFrom(SummarizedExperiment,"rowData<-")
-importFrom(SummarizedExperiment,assay)
-importFrom(SummarizedExperiment,assays)
-importFrom(SummarizedExperiment,colData)
-=======
 importFrom(SummarizedExperiment,"assay<-")
 importFrom(SummarizedExperiment,"rowData<-")
 importFrom(SummarizedExperiment,SummarizedExperiment)
@@ -124,7 +86,6 @@ importFrom(SummarizedExperiment,assays)
 importFrom(SummarizedExperiment,colData)
 importFrom(SummarizedExperiment,colnames)
 importFrom(SummarizedExperiment,mcols)
->>>>>>> bioc-rev1
 importFrom(SummarizedExperiment,rowData)
 importFrom(TreeSummarizedExperiment,"referenceSeq<-")
 importFrom(TreeSummarizedExperiment,TreeSummarizedExperiment)
@@ -144,37 +105,25 @@ importFrom(ape,prop.clades)
 importFrom(ape,tiplabels)
 importFrom(ape,write.tree)
 importFrom(data.table,":=")
-<<<<<<< HEAD
-importFrom(dplyr,all_of)
-=======
 importFrom(dplyr,across)
 importFrom(dplyr,all_of)
 importFrom(dplyr,arrange)
->>>>>>> bioc-rev1
 importFrom(dplyr,bind_cols)
 importFrom(dplyr,case_when)
 importFrom(dplyr,desc)
 importFrom(dplyr,distinct)
 importFrom(dplyr,filter)
 importFrom(dplyr,group_by)
-<<<<<<< HEAD
-importFrom(dplyr,left_join)
-importFrom(dplyr,mutate)
-=======
 importFrom(dplyr,if_else)
 importFrom(dplyr,left_join)
 importFrom(dplyr,mutate)
 importFrom(dplyr,mutate_at)
->>>>>>> bioc-rev1
 importFrom(dplyr,pull)
 importFrom(dplyr,rename)
 importFrom(dplyr,rename_with)
 importFrom(dplyr,select)
 importFrom(dplyr,select_if)
-<<<<<<< HEAD
-=======
 importFrom(dplyr,slice_head)
->>>>>>> bioc-rev1
 importFrom(dplyr,summarise)
 importFrom(dplyr,summarise_all)
 importFrom(dplyr,summarize)
@@ -207,10 +156,7 @@ importFrom(ggnewscale,new_scale_fill)
 importFrom(ggplot2,aes)
 importFrom(ggplot2,aes_string)
 importFrom(ggplot2,after_stat)
-<<<<<<< HEAD
-=======
 importFrom(ggplot2,coord_flip)
->>>>>>> bioc-rev1
 importFrom(ggplot2,element_blank)
 importFrom(ggplot2,element_line)
 importFrom(ggplot2,element_rect)
@@ -218,41 +164,23 @@ importFrom(ggplot2,element_text)
 importFrom(ggplot2,facet_grid)
 importFrom(ggplot2,facet_wrap)
 importFrom(ggplot2,geom_bar)
-<<<<<<< HEAD
-importFrom(ggplot2,geom_label)
-=======
 importFrom(ggplot2,geom_boxplot)
 importFrom(ggplot2,geom_histogram)
 importFrom(ggplot2,geom_hline)
 importFrom(ggplot2,geom_label)
 importFrom(ggplot2,geom_line)
 importFrom(ggplot2,geom_linerange)
->>>>>>> bioc-rev1
 importFrom(ggplot2,geom_point)
 importFrom(ggplot2,geom_smooth)
 importFrom(ggplot2,geom_text)
 importFrom(ggplot2,geom_tile)
-<<<<<<< HEAD
-=======
 importFrom(ggplot2,geom_vline)
->>>>>>> bioc-rev1
 importFrom(ggplot2,ggplot)
 importFrom(ggplot2,ggsave)
 importFrom(ggplot2,ggtitle)
 importFrom(ggplot2,guide_legend)
 importFrom(ggplot2,guides)
 importFrom(ggplot2,labs)
-<<<<<<< HEAD
-importFrom(ggplot2,scale_alpha_continuous)
-importFrom(ggplot2,scale_color_manual)
-importFrom(ggplot2,scale_fill_gradient)
-importFrom(ggplot2,scale_fill_manual)
-importFrom(ggplot2,scale_size_continuous)
-importFrom(ggplot2,scale_x_discrete)
-importFrom(ggplot2,theme)
-importFrom(ggplot2,theme_bw)
-importFrom(ggplot2,theme_minimal)
-=======
 importFrom(ggplot2,position_dodge)
 importFrom(ggplot2,scale_alpha_continuous)
 importFrom(ggplot2,scale_color_manual)
@@ -267,15 +195,12 @@ importFrom(ggplot2,theme)
 importFrom(ggplot2,theme_bw)
 importFrom(ggplot2,theme_minimal)
 importFrom(ggplot2,theme_void)
->>>>>>> bioc-rev1
 importFrom(ggplot2,unit)
 importFrom(ggplot2,xlab)
 importFrom(ggplot2,ylab)
 importFrom(ggpubr,color_palette)
 importFrom(ggpubr,stat_cor)
 importFrom(ggpubr,stat_regline_equation)
-<<<<<<< HEAD
-=======
 importFrom(ggraph,create_layout)
 importFrom(ggraph,geom_edge_link)
 importFrom(ggraph,geom_node_point)
@@ -283,7 +208,6 @@ importFrom(ggraph,ggraph)
 importFrom(ggraph,scale_edge_colour_manual)
 importFrom(ggrepel,geom_text_repel)
 importFrom(ggridges,geom_density_ridges2)
->>>>>>> bioc-rev1
 importFrom(ggstar,geom_star)
 importFrom(ggtree,geom_text2)
 importFrom(ggtree,geom_tiplab)
@@ -291,26 +215,18 @@ importFrom(ggtree,geom_tippoint)
 importFrom(ggtree,ggtree)
 importFrom(ggtree,theme_tree2)
 importFrom(ggtreeExtra,geom_fruit)
-<<<<<<< HEAD
-=======
 importFrom(grDevices,col2rgb)
->>>>>>> bioc-rev1
 importFrom(grDevices,dev.new)
 importFrom(grDevices,dev.off)
 importFrom(grDevices,pdf)
 importFrom(grDevices,png)
 importFrom(grDevices,rainbow)
-<<<<<<< HEAD
-=======
 importFrom(grDevices,rgb)
->>>>>>> bioc-rev1
 importFrom(graphics,boxplot)
 importFrom(graphics,hist)
 importFrom(graphics,legend)
 importFrom(graphics,mtext)
 importFrom(grid,unit)
-<<<<<<< HEAD
-=======
 importFrom(igraph,E)
 importFrom(igraph,V)
 importFrom(igraph,betweenness)
@@ -342,7 +258,6 @@ importFrom(igraph,strength)
 importFrom(igraph,transitivity)
 importFrom(igraph,vcount)
 importFrom(igraph,vertex_attr_names)
->>>>>>> bioc-rev1
 importFrom(limma,makeContrasts)
 importFrom(matrixStats,rowMeans2)
 importFrom(matrixStats,rowMedians)
@@ -353,20 +268,14 @@ importFrom(msa,msa)
 importFrom(msa,msaConvert)
 importFrom(officer,docx_summary)
 importFrom(officer,read_docx)
-<<<<<<< HEAD
-=======
 importFrom(patchwork,wrap_plots)
->>>>>>> bioc-rev1
 importFrom(phangorn,bootstrap.phyDat)
 importFrom(phangorn,dist.ml)
 importFrom(phangorn,phyDat)
 importFrom(phyloseq,"otu_table<-")
 importFrom(phyloseq,"tax_table<-")
 importFrom(phyloseq,"taxa_names<-")
-<<<<<<< HEAD
-=======
 importFrom(phyloseq,filter_taxa)
->>>>>>> bioc-rev1
 importFrom(phyloseq,merge_phyloseq)
 importFrom(phyloseq,merge_taxa)
 importFrom(phyloseq,nsamples)
@@ -390,10 +299,6 @@ importFrom(phyloseq,taxa_sums)
 importFrom(phyloseq,transform_sample_counts)
 importFrom(randomForest,importance)
 importFrom(randomForest,randomForest)
-<<<<<<< HEAD
-importFrom(scales,label_scientific)
-importFrom(stats,aggregate)
-=======
 importFrom(reshape2,melt)
 importFrom(rlang,as_name)
 importFrom(rlang,sym)
@@ -401,38 +306,28 @@ importFrom(scales,label_scientific)
 importFrom(scales,rescale)
 importFrom(stats,aggregate)
 importFrom(stats,as.formula)
->>>>>>> bioc-rev1
 importFrom(stats,median)
 importFrom(stats,model.matrix)
 importFrom(stats,na.omit)
 importFrom(stats,p.adjust)
 importFrom(stats,quantile)
 importFrom(stats,reformulate)
-<<<<<<< HEAD
-=======
 importFrom(stats,relevel)
->>>>>>> bioc-rev1
 importFrom(stats,reorder)
 importFrom(stats,sd)
 importFrom(stats,setNames)
 importFrom(stats,wilcox.test)
 importFrom(tibble,as_tibble)
 importFrom(tibble,rownames_to_column)
-<<<<<<< HEAD
-=======
 importFrom(tidyr,pivot_longer)
->>>>>>> bioc-rev1
 importFrom(tidyr,pivot_wider)
 importFrom(utils,capture.output)
 importFrom(utils,globalVariables)
 importFrom(utils,install.packages)
 importFrom(utils,write.csv)
-<<<<<<< HEAD
-=======
 importFrom(xml2,read_xml)
 importFrom(xml2,write_xml)
 importFrom(xml2,xml_attr)
 importFrom(xml2,xml_find_all)
 importFrom(xml2,xml_remove)
 importFrom(xml2,xml_set_attr)
->>>>>>> bioc-rev1

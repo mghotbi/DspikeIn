@@ -8,13 +8,10 @@ This document outlines the creation of synthetic and original test datasets incl
   inst/extdata
 - **`physeq`** — synthetic `phyloseq` object including spike-in taxa for use in controlled community workflows.  
 - **`tse`** — `TreeSummarizedExperiment` equivalent of the synthetic dataset.  
-<<<<<<< HEAD
-=======
 - **`Complete.graphml`** — co-occurrence network generated from the original dataset using SpiecEasi and igraph.  
 - **`NoBasid.graphml`** — network with first-neighbor taxa of *Basidiobolus* excluded.  
 - **`NoHubs.graphml`** — network with module and network hubs removed (Zi > 2.5; Pi > 0.62).  
 - **`Ref.fasta`** — short Sanger read of *Tetragenococcus halophilus* in FASTA format.  
->>>>>>> bioc-rev1
 - **`Sample.fasta`** — short read of *Tetragenococcus halophilus* from 16S rRNA sequencing in a herptile microbiome study.
   data
 - **`physeq_16SOTU`** — `phyloseq` object built from herptile gut microbiome 16S rRNA sequencing data.  
@@ -30,13 +27,6 @@ All datasets were generated using reproducible R-based workflows and include tax
 - **Institution**: [Herptile Microbiomes](https://herptilemicrobiomes.org/research/)  
 - **Funding**: National Science Foundation (NSF) grants EF-2125065, EF-2125066, EF-2125067  
 - **Manuscript**: Under review at *ISME Journal*  
-<<<<<<< HEAD
-- **Open Access**: Available at [The ISME Journal](https://doi.org/10.1093/ismejo/wraf150)
-
-For full methodological and biological context, see:
-
-Ghotbi, M. *et al.* (2024). *DspikeIn: A spike-in controlled absolute abundance framework for microbial community analysis*. *bioRxiv*. https://doi.org/10.1101/2024.12.27.630554
-=======
 - **Preprint**: Available on [bioRxiv](https://doi.org/10.1101/2024.12.27.630554)
 
 For full methodological and biological context, see the preprint:
@@ -44,7 +34,6 @@ For full methodological and biological context, see the preprint:
  Ghotbi M. *et al.* (2024). *DspikeIn: A spike-in controlled absolute abundance framework for microbial community analysis*.  
  *bioRxiv*. https://doi.org/10.1101/2024.12.27.630554
 
->>>>>>> bioc-rev1
 
 
 ---
@@ -53,11 +42,7 @@ For full methodological and biological context, see the preprint:
   
   Raw sequencing data are publicly available at the NCBI Sequence Read Archive:
   
-<<<<<<< HEAD
-- [PRJNA1202922](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1202922)  
-=======
   - [PRJNA1202922](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1202922)  
->>>>>>> bioc-rev1
 - [PRJNA1210664](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1210664)
 
 ---
@@ -142,9 +127,6 @@ physeq_ITSOTU <- phyloseq(
 physeq_ITSOTU <- DspikeIn::tidy_phyloseq_tse(physeq_ITSOTU)
 saveRDS(physeq_ITSOTU, "physeq_ITSOTU.rds")
 
-<<<<<<< HEAD
-
-=======
 # Network Construction and Hub Removal
 library(SpiecEasi)
 
@@ -205,4 +187,3 @@ NoHubs   <- load_graphml("NoHubs.graphml")
 
 
   
->>>>>>> bioc-rev1

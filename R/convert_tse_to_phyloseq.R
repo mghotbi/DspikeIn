@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-#' @title Convert a `TreeSummarizedExperiment` to a `phyloseq` Object
-=======
 #' @title Convert a `TreeSummarizedExperiment` to a `phyloseq` Object 
->>>>>>> bioc-rev1
 #'
 #' @description Converts a `TreeSummarizedExperiment` (TSE) object into a `phyloseq` object,
 #' preserving key components such as the OTU table, taxonomy, sample metadata, phylogenetic tree,

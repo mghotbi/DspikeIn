@@ -1,57 +1,13 @@
-<<<<<<< HEAD
-Type: Package
-Package: DspikeIn
-Title: Estimating Absolute Abundance from Microbial Spike-in Controls
-Version: 0.99.18
-=======
 Package: DspikeIn
 Type: Package
 Title: Estimating Absolute Abundance from Microbial Spike-in Controls
 Version: 0.99.21
->>>>>>> bioc-rev1
 Authors@R: c(
     person("Mitra", "Ghotbi", , "mitra.ghotbi@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9185-9993")),
     person("Marjan", "Ghotbi", , "ghotbi.marjan@gmail.com", role = "ctb",
            comment = c(ORCID = "0000-0003-4655-6445"))
   )
-<<<<<<< HEAD
-Description: Provides a reproducible and modular workflow for absolute
-    microbial quantification using spike-in controls. Supports both single
-    spike-in taxa and synthetic microbial communities with user-defined
-    spike-in volumes and gene copy numbers. Compatible with 'phyloseq' and
-    'TreeSummarizedExperiment' (TSE) data structures. The package
-    implements core methods for spike-in validation, scaling factor
-    estimation, absolute abundance conversion, and bias correction.
-    Visualization tools are provided via 'ggplot2', 'ggtree', and related
-    packages. This streamlined version focuses on core functionality and
-    quantification. For helper utilities and extended pipelines, refer to
-    the 'MGhotbi' branch on GitHub.
-License: MIT + file LICENSE
-URL: https://github.com/mghotbi/DspikeIn
-BugReports: https://github.com/mghotbi/DspikeIn/issues
-Depends: R (>= 4.5.0)
-Imports: ape, Biostrings, data.table, DECIPHER, DESeq2, dplyr, edgeR,
-        flextable, ggalluvial, ggnewscale, ggplot2, ggpubr, ggstar,
-        ggtree, ggtreeExtra, graphics, grDevices, grid, limma,
-        matrixStats, methods, microbiome, msa, officer, phangorn,
-        phyloseq, randomForest, RColorBrewer, S4Vectors, scales, stats,
-        SummarizedExperiment, tibble, tidyr, TreeSummarizedExperiment,
-        utils
-Suggests: mia, BiocStyle, knitr, rmarkdown, testthat (>= 3.0.0), vegan
-VignetteBuilder: knitr
-biocViews: Microbiome, Preprocessing, QualityControl,
-        DifferentialExpression, Normalization, Sequencing,Classification,
-        Visualization, Phylogenetics, ExperimentalDesign, DataImport,
-        Software
-Encoding: UTF-8
-LazyData: true
-LazyDataCompression: xz
-NeedsCompilation: no
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
-Packaged: 2025-06-19 18:38:14 UTC; mitraghotbi
-=======
 Description: Provides a reproducible and modular workflow for absolute microbial 
     quantification using spike-in controls. Supports both single spike-in taxa 
     and synthetic microbial communities with user-defined spike-in volumes and 
@@ -156,4 +112,3 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 NeedsCompilation: no
->>>>>>> bioc-rev1

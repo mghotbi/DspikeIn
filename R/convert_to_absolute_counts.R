@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-#' @title Convert Relative ASV/OTU Counts to Absolute Counts
-=======
 #' @title Convert Relative ASV/OTU Counts to Absolute Counts 
->>>>>>> bioc-rev1
 #'
 #' @description Converts relative ASV counts in a `phyloseq` or `TreeSummarizedExperiment` (TSE) object
 #' to absolute counts by multiplying ASV counts by provided scaling factors.

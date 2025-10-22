@@ -16,13 +16,9 @@
 1. **Getting Started**
    DspikeIn Package
    - [DspikeIn](#DspikeIn-Package)
-<<<<<<< HEAD
-   - [Installation](#Installation)
-=======
    - [DspikeIn core functions installation](#Installing-DspikeIn-Core-Functions-from-Bioconductor)
    - [DspikeIn full pipeline installation](#Installing-DspikeIn-full-pipeline-from-Github)
    - [DspikeIn core functions installation](#Installing-DspikeIn-Core-Functions-from-Bioconductor)
->>>>>>> bioc-rev1
    - [Vignettes](#Vignettes) 
    - [Requirements](#To-Meet-Taxonomic-Ranks-Requirements)
    - [GCN Correction](#GCN-Normalization-with-QIIME2-Plugin)
@@ -198,36 +194,6 @@ qiime gcn-norm copy-num-normalize \
 
 ```
 
-<<<<<<< HEAD
-## Installation
-
-To install the DspikeIn package, follow these steps...
-*If you encounter issues installing the package due to missing dependencies, follow these steps to install all required packages first:*
-
-## Step 1: Install Required Packages
-To install the required packages, use the following script:
-
----
-#### CRAN packages
-
-```r
-# Install missing CRAN packages
-install.packages(setdiff(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", 
-                           "randomForest", "ggridges", "ggalluvial", "tibble", 
-                           "matrixStats", "RColorBrewer", "ape", "rlang", "ggstar",
-                           "scales", "magrittr", "phangorn", "igraph", "tidyr", 
-                           "xml2", "data.table", "reshape2","vegan", "patchwork", "officer"), 
-                         installed.packages()[,"Package"]))
-
-# Load CRAN packages
-lapply(c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", "randomForest", "ggstar",
-         "ggridges", "ggalluvial", "tibble", "matrixStats", "RColorBrewer", 
-         "ape", "rlang", "scales", "magrittr", "phangorn", "igraph", "tidyr", 
-         "xml2", "data.table", "reshape2","vegan", "patchwork", "officer"), library, character.only = TRUE)
-
-```
-#### Bioconductor Packages
-=======
 #### Before installing the full DspikeIn pipeline from GitHub, please ensure that the following CRAN and Bioconductor packages are installed.
 If you encounter installation issues due to missing dependencies, follow the steps below to install all required packages first.
 
@@ -269,7 +235,6 @@ lapply( c("phyloseq", "msa", "DESeq2", "edgeR", "mia", "Biostrings", "ggtree", "
  
 ##  Installing DspikeIn full pipeline from Github
 =======
->>>>>>> bioc-rev1
 
 ```r 
 
@@ -290,20 +255,11 @@ lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "mia","Biostrings", "ggtree", "DE
 ```
 
 ## Step 2: Install DspikeIn Package
-<<<<<<< HEAD
-**Full Pipeline**
-
-```r
-
-# Installation
-#Instructions for how to install the DspikeIn package.
-=======
 >>>>>>> 00ef2d2 (Final local edits before Bioconductor merge (0.99.21))
 **Full Pipeline**
 
 ```r
 #Instructions for how to install the DspikeIn complete pipeline package from Github.
->>>>>>> bioc-rev1
 
 # *** Please note that installing with build_vignettes = TRUE may take 2–4 minutes, depending on your computer’s processing power ***
 
@@ -321,21 +277,13 @@ library(DspikeIn)
 <<<<<<< HEAD
 vignette("DspikeIn-with-TSE")
 =======
-<<<<<<< HEAD
-vignette("DspikeIn-with-TSE")
-=======
 vignette("Getting-started-with-DspikeIn")
 >>>>>>> 00ef2d2 (Final local edits before Bioconductor merge (0.99.21))
->>>>>>> bioc-rev1
 
 # Or list all available tutorials
 browseVignettes("DspikeIn")
 
 ```
-<<<<<<< HEAD
-
-***core functions***
-=======
 <<<<<<< HEAD
 ## Installing DspikeIn Core Functions from Bioconductor
 **Core functions**
@@ -343,13 +291,10 @@ browseVignettes("DspikeIn")
 
 ***core functions***
 >>>>>>> 00ef2d2 (Final local edits before Bioconductor merge (0.99.21))
->>>>>>> bioc-rev1
 
 ```r
 
 # Install remotes if needed
-<<<<<<< HEAD
-=======
 <<<<<<< HEAD
 options(repos = BiocManager::repositories())
 
@@ -384,7 +329,6 @@ BiocManager::install(
 # Open the vignettes
 browseVignettes("DspikeIn")   # or: vignette(package = "DspikeIn")
 =======
->>>>>>> bioc-rev1
 install.packages("remotes")
 
 # Install just the core functions from the devel branch
@@ -394,10 +338,7 @@ remotes::install_github(
   dependencies = TRUE)
 
 library(DspikeIn)
-<<<<<<< HEAD
-=======
 >>>>>>> 00ef2d2 (Final local edits before Bioconductor merge (0.99.21))
->>>>>>> bioc-rev1
 
 
 ```
@@ -421,10 +362,6 @@ ggplot2, ggrepel, ggpubr, ggnewscale, ggalluvial, ggtree, ggtreeExtra, ggstar, g
 These tools collectively empowered us to build a reproducible, modular, and extensible platform for robust absolute abundance quantification in microbial community analysis.
 We further acknowledge the broader scientific community working on absolute microbial quantification, spike-in calibration, and compositional data analysis, whose foundational insights directly informed the design and conceptual framework of DspikeIn.
 
-<<<<<<< HEAD
-#  DspikeIn full pipeline 
-=======
->>>>>>> bioc-rev1
 For complete exploratory tools, differential abundance (DA), and network analyses, refer to the MGhotbi https://github.com/mghotbi/DspikeIn/tree/MGhotbi branch of the GitHub repository, which contains the full extended pipeline.
 
 
@@ -1248,9 +1185,6 @@ results <- detect_common_asvs_taxa(list(rf_physeq, FTspiked_16S , core.microbiom
 
 
 <<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> bioc-rev1
 - ⭐ **Please give us stars on GitHub!**
 - 🖋️ **Please cite us using the link below:**
 
@@ -1260,12 +1194,9 @@ Ghotbi, M., Stajich, J. E., Dallas, J. W., Rurik, A. J., Cummins, C., Vargas-Gas
 
 📄 [Read the article (Open Access)](https://doi.org/10.1093/ismejo/wraf150)
 
-<<<<<<< HEAD
-=======
 =======
 [Citing DspikeIn](doi.org/10.1093/ismejo/wraf150)
 >>>>>>> 00ef2d2 (Final local edits before Bioconductor merge (0.99.21))
->>>>>>> bioc-rev1
 
 ![Thank You](https://img.shields.io/badge/Thank-You-brightgreen?style=for-the-badge)
 

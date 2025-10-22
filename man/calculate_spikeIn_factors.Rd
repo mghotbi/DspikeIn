@@ -33,12 +33,9 @@ A list with:
 Calculates scaling factors for specified spike-in species or genera in
 a \code{phyloseq} or \code{TreeSummarizedExperiment (TSE)} object. It supports genus/species-level detection,
 removes spike-ins, merges them, computes scaling factors, and returns a bias-corrected absolute count matrix.
-<<<<<<< HEAD
-=======
 The function automatically handles:Species or genus-level spike-in identification, Safe tree and taxonomy synchronization,
 Volume-based scaling (via the spiked.volume field in metadata),
 Optional export of intermediate results for traceability (Total_Reads.csv, Spiked_Reads.csv, Scaling_Factors.csv).
->>>>>>> bioc-rev1
 }
 \examples{
 if (requireNamespace("DspikeIn", quietly = TRUE) &&

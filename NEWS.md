@@ -1,35 +1,8 @@
-<<<<<<< HEAD
-# DspikeIn 0.99.18
-
-* retrying citation
-
-# DspikeIn 0.99.17
-
-* updating citation
-
-# DspikeIn 0.99.16
-
-* Triggered rebuild after upstream push.
-
-# DspikeIn 0.99.15
-
-* Added `inst/CITATION` file referencing peer-reviewed article in _The ISME Journal_ (Ghotbi et al., 2025).
-* Set `LazyData: false` in `DESCRIPTION` to improve package installation efficiency and avoid Bioconductor NOTE.
-
-# Version: 0.99.14
-- update
-# Version: 0.99.13
-
-# Version: 0.99.12
-- Cleaned up Rcheck.
-
-=======
 # DspikeIn 0.99.21
 
 # DspikeIn 0.99.20
 - function added
 - reviewer's comments implemented 
->>>>>>> bioc-rev1
 
 # Version: 0.99.11
 - Adding TSE Examples
@@ -37,13 +10,10 @@
 
 # DspikeIn 0.99.10
 
-<<<<<<< HEAD
-=======
 _No major changes recorded._
 
 # DspikeIn 0.99.9
 
->>>>>>> bioc-rev1
 - Cleaned up Rcheck.
 
 # DspikeIn 0.99.9
