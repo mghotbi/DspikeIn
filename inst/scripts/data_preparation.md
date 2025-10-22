@@ -174,7 +174,7 @@ write_graph(spiec.ig, "NoHubs.graphml", format = "graphml")
   
 #  For details, see:
 #  Ghotbi et al. (2025) — Agriculture, Ecosystems & Environment
-# https://doi.org/10.1016/j.agee.2024.109308
+# https://doi.org/10.1016/j.agee.2024.109308  & https://doi.org/10.1093/ismejo/wraf150 
 
 ```r
 # Load Final Graphs

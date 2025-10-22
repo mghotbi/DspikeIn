@@ -129,4 +129,4 @@ extract_neighbors <- function(graph = NULL, target_node, mode = "all") {
 
 # result <- extract_neighbors(graph = "~/herp.spiecsym.network.graphml",
 # target_node = "OTU1:Lilapila_jurana", mode = "all")
-# 
+#

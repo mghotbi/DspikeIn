@@ -34,9 +34,11 @@ A data frame with the following columns:
 }
 }
 \description{
-This function calculates the percentage of reads from specified spiked species or hashcodes in a microbiome dataset.
-It merges the spiked taxa into one ASV/OTU, calculates the percentage of reads, categorizes the results as passed or failed,
-and optionally saves the results as DOCX and CSV files.
+In spike-in based absolute quantitation workflows, the acceptable recovery range of spike-in reads
+is system dependent, varying with sequencing platform, extraction protocol, and microbial community structure.
+This function calculates the percentage of reads, categorizes the results as passed or failed,
+optionally saves the results as DOCX and CSV files.It also visualizes the relationship between observed spike-in abundance and total reads,
+stratified across user-defined recovery intervals, to empirically determine the optimal range for quality control.
 }
 \examples{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
@@ -64,9 +66,8 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   )
   print(result_physeq)
 
-  # ----------- TreeSummarizedExperiment Example -----------
+  # ----------- TSE Example -----------
   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
-
   merged_tse <- Pre_processing_species(
     tse_16SOTU,
     species_name = species_name,

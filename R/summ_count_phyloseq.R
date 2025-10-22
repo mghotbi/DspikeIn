@@ -50,4 +50,3 @@ summ_count_phyloseq <- function(obj) {
 
 # Example usage:
 # summary_stats <- summ_count_phyloseq(physeq_ITSOTU)
-# 

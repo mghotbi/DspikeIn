@@ -7,7 +7,7 @@
 #'
 #' @format A \code{phyloseq} object with:
 #' \describe{
-#'   \item{otu_table}{OTU abundance matrix (ASVs × samples).}
+#'   \item{otu_table}{OTU abundance matrix (ASVs  samples).}
 #'   \item{tax_table}{Taxonomic classification of ASVs.}
 #'   \item{sample_data}{Sample-level metadata.}
 #'   \item{phy_tree}{A rooted phylogenetic tree of ASVs.}
@@ -30,4 +30,3 @@
 #'   phyloseq::refseq(physeq)
 #' }
 "physeq"
-# 

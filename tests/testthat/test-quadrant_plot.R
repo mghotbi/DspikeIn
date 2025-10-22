@@ -3,9 +3,11 @@ test_that("quadrant_plot generates a valid ggplot object using Complete.graphml"
   library(igraph)
   library(ggplot2)
   library(DspikeIn)
-
+  
   g <- load_graphml("Complete.graphml")
-
+  suppressWarnings({
+    result <- node_level_metrics(g)
+  })
   #  Compute node-level metrics
   result <- node_level_metrics(g)
   metrics <- result$metrics # Extract metrics dataframe

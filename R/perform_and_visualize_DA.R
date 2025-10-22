@@ -56,7 +56,7 @@
 #' if (requireNamespace("phyloseq", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
 #'
-#'   # Fast example — keep this one runnable for Bioconductor checks
+#'   # Example 
 #'   perform_and_visualize_DA(
 #'     obj = physeq_16SOTU,
 #'     method = "DESeq2",
@@ -460,7 +460,7 @@ perform_and_visualize_DA <- function(obj,
       ) +
       ggplot2::theme_minimal(base_size = 16) +
       ggplot2::theme(
-        plot.title = ggplot2::element_text(face = "bold", size = 20, hjust = 0.5),
+        plot.title = ggplot2::element_text(face = "bold", size = 18, hjust = 0.5),
         plot.subtitle = ggplot2::element_text(size = 14, hjust = 0.5, color = "gray30"),
         axis.text.y = ggplot2::element_text(face = "italic", color = "black", size = 12),
         axis.text.x = ggplot2::element_text(face = "bold", size = 12),

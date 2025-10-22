@@ -1,18 +1,13 @@
 Package: DspikeIn
 Type: Package
 Title: Estimating Absolute Abundance from Microbial Spike-in Controls
-Version: 0.99.11
-Authors@R: 
-    c(
-        person(given = "Mitra", family = "Ghotbi", 
-               role = c("aut", "cre"), 
-               email = "mitra.ghotbi@gmail.com",
-               comment = c(ORCID = "0000-0001-9185-9993")),
-        person(given = "Marjan", family = "Ghotbi", 
-               role = "ctb",
-               email = "ghotbi.marjan@gmail.com",
-               comment = c(ORCID = "0000-0003-4655-6445"))
-    )
+Version: 0.99.21
+Authors@R: c(
+    person("Mitra", "Ghotbi", , "mitra.ghotbi@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-9185-9993")),
+    person("Marjan", "Ghotbi", , "ghotbi.marjan@gmail.com", role = "ctb",
+           comment = c(ORCID = "0000-0003-4655-6445"))
+  )
 Description: Provides a reproducible and modular workflow for absolute microbial 
     quantification using spike-in controls. Supports both single spike-in taxa 
     and synthetic microbial communities with user-defined spike-in volumes and 
@@ -67,9 +62,9 @@ Imports:
     S4Vectors,
     scales,
     stats,
-    SummarizedExperiment,
     tibble,
     tidyr,
+    SummarizedExperiment,
     TreeSummarizedExperiment,
     utils,
     msa,
@@ -114,6 +109,6 @@ biocViews:
 URL: https://github.com/mghotbi/DspikeIn
 BugReports: https://github.com/mghotbi/DspikeIn/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 NeedsCompilation: no

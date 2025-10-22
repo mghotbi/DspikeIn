@@ -39,84 +39,6 @@ knitr::opts_chunk$set(
 ```
 
 
-#                Required Packages
-
-
-```{r, eval=FALSE}
-
-#                         INSTALL CRAN PACKAGES
-
-# Install missing CRAN packages
-install.packages(setdiff(
-  c(
-    "stats", "dplyr", "ggplot2", "flextable", "ggpubr",
-    "randomForest", "ggridges", "ggalluvial", "tibble",
-    "matrixStats", "RColorBrewer", "ape", "rlang",
-    "scales", "magrittr", "phangorn", "igraph", "tidyr",
-    "xml2", "data.table", "reshape2", "vegan", "patchwork", "officer"
-  ),
-  installed.packages()[, "Package"]
-))
-
-# Load CRAN packages
-lapply(c(
-  "stats", "dplyr", "ggplot2", "flextable", "ggpubr", "randomForest",
-  "ggridges", "ggalluvial", "tibble", "matrixStats", "RColorBrewer",
-  "ape", "rlang", "scales", "magrittr", "phangorn", "igraph", "tidyr",
-  "xml2", "data.table", "reshape2", "vegan", "patchwork", "officer"
-), library, character.only = TRUE)
-
-
-#                         INSTALL BIOCONDUCTOR PACKAGES
-
-
-# Install BiocManager if not installed
-if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
-
-# Install missing Bioconductor packages
-BiocManager::install(setdiff(
-  c(
-    "phyloseq", "msa", "DESeq2", "ggtree", "edgeR",
-    "Biostrings", "DECIPHER", "microbiome", "limma",
-    "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"
-  ),
-  installed.packages()[, "Package"]
-))
-
-# Load Bioconductor packages
-lapply(
-  c(
-    "phyloseq", "msa", "DESeq2", "edgeR", "Biostrings", "ggtree", "DECIPHER",
-    "microbiome", "limma", "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"
-  ),
-  library,
-  character.only = TRUE
-)
-
-
-#                         INSTALL DspikeIn FROM GITHUB
-
-
-# To access the DspikeIn vignette for a detailed tutorial, use vignette("DspikeIn"), or browse all available vignettes with browseVignettes("DspikeIn").
-devtools::install_github("mghotbi/DspikeIn", build_vignettes = TRUE, dependencies = TRUE)
-library(DspikeIn)
-browseVignettes("DspikeIn")
-vignette("DspikeIn")
-
-## or
-
-if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools")
-devtools::install_github("mghotbi/DspikeIn")
-
-# Load DspikeIn only if installed
-if ("DspikeIn" %in% installed.packages()[, "Package"]) {
-  library(DspikeIn)
-} else {
-  stop("DspikeIn installation failed. Check errors above.")
-}
-```
-
-
 #    Acknowledgments
 The development of the DspikeIn package was made possible through the generous and pioneering efforts of the R and Bioconductor communities. We gratefully acknowledge the developers and maintainers of the following open-source packages, whose tools and infrastructure underpin our work:
 **Core infrastructure & data manipulation:**
@@ -134,90 +56,81 @@ These tools collectively empowered us to build a reproducible, modular, and exte
 We further acknowledge the broader scientific community working on absolute microbial quantification, spike-in calibration, and compositional data analysis, whose foundational insights directly informed the design and conceptual framework of DspikeIn.
 
 
+```{r installation, eval=FALSE}
+
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install("DspikeIn")
+
+library(DspikeIn)
+```
 
 #     DspikeIn
-The DspikeIn package supports both phyloseq and TreeSummarizedExperiment formats to streamline microbial quantification across diverse experimental setups. It accommodates either a single spike-in taxon or synthetic community taxa with variable or equal spike-in volumes and copy numbers. The package offers a comprehensive suite of tools for AA quantification, addressing challenges through ten core functions: 1) validation of spiked species, 2) data preprocessing, 3) system-specific spiked species retrieval, 4) scaling factor calculation, 5) conversion to absolute abundance, 6) bias correction and normalization, 7) performance assessment, and 8) taxa exploration and filtering 9) network topology assessment 10) further analyses and visualization. 
-
+The DspikeIn package supports both phyloseq and TreeSummarizedExperiment formats to streamline microbial quantification across diverse experimental setups. It accommodates either a single spike-in taxon or synthetic community taxa with variable or equal spike-in volumes and copy numbers. The package offers a comprehensive suite of tools for absolute abundance (AA) quantification, addressing challenges through ten core functions: 1) validation of spiked species, 2) data preprocessing, 3) system-specific spiked species retrieval, 4) scaling factor calculation, 5) conversion to absolute abundance, 6) bias correction and normalization, 7) performance assessment, and 8) taxa exploration and filtering 9) network topology assessment 10) further analyses and visualization. For more information please check doi.org/10.1093/ismejo/wraf150
 
 #    DspikeIn requirements
-DspikeIn works with 7 taxonomic ranks
+Important:
+DspikeIn operates on a taxonomy table with exactly seven ranks:
+Kingdom  Phylum  Class  Order  Family  Genus  Species.
+colnames(taxmat) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+Please remove or rename extra ranks (e.g., Strain, Subfamily) before running DspikeIn.
 
 
-```{r, eval=FALSE}
+```{r , eval=TRUE}
 
-#             To remove strain from the taxonomic ranks
+library(SummarizedExperiment)
+library(DspikeIn)
 
-# DspikeIn works with 7 taxonomic ranks
-# colnames(taxmat) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+# DspikeIn requirements
+# --------------------
+# DspikeIn operates on a taxonomy table with exactly seven ranks:
+# Kingdom  Phylum  Class  Order  Family  Genus  Species
 
-# Function to remove strain or bracketed info
-remove_strain_info <- function(df) {
-  pattern <- "Strain.*|strain.*|\\s*\\[.*?\\]|\\s*\\(.*?\\)"
-  for (col in colnames(df)) {
-    df[[col]] <- gsub(pattern, "", df[[col]])
-    df[[col]] <- trimws(df[[col]])}
-  return(df)}
+expected <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+actual <- colnames(as.data.frame(SummarizedExperiment::rowData(tse)))
 
-# Apply to rowData of TSE
-taxonomy <- as.data.frame(rowData(tse_16SOTU))
+if (!identical(expected, actual)) {
+  stop(
+    paste0(
+      "DspikeIn requires exactly 7 taxonomic ranks in this order:\n  ",
+      paste(expected, collapse = "  "),
+      "\n\nYour taxonomy columns are:\n  ",
+      paste(actual, collapse = ", "),
+      "\n\nPlease remove or rename extra ranks (e.g., 'Strain', 'Subfamily') ",
+      "to match the required format."
+    )
+  )
+}
 
-# Clean strain 
-cleaned_taxonomy <- remove_strain_info(taxonomy)
-
-#  drop "Strain" if present
-if ("Strain" %in% colnames(cleaned_taxonomy)) {
-  cleaned_taxonomy <- cleaned_taxonomy[, colnames(cleaned_taxonomy) != "Strain"]}
-
-# Re-assign to TSE
-rowData(tse_16SOTU) <- cleaned_taxonomy
-
-
-#             To add species rank to the taxonomic ranks
-
-# Make sure 'Genus' exists
-if (!"Genus" %in% colnames(rowData(tse_16SOTU))) {
-  stop("The 'Genus' column is missing in rowData.")}
-
-# prepare taxonomy
-taxonomy <- as.data.frame(rowData(tse_16SOTU))
-
-# Handle missing genus labels
-taxonomy$Genus[is.na(taxonomy$Genus) | taxonomy$Genus == ""] <- "Unknown"
-taxonomy$Species <- paste0(taxonomy$Genus, "_OTU", seq_len(nrow(taxonomy)))
-
-# Assign back to TSE
-rowData(tse_16SOTU) <- taxonomy
 
 ```
 
+#       To build TreeSummarizedExperiment file please refer to 
+github.com/markrobinsonuzh/TreeSummarizedExperiment
 
 
-#        Build TreeSummarizedExperiment file
-for more information please refer to 
-https://github.com/markrobinsonuzh/TreeSummarizedExperiment
+```{r , eval=TRUE}
+
+library(phyloseq)
+# Get path to external data folder
+extdata_path <- system.file("extdata", package = "DspikeIn")
+list.files(extdata_path)
+# and
+data("physeq_16SOTU", package = "DspikeIn")
+length(taxa_names(physeq_16SOTU))
+new_ids <- paste0("OTU", seq_along(taxa_names(physeq_16SOTU)))
+taxa_names(physeq_16SOTU) <- new_ids
+
+# Verify
+head(taxa_names(physeq_16SOTU))
+# [1] "OTU1" "OTU2" "OTU3" "OTU4" "OTU5" "OTU6"
 
 
-```{r, eval=FALSE}
 
+tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+tse_16SOTU <- tidy_phyloseq_tse(tse_16SOTU)
 
-#                       Build TreeSummarizedExperiment (TSE)
-
-
-otu <- read.csv("otu.csv", header = TRUE, sep = ",", row.names = 1)
-otu_mat <- as.matrix(otu) # Convert to matrix
-tax <- read.csv("tax.csv", header = TRUE, sep = ",", row.names = 1)
-colnames(tax) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
-tax_mat <- as.matrix(tax) # Convert to matrix
-meta <- read.csv("metadata.csv", header = TRUE, sep = ",", row.names = 1)
-reference_seqs <- readDNAStringSet("dna-sequences.fasta", format = "fasta")
-tse <- TreeSummarizedExperiment(
-  assays = list(counts = otu_mat), # OTU table
-  rowData = tax_mat, # Taxonomy information
-  colData = meta, # Sample metadata
-  rowTree = MyTree, # Phylogenetic tree
-  rowSeqs = reference_seqs # Reference sequences)
 ```
-
 
 
 Do all detected sample spike-in sequences cluster with the reference, and are their branch lengths statistically similar, supporting a common ancestor?
@@ -231,6 +144,7 @@ The branch lengths and distances are in a biologically plausible range.
 
 
 ```{r}
+
 # Use the Neighbor-Joining method  based on a Jukes-Cantor distance matrix and plot the tree with bootstrap values.
 # we compare the Sanger read of Tetragenococcus halophilus with the FASTA sequence of Tetragenococcus halophilus from our phyloseq object.
 
@@ -239,16 +153,8 @@ library(TreeSummarizedExperiment)
 library(SummarizedExperiment)
 library(DspikeIn)
 
-# Get path to external data folder
-extdata_path <- system.file("extdata", package = "DspikeIn")
-list.files(extdata_path)
-
-data("physeq_16SOTU", package = "DspikeIn")
-tse_16SOTU<-convert_phyloseq_to_tse(physeq_16SOTU)
-tse_16SOTU <- tidy_phyloseq_tse(tse_16SOTU)
 
 # Filter TSE object to keep only Bacteria and Archaea
-
 tse_16SOTU <- tse_16SOTU[
   rowData(tse_16SOTU)$Kingdom %in% c("Bacteria", "Archaea"),]
 
@@ -267,9 +173,6 @@ library(Biostrings)
 # ref_sequences <- Biostrings::DNAStringSet(ref_sequences)
 # Biostrings::writeXStringSet(ref_sequences, filepath = "Sample.fasta")
 
-
-
-
 ref_fasta <- system.file("extdata", "Ref.fasta", package = "DspikeIn")
 sample_fasta <- system.file("extdata", "Sample.fasta", package = "DspikeIn")
 
@@ -281,7 +184,7 @@ result <- validate_spikein_clade(
   bootstrap = 200,
   output_prefix = NULL)
 
-# result$tree_plot
+result$tree_plot
 ```
 
 
@@ -293,14 +196,13 @@ Blue bar ring=	Log10 mean abundance
 Outer colored tiles=	The metadata variable you choose (e.g., Animal.type)
 
 
-```{r}
-#data("physeq_16SOTU", package = "DspikeIn")
-tse_16SOTU
+```{r fig.align='center', fig.width=7, fig.height=5, out.width='50%', dpi=120}
+
 library(ggstar)
 library(ggplot2)
 
-# filter your object to only include spike-in taxa beforehand:
-# change the OTU IDs for easy detection
+# Filter your object to only include spike-in taxa beforehand:
+# We changed the OTU IDs for easy detection
 # Big stars = detected in many samples
 # Small stars = rarely detected
 # log10(Mean Abundance) Bars= Color intensity reflects mean abundance.
@@ -325,21 +227,25 @@ ps <- plot_spikein_tree_diagnostic(
   metadata_var = "Animal.type",
   save_plot = FALSE )
 
-
+print(ps)
 ```
 
 
 #                Pre_processing
-merges monophyletic ASVs/OTUs
 
-#          Spiked species and related parameters for 16S 
+merges monophyletic ASVs/OTUs. Why We Merge Similar ASVs/OTUs?
+In amplicon sequencing, multiple Amplicon Sequence Variants (ASVs) or Operational Taxonomic Units (OTUs) often map to the same taxonomic species due to: sequencing noise, PCR amplification artifacts, or minor intra-strain variations that do not represent biologically distinct taxa.
+When performing absolute quantitation (such as spike-in recovery), these subtle sequence variants should not be treated as independent species, since they originate from the same biological organism. Retaining them as separate entries can artificially fragment read counts and distort abundance estimates. Therefore, this function pre-processes the dataset by merging all ASVs/OTUs that belong to the same declared taxon into a single representative unit, while keeping the phylogenetic tree, taxonomy, and reference sequences consistent.
+This ensures that the subsequent quantitation step reflects true organism-level abundance, not technical redundancy.
 
+When to use: As the first preprocessing step before calculating spike-in recovery percentages or absolute quantitation metrics.
+
+
+#          Spiked species and related parameters should be defined 
 
 
 ```{r}
-
 #                      PREREQUISITE FOR 16S & CALCULATE SPIKED %
-
 
 # Define spiked species and related parameters**
 
@@ -365,26 +271,15 @@ merged_spiked_species <- "Tetragenococcus"
 # Subset taxa for the spike-in species
 tse_16SOTU_spiked_taxa <- tse_16SOTU[rowData(tse_16SOTU)$Species %in% species_name, ]
 
-# (OTU) IDs
-hashcodes <- rownames(tse_16SOTU_spiked_taxa)
-
-# --------------------------------------------
 # Subset samples based on spike-in volume (e.g., "1" or "2")
 tse_16SOTU_spiked_samples <- tse_16SOTU[, colData(tse_16SOTU)$spiked.volume %in% c("2", "1") ]
 
 # --------------------------------------------
 # Merge spiked OTUs using the DspikeIn function
 # merges monophyletic ASVs/OTUs
+# The function Pre_processing_species() merges ASVs/OTUs of an spiked species using "sum" or "max" methods, 
+# preserving taxonomic, phylogenetic, and sequencing data.
 
-# The function Pre_processing_species() merges ASVs/OTUs
-# of a species using "sum" or "max" methods, preserving taxonomic,
-# phylogenetic, and sequencing data.
-
-
-
-library(DspikeIn)
-library(TreeSummarizedExperiment)
-library(SummarizedExperiment)
 output_rds <- file.path(tempdir(), "merged_tse_sum.rds")
 
 Spiked_16S_sum_scaled <- Pre_processing_species(
@@ -393,12 +288,156 @@ Spiked_16S_sum_scaled <- Pre_processing_species(
   merge_method = "sum",
   output_file = output_rds)
 
-# --------------------------------------------
-# Calculate spike-in recovery percentage
+
+
+```
+
+#  Calculate the percentage of spiked species retrieval
+Why and What It Measures?
+Spike-in standards provide an internal quantitative reference for microbial load normalization.
+After merging the spike-in species, we can evaluate how many sequencing reads in each sample correspond to these known spike-in taxa.
+This value serves as a recovery control, reflecting both:
+the accuracy of DNA extraction and sequencing, and the efficiency of downstream normalization.
+By expressing spike-in reads as a percentage of total reads per sample, we can detect samples with technical failure (too low recovery) or overrepresentation (possible contamination or pipetting bias etc.).
+This metric provides an essential quality-control checkpoint:
+samples with spike-in recovery outside the expected range (e.g., <0.1% or >20%) may indicate experimental anomalies or uneven DNA extraction efficiency. The resulting table allows quick identification of samples passing or failing QC thresholds, ensuring that downstream absolute quantitation is based on reliable input data.
+
+
+```{r}
+# * Calculate the percentage of spiked species retrieval per sample*
+
+library(mia)         
+library(dplyr)
+library(SummarizedExperiment)
+
+# Subset TSE to remove blanks 
+Spiked_16S_sum_scaled_filtered <- Spiked_16S_sum_scaled[, colData(Spiked_16S_sum_scaled)$sample.or.blank != "blank"]
+
+# Calculate spike-in retrieval percentage
 Perc <- calculate_spike_percentage(
-  Spiked_16S_sum_scaled,
+  Spiked_16S_sum_scaled_filtered,
   merged_spiked_species,
-  passed_range = c(0.1, 20))
+ #output_file = "output_tse.docx",
+  passed_range = c(0.1, 20)
+)
+
+head(Perc)
+
+```
+
+#           spiked species retrieval is system-dependent
+
+Spike-in controls provide a way to assess the quantitative reliability of metagenomic or amplicon sequencing workflows.
+However, the expected recovery percentage of spike-in reads is not universal, it depends on the sequencing platform, extraction chemistry, and the complexity of the native microbial community.
+As discussed in our paper (doi.org/10.1093/ismejo/wraf150), the acceptable range of spike-in recovery is system-dependent and should be determined empirically from each dataset. This function (regression_plot()) supports that step by visualizing the relationship between observed spike-in abundance and measured total reads, stratified by recovery percentage ranges. The regression_plot() generates a scatter plot of log-transformed variables (typically Observed vs Total_Reads_spiked), overlays a linear regression fit, and facets the data according to custom recovery ranges (e.g., 010%, 1030%, 3050%, etc.).
+
+Interpretation: A strong linear trend (high R, low p-value) within a range indicates consistent quantitative behavior. Deviations or flattening slopes suggest technical bias or over-amplification. The empirically stable range can then be used to adjust the passed_range argument in calculate_spike_percentage() for future analyses.
+Why this matters: By empirically determining recovery behavior instead of assuming a fixed threshold, users ensure that spike-in QC is tailored to their experimental conditions, improving both accuracy and comparability of absolute quantitation results.
+
+```{r fig.align='center', fig.width=7, fig.height=5, out.width='50%', dpi=120}
+
+# The acceptable range of spiked species retrieval is system-dependent
+# Spiked species become centroid of the community (Distance to Centroid)
+# Spiked species become dominant and imbalance the community (Evenness)
+
+# What range of spiked species retrieval is appropriate for your system?
+# Calculate Pielou's Evenness using Shannon index and species richness (Observed)
+# Hill number q = 1 = exp(Shannon index), representing the effective number of equally abundant species. Hill is weighted by relative abundance, so dominant species have more influence.
+# Unlike Pielou's evenness, this metric is not normalized by richness and it shows Effective number of common species
+
+library(TreeSummarizedExperiment)
+library(SummarizedExperiment)
+library(dplyr)
+library(tibble)
+library(microbiome)
+library(mia)
+library(vegan)
+library(S4Vectors)
+library(ggplot2)
+
+
+# --- 1. Extract current metadata from TSE ---
+metadata <- colData(Spiked_16S_sum_scaled) %>%
+  as.data.frame() %>%
+  rownames_to_column("Sample")
+
+# --- 2. Add spike-in reads (Perc) ---
+# Ensure Perc has 'Sample' column and matching format
+metadata <- dplyr::left_join(metadata, Perc, by = "Sample")
+
+# --- 3. Estimate alpha diversity indices and extract ---
+Spiked_16S_sum_scaled <- mia::addAlpha(
+  Spiked_16S_sum_scaled,
+  index = c("observed", "shannon", "pielou", "hill")
+)
+
+alpha_df <- colData(Spiked_16S_sum_scaled) %>%
+  as.data.frame() %>%
+  rownames_to_column("Sample") %>%
+  select(Sample, observed, shannon, pielou, hill)
+
+metadata <- dplyr::left_join(metadata, alpha_df, by = "Sample")
+
+# --- 4. Compute Bray-Curtis distance to centroid ---
+otu_mat <- assay(Spiked_16S_sum_scaled, "counts")
+otu_mat <- t(otu_mat)  # samples as rows
+otu_mat_rel <- vegan::decostand(otu_mat, method = "total")
+
+centroid_profile <- colMeans(otu_mat_rel)
+
+dist_to_centroid <- apply(otu_mat_rel, 1, function(x) {
+  vegan::vegdist(rbind(x, centroid_profile), method = "bray")[1]
+})
+
+# Match and assign distances
+metadata$Dist_to_Centroid <- dist_to_centroid[metadata$Sample]
+
+# --- 5. Assign updated metadata to TSE ---
+metadata <- column_to_rownames(metadata, var = "Sample")
+metadata <- metadata[colnames(Spiked_16S_sum_scaled), , drop = FALSE]  # ensure correct order and size
+
+colData(Spiked_16S_sum_scaled) <- S4Vectors::DataFrame(metadata)
+
+
+# 4. Regression Plots: Diversity vs. Spike-in Reads
+# ============================================================================
+
+# Pielous Evenness
+plot_object_pielou <- regression_plot(
+  data = metadata,
+  x_var = "pielou",
+  y_var = "Spiked_Reads",
+  custom_range = c(0.1, 20, 30, 40, 50, 60, 100),
+  plot_title = "Pielous Evenness vs. Spike-in Reads"
+)
+
+# Hill Number (q = 1)
+plot_object_hill <- regression_plot(
+  data = metadata,
+  x_var = "hill",
+  y_var = "Spiked_Reads",
+  custom_range = c(0.1, 10, 20, 30, 100),
+  plot_title = "Hill Number (q = 1) vs. Spike-in Reads"
+)
+
+plot_object_hill
+
+
+# Distance to Centroid
+plot_object_centroid <- regression_plot(
+  data = metadata,
+  x_var = "Dist_to_Centroid",
+  y_var = "Spiked_Reads",
+  custom_range = c(0.1, 20, 30, 40, 50, 60, 100),
+  plot_title = "Distance to Global Centroid vs. Spike-in Reads"
+)
+
+
+# Interpretation
+# ============================================================================
+# - Pielou's evenness is normalized by richness; useful for detecting imbalance.
+# - Hill number q = 1 gives effective number of common species; sensitive to dominance.
+# - Distance to centroid in full Bray-Curtis space shows deviation from the average community.
 
 ```
 
@@ -434,17 +473,18 @@ Perc <- calculate_spike_percentage(
 ```
 
 
-
-
 #         Calculating Scaling Factors 
-
+The calculate_spikeIn_factors() function estimates bias-corrected scaling factors for absolute microbiome quantitation using spike-in standards.
+The ratio between known and observed spike-in counts yields a sample-specific correction factor that normalizes total microbial abundances to absolute scale. This whole-cell spike-in approach corrects for variations in DNA extraction efficiency, amplification yield, and sequencing depth, yielding a unified, biologically interpretable scale for measuring absolute microbial load.
+The function automatically handles:Species or genus-level spike-in identification, Safe tree and taxonomy synchronization,
+Volume-based scaling (via the spiked.volume field in metadata), Optional export of intermediate results for traceability (Total_Reads.csv, Spiked_Reads.csv, Scaling_Factors.csv).
 
 ```{r}
 
 #                      CALCULATE SCALING FACTORS
 
 result <- calculate_spikeIn_factors(
-  Spiked_16S_sum_scaled,
+  Spiked_16S_sum_scaled_filtered,
   spiked_cells = spiked_cells,
   merged_spiked_species = species_name)
 
@@ -457,7 +497,7 @@ head(scaling_factors) # Vector of scaling factors per sample
 
 
 #                Convert relative counts to absolute counts
-
+This function translates relative abundance profiles into biologically meaningful absolute counts by applying empirically derived scaling factors. Absolute quantification enables direct comparison of microbial loads across samples and treatments, avoiding compositional artifacts inherent to relative data. This transformation is fundamental for integrative multi-omics analyses, network inference, and ecological interpretation of microbiome dynamics.
 
 ```{r}
 
@@ -465,11 +505,11 @@ head(scaling_factors) # Vector of scaling factors per sample
 #             Convert relative counts to absolute counts
 
 
-# absolute counts=relative counts×sample-specific scaling factor
+# absolute counts=relative countssample-specific scaling factor
 
 # Convert to absolute counts
 library(DspikeIn)
-absolute <- convert_to_absolute_counts(Spiked_16S_sum_scaled, scaling_factors)
+absolute <- convert_to_absolute_counts(Spiked_16S_sum_scaled_filtered, scaling_factors)
 
 # Extract processed data
 absolute_counts <- absolute$absolute_counts
@@ -484,6 +524,7 @@ head(tse_absolute)
 
 #     Summary Stat
 
+This function generates a concise statistical summary of numeric variables, including measures of central tendency (mean, median), dispersion (standard deviation, standard error), and distribution (quartiles). The results can be exported as both .docx and .csv files for reporting.
 
 ```{r}
 
@@ -491,7 +532,7 @@ head(tse_absolute)
 #                      CALCULATE SPIKE PERCENTAGE & summary stat
 
 # ** Calculate spike percentage & Generate summary statistics for absolute counts**
-
+# absolute_counts is a data.frame of OTU/ASV table
 # Generate summary statistics for absolute counts
 post_eval_summary <- calculate_summary_stats_table(absolute_counts)
 
@@ -502,120 +543,17 @@ post_eval_summary <- calculate_summary_stats_table(absolute_counts)
 # BackNormal <- calculate_spike_percentage(
 #  tse_absolute,
 #  merged_spiked_species,
-#  passed_range = c(0.1, 20)
-# )
-```
+#  passed_range = c(0.1, 20))
 
-
-#           spiked species retrieval is system-dependent
-The goal is to identify the range where, for example, the evenness of your community remains independent of spiked species retrieval—meaning the p-value should not be significant, and the R² value should be low, indicating minimal influence.
-Hill number is interpretable as "effective diversity" (number of abundant species).
-
-```{r}
-# The acceptable range of spiked species retrieval is system-dependent
-# Spiked species become centroid of the community (Distance to Centroid)
-# Spiked species become dominant and imbalance the community (Evenness)
-
-# What range of spiked species retrieval is appropriate for your system?
-# Calculate Pielou's Evenness using Shannon index and species richness (Observed)
-# Hill number q = 1 = exp(Shannon index), representing the effective number of equally abundant species. Hill is weighted by relative abundance, so dominant species have more influence.
-# Unlike Pielou's evenness, this metric is not normalized by richness and it shows Effective number of common species
-
-library(TreeSummarizedExperiment)
-library(SummarizedExperiment)
-library(dplyr)
-library(tibble)
-library(microbiome)
-library(mia)
-library(vegan)
-library(S4Vectors)
-library(ggplot2)
-
-
-# --- 1. Extract current metadata from TSE ---
-metadata <- colData(tse_absolute) %>%
-  as.data.frame() %>%
-  rownames_to_column("Sample")
-
-# --- 2. Add spike-in reads (Perc) ---
-# Ensure Perc has 'Sample' column and matching format
-metadata <- dplyr::left_join(metadata, Perc, by = "Sample")
-
-# --- 3. Estimate alpha diversity indices and extract ---
-tse_absolute <- mia::addAlpha(
-  tse_absolute,
-  index = c("observed", "shannon", "pielou", "hill")
-)
-
-alpha_df <- colData(tse_absolute) %>%
-  as.data.frame() %>%
-  rownames_to_column("Sample") %>%
-  select(Sample, observed, shannon, pielou, hill)
-
-metadata <- dplyr::left_join(metadata, alpha_df, by = "Sample")
-
-# --- 4. Compute Bray-Curtis distance to centroid ---
-otu_mat <- assay(tse_absolute, "counts")
-otu_mat <- t(otu_mat)  # samples as rows
-otu_mat_rel <- vegan::decostand(otu_mat, method = "total")
-
-centroid_profile <- colMeans(otu_mat_rel)
-
-dist_to_centroid <- apply(otu_mat_rel, 1, function(x) {
-  vegan::vegdist(rbind(x, centroid_profile), method = "bray")[1]
-})
-
-# Match and assign distances
-metadata$Dist_to_Centroid <- dist_to_centroid[metadata$Sample]
-
-# --- 5. Assign updated metadata to TSE ---
-metadata <- column_to_rownames(metadata, var = "Sample")
-metadata <- metadata[colnames(tse_absolute), , drop = FALSE]  # ensure correct order and size
-
-colData(tse_absolute) <- S4Vectors::DataFrame(metadata)
-
-
-# 4. Regression Plots: Diversity vs. Spike-in Reads
-# ============================================================================
-
-# Pielou’s Evenness
-plot_object_pielou <- regression_plot(
-  data = metadata,
-  x_var = "pielou",
-  y_var = "Spiked_Reads",
-  custom_range = c(0.1, 20, 30, 40, 50, 60, 100),
-  plot_title = "Pielou’s Evenness vs. Spike-in Reads"
-)
-
-# Hill Number (q = 1)
-plot_object_hill <- regression_plot(
-  data = metadata,
-  x_var = "hill",
-  y_var = "Spiked_Reads",
-  custom_range = c(0.1, 10, 20, 30, 100),
-  plot_title = "Hill Number (q = 1) vs. Spike-in Reads"
-)
-
-# Distance to Centroid
-plot_object_centroid <- regression_plot(
-  data = metadata,
-  x_var = "Dist_to_Centroid",
-  y_var = "Spiked_Reads",
-  custom_range = c(0.1, 20, 30, 40, 50, 60, 100),
-  plot_title = "Distance to Global Centroid vs. Spike-in Reads"
-)
-
-
-# Interpretation
-# ============================================================================
-# - Pielou's evenness is normalized by richness; useful for detecting imbalance.
-# - Hill number q = 1 gives effective number of common species; sensitive to dominance.
-# - Distance to centroid in full Bray-Curtis space shows deviation from the average community.
 
 ```
 
 
-#            Calculate the percentage of spiked species retrieval
+#            Conclusion
+
+conclusion() evaluates spike-in performance and recovery, i.e., how well the spike-in behaved after normalization and how consistent it is across samples.
+The function relies on outputs from calculate_spike_percentage() and indirectly reflects how scaling factors and normalization affected your dataset.
+It is adviced to be performed after absolute abundance conversion because -> If you summarize spike-in performance before normalization, youre essentially measuring how biased your workflow was, not how successfully it was corrected.
 
 
 ```{r}
@@ -628,13 +566,6 @@ library(SummarizedExperiment)
 # Subset TSE to remove blanks 
 tse_absolute_filtered <- tse_absolute[, colData(tse_absolute)$sample.or.blank != "blank"]
 
-# Calculate spike-in retrieval percentage
-result_perc <- calculate_spike_percentage(
-  tse_absolute_filtered,
-  merged_spiked_species,
-  passed_range = c(0.1, 20)
-)
-
 # Generate conclusion report
 conc <- conclusion(
   tse_absolute_filtered,
@@ -645,7 +576,7 @@ conc <- conclusion(
 conc$full_report
 
 # Filter to keep only the samples that passed
-passed_samples <- result_perc$Sample[result_perc$Result == "passed"]
+passed_samples <- Perc$Sample[Perc$Result == "passed"]
 
 # Subset the TSE object to include only passed samples
 tse_passed <- tse_absolute_filtered[, colnames(tse_absolute_filtered) %in% passed_samples]
@@ -657,10 +588,12 @@ dim(tse_passed)
 
 #  Abundance-based Core microbiome
 
+Alluvial plot illustrating the distribution of prevalent and core microbiome taxa across animal types, ecoregions, diets, and ecological modes.
+Flows represent absolute abundance of bacterial classes (colored by taxonomic class) across categorical variables. Dominant lineages such as Bacteroidia, Clostridia, Fusobacteria and Gammaproteobacteria remain prevalent across diverse hosts and habitats.
 
-```{r, out.width="70%"}
+```{r fig.align='center', fig.width=7, fig.height=5, out.width='70%', dpi=120}
 
-tse_absolute <- absolute$obj_adj
+tse_absolute <- tse_absolute_filtered
 pps_Abs <- DspikeIn::get_long_format_data(tse_absolute)
 
 # calculation for relative abundance needs sum of total reads
@@ -670,15 +603,15 @@ pps_Abs <- DspikeIn::get_long_format_data(tse_absolute)
 
 alluvial_plot_abs <- alluvial_plot(
   data = pps_Abs,
-  axes = c("Host.genus", "Ecoregion.III","Diet", "Animal.ecomode"),
-  abundance_threshold = 10000,
+  axes = c("Animal.type", "Ecoregion.III","Diet", "Animal.ecomode"),
+  abundance_threshold = 5000,
   fill_variable = "Class",
   silent = TRUE,
   abundance_type = "absolute",
-  top_taxa = 15,
-  text_size = 4,
+  top_taxa = 10,
+  text_size = 3,
   legend_ncol = 1,
-  custom_colors = DspikeIn::color_palette$light_MG # Use the color palette from DspikeIn
+  custom_colors = DspikeIn::color_palette$MG_Awesome  # Use the color palette from DspikeIn
 )
 
 
@@ -688,13 +621,38 @@ alluvial_plot_abs <- alluvial_plot(
 
 #                 Data transform & Normalization
 
-you may select to transform your data befor moving forward with Differential Abundance
+Normalization is a crucial preprocessing step in microbiome analysis. It corrects for technical artifacts such as unequal sequencing depth, amplification bias, and compositionality, ensuring that observed differences reflect biological variation rather than data imbalance.
+The choice of normalization depends on the goal of your analysis, differential abundance, compositional analysis, or quick exploratory visualization.
+Normalization is a crucial preprocessing step in microbiome analysis. It corrects for technical artifacts such as unequal sequencing depth, amplification bias, and compositionality, ensuring that observed differences reflect biological variation rather than data imbalance.  
+The choice of normalization depends on the **goal of your analysis**, differential abundance, compositional analysis, or quick exploratory visualization.
+
+| **Normalization Method** | **Corrects For** | **Best For** | **Notes / Comments** |
+|----------------------------|------------------|---------------|----------------------|
+| **DESeq** | Library size and count variance | Differential abundance testing | Robust, model-based normalization from *DESeq2*. |
+| **TMM** (Trimmed Mean of M-values) | Library size and compositional bias | Group comparisons | Widely used in *edgeR*, handles unequal composition. |
+| **CSS** (Cumulative Sum Scaling) | Sparse, compositional count data | Microbiome datasets with many zeros | Balances low-abundance and high-abundance taxa. |
+| **CLR** (Centered Log-Ratio) | Compositional structure | Ordination, diversity, correlation | Produces log-ratio data suitable for distance-based methods. |
+| **TC** (Total Count) | Library size | Simple exploratory work | Quick but sensitive to outliers. |
+| **UQ** (Upper Quartile) | Library size and extreme counts | Moderate bias correction | Uses the upper quartile of counts as scaling reference. |
+| **Median** | Library size | Exploratory visualization | Stable for balanced datasets. |
+| **RLE** (Relative Log Expression) | Sample-specific bias | Large count matrices | Used in RNA-seq and applicable to microbial data. |
+| **TSS** (Total Sum Scaling) | Library size | Relative abundance conversion | Similar to TC, transforms counts to proportions. |
+| **QN** (Quantile Normalization) | Global distribution differences | Multi-omics integration | Forces identical distributions across samples. |
+| **Poisson** | Count noise model | Statistical modeling | Based on Poisson GLM; often paired with inference. |
+| **Rarefying** | Unequal sequencing depth | Richness/evenness estimation | Not recommended for statistical tests. |
+
+
+- Use **`DESeq`**, **`TMM`**, or **`CSS`** for **differential abundance** testing.  
+- Use **`CLR`** for **compositional and ordination** analyses.  
+- Use **`TC`**, **`UQ`**, or **`Median`** for **exploratory or rapid screening**.  
+- Always check scaling factors and library size distributions before interpretation.
+
 
 
 ```{r}
 # you may need to normalize/transform your data to reduce biases
 
-ps <- tse_16SOTU
+ps <- tse_absolute
 
 # TC Normalization
 result_TC <- normalization_set(ps, method = "TC", groups = "Host.species")
@@ -718,78 +676,77 @@ normalized_ps_DESeq <- result_DESeq$dat.normed
 scaling_factors_DESeq <- result_DESeq$scaling.factor
 
 # Poisson Normalization
-result_Poisson <- normalization_set(ps, method = "Poisson", groups = "Host.genus")
-normalized_ps_Poisson <- result_Poisson$dat.normed
-scaling_factors_Poisson <- result_Poisson$scaling.factor
+# result_Poisson <- normalization_set(ps, method = "Poisson", groups = "Host.genus")
+# normalized_ps_Poisson <- result_Poisson$dat.normed
+# scaling_factors_Poisson <- result_Poisson$scaling.factor
 
 # Quantile Normalization
-result_QN <- normalization_set(ps, method = "QN")
-normalized_ps_QN <- result_QN$dat.normed
-scaling_factors_QN <- result_QN$scaling.factor
+# result_QN <- normalization_set(ps, method = "QN")
+# normalized_ps_QN <- result_QN$dat.normed
+# scaling_factors_QN <- result_QN$scaling.factor
 
 # TMM Normalization
-result_TMM <- normalization_set(ps, method = "TMM", groups = "Animal.type")
-normalized_ps_TMM <- result_TMM$dat.normed
-scaling_factors_TMM <- result_TMM$scaling.factor
+# result_TMM <- normalization_set(ps, method = "TMM", groups = "Animal.type")
+# normalized_ps_TMM <- result_TMM$dat.normed
+# scaling_factors_TMM <- result_TMM$scaling.factor
 
 # CLR Normalization
-result_clr <- normalization_set(ps, method = "clr")
-normalized_ps_clr <- result_clr$dat.normed
-scaling_factors_clr <- result_clr$scaling.factor
+# result_clr <- normalization_set(ps, method = "clr")
+# normalized_ps_clr <- result_clr$dat.normed
+# scaling_factors_clr <- result_clr$scaling.factor
 
 # Rarefying
-result_rar <- normalization_set(ps, method = "rar")
-normalized_ps_rar <- result_rar$dat.normed
-scaling_factors_rar <- result_rar$scaling.factor
+# result_rar <- normalization_set(ps, method = "rar")
+# normalized_ps_rar <- result_rar$dat.normed
+# scaling_factors_rar <- result_rar$scaling.factor
 
 # CSS Normalization
-result_css <- normalization_set(ps, method = "css")
-normalized_ps_css <- result_css$dat.normed
-scaling_factors_css <- result_css$scaling.factor
-
+# result_css <- normalization_set(ps, method = "css")
+# normalized_ps_css <- result_css$dat.normed
+# scaling_factors_css <- result_css$scaling.factor
+# 
 # TSS Normalization
-result_tss <- normalization_set(ps, method = "tss")
-normalized_ps_tss <- result_tss$dat.normed
-scaling_factors_tss <- result_tss$scaling.factor
+# result_tss <- normalization_set(ps, method = "tss")
+# normalized_ps_tss <- result_tss$dat.normed
+# scaling_factors_tss <- result_tss$scaling.factor
 
 # RLE Normalization
-result_rle <- normalization_set(ps, method = "rle")
-normalized_ps_rle <- result_rle$dat.normed
-scaling_factors_rle <- result_rle$scaling.factor
+# result_rle <- normalization_set(ps, method = "rle")
+# normalized_ps_rle <- result_rle$dat.normed
+# scaling_factors_rle <- result_rle$scaling.factor
 
 ```
 
+Random Forestbased feature selection identifies the most predictive ASVs or OTUs that distinguish samples according to a chosen metadata variable (e.g., host, treatment, or environment). It builds an ensemble of decision trees to evaluate how strongly each taxon contributes to accurate classification, ranking taxa by Mean Decrease in Gini impurity (importance score).
+This approach helps users pinpoint biologically informative taxa while reducing data dimensionality, noise, and redundancy, enabling focused downstream analyses such as differential abundance, biomarker discovery, or visualization of key community drivers.For methodological details, see Liaw & Wiener (2002), Classification and Regression by randomForest, R News, 2(3):1822.
+Available at: journal.r-project.org/articles/RN-2002-022/RN-2002-022.pdf
 
+# Ridge plot
+The ridge plot illustrates abundance distributions of the top 10 families across all samples, showing which taxa exhibit narrow, high-density peaks (consistent abundance) versus broader or multimodal patterns (context-dependent abundance)
 
+```{r fig.align='center', fig.width=7, fig.height=5, out.width='50%', dpi=120}
 
- Ridge plot
+normalized_tse_DESeq<-convert_phyloseq_to_tse(normalized_ps_DESeq)
 
-
-```{r, out.width="50%"}
 rf_tse <- RandomForest_selected(
-  tse_16SOTU,
+  normalized_tse_DESeq,
   response_var = "Host.genus",
   na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet")
 )
 
 ridge_tse<- ridge_plot_it(rf_tse, taxrank = "Family", top_n = 10) + scale_fill_manual(values = DspikeIn::color_palette$cool_MG)
-# ridge_physeq
 
-result_css <- normalization_set(rf_tse, method = "css")
-normalized_ps_css <- result_css$dat.normed
-
-ridge_tse <- ridge_plot_it(normalized_ps_css, taxrank = "Family", top_n = 10) + scale_fill_manual(values = DspikeIn::color_palette$cool_MG)
-
-# ridge_physeq
+ridge_tse
 ```
 
 
-
-#                  Further analysis 
+# Differential abundance (Single Pairwise)
 
 remove the spike-in sp before further analysis
+Note: Before performing differential abundance analysis, it is recommended to remove the spike-in species to avoid artificial bias in normalization.
+If you select the DESeq2 option embedded in DspikeIn, note that it internally handles all normalization and variance stabilization steps required for modeling raw count data. DESeq2 estimates size factors (accounting for library depth differences) and dispersion parameters (accounting for biological variability). Therefore, users should always provide integer, raw counts, not normalized, transformed, or rarefied data, as input.
 
-```{r}
+```{r fig.align='center', fig.width=11, fig.height=7, out.width='60%', dpi=120}
 library(mia)
 library(dplyr)
 library(SummarizedExperiment)
@@ -817,63 +774,177 @@ results_DESeq2 <- perform_and_visualize_DA(
   significance_level = 0.05)
 
 
-head(results_DESeq2$results)
+results_DESeq2$results
 results_DESeq2$obj_significant
 # Optional: Visualization
-# results_DESeq2$plot
-# results_DESeq2$bar_plot
+ results_DESeq2$bar_plot
 
 
 ```
 
-# Relative abundance
+Differentially abundant bacterial taxa between Desmognathus imitator and D. monticola are shown (adjusted p < 0.05). Purple bars indicate taxa enriched in D. imitator (positive LFC) and teal bars those enriched in D. monticola (negative LFC). Bar length denotes log fold change; lines show  1 SE. Distinct enrichment patterns reveal host-specific bacterial community differentiation.
 
-```{r}
-# Relative abundance
-#  Extract OTU matrices from TSE Relative counts
-# --------------------------------------------
+# Differential abundance (Multilayer Pairwise)
 
-# ---Remove unwanted taxa by Genus, Family, or Order ---
-tse_filtered <- tse_16SOTU[
-  rowData(tse_16SOTU)$Genus != "Tetragenococcus" &
-  rowData(tse_16SOTU)$Family != "Chloroplast" &
-  rowData(tse_16SOTU)$Order != "Chloroplast", ]
+```{r, eval=FALSE}
 
-tse_caudate <- tse_filtered[, colData(tse_filtered)$Clade.Order == "Caudate"]
-genera_keep <- c("Desmognathus", "Plethodon", "Eurycea")
-tse_three_genera <- tse_caudate[, colData(tse_caudate)$Host.genus %in% genera_keep]
-tse_blue_ridge <- tse_three_genera[, colData(tse_three_genera)$Ecoregion.III == "Blue Ridge"]
-tse_desmog_rel <- tse_blue_ridge[, colData(tse_blue_ridge)$Host.genus == "Desmognathus"]
 
-# --- Differential Abundance with DESeq2 ---
-results_DESeq2_rel <- perform_and_visualize_DA(
-  obj = tse_desmog_rel,
+# DspikeIn: Differential Abundance Examples
+# Using perform_and_visualize_DA() with multiple contrast scenarios
+
+# 1. Single Contrast
+
+res_single <- perform_and_visualize_DA(
+  obj = tse_absolute,
+  method = "DESeq2",
+  group_var = "Diet",
+  contrast = c("Insectivore", "Carnivore"),
+  target_glom = "Genus")
+
+
+
+# 2. Single Factor  All Pairwise Contrasts
+col_df <- as.data.frame(colData(tse_absolute))
+col_df$Host.taxon <- factor(make.names(as.character(col_df$Host.taxon)))
+colData(tse_absolute)$Host.taxon <- col_df$Host.taxon
+
+# Get unique DESeq2-compatible factor levels
+host_levels <- levels(col_df$Host.taxon)
+print(host_levels)
+
+# contrast list
+contrast_named <- list(
+  Host.taxon = combn(host_levels, 2, simplify = FALSE))
+
+# multiple pairwise contrasts
+res_multi <- perform_and_visualize_DA(
+  obj = tse_absolute,
   method = "DESeq2",
   group_var = "Host.taxon",
-  contrast = c("Desmognathus monticola", "Desmognathus imitator"),
-  output_csv_path = "DA_DESeq2.csv",
+  contrast = contrast_named,
+  target_glom = "Genus")
+
+
+
+# 3. Single Factor  Selected Contrasts
+
+contrast_list <- list(
+  c("Insectivore", "Carnivore"),
+  c("Omnivore", "Herbivore"))
+
+res_selected <- perform_and_visualize_DA(
+  obj = tse_absolute,
+  method = "DESeq2",
+  group_var = "Diet",
+  contrast = contrast_list,
+  global_fdr = TRUE)
+
+
+
+# 4. Multiple Factors  Selected Contrasts
+
+contrast_named <- list(
+  Diet = list(
+    c("Insectivore", "Carnivore"),
+    c("Omnivore", "Carnivore") ),
+  Animal.type = list(
+    c("Frog", "Salamander") ))
+
+res_multi_factor <- perform_and_visualize_DA(
+  obj = tse_absolute,
+  method = "DESeq2",
+  contrast = contrast_named,
   target_glom = "Genus",
-  significance_level = 0.05)
+  significance_level = 0.01,
+  global_fdr = TRUE)
 
 
-head(results_DESeq2_rel$results)
-results_DESeq2_rel$obj_significant
-# Optional: Visualization
-# results_DESeq2$plot
-# results_DESeq2$bar_plot
 
+# 5. Multiple Factors  all pairwise contrasts
+
+colData(tse_absolute)$Host.taxon <- droplevels(factor(colData(tse_absolute)$Host.taxon))
+colData(tse_absolute)$Habitat <- droplevels(factor(colData(tse_absolute)$Habitat))
+host_levels <- levels(colData(tse_absolute)$Host.taxon)
+habitat_levels <- levels(colData(tse_absolute)$Habitat)
+
+# Define pairwise contrasts as a named list
+contrast_named <- list(
+  Host.taxon = combn(host_levels, 2, simplify = FALSE),
+  Habitat = combn(habitat_levels, 2, simplify = FALSE))
+
+# Define ComboGroup variable
+colData(tse_absolute)$ComboGroup <- factor(interaction(
+  colData(tse_absolute)$Animal.type,
+  colData(tse_absolute)$Diet,
+  drop = TRUE))
+
+
+
+# --- Run multi-factor DESeq2 comparisons ---
+results_multi_factor <- perform_and_visualize_DA(
+  obj = tse_absolute,
+  method = "DESeq2",
+  contrast = contrast_named,
+  target_glom = "Genus",
+  significance_level = 0.01)
+
+# --- Combined Group Interactions ---
+colData(tse_absolute)$ComboGroup <- factor(interaction(
+  colData(tse_absolute)$Animal.type,
+  colData(tse_absolute)$Diet,
+  drop = TRUE))
+
+# --- Define custom interaction contrasts ---
+contrast_list <- list(
+  c("Salamander.Insectivore", "Lizard.Insectivore"),
+  c("Salamander.Carnivore", "Snake.Carnivore"),
+  c("Salamander.Carnivore", "Frog.Carnivore"))
+
+# --- Run combined group comparisons ---
+res_combo <- perform_and_visualize_DA(
+  obj = tse_absolute,
+  method = "DESeq2",
+  group_var = "ComboGroup",
+  contrast = contrast_list,
+  target_glom = "Genus",
+  global_fdr = TRUE)
 
 ```
 
-
 # Turnover (Presence/absence analysis)
-taxonomic detection consistency between RA and AA OTU tables
+taxonomic detection consistency between relative abundance (RA) and AA tables
 Presence/absence analysis to detect concordance between AA and RA profiles
+
+Purpose:
+This analysis compares taxonomic detection consistency between RA and AA datasets.
+By converting both OTU tables to presence/absence matrices and
+intersecting shared taxa and samples, we assess how many taxa
+are consistently detected in both datasets.
+
+Interpretation:
+The resulting "percent_shared" value represents the proportion
+of taxa jointly detected in RA and AA profiles, providing an
+estimate of detection concordance and turnover. Presenceabsence comparison between absolute (AA) and relative (RA) abundance datasets revealed that ~100% of taxa were shared, while the discrepancies likely reflect compositional bias introduced by relative normalization rather than true biological differences.
 
 ```{r}
 # --------------------------------------------
 #  Extract OTU matrices from TSE objects
 # --------------------------------------------
+# relative dataset -> tse_desmog_rel
+# tse_16SOTU_spiked_samples <- tse_16SOTU[, colData(tse_16SOTU)$spiked.volume %in% c("2", "1") ]
+
+tse_filtered_rel <- tse_16SOTU_spiked_samples[
+  rowData(tse_16SOTU_spiked_samples)$Genus != "Tetragenococcus" &
+  rowData(tse_16SOTU_spiked_samples)$Family != "Chloroplast" &
+  rowData(tse_16SOTU_spiked_samples)$Order != "Chloroplast", ]
+
+tse_caudate_rel <- tse_filtered_rel[, colData(tse_filtered_rel)$Clade.Order == "Caudate"]
+genera_keep <- c("Desmognathus", "Plethodon", "Eurycea")
+tse_three_genera_rel <- tse_caudate[, colData(tse_caudate_rel)$Host.genus %in% genera_keep]
+tse_blue_ridge_rel <- tse_three_genera_rel[, colData(tse_three_genera_rel)$Ecoregion.III == "Blue Ridge"]
+tse_desmog_rel <- tse_blue_ridge_rel[, colData(tse_blue_ridge_rel)$Host.genus == "Desmognathus"]
+
+# absolute dataset -> tse_desmog
 
 otu_rel <- assay(tse_desmog_rel, "counts") 
 otu_abs <- assay(tse_desmog, "counts")        
@@ -917,147 +988,17 @@ cat("Percent of shared taxa detections (AA vs RA):",
 
 ```
 
-
-# Differential abundance (Single and Multilayer Pairwise)
-
-```{r, eval=FALSE}
-
-
-# DspikeIn: Differential Abundance Examples
-# Using perform_and_visualize_DA() with multiple contrast scenarios
-
-# 1. Single Contrast
-
-res_single <- perform_and_visualize_DA(
-  obj = tse_16SOTU,
-  method = "DESeq2",
-  group_var = "Diet",
-  contrast = c("Insectivore", "Carnivore"),
-  target_glom = "Genus")
-
-
-
-# 2. Single Factor — All Pairwise Contrasts
-col_df <- as.data.frame(colData(tse_16SOTU))
-col_df$Host.taxon <- factor(make.names(as.character(col_df$Host.taxon)))
-colData(tse_16SOTU)$Host.taxon <- col_df$Host.taxon
-
-# Get unique DESeq2-compatible factor levels
-host_levels <- levels(col_df$Host.taxon)
-print(host_levels)
-
-# contrast list
-contrast_named <- list(
-  Host.taxon = combn(host_levels, 2, simplify = FALSE))
-
-# multiple pairwise contrasts
-res_multi <- perform_and_visualize_DA(
-  obj = tse_16SOTU,
-  method = "DESeq2",
-  group_var = "Host.taxon",
-  contrast = contrast_named,
-  target_glom = "Genus")
-
-
-
-# 3. Single Factor — Selected Contrasts
-
-contrast_list <- list(
-  c("Insectivore", "Carnivore"),
-  c("Omnivore", "Herbivore"))
-
-res_selected <- perform_and_visualize_DA(
-  obj = tse_16SOTU,
-  method = "DESeq2",
-  group_var = "Diet",
-  contrast = contrast_list,
-  global_fdr = TRUE)
-
-
-
-# 4. Multiple Factors — Selected Contrasts
-
-contrast_named <- list(
-  Diet = list(
-    c("Insectivore", "Carnivore"),
-    c("Omnivore", "Carnivore") ),
-  Animal.type = list(
-    c("Frog", "Salamander") ))
-
-res_multi_factor <- perform_and_visualize_DA(
-  obj = tse_16SOTU,
-  method = "DESeq2",
-  contrast = contrast_named,
-  target_glom = "Genus",
-  significance_level = 0.01,
-  global_fdr = TRUE)
-
-
-
-# 5. Multiple Factors — all pairwise contrasts
-
-colData(tse_16SOTU)$Host.taxon <- droplevels(factor(colData(tse_16SOTU)$Host.taxon))
-colData(tse_16SOTU)$Habitat <- droplevels(factor(colData(tse_16SOTU)$Habitat))
-host_levels <- levels(colData(tse_16SOTU)$Host.taxon)
-habitat_levels <- levels(colData(tse_16SOTU)$Habitat)
-
-# Define pairwise contrasts as a named list
-contrast_named <- list(
-  Host.taxon = combn(host_levels, 2, simplify = FALSE),
-  Habitat = combn(habitat_levels, 2, simplify = FALSE))
-
-# Define ComboGroup variable
-colData(tse_16SOTU)$ComboGroup <- factor(interaction(
-  colData(tse_16SOTU)$Animal.type,
-  colData(tse_16SOTU)$Diet,
-  drop = TRUE))
-
-
-
-# --- Run multi-factor DESeq2 comparisons ---
-results_multi_factor <- perform_and_visualize_DA(
-  obj = tse_16SOTU,
-  method = "DESeq2",
-  contrast = contrast_named,
-  target_glom = "Genus",
-  significance_level = 0.01)
-
-# --- Combined Group Interactions ---
-colData(tse_16SOTU)$ComboGroup <- factor(interaction(
-  colData(tse_16SOTU)$Animal.type,
-  colData(tse_16SOTU)$Diet,
-  drop = TRUE))
-
-# --- Define custom interaction contrasts ---
-contrast_list <- list(
-  c("Salamander.Insectivore", "Lizard.Insectivore"),
-  c("Salamander.Carnivore", "Snake.Carnivore"),
-  c("Salamander.Carnivore", "Frog.Carnivore"))
-
-# --- Run combined group comparisons ---
-res_combo <- perform_and_visualize_DA(
-  obj = tse_16SOTU,
-  method = "DESeq2",
-  group_var = "ComboGroup",
-  contrast = contrast_list,
-  target_glom = "Genus",
-  global_fdr = TRUE)
-
-```
-
-
-
 #                     Visualization
 
 
-```{r}
+```{r fig.align='center', fig.width=8, fig.height=5, out.width='50%', dpi=120}
 
 #   Visualization of community composition
 
 # Subset rows where Genus is not Tetragenococcus and not NA
-keep_taxa <- !is.na(rowData(tse_16SOTU)$Genus) & rowData(tse_16SOTU)$Genus != "Tetragenococcus"
+keep_taxa <- !is.na(rowData(tse_absolute)$Genus) & rowData(tse_absolute)$Genus != "Tetragenococcus"
 # Subset the TSE by keeping only those taxa (rows)
-tse_filtered <- tse_16SOTU[keep_taxa, ]
+tse_filtered <- tse_absolute[keep_taxa, ]
 # Exclude blanks
 tse_filtered <- tse_filtered[, colData(tse_filtered)$sample.or.blank != "blank"]
 # subset Salamander samples
@@ -1066,20 +1007,21 @@ Prok_OTU_sal <- tidy_phyloseq_tse(tse_sal)
 
 TB<-taxa_barplot(
   Prok_OTU_sal,
-  target_glom = "Genus",
+  target_glom = "Family",
   custom_tax_names = NULL,
   normalize = TRUE,
   treatment_variable = "Habitat",
   abundance_type = "relative",
-  x_angle = 25,
+  x_angle = 15,
   fill_variable = "Family",
   facet_variable = "Diet",
-  top_n_taxa = 20,
-  palette = DspikeIn::color_palette$mix_MG,
+  top_n_taxa = 10,
+  palette = DspikeIn::color_palette$cool_MG,
   legend_size = 11,
   legend_columns = 1,
   x_scale = "free",
   xlab = NULL)
+
 
 ```
 
@@ -1087,8 +1029,12 @@ TB<-taxa_barplot(
 
 #                 Microbial dynamics & NetWork comparision
 
+To create a microbial co-occurrence network, you can refer to the SpiecEasi package available at:
+SpiecEasi GitHub Repository //github.com/zdk123/SpiecEasi
+The weight_Network() function provides an integrated framework for exploring and quantifying microbial interaction networks. It imports a pre-computed or user-supplied GraphML network, computes key topological descriptors (e.g., modularity, connectivity, transitivity, and path length), and visualizes the graph using a force-directed layout.
+Node colors are assigned according to modularity classes, while edge thickness and color reflect the magnitude and sign of associations, respectively, enabling intuitive interpretation of network structure. Together, these analyses highlight how community organization and interaction patterns change under different ecological contexts, for instance, after removing hubs or specific taxa (e.g., Basidiobolus) as we showed (doi.org/10.1093/ismejo/wraf150). The resulting visualization and metrics provide complementary insights into network complexity and modular structure, serving as a quantitative basis for assessing microbiome stability and cross-domain connectivity.
 
-```{r}
+```{r fig.align='center', fig.width=11, fig.height=6, out.width='80%', dpi=120}
 
 # 1. Initialization and loading NetWorks for Comparision
 
@@ -1102,53 +1048,91 @@ library(dplyr)
 library(ggpubr)
 library(igraph)
 
-# To create a microbial co-occurrence network, you can refer to the SpiecEasi package available at:
-# SpiecEasi GitHub Repository  https://github.com/zdk123/SpiecEasi
 
-# herp.Bas.rel.f is a merged phyloseq object for both bacterial and fungal domains
-# spiec.easi(herp.Bas.rel.f, method='mb', lambda.min.ratio=1e-3, nlambda=250,pulsar.select=TRUE )
+# herp.Bas is a merged phyloseq object for both bacterial and fungal domains
+# spiec.easi(herp.Bas, method='mb', lambda.min.ratio=1e-3, nlambda=250,pulsar.select=TRUE )
 
-Complete <- load_graphml("Complete.graphml")
-NoBasid <- load_graphml("NoBasid.graphml")
-NoHubs <- load_graphml("NoHubs.graphml")
+Complete <- DspikeIn::load_graphml("Complete.graphml")
+NoBasid <- DspikeIn::load_graphml("NoBasid.graphml")
+NoHubs <- DspikeIn::load_graphml("NoHubs.graphml")
 
-# result <- weight_Network(graph_path = "Complete.graphml")
-# result
-
-result_kk <- degree_network(
-  graph_path = load_graphml("Complete.graphml"),
+# degree_network -> please note that needs full path of your graphml
+result_kk <- DspikeIn::degree_network(load_graphml("Complete.graphml"),
   save_metrics = TRUE,
-  layout_type = "stress"
-)
-# print(result_kk$plot)
+  layout_type = "stress")
+
+result_kk$metrics
+
+
+ result <- DspikeIn::weight_Network(graph_path = "Complete.graphml")
+ result$plot
 
 ```
+Burts Theory of Structural Holes (Ronald S. Burt, 1992, 2004)
+& Network Closure and Redundancy (1992, 2001)  Cohesion and Trust
+& Brokerage and Network Advantage (Burt, 2005)  The BrokerageClosure Tradeoff
+& Redundancy and Efficiency (20072010)  Non-redundant Contacts and Efficiency
+& Structural Autonomy (Burt, 1997)  Freedom through Brokerage
+
+Ronald Burt (1992) proposed that in a network, some nodes occupy structural holes, gaps between otherwise disconnected groups or clusters.
+A node that bridges these holes plays a unique role: it connects information or resources between otherwise separate modules.
+Bridging role of Basidiobolus consistent with Burts Structural Hole Theory.
+The network illustrates taxon-level associations among microbial domains. Distinct bacterial and fungal subnetworks form modular clusters (colored by domain or module). Basidiobolus acts as a bridging node connecting otherwise disconnected clusters, a position corresponding to a structural hole in Burts theory (Burt, 1992). Such brokerage positions facilitate information and metabolite exchange across domains, enhancing functional redundancy and community stability. Nodes are sized by betweenness centrality, emphasizing the high structural influence of Basidiobolus in maintaining network cohesion under environmental stress. Moreover, Basidioboluss links are non-redundant; it connects functionally distinct taxa that otherwise have no direct edge. This makes it ecologically efficient in facilitating novel functional exchanges (e.g., horizontal gene transfer or cross-domain metabolic complementation).
+
+#        Visualizes pairwise relationships between node-level metrics using a quadrant-based plot
+
+node_level_metrics() & quadrant_plot() functions  quantify and visualize node-level structural properties within microbial association networks. By integrating multiple centrality and connectivity metrics, it characterizes each nodes influence, redundancy (based on Bert's theory), and modular affiliation, allowing comparisons of network architecture and community organization. The resulting plots and table provide complementary views of node prominence and connectivity patterns, serving as a foundation for interpreting ecological stability, functional redundancy, and cross-domain interactions.
 
 
 
-#            Network Topological Metrics
+ | **Metric**                     | **Description** |
+ |--------------------------------|-----------------------------------------------------------|
+ | 'Node'                         | Node name (character format) |
+ | 'Degree'                       | Number of edges connected to the node |
+ | 'Strength'                     | Sum of edge weights connected to the node |
+ | 'Closeness'                    | Closeness centrality (normalized, based on shortest paths) |
+ | 'Betweenness'                  | Betweenness centrality (normalized, measures control over network flow) |
+ | 'EigenvectorCentrality'        | Eigenvector centrality (importance based on connections to influential nodes) |
+ | 'PageRank'                     | PageRank score (importance based on incoming links) |
+ | 'Transitivity'                 | Local clustering coefficient (tendency of a node to form triangles) |
+ | 'Coreness'                     | Node's coreness (from k-core decomposition) |
+ | 'Constraint'                   | Burt's constraint (measures structural holes in a node's ego network) |
+ | 'EffectiveSize'                | Inverse of constraint (larger values = more non-redundant connections) |
+ | 'Redundancy'                   | Sum of constraint values of a node's alters |
+ | 'Community'                    | Community assignment from Louvain clustering |
+ | 'Efficiency'                   | Global efficiency (average inverse shortest path length) |
+ | 'Local_Efficiency'             | Local efficiency (subgraph efficiency for a node's neighbors) |
+ | 'Within_Module_Connectivity'   | Proportion of neighbors in the same community |
+ | 'Among_Module_Connectivity'    | Proportion of neighbors in different communities |
+ 
+ 
+```{r fig.align='center', fig.width=8, fig.height=6, out.width='70%', dpi=120}
+# Load required libraries
+library(igraph)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggrepel)
+ggplot2::margin()
+
+# 2.  Metrics Calculation
+
+completeMetrics <- DspikeIn::node_level_metrics(Complete)
+NoHubsMetrics <- DspikeIn::node_level_metrics(NoHubs)
+NoBasidMetrics <- DspikeIn::node_level_metrics(NoBasid)
 
 
-```{r}
-
-# 2. Metrics Calculation
-
-
-result_Complete <- node_level_metrics(Complete)
-result_NoHubs <- node_level_metrics(NoHubs)
-result_NoBasid <- node_level_metrics(NoBasid)
-
-Complete_metrics <- result_Complete$metrics
-Nohub_metrics <- result_NoHubs$metrics
-Nobasid_metrics <- result_NoBasid$metrics
+Complete_metrics <- completeMetrics$metrics
+Nohub_metrics <- NoHubsMetrics$metrics
+Nobasid_metrics <- NoBasidMetrics$metrics
 
 Complete_metrics <- data.frame(lapply(Complete_metrics, as.character), stringsAsFactors = FALSE)
 Nohub_metrics <- data.frame(lapply(Nohub_metrics, as.character), stringsAsFactors = FALSE)
 Nobasid_metrics <- data.frame(lapply(Nobasid_metrics, as.character), stringsAsFactors = FALSE)
 
 
-print(igraph::vcount(Complete)) # Number of nodes
-print(igraph::ecount(Complete)) # Number of edges
+print(igraph::vcount(Complete)) # Number of nodes in Complete network
+print(igraph::ecount(Complete)) # Number of edges in Complete network
 
 print(igraph::vcount(NoBasid))
 print(igraph::ecount(NoBasid))
@@ -1166,17 +1150,144 @@ metrics_scaled <- bind_rows(
 
 metrics_long_scaled <- metrics_scaled %>%
   tidyr::pivot_longer(cols = -c(Node, Network), names_to = "Metric", values_to = "Value")
+
+
+# Ensure each dataset has a "Network" column before combining
+completeMetrics$metrics <- completeMetrics$metrics %>% mutate(Network = "Complete Network")
+NoHubsMetrics$metrics <- NoHubsMetrics$metrics %>% mutate(Network = "Network & Module Hubs Removed")
+NoBasidMetrics$metrics <- NoBasidMetrics$metrics %>% mutate(Network = "Basidiobolus Subnetwork Removed")
+
+# Combine All Data
+combined_data <- bind_rows(
+  completeMetrics$metrics,
+  NoHubsMetrics$metrics,
+  NoBasidMetrics$metrics
+)
+
+
+# Add Node Identifier if missing
+if (!"Node" %in% colnames(combined_data)) {
+  combined_data <- combined_data %>% mutate(Node = rownames(.))
+}
+
+# Convert `Network` into Factor
+combined_data$Network <- factor(combined_data$Network, levels = c(
+  "Complete Network",
+  "Network & Module Hubs Removed",
+  "Basidiobolus Subnetwork Removed"))
+
+# Convert Data to Long Format
+metrics_long <- combined_data %>%
+  pivot_longer(
+    cols = c("Redundancy", "Efficiency", "Betweenness"),
+    names_to = "Metric", values_to = "Value")
+
+
+# Define Custom Colors and Shapes
+  network_colors <- c(
+  "Complete Network" = "#F1E0C5",
+  "Network & Module Hubs Removed" = "#D2A5A1",
+  "Basidiobolus Subnetwork Removed" = "#B2C3A8")
+  
+network_shapes <- c(
+  "Complete Network" = 21,
+  "Network & Module Hubs Removed" = 22,
+  "Basidiobolus Subnetwork Removed" = 23)
+
+# Determine Top 30% of Nodes to Label/Optional
+metrics_long <- metrics_long %>%
+  group_by(Network, Metric) %>%
+  mutate(Label = ifelse(rank(-Value, ties.method = "random") / n() <= 0.3, Node, NA))
+
+# ?quadrant_plot() can creat plot for indivisual network
+ plot4 <- quadrant_plot(completeMetrics$metrics, x_metric = "Among_Module_Connectivity", y_metric = "Degree")
+
+ 
+ 
+# Customized comparision Plots
+create_metric_plot <- function(metric_name, data, title) {
+  data_filtered <- data %>% filter(Metric == metric_name)
+  median_degree <- median(data_filtered$Degree, na.rm = TRUE)
+  median_value <- median(data_filtered$Value, na.rm = TRUE)
+
+  ggplot(data_filtered, aes(x = Degree, y = Value, fill = Network)) +
+    geom_point(aes(shape = Network), size = 3, stroke = 1, color = "black") +
+    geom_text_repel(aes(label = Label), size = 3, max.overlaps = 50) +
+    scale_fill_manual(values = network_colors) +
+    scale_shape_manual(values = network_shapes) +
+    geom_vline(xintercept = median_degree, linetype = "dashed", color = "black", size = 1) +
+    geom_hline(yintercept = median_value, linetype = "dashed", color = "black", size = 1) +
+    labs(
+      title = title,
+      x = "Degree",
+      y = metric_name,
+      fill = "Network",
+      shape = "Network" ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(
+        hjust = 0.5, size = 16, face = "bold",
+        margin = margin(t = 10, b = 20) # Moves the title downward
+      ),
+      axis.title = element_text(size = 14, face = "bold"),
+      legend.position = "top",
+      legend.title = element_text(size = 14, face = "bold"),
+      legend.text = element_text(size = 12)  )
+}
+
+
+# Generate Plots
+plot_redundancy <- create_metric_plot("Redundancy", metrics_long, "Redundancy vs. Degree Across Networks")
+plot_efficiency <- create_metric_plot("Efficiency", metrics_long, "Efficiency vs. Degree Across Networks")
+plot_betweenness <- create_metric_plot("Betweenness", metrics_long, "Betweenness vs. Degree Across Networks")
+
+# Print Plots
+ print(plot_betweenness)
 ```
+Betweenness-degree relationships illustrate how node influence and connectivity shift after hub or Basidiobolus subnetwork removal, identifying taxa that maintain global connectivity and serve as potential ecological keystones.
 
 
 
-bind the metrics to plot them
+#  Comparision of node-level metrics 
+Compares standardized node-level metrics across network configurations (e.g., complete vs. hub-removed).
+Boxplots and Wilcoxon tests illustrate how structural perturbations alter node influence and connectivity, offering insights into microbial network robustness and modular reorganization.
+
+```{r fig.align='center', fig.width=10, fig.height=8, out.width='70%', dpi=120}
+
+# 2.  Metrics Calculation
+
+result_Complete <- DspikeIn::node_level_metrics(Complete)
+result_NoHubs <- DspikeIn::node_level_metrics(NoHubs)
+result_NoBasid <- DspikeIn::node_level_metrics(NoBasid)
+
+Complete_metrics <- result_Complete$metrics
+Nohub_metrics <- result_NoHubs$metrics
+Nobasid_metrics <- result_NoBasid$metrics
+
+Complete_metrics <- data.frame(lapply(Complete_metrics, as.character), stringsAsFactors = FALSE)
+Nohub_metrics <- data.frame(lapply(Nohub_metrics, as.character), stringsAsFactors = FALSE)
+Nobasid_metrics <- data.frame(lapply(Nobasid_metrics, as.character), stringsAsFactors = FALSE)
 
 
-```{r}
+print(igraph::vcount(Complete)) # Number of nodes in Complete network
+print(igraph::ecount(Complete)) # Number of edges in Complete network
+
+print(igraph::vcount(NoBasid))
+print(igraph::ecount(NoBasid))
+
+print(igraph::vcount(NoHubs))
+print(igraph::ecount(NoHubs))
 
 
-# 3. Visualization
+metrics_scaled <- bind_rows(
+  Complete_metrics %>% mutate(Network = "Complete"),
+  Nohub_metrics %>% mutate(Network = "NoHubs"),
+  Nobasid_metrics %>% mutate(Network = "NoBasid")
+) %>%
+  dplyr::mutate(dplyr::across(where(is.numeric), scale))
+
+metrics_long_scaled <- metrics_scaled %>%
+  tidyr::pivot_longer(cols = -c(Node, Network), names_to = "Metric", values_to = "Value")
 
 
 # Remove missing values
@@ -1238,210 +1349,118 @@ met <- ggplot(metrics_long_filtered, aes(x = Network, y = Value, fill = Network)
     legend.title = element_text(size = 13, face = "bold"),
     plot.title = element_text(size = 13, face = "bold")
   ) + labs(title = "Selected Node Metrics Across Networks", fill = "Network Type", color = "Network Type")
+met
 ```
 
+Node-level topological metrics were compared across network configurations to assess structural robustness. Removal of the Basidiobolus subnetwork altered centrality measures, particularly closeness and PageRank, while maintaining overall network coherence.
 
-#          To find first and second neighbors your target node  
 
+
+#          To find neighbors of the target node  
+This function identifies both first- and second-degree neighbors of a given target node within a microbial association network.
+It enables users to trace direct and indirect ecological connections, revealing potential mediator taxa that bridge interactions between microbial guilds. The resulting summary table facilitates the inspection of a nodes local connectivity and extended influence zone, supporting hypothesis-driven exploration of cross-domain interactions and community structuring.
 
 ```{r}
 Complete <- load_graphml("Complete.graphml")
-result2 <- extract_neighbors(
+result2 <- DspikeIn::extract_neighbors(
   graph = Complete,
   target_node = "OTU69:Basidiobolus_sp", mode = "all")
 head(result2$summary)
 ```
 
 
-
-#                 Compute Node-Level Metrics
-
- | **Metric**                     | **Description** |
- |--------------------------------|-----------------------------------------------------------|
- | 'Node'                         | Node name (character format) |
- | 'Degree'                       | Number of edges connected to the node |
- | 'Strength'                     | Sum of edge weights connected to the node |
- | 'Closeness'                    | Closeness centrality (normalized, based on shortest paths) |
- | 'Betweenness'                  | Betweenness centrality (normalized, measures control over network flow) |
- | 'EigenvectorCentrality'        | Eigenvector centrality (importance based on connections to influential nodes) |
- | 'PageRank'                     | PageRank score (importance based on incoming links) |
- | 'Transitivity'                 | Local clustering coefficient (tendency of a node to form triangles) |
- | 'Coreness'                     | Node's coreness (from k-core decomposition) |
- | 'Constraint'                   | Burt's constraint (measures structural holes in a node's ego network) |
- | 'EffectiveSize'                | Inverse of constraint (larger values = more non-redundant connections) |
- | 'Redundancy'                   | Sum of constraint values of a node's alters |
- | 'Community'                    | Community assignment from Louvain clustering |
- | 'Efficiency'                   | Global efficiency (average inverse shortest path length) |
- | 'Local_Efficiency'             | Local efficiency (subgraph efficiency for a node's neighbors) |
- | 'Within_Module_Connectivity'   | Proportion of neighbors in the same community |
- | 'Among_Module_Connectivity'    | Proportion of neighbors in different communities |
- 
- 
-```{r}
-# Load required libraries
-library(igraph)
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-library(ggrepel)
-
-# Compute Node-Level Metrics
-completeMetrics <- node_level_metrics(Complete)
-NoHubsMetrics <- node_level_metrics(NoHubs)
-NoBasidMetrics <- node_level_metrics(NoBasid)
-
-# completeMetrics$facet_plot
-
-# Ensure each dataset has a "Network" column before combining
-completeMetrics$metrics <- completeMetrics$metrics %>% mutate(Network = "Complete Network")
-NoHubsMetrics$metrics <- NoHubsMetrics$metrics %>% mutate(Network = "Network & Module Hubs Removed")
-NoBasidMetrics$metrics <- NoBasidMetrics$metrics %>% mutate(Network = "Basidiobolus Subnetwork Removed")
-
-# Combine All Data
-combined_data <- bind_rows(
-  completeMetrics$metrics,
-  NoHubsMetrics$metrics,
-  NoBasidMetrics$metrics
-)
-
-
-# Add Node Identifier if missing
-if (!"Node" %in% colnames(combined_data)) {
-  combined_data <- combined_data %>% mutate(Node = rownames(.))
-}
-
-# Convert `Network` into Factor
-combined_data$Network <- factor(combined_data$Network, levels = c(
-  "Complete Network",
-  "Network & Module Hubs Removed",
-  "Basidiobolus Subnetwork Removed"))
-
-# Convert Data to Long Format
-metrics_long <- combined_data %>%
-  pivot_longer(
-    cols = c("Redundancy", "Efficiency", "Betweenness"),
-    names_to = "Metric", values_to = "Value")
-
-
-# Define Custom Colors and Shapes
-  network_colors <- c(
-  "Complete Network" = "#F1E0C5",
-  "Network & Module Hubs Removed" = "#D2A5A1",
-  "Basidiobolus Subnetwork Removed" = "#B2C3A8")
-  
-network_shapes <- c(
-  "Complete Network" = 21,
-  "Network & Module Hubs Removed" = 22,
-  "Basidiobolus Subnetwork Removed" = 23)
-
-# Determine Top 30% of Nodes to Label/Optional
-metrics_long <- metrics_long %>%
-  group_by(Network, Metric) %>%
-  mutate(Label = ifelse(rank(-Value, ties.method = "random") / n() <= 0.3, Node, NA))
-
-# ?quadrant_plot() can creat plot for indivisual network
-# plot <- quadrant_plot(metrics, x_metric = "Degree", y_metric = "Efficiency")
-
-# Create comparision Plots
-create_metric_plot <- function(metric_name, data, title) {
-  data_filtered <- data %>% filter(Metric == metric_name)
-  median_degree <- median(data_filtered$Degree, na.rm = TRUE)
-  median_value <- median(data_filtered$Value, na.rm = TRUE)
-
-  ggplot(data_filtered, aes(x = Degree, y = Value, fill = Network)) +
-    geom_point(aes(shape = Network), size = 3, stroke = 1, color = "black") +
-    geom_text_repel(aes(label = Label), size = 3, max.overlaps = 50) +
-    scale_fill_manual(values = network_colors) +
-    scale_shape_manual(values = network_shapes) +
-    geom_vline(xintercept = median_degree, linetype = "dashed", color = "black", size = 1) +
-    geom_hline(yintercept = median_value, linetype = "dashed", color = "black", size = 1) +
-    labs(
-      title = title,
-      x = "Degree",
-      y = metric_name,
-      fill = "Network",
-      shape = "Network" ) +
-    theme_minimal() +
-    theme(
-      plot.title = element_text(
-        hjust = 0.5, size = 16, face = "bold",
-        margin = margin(t = 10, b = 20) # Moves the title downward
-      ),
-      axis.title = element_text(size = 14, face = "bold"),
-      legend.position = "top",
-      legend.title = element_text(size = 14, face = "bold"),
-      legend.text = element_text(size = 12)  )
-}
-
-
-# Generate Plots
-plot_redundancy <- create_metric_plot("Redundancy", metrics_long, "Redundancy vs. Degree Across Networks")
-plot_efficiency <- create_metric_plot("Efficiency", metrics_long, "Efficiency vs. Degree Across Networks")
-plot_betweenness <- create_metric_plot("Betweenness", metrics_long, "Betweenness vs. Degree Across Networks")
-
-# Save Plots
-# ggsave("plot_redundancy_20percent.png", plot_redundancy, width = 8, height = 6)
-# ggsave("plot_efficiency_20percent.png", plot_efficiency, width = 8, height = 6)
-# ggsave("plot_betweenness_20percent.png", plot_betweenness, width = 8, height = 6)
-
-# Print Plots
-# print(plot_redundancy)
-# print(plot_efficiency)
-# print(plot_betweenness)
-```
-
-
-
 #            Compute degree metrics and visualize the network
+This analysis evaluates the global topology of microbial association networks under different structural configurationsnamely, the complete network, a hub-removed network, and a Basidiobolus-excluded subnetwork.
+Rather than inspecting individual nodes, this step focuses on overall network organization, including metrics that describe connectivity, efficiency, modularity, and cohesion.
 
+The degree_network() function computes degree-based summaries and layouts for visualization, while weight_Network() extracts quantitative descriptors such as total edge weight, mean path length, and network density.
+Aggregating these metrics across network types enables direct comparison of topological robustness and information flow after targeted node or subnetwork removal.
 
-```{r}
-# Compute degree metrics and visualize the network
+The resulting bar plot displays log-scaled totals of each topological descriptor, allowing users to identify how network simplification (e.g., hub or guild removal) reshapes the overall architecture and resilience of the microbial network.
+
+```{r fig.align='center', fig.width=8, fig.height=5, out.width='60%', dpi=120}
+
 # Options: `"stress"` (default), `"graphopt"`, `"fr"`
 
+# Compute degree metrics 
 result <- degree_network(graph_path = Complete, save_metrics = TRUE)
-# print(result$metrics)
-# print(result$plot)
-
 
 # Compute network weights for different graph structures
 NH <- weight_Network(graph_path = "NoHubs.graphml")
 NB <- weight_Network(graph_path = "NoBasid.graphml")
-C <- weight_Network(graph_path = "Complete.graphml")
+C  <- weight_Network(graph_path = "Complete.graphml")
 
 # Extract metrics from the computed network weights
 CompleteM <- C$metrics
-NoHubsM <- NH$metrics
-NoBasidM <- NB$metrics
+NoHubsM   <- NH$metrics
+NoBasidM  <- NB$metrics
 
 # Combine metrics into a single dataframe for comparison
 df <- bind_rows(
-  CompleteM %>% mutate(Group = "CompleteM"),
-  NoHubsM %>% mutate(Group = "NoHubsM"),
-  NoBasidM %>% mutate(Group = "NoBasidM")) %>%
+  CompleteM %>% mutate(Group = "Complete Network"),
+  NoHubsM %>% mutate(Group = "Network & Module Hubs Removed"),
+  NoBasidM %>% mutate(Group = "Basidiobolus Subnetwork Removed")
+) %>%
   pivot_longer(cols = -Group, names_to = "Metric", values_to = "Value")
 
-# Aggregate the total values by metric and group
+# Aggregate total values by metric and group
 df_bar <- df %>%
   group_by(Metric, Group) %>%
-  summarise(Total_Value = sum(Value), .groups = "drop")
+  summarise(Total_Value = sum(Value, na.rm = TRUE), .groups = "drop")
 
-# Plot the metrics comparison
-pg<-ggplot(df_bar, aes(x = Metric, y = log1p(Total_Value), fill = Group)) +
-  geom_bar(stat = "identity", position = "dodge", alpha = 0.8) +
+# Order metrics by mean value (optional)
+metric_order <- df_bar %>%
+  group_by(Metric) %>%
+  summarise(mean_value = mean(Total_Value)) %>%
+  arrange(desc(mean_value)) %>%
+  pull(Metric)
+
+df_bar$Metric <- factor(df_bar$Metric, levels = metric_order)
+
+# Define refined color palette
+network_colors <- c(
+  "Complete Network" = "#F1E0C5",
+  "Network & Module Hubs Removed" = "#D2A5A1",
+  "Basidiobolus Subnetwork Removed" = "#B2C3A8"
+)
+
+# Create elegant bar plot
+pg <- ggplot(df_bar, aes(x = Metric, y = log1p(Total_Value), fill = Group)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.7, alpha = 0.9) +
+  scale_fill_manual(values = network_colors) +
   theme_minimal(base_size = 14) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_manual(values = c("#F1E0C5", "#D2A5A1", "#B2C3A8")) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_text(size = 11, angle = 15, hjust = 1, vjust = 1, color = "gray20"),
+    axis.text.y = element_text(size = 11, color = "gray25"),
+    axis.title = element_text(size = 13, face = "bold"),
+    plot.title = element_text(size = 15, face = "bold", hjust = 0.5, margin = ggplot2::margin(b = 10)),
+    legend.position = "top",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 12),
+    panel.background = element_rect(fill = "white", color = NA),
+    plot.background = element_rect(fill = "white", color = NA)
+  ) +
   labs(
-    title = "Total Network Metrics Comparison",
-    x = "Metric",
-    y = "Total Value (log-scaled)",
-    fill = "Group" )
+    subtitle = "Comparison of total network-level metrics (log-scaled)",
+    x = NULL,
+    y = "Total Value (log1p)"
+  ) +
+  geom_text(
+    aes(label = round(log1p(Total_Value), 1)),
+    position = position_dodge(width = 0.8),
+    vjust = -0.3,
+    size = 3.5,
+    color = "gray25"
+  )
+
+
 ```
 
 # Small-World Index Analysis 
-To determine whether the complete network exhibited small-world topology, we computed the Small-World Index (SWI; σ) following the quantitative framework established by Humphries M, Gurney K, 2008. PLoS ONE 4
-(Eq.1) (SWI; σ) = (Global clustering coefficient real/Global clustering coefficient random)/(Avg Path real/Avg Path random))
+To determine whether the complete network exhibited small-world topology, we computed the Small-World Index (SWI; ) following the quantitative framework established by Humphries M, Gurney K, 2008. PLoS ONE 4
+(Eq.1) (SWI; ) = (Global clustering coefficient real/Global clustering coefficient random)/(Avg Path real/Avg Path random))
 
 ```{r, eval=FALSE}
 library(igraph)
@@ -1452,14 +1471,7 @@ library(DspikeIn)
 
 # AA abundance
 Complete<-load_graphml("Complete.graphml")
-# NoHubs<-load_graphml("NoHubs.graphml")
-# NoBasid<-load_graphml("NoBasid.graphml")
 
-# RA abundance
-# Complete_Rel<-load_graphml("~/Downloads/herp.spiecsym.Rel.graphml")
-
-# Degree distribution
-# deg <- degree(Complete_Rel)
 deg <- degree(Complete)
 
 hist(deg, breaks = 30, main = "Degree Distribution", xlab = "Degree")
@@ -1469,7 +1481,7 @@ print(fit)
 
 # ---- empirical network ----
 g_empirical = Complete
-g_empirical = Complete_Rel
+#g_empirical = Complete_Rel
 
 
 
@@ -1478,7 +1490,7 @@ creal <- transitivity(g_empirical, type = "global")
 E(g_empirical)$weight <- abs(E(g_empirical)$weight)
 lreal <- mean_distance(g_empirical, directed = FALSE, unconnected = TRUE, weights = E(g_empirical)$weight)
 
-# ---- Generate 1000 Erdős-Rényi random graphs with same size ----
+# ---- Generate 1000 Erds-Rnyi random graphs with same size ----
 set.seed(42)  # for reproducibility
 n_nodes <- vcount(g_empirical)
 n_edges <- ecount(g_empirical)
@@ -1498,7 +1510,7 @@ if (!is_connected(g_rand)) next
 crand <- mean(crand_vals, na.rm = TRUE)
 lrand <- mean(lrand_vals, na.rm = TRUE)
 
-# ---- Compute Small-World Index (σ) ----
+# ---- Compute Small-World Index () ----
 sigma <- (creal / crand) / (lreal / lrand)
 
 
@@ -1506,9 +1518,11 @@ cat("Global clustering coefficient (real):", creal, "\n")
 cat("Average path length (real):", lreal, "\n")
 cat("Mean clustering coefficient (random):", crand, "\n")
 cat("Mean path length (random):", lrand, "\n")
-cat("Small-World Index (σ):", round(sigma, 2), "\n")
+cat("Small-World Index ():", round(sigma, 2), "\n")
 
 ```
+ = 231.83 is extremely high, showing very strong small-world properties.
+ > 1 indicates a small-world network,combining high clustering with short paths.
 
 
 ```{r}
@@ -1521,37 +1535,43 @@ sessionInfo()
 # FINAL CLEANUP: Remove files created during vignette execution
 # =====================================================================
 
-# **Note:** To comply with CRAN policies, this vignette removes any output files
-# (e.g., plots, summary tables) created during execution.
-# You may modify paths locally if you'd like to keep the outputs.
+# Note: This cleanup ensures no large or temporary files remain after vignette execution.
+# All deletions are conditional (safe) and comply with CRAN/Bioconductor policies.
 
-# List of all files possibly written by example functions
 files_to_delete <- c(
-  "Global_Network_Metrics.csv", "absolute_counts.csv",
-  "abundance_analysis_filtered_phyloseq.rds", "abundance_analysis_filtered_tse.rds",
-  "abundance_analysis_high_abundance_phyloseq.rds", "abundance_analysis_high_abundance_tse.rds",
-  "abundance_analysis_low_abundance_phyloseq.rds", "abundance_analysis_low_abundance_tse.rds",
-  "adjusted_prevalence.rds", "core_microbiome.csv", "core_microbiome.rds", "comp_spikein_patristic_distances.csv", "comp_spikein_branch_lengths.pdf", "comp_spikein_patristic_distances_hist.pdf",
-  "merged_data.csv", "merged_data.docx", "comp_spikein.nwk", "comp_spikein_tree.png", "comp_spikein_patristic_distances_hist.pfd","post_eval_summary.csv","post_eval_summary.docx",
+  "Global_Network_Metrics.csv", "absolute_counts.csv", "Summary.csv",
+  "post eval summary.csv", "abundance_analysis_filtered_phyloseq.rds",
+  "abundance_analysis_filtered_tse.rds",
+  "abundance_analysis_high_abundance_phyloseq.rds",
+  "abundance_analysis_high_abundance_tse.rds",
+  "abundance_analysis_low_abundance_phyloseq.rds",
+  "abundance_analysis_low_abundance_tse.rds",
+  "adjusted_prevalence.rds", "core_microbiome.csv", "core_microbiome.rds",
+  "comp_spikein_patristic_distances.csv", "comp_spikein_branch_lengths.pdf",
+  "comp_spikein_patristic_distances_hist.pdf", "merged_data.csv", "merged_data.docx",
+  "comp_spikein.nwk", "comp_spikein_tree.png",
+  "comp_spikein_patristic_distances_hist.pdf",
+  "post_eval_summary.csv", "post_eval_summary.docx",
   "merged_physeq_max_processed.rds", "merged_physeq_sum.rds",
   "merged_physeq_sum_processed.rds", "spikeIn_factors_output",
   "plot_Spike.percentage_Kruskal.pdf", "plot_Spike.percentage_Kruskal.png",
   "plot_Spike.reads_Kruskal.pdf", "plot_Spike.reads_Kruskal.png",
   "plot_Total.reads_Kruskal.pdf", "plot_Total.reads_Kruskal.png",
   "proportion_adjusted_physeq.rds", "proportion_adjusted_tse.rds",
-  "randomsubsample_Trimmed_evenDepth.rds", "summary.csv", "summary.docx", "DspikeIn-manual.tex", "output.csv", "output.docx",
+  "randomsubsample_Trimmed_evenDepth.rds", "summary.csv", "summary.docx",
+  "DspikeIn-manual.tex", "output.csv", "output.docx",
   "tree_with_bootstrap_and_cophenetic.png"
 )
 
-# Remove files safely
-invisible(file.remove(files_to_delete[file.exists(files_to_delete)]))
+# Safely remove existing files
+if (any(file.exists(files_to_delete))) {
+  invisible(file.remove(files_to_delete[file.exists(files_to_delete)]))
+}
 
-# Remove known folders (if created by functions)
+# Safely remove known temporary folders
 folders_to_delete <- c("spikeIn_factors_output")
 for (folder in folders_to_delete) {
-  if (dir.exists(folder)) {
-    unlink(folder, recursive = TRUE, force = TRUE)
-  }
+  if (dir.exists(folder)) unlink(folder, recursive = TRUE, force = TRUE)
 }
 ```
 
@@ -1560,8 +1580,8 @@ for (folder in folders_to_delete) {
 
 Spike-in volume Protocol; 
 
-The species Tetragenococcus halophilus (bacterial spike; ATCC33315) and Dekkera bruxellensis (fungal spike; WLP4642-White Labs) were selected as taxa to spike into gut microbiome samples as they were not found in an extensive collection of wildlife skin (GenBank BioProjects: PRJNA1114724, PRJNA 1114659) or gut microbiome samples. Stock cell suspensions of both microbes were grown in either static tryptic soy broth (T. halophilus) or potato dextrose broth (D. bruxellensis) for 72 hours then serially diluted and optical density (OD600) determined on a ClarioStar plate reader. Cell suspensions with an optical density of 1.0, 0.1, 0.01, 0.001 were DNA extracted using the Qiagen DNeasy Powersoil Pro Kit. These DNA isolations were used as standards to determine the proper spike in volume of cells to represent 0.1-10% of a sample (Rao et al., 2021b) Fecal pellets (3.1 ± 1.6 mg; range = 1 – 5.1 mg) from an ongoing live animal study using wood frogs (Lithobates sylvaticus) were used to standardize the input material for the development of this protocol. A total of (n=9) samples were used to validate the spike in protocol. Each fecal sample was homogenized in 1mL of sterile molecular grade water then 250uL of fecal slurry was DNA extracted as above with and without spiked cells. 
+The species Tetragenococcus halophilus (bacterial spike; ATCC33315) and Dekkera bruxellensis (fungal spike; WLP4642-White Labs) were selected as taxa to spike into gut microbiome samples as they were not found in an extensive collection of wildlife skin (GenBank BioProjects: PRJNA1114724, PRJNA 1114659) or gut microbiome samples. Stock cell suspensions of both microbes were grown in either static tryptic soy broth (T. halophilus) or potato dextrose broth (D. bruxellensis) for 72 hours then serially diluted and optical density (OD600) determined on a ClarioStar plate reader. Cell suspensions with an optical density of 1.0, 0.1, 0.01, 0.001 were DNA extracted using the Qiagen DNeasy Powersoil Pro Kit. These DNA isolations were used as standards to determine the proper spike in volume of cells to represent 0.1-10% of a sample (Rao et al., 2021b) Fecal pellets (3.1  1.6 mg; range = 1  5.1 mg) from an ongoing live animal study using wood frogs (Lithobates sylvaticus) were used to standardize the input material for the development of this protocol. A total of (n=9) samples were used to validate the spike in protocol. Each fecal sample was homogenized in 1mL of sterile molecular grade water then 250uL of fecal slurry was DNA extracted as above with and without spiked cells. 
 Two approaches were used to evaluate the target spike-in of 0.1-10%, the range of effective spike-in percentage described in (Rao et al., 2021b), including 1) an expected increase of qPCR cycle threshold (Ct) value that is proportional to the amount of spiked cells and 2) the expected increase in copy number of T. halophilus and D. bruxellensis in spiked vs. unspiked samples. A standard curve was generated using a synthetic fragment of DNA for the 16S-V4 rRNA and ITS1 rDNA regions of T. halophilus and D. bruxellensis, respectively. The standard curve was used to convert Ct values into log copy number for statistical analyses (detailed approach in[2, 3]) using the formula y = -0.2426x + 10.584 for T. halophilus and y = -0.3071x + 10.349 for D. bruxellensis, where x is the average Ct for each unknown sample.
-Quantitative PCR (qPCR) was used to compare known copy numbers from synthetic DNA sequences of T. halophilus and D. bruxellensis to DNA extractions of T. halophilus and D. bruxellensis independently, and wood frog fecal samples with and without spiked cells. SYBR qPCR assays were run at 20ul total volume including 10ul 2X Quantabio PerfeCTa SYBR Green Fastmix, 1ul of 10uM forward and reverse primers, 1ul of ArcticEnzymes dsDNAse master mix clean up kit, and either 1ul of DNA for D. bruxellensis or 3ul for T. halophilus. Different volumes of DNA were chosen for amplification of bacteria and fungi due to previous optimization of library preparation and sequencing steps [3]. The 515F [4] and 806R [5] primers were chosen to amplify bacteria and ITS1FI2 [6] and ITS2 for fungi, as these are the same primers used during amplicon library preparation and sequencing. Cycling conditions on an Agilent AriaMX consisted of 95 C for 3 mins followed by 40 cycles of 95 C for 15 sec, 60 C for 30 sec and 72 C for 30 sec. Following amplification, a melt curve was generated under the following conditions including 95 C for 30 sec, and a melt from 60 C to 90 C increasing in resolution of 0.5 C in increments of a 5 sec soak time. To validate the spike in protocol we selected two sets of fecal samples including 360 samples from a diverse species pool of frogs, lizards, salamanders and snakes and a more targeted approach of 122 fecal samples from three genera of salamanders from the Plethodontidae. (Supplemental Table #). FFecal samples were not weighed in the field, rather, a complete fecal pellet was diluted in an equal volume of sterile water and standardized volume of fecal slurry (250µL) extracted for independent samples.. A volume of 1ul T. halophilus (1847 copies) and 1ul D. bruxellensis (733 copies) were spiked into each fecal sample then DNA was extracted as above, libraries constructed, and amplicon sequenced on an Illumina MiSeq as in [7] .
+Quantitative PCR (qPCR) was used to compare known copy numbers from synthetic DNA sequences of T. halophilus and D. bruxellensis to DNA extractions of T. halophilus and D. bruxellensis independently, and wood frog fecal samples with and without spiked cells. SYBR qPCR assays were run at 20ul total volume including 10ul 2X Quantabio PerfeCTa SYBR Green Fastmix, 1ul of 10uM forward and reverse primers, 1ul of ArcticEnzymes dsDNAse master mix clean up kit, and either 1ul of DNA for D. bruxellensis or 3ul for T. halophilus. Different volumes of DNA were chosen for amplification of bacteria and fungi due to previous optimization of library preparation and sequencing steps [3]. The 515F [4] and 806R [5] primers were chosen to amplify bacteria and ITS1FI2 [6] and ITS2 for fungi, as these are the same primers used during amplicon library preparation and sequencing. Cycling conditions on an Agilent AriaMX consisted of 95 C for 3 mins followed by 40 cycles of 95 C for 15 sec, 60 C for 30 sec and 72 C for 30 sec. Following amplification, a melt curve was generated under the following conditions including 95 C for 30 sec, and a melt from 60 C to 90 C increasing in resolution of 0.5 C in increments of a 5 sec soak time. To validate the spike in protocol we selected two sets of fecal samples including 360 samples from a diverse species pool of frogs, lizards, salamanders and snakes and a more targeted approach of 122 fecal samples from three genera of salamanders from the Plethodontidae. (Supplemental Table #). FFecal samples were not weighed in the field, rather, a complete fecal pellet was diluted in an equal volume of sterile water and standardized volume of fecal slurry (250L) extracted for independent samples.. A volume of 1ul T. halophilus (1847 copies) and 1ul D. bruxellensis (733 copies) were spiked into each fecal sample then DNA was extracted as above, libraries constructed, and amplicon sequenced on an Illumina MiSeq as in [7] .
 
-<https://github.com/mghotbi/DspikeIn>
+<github.com/mghotbi/DspikeIn>

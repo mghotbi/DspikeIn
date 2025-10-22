@@ -6,7 +6,7 @@
 #' @param directory_path A character string specifying the path of the directory to create.
 #' @param set_working_dir A logical value indicating whether to set the directory as the working directory. Default is FALSE.
 #' @return NULL. The function prints messages indicating whether the directory was created or already exists, and if the working directory was set.
-#' @examples
+#' @examples 
 #' if (interactive()) {
 #'   # Save the current working directory
 #'   old_wd <- getwd()
@@ -43,4 +43,3 @@ create_directory <- function(directory_path, set_working_dir = FALSE) {
 
 # Example usage:
 # create_directory("new", set_working_dir = TRUE)
-# 

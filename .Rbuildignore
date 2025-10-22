@@ -1,10 +1,26 @@
+# --- pkgdown and docs ---
 ^_pkgdown\.yml$
-^docs$
 ^pkgdown$
+^docs$
 ^dev$
-^LICENSE\.md$
+
+# --- raw data and vignette artifacts ---
+^data-raw$
 ^vignettes/figures$
-^data-raw/
+^vignettes/.+\.html$
+^vignettes/.+\.pdf$
+
+# --- local or temporary files ---
 ^.*\.csv$
-^inst/docs$
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.DS_Store$
+
+# --- documentation duplicates ---
 ^README\.Rmd$
+^README\.html$
+^README\.pdf$
+^LICENSE\.md$
+
+# --- legacy safe ignore ---
+^inst/docs$

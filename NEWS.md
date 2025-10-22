@@ -1,3 +1,9 @@
+# DspikeIn 0.99.21
+
+# DspikeIn 0.99.20
+- function added
+- reviewer's comments implemented 
+
 # Version: 0.99.11
 - Adding TSE Examples
 - Including TSE vignettes

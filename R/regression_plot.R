@@ -119,4 +119,3 @@ regression_plot <- function(data, x_var, y_var,
 #  plot_title = NULL  # No title by default
 # )
 # print(plot_object)
-# 

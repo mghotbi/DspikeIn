@@ -1,4 +1,4 @@
-#' @title Convert Relative ASV/OTU Counts to Absolute Counts
+#' @title Convert Relative ASV/OTU Counts to Absolute Counts 
 #'
 #' @description Converts relative ASV counts in a `phyloseq` or `TreeSummarizedExperiment` (TSE) object
 #' to absolute counts by multiplying ASV counts by provided scaling factors.
@@ -212,4 +212,3 @@ convert_to_absolute_counts <- function(obj, scaling_factors, output_dir = NULL) 
 # result_tse <- convert_to_absolute_counts(tse_obj, scaling_factors)
 # abs_counts_tse <- result_tse$absolute_counts
 # tse_adj <- result_tse$obj_adj
-# 

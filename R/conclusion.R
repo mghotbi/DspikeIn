@@ -1,6 +1,6 @@
 #' @title Compute Summary Statistics for Spiked Species
 #'
-#' @description
+#' @description 
 #' Computes per-sample spike-in summary statistics from a microbiome object (`phyloseq` or `TSE`),
 #' generates a spike-in success report using `calculate_spike_percentage()`, and returns both the raw data and
 #' a formatted summary table (`flextable`). The function also attempts to extract and retain the phylogenetic tree if present.
@@ -184,4 +184,3 @@ conclusion <- function(obj, merged_spiked_species, max_passed_range = 11, output
 
 # Print the summary statistics
 # print(summary_stats)
-# 

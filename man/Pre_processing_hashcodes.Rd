@@ -33,45 +33,42 @@ for further downstream analysis.
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
-  # Subset phyloseq object to include only Tetragenococcus species
-  Tetragenococcus <- phyloseq::subset_taxa(
+  # Subset to Tetragenococcus species
+  tetragenococcus_physeq <- phyloseq::subset_taxa(
     physeq_16SOTU,
-    Species == "Tetragenococcus_halophilus" | Species == "Tetragenococcus_sp."
+    Species \%in\% c("Tetragenococcus_halophilus", "Tetragenococcus_sp.")
   )
 
-  # Extract hashcodes (OTU IDs)
-  hashcodes <- row.names(phyloseq::otu_table(Tetragenococcus))
+  # Extract OTU IDs (hashcodes) for phyloseq object
+  hashcodes_physeq <- rownames(phyloseq::otu_table(tetragenococcus_physeq))
 
-  # Temp file paths
-  sum_prefix <- file.path(tempdir(), "merged_physeq_sum")
-  max_prefix <- file.path(tempdir(), "merged_physeq_max")
+  # Remove previous output file if exists
+  if (file.exists("merged_physeq_processed.rds")) {
+    file.remove("merged_physeq_processed.rds")
+  }
 
-  # Process data using the "sum" merging method
-  processed_data_sum <- Pre_processing_hashcodes(
+  # Run merging with "sum" method for phyloseq
+  processed_sum <- Pre_processing_hashcodes(
     physeq_16SOTU,
-    hashcodes,
-    merge_method = "sum")
+    hashcodes = hashcodes_physeq,
+    merge_method = "sum"
+  )
 
   # Convert to TreeSummarizedExperiment (TSE)
-  Tetragenococcus_TSE <- convert_phyloseq_to_tse(Tetragenococcus)
+  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+  tetragenococcus_TSE <- convert_phyloseq_to_tse(tetragenococcus_physeq)
 
   # Extract hashcodes for TSE
-  hashcodes <- rownames(get_otu_table(Tetragenococcus_TSE))
+  hashcodes_tse <- rownames(tetragenococcus_TSE)
 
-  # Convert full phyloseq object to TSE format
-  tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
-
-  # Load precomputed TSE object (optional)
-  data("tse_16SOTU", package = "DspikeIn")
-
-  # Process data using the "max" merging method
-  processed_data_max <- Pre_processing_hashcodes(
+  # Run merging with "max" method for TSE
+  processed_max <- Pre_processing_hashcodes(
     tse_16SOTU,
-    hashcodes,
-    merge_method = "max" )
+    hashcodes = hashcodes_tse,
+    merge_method = "max"
+  )
 
-  # Clean up
-  files_to_delete <- paste0(c(sum_prefix, max_prefix), "_processed.rds")
-  invisible(file.remove(files_to_delete[file.exists(files_to_delete)]))
+  # Final cleanup of written file
+  file.remove("merged_physeq_processed.rds")
 }
 }

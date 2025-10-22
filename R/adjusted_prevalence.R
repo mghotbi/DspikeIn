@@ -88,4 +88,4 @@ adjusted_prevalence <- function(obj, method = "min", output_file = NULL) {
 # adjusted_physeq <- adjusted_prevalence(physeq_ITSOTU, method = "min")
 # tse_16SOTU<-convert_phyloseq_to_tse(physeq_16SOTU)
 # adjusted_tse <- adjusted_prevalence(tse_16SOTU, method = "min")
-# 
+#

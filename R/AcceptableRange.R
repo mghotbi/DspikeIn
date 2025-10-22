@@ -1,5 +1,5 @@
 #' @title Acceptable Range Data
-#'
+#' 
 #' @description
 #' This dataset provides reference ranges and sample-level metadata for microbial
 #' spike-in performance evaluation. It includes taxonomic annotations and summary
@@ -32,4 +32,3 @@
 #'   summary(AcceptableRange$Percentage)
 #' }
 "AcceptableRange"
-# 

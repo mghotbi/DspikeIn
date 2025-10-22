@@ -30,7 +30,6 @@
 #' \dontrun{
 #' # Load required package
 #' if (requireNamespace("phyloseq", quietly = TRUE)) {
-#'
 #'   # Load example data
 #'   data("physeq_ITSOTU", package = "DspikeIn")
 #'
@@ -65,7 +64,7 @@
 #' @export
 plotbar_abundance <- function(physeq, tax_level = "Genus", normalize = TRUE,
                               treatment_variable = "Host.taxon", abundance_type = "relative",
-                              x_angle = 25, fill_variable = tax_level,facet_variable= NULL,
+                              x_angle = 25, fill_variable = tax_level, facet_variable = NULL,
                               palette = DspikeIn::color_palette$mix_MG, legend_size = 11,
                               legend_columns = 1, x_scale = "free", xlab = NULL) {
   # Convert `TreeSummarizedExperiment` to `phyloseq` if needed
@@ -91,14 +90,14 @@ plotbar_abundance <- function(physeq, tax_level = "Genus", normalize = TRUE,
     if (!(facet_variable %in% colnames(pm))) {
       stop(paste("Facet variable", facet_variable, "not found in sample metadata!"))
     }
-    
+
     # Now it's safe to convert to symbol for ggplot
     facet_var <- rlang::sym(facet_variable)
     facet_scales <- ifelse(x_scale == "free", "free_x", "fixed")
     p <- p + ggplot2::facet_wrap(~ !!facet_var, scales = facet_scales)
   }
 
-  
+
   # Build ggplot2 Barplot
   treatment_var <- rlang::sym(treatment_variable)
   fill_var <- rlang::sym(fill_variable)
@@ -145,4 +144,4 @@ plotbar_abundance <- function(physeq, tax_level = "Genus", normalize = TRUE,
 #                                 treatment_variable = "Host.taxon",
 #                                 x_angle = 6, abundance_type = "absolute")
 
-# 
+#

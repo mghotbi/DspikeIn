@@ -40,23 +40,19 @@
 #'     requireNamespace("ggstar", quietly = TRUE) &&
 #'     requireNamespace("ggnewscale", quietly = TRUE)
 #' ) {
-#'   # Load synthetic test dataset from DspikeIn
+#'   # ----------- Phyloseq Example -----------
 #'   data("physeq_16SOTU", package = "DspikeIn")
+#'   spikein_ps <- phyloseq::subset_taxa(physeq_16SOTU, Genus == "Tetragenococcus")
 #'
-#'   # Filter to a known spike-in genus
-#'   spikein <- phyloseq::subset_taxa(physeq_16SOTU, Genus == "Tetragenococcus")
-#'
-#'   # Plot diagnostic using phyloseq object
 #'   plot_spikein_tree_diagnostic(
-#'     obj = spikein,
+#'     obj = spikein_ps,
 #'     metadata_var = "Animal.type",
 #'     save_plot = FALSE
 #'   )
 #'
-#'   # Convert to TreeSummarizedExperiment object
-#'   tse_spikein <- convert_phyloseq_to_tse(spikein)
+#'   # ----------- TSE Example -----------
+#'   tse_spikein <- convert_phyloseq_to_tse(spikein_ps)
 #'
-#'   # Plot diagnostic using TSE object
 #'   plot_spikein_tree_diagnostic(
 #'     obj = tse_spikein,
 #'     metadata_var = "Animal.type",
@@ -183,4 +179,3 @@ plot_spikein_tree_diagnostic <- function(obj,
 #  metadata_var = "Animal.type",
 #  save_plot = TRUE,
 #  output_prefix = "tetragenococcus_diag"  )
-# 

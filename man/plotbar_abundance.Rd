@@ -58,7 +58,6 @@ Create a bar plot of relative or absolute abundances of microbial taxa
 \dontrun{
 # Load required package
 if (requireNamespace("phyloseq", quietly = TRUE)) {
-
   # Load example data
   data("physeq_ITSOTU", package = "DspikeIn")
 

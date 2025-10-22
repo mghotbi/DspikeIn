@@ -272,4 +272,4 @@ node_level_metrics <- function(graph, save_path = NULL) {
 # ggplot2::ggsave("plot1.png", result$plot1, width = 10, height = 5)
 # ggplot2::ggsave("plot2.png", result$plot2, width = 10, height = 5)
 # ggplot2::ggsave("facet_plot.png", result$facet_plot, width = 12, height = 6)
-# 
+#

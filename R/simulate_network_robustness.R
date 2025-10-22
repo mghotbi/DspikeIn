@@ -157,4 +157,4 @@ simulate_network_robustness <- function(graph, steps = 10, removal_strategy = "r
 
 # Display plot
 # print(robustness_results$plot)
-# 
+#

@@ -95,19 +95,17 @@ get_phy_tree <- function(obj) {
 get_reference_seq <- function(obj) {
   if (inherits(obj, "phyloseq")) {
     ref <- phyloseq::refseq(obj)
-    if (!is.null(ref)) return(ref)
+    if (!is.null(ref)) {
+      return(ref)
+    }
     stop("No reference sequences found in the phyloseq object.")
   } else if (inherits(obj, "TreeSummarizedExperiment")) {
     ref <- TreeSummarizedExperiment::referenceSeq(obj)
-    if (!is.null(ref)) return(ref)
+    if (!is.null(ref)) {
+      return(ref)
+    }
     stop("No reference sequences found in the TreeSummarizedExperiment object.")
   } else {
     stop("Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
   }
 }
-
-
-
-
-
-# 

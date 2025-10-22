@@ -308,93 +308,27 @@ create_list <- function(obj) {
 #' @param groups A column name of group labels from sample data.
 #' @return A list containing the normalized phyloseq object and scaling factors.
 #' @examples
+#' # Example with a phyloseq object
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
 #'   ps <- physeq_16SOTU
-#'
-#'   # TC Normalization
-#'   result_TC <- normalization_set(ps, method = "TC", groups = "Host.species")
-#'   normalized_ps_TC <- result_TC$dat.normed
-#'   scaling_factors_TC <- result_TC$scaling.factor
-#'
-#'   # UQ Normalization
-#'   data("physeq_16SOTU", package = "DspikeIn")
-#'   ps <- physeq_16SOTU
-#'   result_UQ <- normalization_set(ps, method = "UQ", groups = "Host.species")
-#'   normalized_ps_UQ <- result_UQ$dat.normed
-#'   scaling_factors_UQ <- result_UQ$scaling.factor
-#'
-#'   # Median Normalization
-#'   data("physeq_16SOTU", package = "DspikeIn")
-#'   ps <- physeq_16SOTU
-#'   result_med <- normalization_set(ps, method = "med", groups = "Host.species")
-#'   normalized_ps_med <- result_med$dat.normed
-#'   scaling_factors_med <- result_med$scaling.factor
-#'
-#'   # DESeq Normalization
-#'   data("physeq_16SOTU", package = "DspikeIn")
-#'   ps <- physeq_16SOTU
-#'   ps_n <- remove_zero_negative_count_samples(ps)
-#'   result_DESeq <- normalization_set(ps_n, method = "DESeq", groups = "Animal.type")
-#'   normalized_ps_DESeq <- result_DESeq$dat.normed
-#'   scaling_factors_DESeq <- result_DESeq$scaling.factor
-#'
-#'   # Poisson Normalization
-#'   data("physeq_16SOTU", package = "DspikeIn")
-#'   ps <- physeq_16SOTU
-#'   result_Poisson <- normalization_set(ps, method = "Poisson", groups = "Host.genus")
-#'   normalized_ps_Poisson <- result_Poisson$dat.normed
-#'   scaling_factors_Poisson <- result_Poisson$scaling.factor
-#'
-#'   # Quantile Normalization
-#'   data("physeq_16SOTU", package = "DspikeIn")
-#'   ps <- physeq_16SOTU
-#'   result_QN <- normalization_set(ps, method = "QN")
-#'   normalized_ps_QN <- result_QN$dat.normed
-#'   scaling_factors_QN <- result_QN$scaling.factor
-#'
-#'   # TMM Normalization
-#'   data("physeq_16SOTU", package = "DspikeIn")
-#'   ps <- physeq_16SOTU
-#'   result_TMM <- normalization_set(ps, method = "TMM", groups = "Animal.type")
-#'   normalized_ps_TMM <- result_TMM$dat.normed
-#'   scaling_factors_TMM <- result_TMM$scaling.factor
-#'
-#'   # CLR Normalization
-#'   data("physeq_16SOTU", package = "DspikeIn")
-#'   ps <- physeq_16SOTU
-#'   result_clr <- normalization_set(ps, method = "clr")
-#'   normalized_ps_clr <- result_clr$dat.normed
-#'   scaling_factors_clr <- result_clr$scaling.factor
-#'
-#'   # Rarefying
-#'   data("physeq_16SOTU", package = "DspikeIn")
-#'   ps <- physeq_16SOTU
-#'   result_rar <- normalization_set(ps, method = "rar")
-#'   normalized_ps_rar <- result_rar$dat.normed
-#'   scaling_factors_rar <- result_rar$scaling.factor
-#'
-#'   # CSS Normalization
-#'   data("physeq_16SOTU", package = "DspikeIn")
-#'   ps <- physeq_16SOTU
-#'   result_css <- normalization_set(ps, method = "css")
-#'   normalized_ps_css <- result_css$dat.normed
-#'   scaling_factors_css <- result_css$scaling.factor
-#'
-#'   # TSS Normalization
-#'   data("physeq_16SOTU", package = "DspikeIn")
-#'   ps <- physeq_16SOTU
-#'   result_tss <- normalization_set(ps, method = "tss")
-#'   normalized_ps_tss <- result_tss$dat.normed
-#'   scaling_factors_tss <- result_tss$scaling.factor
-#'
-#'   # RLE Normalization
-#'   data("physeq_16SOTU", package = "DspikeIn")
-#'   ps <- physeq_16SOTU
-#'   result_rle <- normalization_set(ps, method = "rle")
-#'   normalized_ps_rle <- result_rle$dat.normed
-#'   scaling_factors_rle <- result_rle$scaling.factor
+#'   result_phyloseq <- normalization_set(ps, method = "TC", groups = "Host.species")
+#'   head(result_phyloseq$scaling.factor)
+#'   normed_physeq <- result_phyloseq$dat.normed
 #' }
+#'
+#' # Example with a TreeSummarizedExperiment (TSE) object
+#' if (requireNamespace("DspikeIn", quietly = TRUE)) {
+#'   data("physeq_16SOTU", package = "DspikeIn")
+#'   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
+#'   result_tse <- normalization_set(tse_16SOTU, method = "clr")
+#'   head(result_tse$scaling.factor)
+#'   normed_tse <- result_tse$dat.normed
+#' }
+#'
+#' # For a full comparison of all normalization methods, see the vignette:
+#' # vignette("DspikeIn-with-Phyloseq", package = "DspikeIn")
+#' # vignette("DspikeIn-with-TSE", package = "DspikeIn")
 #'
 #' @export
 normalization_set <- function(obj, method, groups = NULL) {
@@ -976,4 +910,3 @@ norm.rle <- function(obj, locfunc = stats::median, type = c("poscounts", "ratio"
 # scaling_factors_rle <- result_rle$scaling.factor
 
 # -----------------------------------------------------------
-# 

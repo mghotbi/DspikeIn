@@ -29,4 +29,3 @@
 #'   phyloseq::taxa_names(physeq_ITSOTU)
 #' }
 "physeq_ITSOTU"
-# 

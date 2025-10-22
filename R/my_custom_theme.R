@@ -44,4 +44,3 @@ my_custom_theme <- function(base_size = 12, font_family = "sans", bg_color = "wh
       strip.text = ggplot2::element_text(size = base_size + 1, face = "bold", family = font_family)
     )
 }
-# 

@@ -24,6 +24,6 @@ test_that("Pre_processing_species correctly processes a phyloseq object", {
   expect_true(!is.null(phy_tree(merged_physeq)))
   expect_true(!is.null(refseq(merged_physeq)))
 
-  # 🔻 Clean up any files generated (csv, rda)
+  #  Clean up any files generated (csv, rda)
   unlink(list.files(pattern = "\\.csv$|\\.rda$", full.names = TRUE), force = TRUE)
 })

@@ -114,4 +114,4 @@ get_sample_sums <- function(obj) {
     stop("Unsupported object type: must be phyloseq or TreeSummarizedExperiment.")
   }
 }
-# 
+#

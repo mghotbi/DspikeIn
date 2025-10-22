@@ -33,6 +33,9 @@ A list with:
 Calculates scaling factors for specified spike-in species or genera in
 a \code{phyloseq} or \code{TreeSummarizedExperiment (TSE)} object. It supports genus/species-level detection,
 removes spike-ins, merges them, computes scaling factors, and returns a bias-corrected absolute count matrix.
+The function automatically handles:Species or genus-level spike-in identification, Safe tree and taxonomy synchronization,
+Volume-based scaling (via the spiked.volume field in metadata),
+Optional export of intermediate results for traceability (Total_Reads.csv, Spiked_Reads.csv, Scaling_Factors.csv).
 }
 \examples{
 if (requireNamespace("DspikeIn", quietly = TRUE) &&
@@ -82,5 +85,9 @@ if (requireNamespace("DspikeIn", quietly = TRUE) &&
   )
 
   print(result_tse$scaling_factors)
+
+  # --- Final cleanup of any extra leftover RDS files ---
+  leftover_rds <- list.files(tempdir(), pattern = "merged_physeq.*\\\\.rds$", full.names = TRUE)
+  file.remove(leftover_rds[file.exists(leftover_rds)])
 }
 }

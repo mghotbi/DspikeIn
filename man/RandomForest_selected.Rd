@@ -51,13 +51,13 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
 
   # Perform Random Forest feature selection
   rf_physeq <- RandomForest_selected(
-   physeq_16SOTU,
-   prunescale = 0.00001 ,  
-   minlib = 5000,
-   ntree = 30,
-   n_top_predictors = 30,
-   response_var = "Host.genus",
-   na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet")
+    physeq_16SOTU,
+    prunescale = 0.00001,
+    minlib = 5000,
+    ntree = 30,
+    n_top_predictors = 30,
+    response_var = "Host.genus",
+    na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet")
   )
   # Less aggressive pruning (retain rare taxa)
   rf_physeq_relaxed <- RandomForest_selected(
@@ -67,7 +67,7 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
     prunescale = 0.00001,
     na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet")
   )
-  
+
   rf_physeq_strict <- RandomForest_selected(
     physeq_16SOTU,
     response_var = "Host.genus",
@@ -77,7 +77,7 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
     n_top_predictors = 30,
     na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet")
   )
-  
+
   # Load TreeSummarizedExperiment (TSE) object
   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 

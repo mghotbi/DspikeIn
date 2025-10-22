@@ -69,7 +69,7 @@ When providing multiple contrasts, FDR correction can be applied globally using 
 if (requireNamespace("phyloseq", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
-  # Fast example — keep this one runnable for Bioconductor checks
+  # Example 
   perform_and_visualize_DA(
     obj = physeq_16SOTU,
     method = "DESeq2",

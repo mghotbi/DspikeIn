@@ -215,6 +215,7 @@ install.packages(setdiff(
 
 
 #### Bioconductor Packages
+<<<<<<< HEAD
 #### Install BiocManager if not installed
 if (!requireNamespace("BiocManager", quietly = TRUE))
 install.packages("BiocManager")
@@ -233,6 +234,28 @@ lapply( c("phyloseq", "msa", "DESeq2", "edgeR", "mia", "Biostrings", "ggtree", "
  ---     
  
 ##  Installing DspikeIn full pipeline from Github
+=======
+
+```r 
+
+# Install BiocManager if not installed
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+
+# Install missing Bioconductor packages
+BiocManager::install(setdiff(c("phyloseq", "msa","mia", "DESeq2", "ggtree", "edgeR", 
+                               "Biostrings", "DECIPHER", "microbiome", "limma", 
+                               "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
+                             installed.packages()[,"Package"]))
+
+# Load Bioconductor packages
+lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "mia","Biostrings", "ggtree", "DECIPHER", 
+         "microbiome", "limma", "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
+       library, character.only = TRUE)
+
+```
+
+## Step 2: Install DspikeIn Package
+>>>>>>> 00ef2d2 (Final local edits before Bioconductor merge (0.99.21))
 **Full Pipeline**
 
 ```r
@@ -251,18 +274,28 @@ devtools::install_github(
 
 library(DspikeIn)
 # Open the main vignette
+<<<<<<< HEAD
 vignette("DspikeIn-with-TSE")
+=======
+vignette("Getting-started-with-DspikeIn")
+>>>>>>> 00ef2d2 (Final local edits before Bioconductor merge (0.99.21))
 
 # Or list all available tutorials
 browseVignettes("DspikeIn")
 
 ```
+<<<<<<< HEAD
 ## Installing DspikeIn Core Functions from Bioconductor
 **Core functions**
+=======
+
+***core functions***
+>>>>>>> 00ef2d2 (Final local edits before Bioconductor merge (0.99.21))
 
 ```r
 
 # Install remotes if needed
+<<<<<<< HEAD
 options(repos = BiocManager::repositories())
 
 # 1) Install DspikeIn with only required deps
@@ -295,6 +328,17 @@ BiocManager::install(
 
 # Open the vignettes
 browseVignettes("DspikeIn")   # or: vignette(package = "DspikeIn")
+=======
+install.packages("remotes")
+
+# Install just the core functions from the devel branch
+remotes::install_github(
+  "mghotbi/DspikeIn@devel",
+  build_vignettes = TRUE,
+  dependencies = TRUE)
+
+library(DspikeIn)
+>>>>>>> 00ef2d2 (Final local edits before Bioconductor merge (0.99.21))
 
 
 ```
@@ -1140,6 +1184,7 @@ results <- detect_common_asvs_taxa(list(rf_physeq, FTspiked_16S , core.microbiom
 ## If you use this package and find it useful
 
 
+<<<<<<< HEAD
 - ⭐ **Please give us stars on GitHub!**
 - 🖋️ **Please cite us using the link below:**
 
@@ -1149,6 +1194,9 @@ Ghotbi, M., Stajich, J. E., Dallas, J. W., Rurik, A. J., Cummins, C., Vargas-Gas
 
 📄 [Read the article (Open Access)](https://doi.org/10.1093/ismejo/wraf150)
 
+=======
+[Citing DspikeIn](doi.org/10.1093/ismejo/wraf150)
+>>>>>>> 00ef2d2 (Final local edits before Bioconductor merge (0.99.21))
 
 ![Thank You](https://img.shields.io/badge/Thank-You-brightgreen?style=for-the-badge)
 

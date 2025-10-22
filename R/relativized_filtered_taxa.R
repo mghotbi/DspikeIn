@@ -71,4 +71,4 @@ relativized_filtered_taxa <- function(obj,
 # Example usage with custom thresholds
 # FT <- relativized_filtered_taxa(phyloseq_16SOTU, threshold_percentage = 0.001,
 # threshold_mean_abundance = 1, threshold_count = 5, threshold_relative_abundance = 0.001)
-# 
+#

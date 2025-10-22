@@ -61,4 +61,3 @@ summ_phyloseq_sampleID <- function(obj) {
 # Generate summary statistics for a phyloseq object
 # summary_stats <- summ_phyloseq_sampleID(phyloseq-obj)
 # summary_stats <- summ_phyloseq_sampleID(tse-obj)
-# 

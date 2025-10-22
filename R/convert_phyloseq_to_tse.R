@@ -1,5 +1,5 @@
 #' @title Convert a `phyloseq` Object to a `TreeSummarizedExperiment`
-#'
+#' 
 #' @description
 #' Converts a `phyloseq` object into a `TreeSummarizedExperiment` (TSE),
 #' preserving key biological data components. The function supports retention of:
@@ -42,56 +42,56 @@ convert_phyloseq_to_tse <- function(physeq) {
   if (!inherits(physeq, "phyloseq")) {
     stop(" Error: Input must be a valid 'phyloseq' object.")
   }
-  
+
   # --- Extract OTU Table (counts) ---
   otu_matrix <- as(phyloseq::otu_table(physeq), "matrix")
-  
+
   # Ensure taxa are in rows
   if (!phyloseq::taxa_are_rows(physeq)) {
     otu_matrix <- t(otu_matrix)
   }
-  
+
   # --- Extract Taxonomy Table (if available) ---
   tax_data <- tryCatch(
     as.data.frame(phyloseq::tax_table(physeq)),
     error = function(e) NULL
   )
-  
+
   # If taxonomy is missing, create an empty data frame with at least one column
   if (is.null(tax_data)) {
     tax_data <- data.frame(Dummy_Taxonomy = rep(NA, nrow(otu_matrix)), row.names = rownames(otu_matrix))
   }
-  
+
   # --- Extract Sample Metadata (colData) ---
   sample_data_df <- tryCatch(
     as.data.frame(microbiome::meta(physeq)),
     error = function(e) NULL
   )
-  
+
   if (!is.null(sample_data_df) && ncol(sample_data_df) > 0) {
     rownames(sample_data_df) <- phyloseq::sample_names(physeq)
   } else {
     sample_data_df <- NULL
     warning("Sample metadata is missing. Proceeding without colData.")
   }
-  
+
   # --- Extract Phylogenetic Tree (if available) ---
   tree <- tryCatch(
     phyloseq::phy_tree(physeq),
     error = function(e) NULL
   )
-  
+
   if (!is.null(tree) && !ape::is.rooted(tree)) {
     message("Warning: Phylogenetic tree is unrooted. Proceeding without modification.")
     tree <- ape::as.phylo(tree) # Ensure compatibility
   }
-  
+
   # --- Extract Reference Sequences (if available) ---
   ref_sequences <- tryCatch(
     phyloseq::refseq(physeq),
     error = function(e) NULL
   )
-  
+
   # Ensure refseq row names match the OTU table row names
   if (!is.null(ref_sequences)) {
     refseq_df <- data.frame(RefSeq = as.character(ref_sequences), row.names = names(ref_sequences))
@@ -99,13 +99,13 @@ convert_phyloseq_to_tse <- function(physeq) {
   } else {
     refseq_df <- NULL
   }
-  
+
   # --- Construct TreeSummarizedExperiment ---
   tse_args <- list(
     assays = list(counts = otu_matrix),
     rowData = tax_data
   )
-  
+
   if (!is.null(sample_data_df)) {
     tse_args$colData <- sample_data_df
   }
@@ -115,10 +115,9 @@ convert_phyloseq_to_tse <- function(physeq) {
   if (!is.null(ref_sequences)) {
     tse_args$referenceSeq <- ref_sequences
   }
-  
+
   tse <- do.call(TreeSummarizedExperiment::TreeSummarizedExperiment, tse_args)
   return(tse)
-  
 }
 
 
@@ -127,4 +126,3 @@ convert_phyloseq_to_tse <- function(physeq) {
 
 # Print to confirm structure
 # print(tse_16SOTU)
-# 

@@ -32,41 +32,56 @@
 #' @importFrom ggplot2 ggplot geom_bar scale_fill_manual theme scale_y_continuous element_text element_line
 #' @importFrom ggplot2 guide_legend guides facet_grid element_rect theme_minimal
 #' @importFrom rlang sym
+#' @importFrom SummarizedExperiment colData assay
 #'
 #' @examples
-#' # Example 1: Relative abundance barplot for Genus
+#' # Example 1: Relative abundance barplot (subset to Frog samples for speed)
 #' data("physeq_16SOTU", package = "DspikeIn")
+#'
+#' # Subset to only 'Frog' samples
+#' physeq_frog <- phyloseq::subset_samples(physeq_16SOTU, Animal.type == "Frog")
+#'
+#' # Remove taxa with zero abundance
+#' physeq_frog <- phyloseq::prune_taxa(phyloseq::taxa_sums(physeq_frog) > 0, physeq_frog)
+#'
+#' # Plot relative abundance for the top 5 genera
 #' bp_rel <- taxa_barplot(
-#'   physeq = physeq_16SOTU,
+#'   physeq = physeq_frog,
 #'   target_glom = "Genus",
 #'   fill_variable = "Family",
 #'   treatment_variable = "Diet",
 #'   abundance_type = "relative",
-#'   top_n_taxa = 20,
-#'   legend_size = 10,
-#'   x_scale = "free",
+#'   top_n_taxa = 5,
+#'   legend_size = 9,
+#'   x_scale = "fixed",
 #'   legend_columns = 1,
+#'   x_angle = 15,
 #'   palette = DspikeIn::color_palette$MG
 #' )
 #' print(bp_rel$barplot)
 #'
-#' # Example 2: Absolute abundance barplot for Family with faceting
+#'
+#' # Example 2: Absolute abundance barplot (ITS data converted to TSE; Frog subset)
 #' data("physeq_ITSOTU", package = "DspikeIn")
+#'
+#' # Convert the phyloseq object to TreeSummarizedExperiment
 #' tse_ITSOTU <- convert_phyloseq_to_tse(physeq_ITSOTU)
+#' tse_frog <- tse_ITSOTU[, SummarizedExperiment::colData(tse_ITSOTU)$Animal.type == "Frog"]
+#' tse_frog <- tse_frog[rowSums(SummarizedExperiment::assay(tse_frog)) > 0, ]
+#'
+#' # Plot absolute abundance for top 5 Families
 #' bp_abs <- taxa_barplot(
-#'   physeq = tse_ITSOTU,
-#'   target_glom = "Genus",
-#'   treatment_variable = "Animal.type",
-#'   abundance_type = "absolute",
+#'   physeq = tse_frog,
+#'   target_glom = "Family",
+#'   treatment_variable = "Diet",
 #'   fill_variable = "Family",
-#'   facet_variable = "Diet",
-#'   top_n_taxa = 10,
-#'   x_scale = "fixed",
-#'   xlab = NULL,
+#'   abundance_type = "absolute",
+#'   top_n_taxa = 5,
+#'   x_angle = 15,
+#'   legend_size = 9,
 #'   legend_columns = 1,
-#'   x_angle = 25,
-#'   palette = DspikeIn::color_palette$cool_MG,
-#'   legend_size = 12
+#'   x_scale = "fixed",
+#'   palette = DspikeIn::color_palette$cool_MG
 #' )
 #' print(bp_abs$barplot)
 #'
@@ -249,4 +264,4 @@ taxa_barplot <- function(physeq, target_glom = "Genus", custom_tax_names = NULL,
 #  legend_columns = 1,
 #  palette = color_palette$light_MG)
 # print(bp_free$barplot)
-# 
+#

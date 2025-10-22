@@ -167,4 +167,4 @@ degree_network <- function(graph_path, save_metrics = TRUE, metrics_path = "Glob
 # print(result$plot)
 
 # result <- degree_network(graph_path = network , save_metrics = TRUE, layout_type = "circle")
-# 
+#

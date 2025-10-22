@@ -30,27 +30,35 @@
 #' @export
 #' @examples
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
+#'   # Load example phyloseq and TSE objects
 #'   data("physeq", package = "DspikeIn")
+#'   data("tse", package = "DspikeIn")
 #'
-#'   # Step 1: Define the spike-in species groups and associated cell counts
+#'   # Define spike-in species groups and expected cell counts
 #'   spiked_species_list <- list(
 #'     c("Pseudomonas aeruginosa"),
 #'     c("Escherichia coli"),
 #'     c("Clostridium difficile")
 #'   )
-#'
 #'   spiked_cells_list <- c(10000, 20000, 15000)
 #'
-#'   # Step 2: Compute the scaling factors
-#'   scaling_factors <- calculate_list_average_scaling_factors(
+#'   # --- Phyloseq example ---
+#'   scaling_phyloseq <- calculate_list_average_scaling_factors(
 #'     physeq,
 #'     spiked_species_list,
 #'     spiked_cells_list,
 #'     merge_method = "sum"
 #'   )
+#'   print(scaling_phyloseq)
 #'
-#'   # Step 3: Inspect scaling factors
-#'   print(scaling_factors)
+#'   # --- TreeSummarizedExperiment (TSE) example ---
+#'   scaling_tse <- calculate_list_average_scaling_factors(
+#'     tse,
+#'     spiked_species_list,
+#'     spiked_cells_list,
+#'     merge_method = "sum"
+#'   )
+#'   print(scaling_tse)
 #' }
 #' @export
 calculate_list_average_scaling_factors <- function(obj, spiked_species_list, spiked_cells_list, merge_method = c("sum", "max")) {
@@ -173,4 +181,3 @@ calculate_list_average_scaling_factors <- function(obj, spiked_species_list, spi
 # spiked_species_list, spiked_cells_list, merge_method = "sum") # or max
 # # Print the scaling factors for each OTU
 # print(scaling_factors)
-# 
