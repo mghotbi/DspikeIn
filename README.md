@@ -17,8 +17,7 @@
    DspikeIn Package
    - [DspikeIn](#DspikeIn-Package)
    - [DspikeIn core functions installation](#Installing-DspikeIn-Core-Functions-from-Bioconductor)
-   - [DspikeIn full pipeline installation](#Installing-DspikeIn-full-pipeline-from-Github)
-   - [DspikeIn core functions installation](#Installing-DspikeIn-Core-Functions-from-Bioconductor)
+   - [DspikeIn installation](#Install-DspikeIn-Package)
    - [Vignettes](#Vignettes) 
    - [Requirements](#To-Meet-Taxonomic-Ranks-Requirements)
    - [GCN Correction](#GCN-Normalization-with-QIIME2-Plugin)
@@ -194,158 +193,56 @@ qiime gcn-norm copy-num-normalize \
 
 ```
 
-#### Before installing the full DspikeIn pipeline from GitHub, please ensure that the following CRAN and Bioconductor packages are installed.
-If you encounter installation issues due to missing dependencies, follow the steps below to install all required packages first.
+
+
+## Install DspikeIn Package
+
 
 ```r
-#### Install missing CRAN packages
-install.packages(setdiff(
-  c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", 
-    "randomForest", "ggridges", "ggalluvial", "tibble", 
-    "matrixStats", "RColorBrewer", "ape", "rlang", "ggstar",
-    "scales", "magrittr", "phangorn", "igraph", "tidyr", 
-    "xml2", "data.table", "reshape2", "vegan", "patchwork", "officer"),
-  installed.packages()[, "Package"]))
-#### Load CRAN packages
-   lapply( c("stats", "dplyr", "ggplot2", "flextable", "ggpubr", "randomForest", "ggstar",
-   "ggridges", "ggalluvial", "tibble", "matrixStats", "RColorBrewer", 
-   "ape", "rlang", "scales", "magrittr", "phangorn", "igraph", "tidyr", 
-   "xml2", "data.table", "reshape2", "vegan", "patchwork", "officer"),
-   library, character.only = TRUE)
-
-
-#### Bioconductor Packages
-<<<<<<< HEAD
-=======
-
->>>>>>> devel
-#### Install BiocManager if not installed
 if (!requireNamespace("BiocManager", quietly = TRUE))
-install.packages("BiocManager")
-##### Install missing Bioconductor packages
-BiocManager::install(setdiff(
-  c("phyloseq", "msa", "mia", "DESeq2", "ggtree", "edgeR", 
-    "Biostrings", "DECIPHER", "microbiome", "limma", 
-    "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"),
-  installed.packages()[, "Package"]))
-# Load Bioconductor packages
-lapply( c("phyloseq", "msa", "DESeq2", "edgeR", "mia", "Biostrings", "ggtree", "DECIPHER", 
-    "microbiome", "limma", "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"),
-  library, character.only = TRUE)
+    install.packages("BiocManager")
+
+BiocManager::install("DspikeIn")
 
 ```
-    
- 
-##  Installing DspikeIn full pipeline from Github
-
-```r 
-
-# Install BiocManager if not installed
-if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
-
-# Install missing Bioconductor packages
-BiocManager::install(setdiff(c("phyloseq", "msa","mia", "DESeq2", "ggtree", "edgeR", 
-                               "Biostrings", "DECIPHER", "microbiome", "limma", 
-                               "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
-                             installed.packages()[,"Package"]))
-
-# Load Bioconductor packages
-lapply(c("phyloseq", "msa", "DESeq2", "edgeR", "mia","Biostrings", "ggtree", "DECIPHER", 
-         "microbiome", "limma", "S4Vectors", "SummarizedExperiment", "TreeSummarizedExperiment"), 
-       library, character.only = TRUE)
-
-```
-
-## Step 2: Install DspikeIn Package
-
-**Full Pipeline**
-
-```r
-#Instructions for how to install the DspikeIn complete pipeline package from Github.
-
-# *** Please note that installing with build_vignettes = TRUE may take 2–4 minutes, depending on your computer’s processing power ***
-
-# Install devtools if needed
-install.packages("devtools")
-
-# Install the full DspikeIn pipeline from the MGhotbi branch
-devtools::install_github(
-  "mghotbi/DspikeIn@MGhotbi",
-  build_vignettes = TRUE,
-  dependencies = TRUE)
-
-library(DspikeIn)
-# Open the main vignette
-<<<<<<< HEAD
-=======
-
->>>>>>> devel
-vignette("DspikeIn-with-TSE")
-vignette("Getting-started-with-DspikeIn")
-
-# Or list all available tutorials
-browseVignettes("DspikeIn")
-
-```
-<<<<<<< HEAD
-=======
-
->>>>>>> devel
-## Installing DspikeIn Core Functions from Bioconductor
-**Core functions**
-
-***core functions***
 
 
 ```r
 
-# Install remotes if needed
-<<<<<<< HEAD
-=======
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
 
->>>>>>> devel
+# Use Bioconductor’s repositories for dependencies
 options(repos = BiocManager::repositories())
 
-# 1) Install DspikeIn with only required deps
+# Install required packages for vignette building
+install.packages(c("knitr", "rmarkdown"))
+BiocManager::install("BiocStyle", update = FALSE)
+
+# Install the DspikeIn development branch
 BiocManager::install(
   "mghotbi/DspikeIn",
-  dependencies   = c("Depends","Imports"),
-  build_vignettes = FALSE,
-  update          = FALSE)
+  dependencies    = c("Depends", "Imports", "Suggests"),
+  build_vignettes = TRUE,
+  update          = FALSE
+)
 
-# 2) Load & verify
 library(DspikeIn)
 packageVersion("DspikeIn")
 
 
+browseVignettes("DspikeIn")
+# or
+vignette(package = "DspikeIn")
 
-# Or Install with vignette
-# Use standard Bioconductor repos
-options(repos = BiocManager::repositories())
 
-# Ensure vignette builders are present
-install.packages(c("knitr","rmarkdown"))
-BiocManager::install("BiocStyle", update = FALSE)
-
-# Install DspikeIn and build vignettes
-BiocManager::install(
-  "mghotbi/DspikeIn",
-  dependencies    = c("Depends","Imports","Suggests"),
-  build_vignettes = TRUE,
-  update          = FALSE)
-
-# Open the vignettes
-browseVignettes("DspikeIn")   # or: vignette(package = "DspikeIn")
 install.packages("remotes")
 
-# Install just the core functions from the devel branch
 remotes::install_github(
   "mghotbi/DspikeIn@devel",
   build_vignettes = TRUE,
-  dependencies = TRUE)
-
-library(DspikeIn)
-
+  dependencies = TRUE
+)
 
 
 ```
@@ -1191,10 +1088,10 @@ results <- detect_common_asvs_taxa(list(rf_physeq, FTspiked_16S , core.microbiom
 ## If you use this package and find it useful
 
 
-<<<<<<< HEAD
+
 =======
 
->>>>>>> devel
+
 - ⭐ **Please give us stars on GitHub!**
 - 🖋️ **Please cite us using the link below:**
 
