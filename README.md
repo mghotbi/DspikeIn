@@ -215,7 +215,6 @@ install.packages(setdiff(
 
 
 #### Bioconductor Packages
-<<<<<<< HEAD
 #### Install BiocManager if not installed
 if (!requireNamespace("BiocManager", quietly = TRUE))
 install.packages("BiocManager")
@@ -274,7 +273,6 @@ devtools::install_github(
 
 library(DspikeIn)
 # Open the main vignette
-<<<<<<< HEAD
 vignette("DspikeIn-with-TSE")
 =======
 vignette("Getting-started-with-DspikeIn")
@@ -284,7 +282,6 @@ vignette("Getting-started-with-DspikeIn")
 browseVignettes("DspikeIn")
 
 ```
-<<<<<<< HEAD
 ## Installing DspikeIn Core Functions from Bioconductor
 **Core functions**
 =======
@@ -295,7 +292,6 @@ browseVignettes("DspikeIn")
 ```r
 
 # Install remotes if needed
-<<<<<<< HEAD
 options(repos = BiocManager::repositories())
 
 # 1) Install DspikeIn with only required deps
@@ -1184,7 +1180,6 @@ results <- detect_common_asvs_taxa(list(rf_physeq, FTspiked_16S , core.microbiom
 ## If you use this package and find it useful
 
 
-<<<<<<< HEAD
 - ⭐ **Please give us stars on GitHub!**
 - 🖋️ **Please cite us using the link below:**
 
