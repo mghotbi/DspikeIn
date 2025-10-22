@@ -27,9 +27,18 @@
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
 #'
-#'   # Convert phyloseq object to TSE
-#'   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
-#'   print(tse_16SOTU)
+#'   # Create a small subset for fast execution
+#'   physeq_sub <- phyloseq::prune_taxa(
+#'     phyloseq::taxa_names(physeq_16SOTU)[1:10],
+#'     phyloseq::prune_samples(
+#'       phyloseq::sample_names(physeq_16SOTU)[1:5],
+#'       physeq_16SOTU
+#'     )
+#'   )
+#'
+#'   # Example transformation
+#'   tse_sub <- convert_phyloseq_to_tse(physeq_sub)
+#'   tse_sub
 #' }
 #'
 #' @importFrom phyloseq otu_table tax_table sample_data phy_tree refseq taxa_are_rows sample_names

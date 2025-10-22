@@ -14,11 +14,19 @@
 #' @examples
 #' if (requireNamespace("DspikeIn", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
-#'   tse_16SOTU <- convert_phyloseq_to_tse(physeq_16SOTU)
 #'
-#'   # Turn it to the long format
-#'   melted_ph <- get_long_format_data(physeq_16SOTU)
-#'   melted <- get_long_format_data(tse_16SOTU)
+#'   # Use a small subset for examples
+#'   physeq_small <- phyloseq::prune_taxa(
+#'     phyloseq::taxa_names(physeq_16SOTU)[1:10],
+#'     phyloseq::prune_samples(
+#'       phyloseq::sample_names(physeq_16SOTU)[1:5],
+#'       physeq_16SOTU
+#'     )
+#'   )
+#'
+#'   tse_small <- convert_phyloseq_to_tse(physeq_small)
+#'   melted <- get_long_format_data(tse_small)
+#'   head(melted)
 #' }
 #' @export
 get_long_format_data <- function(obj) {

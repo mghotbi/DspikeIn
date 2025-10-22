@@ -652,7 +652,7 @@ The choice of normalization depends on the **goal of your analysis**, differenti
 ```{r}
 # you may need to normalize/transform your data to reduce biases
 
-ps <- tse_absolute
+ps <- tse_passed
 
 # TC Normalization
 result_TC <- normalization_set(ps, method = "TC", groups = "Host.species")
@@ -660,20 +660,20 @@ normalized_ps_TC <- result_TC$dat.normed
 scaling_factors_TC <- result_TC$scaling.factor
 
 # UQ Normalization
-result_UQ <- normalization_set(ps, method = "UQ", groups = "Host.species")
-normalized_ps_UQ <- result_UQ$dat.normed
-scaling_factors_UQ <- result_UQ$scaling.factor
-
-# Median Normalization
-result_med <- normalization_set(ps, method = "med", groups = "Host.species")
-normalized_ps_med <- result_med$dat.normed
-scaling_factors_med <- result_med$scaling.factor
+# result_UQ <- normalization_set(ps, method = "UQ", groups = "Host.species")
+# normalized_ps_UQ <- result_UQ$dat.normed
+# scaling_factors_UQ <- result_UQ$scaling.factor
+# 
+# # Median Normalization
+# result_med <- normalization_set(ps, method = "med", groups = "Host.species")
+# normalized_ps_med <- result_med$dat.normed
+# scaling_factors_med <- result_med$scaling.factor
 
 # DESeq Normalization
-ps_n <- remove_zero_negative_count_samples(ps)
-result_DESeq <- normalization_set(ps_n, method = "DESeq", groups = "Animal.type")
-normalized_ps_DESeq <- result_DESeq$dat.normed
-scaling_factors_DESeq <- result_DESeq$scaling.factor
+# ps_n <- remove_zero_negative_count_samples(ps)
+# result_DESeq <- normalization_set(ps_n, method = "DESeq", groups = "Animal.type")
+# normalized_ps_DESeq <- result_DESeq$dat.normed
+# scaling_factors_DESeq <- result_DESeq$scaling.factor
 
 # Poisson Normalization
 # result_Poisson <- normalization_set(ps, method = "Poisson", groups = "Host.genus")
@@ -726,10 +726,10 @@ The ridge plot illustrates abundance distributions of the top 10 families across
 
 ```{r fig.align='center', fig.width=7, fig.height=5, out.width='50%', dpi=120}
 
-normalized_tse_DESeq<-convert_phyloseq_to_tse(normalized_ps_DESeq)
+normalized_tse_TC<-convert_phyloseq_to_tse(normalized_ps_TC)
 
 rf_tse <- RandomForest_selected(
-  normalized_tse_DESeq,
+  normalized_ps_TC,
   response_var = "Host.genus",
   na_vars = c("Habitat", "Ecoregion.III", "Host.genus", "Diet")
 )

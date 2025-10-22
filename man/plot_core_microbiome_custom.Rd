@@ -53,28 +53,39 @@ The plot displays a heatmap showing detection thresholds at different prevalence
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
-  # Define custom detection parameters
-  custom_detections <- list(
-    prevalences = seq(0.03, 1, 0.01),
-    thresholds = 10^seq(log10(0.03), log10(1), length = 10),
-    min_prevalence = 0.3,
-    taxa_order = "ascending"
+  # Subset to only Frog samples (biologically meaningful)
+  physeq_frog <- phyloseq::subset_samples(
+    physeq_16SOTU,
+    Animal.type == "Frog"
   )
 
-  # Define output paths using tempdir()
-  core_csv <- file.path(tempdir(), "core_microbiome.csv")
-  core_rds <- file.path(tempdir(), "core_microbiome.rds")
+  # Remove taxa with zero total abundance
+  physeq_frog <- phyloseq::prune_taxa(
+    phyloseq::taxa_sums(physeq_frog) > 0,
+    physeq_frog
+  )
 
-  # Generate a core microbiome plot with custom settings
+  # Relaxed thresholds to ensure visible core taxa
+  custom_detections <- list(
+    prevalences    = seq(0.03, 1, 0.01),
+    thresholds     = 10^seq(log10(0.03), log10(1), length = 10),
+    min_prevalence = 0.3,
+    taxa_order     = "ascending"
+  )
+
+  # Temporary output paths (required for Bioconductor examples)
+  core_csv <- file.path(tempdir(), "core_microbiome_frog.csv")
+  core_rds <- file.path(tempdir(), "core_microbiome_frog.rds")
+
+  # Generate the core microbiome prevalence plot
   plot_result <- plot_core_microbiome_custom(
-    obj = physeq_16SOTU,
+    obj = physeq_frog,
     detections = custom_detections,
     taxrank = "Genus",
-    output_core_rds = core_rds,
-    output_core_csv = core_csv
+    output_core_csv = core_csv,
+    output_core_rds = core_rds
   )
 
-  # Print the resulting plot
   print(plot_result)
 }
 }

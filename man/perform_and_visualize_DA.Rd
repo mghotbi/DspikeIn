@@ -69,74 +69,47 @@ When providing multiple contrasts, FDR correction can be applied globally using 
 if (requireNamespace("phyloseq", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
-  # Example 
-  perform_and_visualize_DA(
-    obj = physeq_16SOTU,
-    method = "DESeq2",
-    group_var = "Diet",
-    contrast = c("Insectivore", "Carnivore"),
-    target_glom = "Genus"
+  # Salamander samples belonging to two diet types
+  ps_sal <- phyloseq::subset_samples(
+    physeq_16SOTU,
+    Animal.type == "Salamander" &
+      Diet \%in\% c("Insectivore", "Carnivore") )
+
+  # Remove taxa with zero counts 
+  ps_sal <- phyloseq::prune_taxa(
+    phyloseq::taxa_sums(ps_sal) > 0,
+    ps_sal
   )
 
-  \dontrun{
-    # Multiple contrasts for one group_var
-    contrast_list <- list(
-      c("Insectivore", "Carnivore"),
-      c("Omnivore", "Herbivore")
-    )
-    res_multi <- perform_and_visualize_DA(
-      obj = physeq_16SOTU,
+  # differential abundance test at Genus
+  da_res <- perform_and_visualize_DA(
+    obj = ps_sal,
+    method = "DESeq2",
+    group_var = "Diet",
+    significance_level = 0.05,
+    contrast = c("Insectivore", "Carnivore"),
+    target_glom = "Genus")
+
+  # Visualize results
+  if (!is.null(da_res$plot)) print(da_res$plot)
+  head(da_res$results)
+
+  \donttest{
+    # Example: multiple contrasts 
+    contrast_list <- list(c("Insectivore", "Carnivore"))
+    da_multi <- perform_and_visualize_DA(
+      obj = ps_sal,
       method = "DESeq2",
       group_var = "Diet",
-      contrast = contrast_list,
-      global_fdr = TRUE
-    )
-
-    # Named contrast list for multiple group_vars
-    contrast_named <- list(
-      Diet = list(
-        c("Insectivore", "Carnivore"),
-        c("Omnivore", "Carnivore")
-      ),
-      Animal.type = list(
-        c("Frog", "Salamander")
-      )
-    )
-    res_multi_factor <- perform_and_visualize_DA(
-      obj = physeq_16SOTU,
-      method = "DESeq2",
       significance_level = 0.01,
-      contrast = contrast_named,
-      target_glom = "Genus",
-      global_fdr = TRUE
-    )
-
-    # Create a combined factor of Animal.type and Diet
-    phyloseq::sample_data(physeq_16SOTU)$ComboGroup <- factor(interaction(
-      phyloseq::sample_data(physeq_16SOTU)$Animal.type,
-      phyloseq::sample_data(physeq_16SOTU)$Diet,
-      drop = TRUE
-    ))
-
-    # Define valid contrasts with sufficient sample sizes
-    contrast_list <- list(
-      c("Salamander.Insectivore", "Lizard.Insectivore"),
-      c("Salamander.Carnivore", "Snake.Carnivore"),
-      c("Salamander.Carnivore", "Frog.Carnivore")
-    )
-
-    # Perform multi-contrast DA analysis on the ComboGroup
-    res_combo <- perform_and_visualize_DA(
-      obj = physeq_16SOTU,
-      method = "DESeq2",
-      group_var = "ComboGroup",
       contrast = contrast_list,
       target_glom = "Genus",
       global_fdr = TRUE
     )
 
-    # Example: view one of the plots
-    res_combo$Frog.Insectivore_vs_Lizard.Insectivore$bar_plot
+    # Display a bar plot for significant genera (if found)
+    if (!is.null(da_multi[[1]]$bar_plot))
+      print(da_multi[[1]]$bar_plot)
   }
 }
 

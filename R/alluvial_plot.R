@@ -24,53 +24,59 @@
 #' @importFrom grid unit
 #' @importFrom rlang sym as_name
 #' @examples
-#' if (requireNamespace("DspikeIn", quietly = TRUE)) {
+#' if (requireNamespace("DspikeIn", quietly = TRUE) &&
+#'     requireNamespace("phyloseq", quietly = TRUE)) {
 #'   data("physeq_16SOTU", package = "DspikeIn")
+#'   physeq_subset <- phyloseq::subset_samples(physeq_16SOTU, Animal.type == "Frog")
+#'   physeq_subset <- phyloseq::prune_taxa(
+#'     phyloseq::taxa_sums(physeq_subset) > 0, physeq_subset
+#'   )
 #'
 #'   # Convert phyloseq object to long format
-#'   pps_Abs <- get_long_format_data(physeq_16SOTU)
+#'   pps_Abs <- get_long_format_data(physeq_subset)
 #'
-#'   # Example of total reads calculation for relative abundance
+#'   # Calculate total reads (illustrative)
 #'   total_reads <- sum(pps_Abs$Abundance)
-#'   print(paste("Total reads:", total_reads))
+#'   message("Total reads in Frog subset: ", total_reads)
 #'
-#'   # Generate an alluvial plot for relative abundance using the extended palette
-#'   alluvial_plot_rel <- alluvial_plot(
-#'     data = pps_Abs,
-#'     axes = c("Env.broad.scale", "Host.genus", "Diet"),
-#'     abundance_threshold = 0.01,
-#'     fill_variable = "Phylum",
-#'     silent = TRUE,
-#'     abundance_type = "relative",
-#'     top_taxa = 10,
-#'     text_size = 4,
-#'     legend_ncol = 1,
-#'     custom_colors = DspikeIn::color_palette$cool_MG # Extended color palette
-#'   )
+#'   # Heavy plotting step – wrapped in \donttest{} to reduce build time
+#'   \donttest{
+#'     alluvial_plot_rel <- alluvial_plot(
+#'       data = pps_Abs,
+#'       axes = c("Env.broad.scale", "Host.genus", "Diet"),
+#'       abundance_threshold = 0.01,
+#'       fill_variable = "Phylum",
+#'       abundance_type = "relative",
+#'       top_taxa = 5,
+#'       silent = TRUE,
+#'       text_size = 3,
+#'       legend_ncol = 1,
+#'       custom_colors = DspikeIn::color_palette$cool_MG
+#'     )
+#'     print(alluvial_plot_rel)
+#'   }
 #'
-#'   print(alluvial_plot_rel)
-#'
-#'   # Convert phyloseq object to TreeSummarizedExperiment (TSE)
-#'   tse_data <- convert_phyloseq_to_tse(physeq_16SOTU)
+#'   # Convert to TreeSummarizedExperiment (TSE) format
+#'   tse_data <- convert_phyloseq_to_tse(physeq_subset)
 #'   tse_long <- get_long_format_data(tse_data)
 #'
-#'   # Generate an alluvial plot for absolute abundance
-#'   alluvial_plot_abs <- alluvial_plot(
-#'     data = tse_long,
-#'     axes = c("Env.broad.scale", "Host.genus", "Diet"),
-#'     abundance_threshold = 8000,
-#'     fill_variable = "Phylum",
-#'     silent = TRUE,
-#'     abundance_type = "absolute",
-#'     top_taxa = 10,
-#'     text_size = 4,
-#'     legend_ncol = 1,
-#'     custom_colors = DspikeIn::color_palette$cool_MG
-#'   )
-#'
-#'   print(alluvial_plot_abs)
+#'   # Heavy plotting step – wrapped in \donttest{} to reduce build time
+#'   \donttest{
+#'     alluvial_plot_abs <- alluvial_plot(
+#'       data = tse_long,
+#'       axes = c("Env.broad.scale", "Host.genus", "Diet"),
+#'       abundance_threshold = 2000,
+#'       fill_variable = "Phylum",
+#'       abundance_type = "absolute",
+#'       top_taxa = 5,
+#'       silent = TRUE,
+#'       text_size = 3,
+#'       legend_ncol = 1,
+#'       custom_colors = DspikeIn::color_palette$cool_MG
+#'     )
+#'     print(alluvial_plot_abs)
+#'   }
 #' }
-#'
 #' @export
 alluvial_plot <- function(data, axes = NULL, abundance_threshold = 10000, fill_variable = "Phylum", silent = TRUE,
                           abundance_type = "absolute", total_reads = NULL, top_taxa = NULL,

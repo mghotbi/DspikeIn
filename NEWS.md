@@ -1,3 +1,7 @@
+# DspikeIn 0.99.24
+- Bump version 
+
+
 # DspikeIn 0.99.23
 - merging
 
