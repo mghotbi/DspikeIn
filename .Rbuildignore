@@ -1,6 +1,35 @@
+<<<<<<< HEAD
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
 ^dev$
 ^LICENSE\.md$
 ^vignettes/figures$
+=======
+# --- pkgdown and docs ---
+^_pkgdown\.yml$
+^pkgdown$
+^docs$
+^dev$
+
+# --- raw data and vignette artifacts ---
+^data-raw$
+^vignettes/figures$
+^vignettes/.+\.html$
+^vignettes/.+\.pdf$
+
+# --- local or temporary files ---
+^.*\.csv$
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.DS_Store$
+
+# --- documentation duplicates ---
+^README\.Rmd$
+^README\.html$
+^README\.pdf$
+^LICENSE\.md$
+
+# --- legacy safe ignore ---
+^inst/docs$
+>>>>>>> bioc-rev1

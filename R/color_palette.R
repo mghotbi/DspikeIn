@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #' @title Original, Extended, and Nature-Inspired Color Palette Sequence
+=======
+#' @title Original, Extended, and Nature-Inspired Color Palette Sequence 
+>>>>>>> bioc-rev1
 #' @return A named list of character vectors, each containing color hex codes for different palettes.
 #' @description This object provides multiple color palettes for scientific, exploratory, and publication-grade graphics:
 #'  - MG: The original palette.
@@ -116,6 +120,18 @@ color_palette <- local({
     "#5f0f40", "#0a9396", "#005f73", "#ee9b00", "#3f37c9"
   )
 
+<<<<<<< HEAD
+=======
+ Contrast <- c(
+    "#0D0887", "#6A00A8", "#B12A90", "#E16462", "#FCA636",
+    "#F0F921", "#00876C", "#7AD151", "#A0DA39", "#C2DF23",
+    "#FDE725", "#00429D", "#73A2C6", "#B5C0DA", "#F4777F",
+    "#C51B7D", "#7E2482", "#2D708E", "#1A9850", "#91CF60",
+    "#D73027", "#F46D43", "#FDAE61", "#FEE08B", "#FFFFBF"
+  )
+ 
+
+>>>>>>> bioc-rev1
   mix_MG <- unique(sample(c(cool_MG, light_MG, MG, MG_Awesome, vivid_MG, Mar_palette)))
 
   list(

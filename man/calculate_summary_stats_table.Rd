@@ -9,6 +9,7 @@ calculate_summary_stats_table(data, output_path = NULL)
 \arguments{
 \item{data}{A data frame containing numeric variables.}
 
+<<<<<<< HEAD
 \item{output_path}{Optional. Character string specifying the DOCX output path.
 Default is \code{"post_eval_summary.docx"}.}
 }
@@ -19,6 +20,25 @@ A \code{flextable} object with formatted summary statistics.
 Computes summary statistics (mean, standard deviation, standard error, and quartiles)
 for numeric columns of a data frame. Generates a formatted flextable, and saves
 both \code{.docx} and \code{.csv} versions of the table.
+=======
+\item{output_path}{Optional. Character string specifying the CSV output path.
+Default is \code{"post_eval_summary.csv"}.}
+}
+\value{
+A data frame containing mean, standard deviation, standard error,
+first quartile (Q25), median, and third quartile (Q75) for each numeric column.
+}
+\description{
+Computes summary statistics (mean, standard deviation, standard error, and quartiles)
+for numeric columns of a data frame, and saves the resulting table as a \code{.csv} file.
+This utility is designed for quick post-analysis summaries and ensures that
+all numerical columns are summarized consistently across datasets.
+}
+\details{
+This function provides a concise statistical overview of numeric datasets.
+It computes central tendency, dispersion, and quartile-based spread metrics
+and writes the results to a \code{.csv} file suitable for reporting or downstream use.
+>>>>>>> bioc-rev1
 }
 \examples{
 if (requireNamespace("DspikeIn", quietly = TRUE)) {
@@ -26,6 +46,7 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   data("physeq", package = "DspikeIn")
   absolute_count <- phyloseq::otu_table(physeq)
 
+<<<<<<< HEAD
   tmp_docx <- file.path(tempdir(), "physeq_summary.docx")
   summary_table_physeq <- calculate_summary_stats_table(
     data = as.data.frame(absolute_count),
@@ -33,11 +54,21 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   )
   print(summary_table_physeq)
   if (file.exists(tmp_docx)) file.remove(tmp_docx)
+=======
+  tmp_csv <- file.path(tempdir(), "physeq_summary.csv")
+  summary_table_physeq <- calculate_summary_stats_table(
+    data = as.data.frame(absolute_count),
+    output_path = tmp_csv
+  )
+  print(summary_table_physeq)
+  if (file.exists(tmp_csv)) file.remove(tmp_csv)
+>>>>>>> bioc-rev1
 
   # --- TSE example ---
   data("tse", package = "DspikeIn")
   tse_counts <- SummarizedExperiment::assay(tse)
 
+<<<<<<< HEAD
   tmp_docx2 <- file.path(tempdir(), "tse_summary.docx")
   summary_table_tse <- calculate_summary_stats_table(
     data = as.data.frame(tse_counts),
@@ -45,6 +76,15 @@ if (requireNamespace("DspikeIn", quietly = TRUE)) {
   )
   print(summary_table_tse)
   if (file.exists(tmp_docx2)) file.remove(tmp_docx2)
+=======
+  tmp_csv2 <- file.path(tempdir(), "tse_summary.csv")
+  summary_table_tse <- calculate_summary_stats_table(
+    data = as.data.frame(tse_counts),
+    output_path = tmp_csv2
+  )
+  print(summary_table_tse)
+  if (file.exists(tmp_csv2)) file.remove(tmp_csv2)
+>>>>>>> bioc-rev1
 }
 
 }

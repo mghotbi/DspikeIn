@@ -8,6 +8,13 @@ This document outlines the creation of synthetic and original test datasets incl
   inst/extdata
 - **`physeq`** — synthetic `phyloseq` object including spike-in taxa for use in controlled community workflows.  
 - **`tse`** — `TreeSummarizedExperiment` equivalent of the synthetic dataset.  
+<<<<<<< HEAD
+=======
+- **`Complete.graphml`** — co-occurrence network generated from the original dataset using SpiecEasi and igraph.  
+- **`NoBasid.graphml`** — network with first-neighbor taxa of *Basidiobolus* excluded.  
+- **`NoHubs.graphml`** — network with module and network hubs removed (Zi > 2.5; Pi > 0.62).  
+- **`Ref.fasta`** — short Sanger read of *Tetragenococcus halophilus* in FASTA format.  
+>>>>>>> bioc-rev1
 - **`Sample.fasta`** — short read of *Tetragenococcus halophilus* from 16S rRNA sequencing in a herptile microbiome study.
   data
 - **`physeq_16SOTU`** — `phyloseq` object built from herptile gut microbiome 16S rRNA sequencing data.  
@@ -23,11 +30,21 @@ All datasets were generated using reproducible R-based workflows and include tax
 - **Institution**: [Herptile Microbiomes](https://herptilemicrobiomes.org/research/)  
 - **Funding**: National Science Foundation (NSF) grants EF-2125065, EF-2125066, EF-2125067  
 - **Manuscript**: Under review at *ISME Journal*  
+<<<<<<< HEAD
 - **Open Access**: Available at [The ISME Journal](https://doi.org/10.1093/ismejo/wraf150)
 
 For full methodological and biological context, see:
 
 Ghotbi, M. *et al.* (2024). *DspikeIn: A spike-in controlled absolute abundance framework for microbial community analysis*. *bioRxiv*. https://doi.org/10.1101/2024.12.27.630554
+=======
+- **Preprint**: Available on [bioRxiv](https://doi.org/10.1101/2024.12.27.630554)
+
+For full methodological and biological context, see the preprint:
+
+ Ghotbi M. *et al.* (2024). *DspikeIn: A spike-in controlled absolute abundance framework for microbial community analysis*.  
+ *bioRxiv*. https://doi.org/10.1101/2024.12.27.630554
+
+>>>>>>> bioc-rev1
 
 
 ---
@@ -36,7 +53,11 @@ Ghotbi, M. *et al.* (2024). *DspikeIn: A spike-in controlled absolute abundance 
   
   Raw sequencing data are publicly available at the NCBI Sequence Read Archive:
   
+<<<<<<< HEAD
 - [PRJNA1202922](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1202922)  
+=======
+  - [PRJNA1202922](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1202922)  
+>>>>>>> bioc-rev1
 - [PRJNA1210664](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1210664)
 
 ---
@@ -121,4 +142,67 @@ physeq_ITSOTU <- phyloseq(
 physeq_ITSOTU <- DspikeIn::tidy_phyloseq_tse(physeq_ITSOTU)
 saveRDS(physeq_ITSOTU, "physeq_ITSOTU.rds")
 
+<<<<<<< HEAD
 
+=======
+# Network Construction and Hub Removal
+library(SpiecEasi)
+
+# Complete network
+herp.spiec <- spiec.easi(herp.Bas.rel.f, method = 'mb', lambda.min.ratio = 1e-3, nlambda = 250, pulsar.select = TRUE)
+sym <- symBeta(getOptBeta(herp.spiec))
+spiec.ig <- graph.adjacency(sym, mode = 'undirected', weighted = TRUE, add.rownames = TRUE)
+write_graph(spiec.ig, "Complete.graphml", format = "graphml")
+
+
+# Filter 1: Remove First Neighbors of Basidiobolus
+first_neighbors_classes <- c(
+  "Mortierellomycetes", "Leotiomycetes", "Verrucomicrobiae",
+  "Tremellomycetes", "Taphrinomycetes", "Eurotiomycetes",
+  "Bacteroidia", "Bacilli", "Ascomycota_cls_Incertae_sedis"
+)
+
+herp.no.first.neigh <- subset_taxa(herp.Bas.rel.f, !(Class %in% first_neighbors_classes))
+
+herp.spiec <- spiec.easi(herp.no.first.neigh, method = 'mb', lambda.min.ratio = 1e-3, nlambda = 250, pulsar.select = TRUE)
+herp.spiecsym <- symBeta(getOptBeta(herp.spiec))
+spiec.ig <- graph.adjacency(herp.spiecsym, mode = 'undirected', weighted = TRUE, add.rownames = TRUE)
+write_graph(spiec.ig, "NoBasid.graphml", format = "graphml")
+
+# Filter 2: Remove Module and Network Hubs
+
+hubs_to_remove <- c("OTU138", "OTU285", "OTU223", "OTU256", "OTU60", "OTU125")
+
+herp.no.hubs <- subset_taxa(herp.Bas.rel.f, !(taxa_names(herp.Bas.rel.f) %in% hubs_to_remove))
+
+herp.spiec <- spiec.easi(herp.no.hubs, method = 'mb', lambda.min.ratio = 1e-3, nlambda = 250, pulsar.select = TRUE)
+herp.spiecsym <- symBeta(getOptBeta(herp.spiec))
+spiec.ig <- graph.adjacency(herp.spiecsym, mode = 'undirected', weighted = TRUE, add.rownames = TRUE)
+write_graph(spiec.ig, "NoHubs.graphml", format = "graphml")
+
+```
+# Interpretation of Network Roles
+# Nodes were classified into four types based on within-module connectivity (Zi) and among-module connectivity (Pi):
+#  | Node Type    | Zi    | Pi     | Role                      |
+#  | ------------ | ----- | ------ | ------------------------- |
+#  | Peripherals  | < 2.5 | ≤ 0.62 | Module-bound specialists  |
+#  | Connectors   | < 2.5 | > 0.62 | Generalist linkers        |
+#  | Module Hubs  | > 2.5 | ≤ 0.62 | Key intra-module taxa     |
+#  | Network Hubs | > 2.5 | > 0.62 | Globally influential taxa |
+  
+#  For details, see:
+#  Ghotbi et al. (2025) — Agriculture, Ecosystems & Environment
+# https://doi.org/10.1016/j.agee.2024.109308  & https://doi.org/10.1093/ismejo/wraf150 
+
+```r
+# Load Final Graphs
+Complete <- load_graphml("Complete.graphml")
+NoBasid  <- load_graphml("NoBasid.graphml")
+NoHubs   <- load_graphml("NoHubs.graphml")
+
+  ```
+
+
+
+  
+>>>>>>> bioc-rev1

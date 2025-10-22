@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ^DspikeIn\.Rproj$
 ^LICENSE\.md$
 ^cran-comments\.md$
@@ -32,3 +33,13 @@ DspikeIn.Rcheck/
 ..Rcheck/
 .Rcheck/
 ..Rcheck/
+=======
+.Rcheck/
+.Rproj.user/
+*.tar.gz
+.DS_Store
+docs/
+docs/
+.DS_Store
+.DS_Store
+>>>>>>> bioc-rev1

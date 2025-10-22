@@ -1,5 +1,9 @@
 #' @title Convert a `phyloseq` Object to a `TreeSummarizedExperiment`
+<<<<<<< HEAD
 #'
+=======
+#' 
+>>>>>>> bioc-rev1
 #' @description
 #' Converts a `phyloseq` object into a `TreeSummarizedExperiment` (TSE),
 #' preserving key biological data components. The function supports retention of:

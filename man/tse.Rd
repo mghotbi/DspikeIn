@@ -7,7 +7,11 @@
 \format{
 A \code{TreeSummarizedExperiment} object with:
 \describe{
+<<<<<<< HEAD
 \item{assays}{Matrix of observed counts or abundances (ASVs × samples).}
+=======
+\item{assays}{Matrix of observed counts or abundances (ASVs  samples).}
+>>>>>>> bioc-rev1
 \item{rowData}{Taxonomic annotations per ASV.}
 \item{colData}{Sample-level metadata.}
 \item{rowTree}{A phylogenetic tree object representing ASV relationships.}
