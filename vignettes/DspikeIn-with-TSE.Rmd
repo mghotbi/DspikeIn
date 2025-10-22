@@ -593,8 +593,8 @@ Flows represent absolute abundance of bacterial classes (colored by taxonomic cl
 
 ```{r fig.align='center', fig.width=7, fig.height=5, out.width='70%', dpi=120}
 
-tse_absolute <- tse_absolute_filtered
-pps_Abs <- DspikeIn::get_long_format_data(tse_absolute)
+
+pps_Abs <- DspikeIn::get_long_format_data(tse_passed)
 
 # calculation for relative abundance needs sum of total reads
 # total_reads <- sum(pps_Abs$Abundance)
@@ -771,7 +771,7 @@ results_DESeq2 <- perform_and_visualize_DA(
   contrast = c("Desmognathus monticola", "Desmognathus imitator"),
   output_csv_path = "DA_DESeq2.csv",
   target_glom = "Genus",
-  significance_level = 0.05)
+  significance_level = 0.01)
 
 
 results_DESeq2$results
