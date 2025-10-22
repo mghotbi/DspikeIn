@@ -197,53 +197,43 @@ qiime gcn-norm copy-num-normalize \
 
 ## Install DspikeIn Package
 
-
-```r
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-
-BiocManager::install("DspikeIn")
-
-```
-
-
 ```r
 
+# Install BiocManager if not already installed
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
 # Use Bioconductor’s repositories for dependencies
 options(repos = BiocManager::repositories())
 
-# Install required packages for vignette building
+# Install vignette dependencies
 install.packages(c("knitr", "rmarkdown"))
 BiocManager::install("BiocStyle", update = FALSE)
 
-# Install the DspikeIn development branch
-BiocManager::install(
-  "mghotbi/DspikeIn",
-  dependencies    = c("Depends", "Imports", "Suggests"),
-  build_vignettes = TRUE,
-  update          = FALSE
-)
+# ---- **Option 1**: Install from Bioconductor (when available)
+BiocManager::install("DspikeIn")
 
-library(DspikeIn)
-packageVersion("DspikeIn")
+# ---- **Option 2**: Install development version directly from Bioconductor Git server
+BiocManager::install("https://git.bioconductor.org/packages/DspikeIn")
 
-
-browseVignettes("DspikeIn")
-# or
-vignette(package = "DspikeIn")
-
-
-install.packages("remotes")
+# ---- **Option 3**: Install development version from GitHub (latest updates)
+if (!requireNamespace("remotes", quietly = TRUE))
+    install.packages("remotes")
 
 remotes::install_github(
-  "mghotbi/DspikeIn@devel",
+  "mghotbi/DspikeIn",
   build_vignettes = TRUE,
   dependencies = TRUE
 )
 
+# ---- Load and verify installation
+library(DspikeIn)
+packageVersion("DspikeIn")
+
+# ---- Access vignettes
+browseVignettes("DspikeIn")
+# or
+vignette(package = "DspikeIn")
 
 ```
 
