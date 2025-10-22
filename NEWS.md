@@ -1,4 +1,7 @@
 # DspikeIn 0.99.21
+- merging
+
+# DspikeIn 0.99.21
 
 # DspikeIn 0.99.20
 - function added
