@@ -1,3 +1,5 @@
+testthat::skip_on_bioc()  # Skip long-running DESeq2 + plotting test on Bioconductor build system
+
 library(testthat)
 library(phyloseq)
 library(DspikeIn)
