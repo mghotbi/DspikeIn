@@ -1,3 +1,9 @@
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^dev$
+^LICENSE\.md$
+^vignettes/figures$
 # --- pkgdown and docs ---
 ^_pkgdown\.yml$
 ^pkgdown$
