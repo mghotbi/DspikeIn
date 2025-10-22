@@ -66,6 +66,7 @@ When providing multiple contrasts, FDR correction can be applied globally using 
 \code{global_fdr = TRUE} option.
 }
 \examples{
+\donttest{
 if (requireNamespace("phyloseq", quietly = TRUE)) {
   data("physeq_16SOTU", package = "DspikeIn")
 
@@ -73,7 +74,8 @@ if (requireNamespace("phyloseq", quietly = TRUE)) {
   ps_sal <- phyloseq::subset_samples(
     physeq_16SOTU,
     Animal.type == "Salamander" &
-      Diet \%in\% c("Insectivore", "Carnivore") )
+      Diet \%in\% c("Insectivore", "Carnivore")
+  )
 
   # Remove taxa with zero counts 
   ps_sal <- phyloseq::prune_taxa(
@@ -81,36 +83,35 @@ if (requireNamespace("phyloseq", quietly = TRUE)) {
     ps_sal
   )
 
-  # differential abundance test at Genus
+  # Differential abundance test at Genus level
   da_res <- perform_and_visualize_DA(
     obj = ps_sal,
     method = "DESeq2",
     group_var = "Diet",
     significance_level = 0.05,
     contrast = c("Insectivore", "Carnivore"),
-    target_glom = "Genus")
+    target_glom = "Genus"
+  )
 
   # Visualize results
   if (!is.null(da_res$plot)) print(da_res$plot)
   head(da_res$results)
 
-  \donttest{
-    # Example: multiple contrasts 
-    contrast_list <- list(c("Insectivore", "Carnivore"))
-    da_multi <- perform_and_visualize_DA(
-      obj = ps_sal,
-      method = "DESeq2",
-      group_var = "Diet",
-      significance_level = 0.01,
-      contrast = contrast_list,
-      target_glom = "Genus",
-      global_fdr = TRUE
-    )
+  # Example: multiple contrasts (optional demonstration)
+  contrast_list <- list(c("Insectivore", "Carnivore"))
+  da_multi <- perform_and_visualize_DA(
+    obj = ps_sal,
+    method = "DESeq2",
+    group_var = "Diet",
+    significance_level = 0.01,
+    contrast = contrast_list,
+    target_glom = "Genus",
+    global_fdr = TRUE
+  )
 
-    # Display a bar plot for significant genera (if found)
-    if (!is.null(da_multi[[1]]$bar_plot))
-      print(da_multi[[1]]$bar_plot)
-  }
+  if (!is.null(da_multi[[1]]$bar_plot))
+    print(da_multi[[1]]$bar_plot)
+}
 }
 
 }
