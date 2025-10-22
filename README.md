@@ -16,7 +16,6 @@
 1. **Getting Started**
    DspikeIn Package
    - [DspikeIn](#DspikeIn-Package)
-   - [DspikeIn core functions installation](#Installing-DspikeIn-Core-Functions-from-Bioconductor)
    - [DspikeIn installation](#Install-DspikeIn-Package)
    - [Vignettes](#Vignettes) 
    - [Requirements](#To-Meet-Taxonomic-Ranks-Requirements)
