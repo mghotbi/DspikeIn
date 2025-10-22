@@ -30,4 +30,3 @@
 
 # --- legacy safe ignore ---
 ^inst/docs$
->>>>>>> bioc-rev1
