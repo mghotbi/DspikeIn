@@ -209,7 +209,7 @@ options(repos = BiocManager::repositories())
 install.packages(c("knitr", "rmarkdown"))
 BiocManager::install("BiocStyle", update = FALSE)
 
-# ---- **Option 1**: Install from Bioconductor (when available)
+# ---- **Option 1**: Install from Bioconductor 
 BiocManager::install("DspikeIn")
 
 # ---- **Option 2**: Install development version directly from Bioconductor Git server
