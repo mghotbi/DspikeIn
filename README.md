@@ -225,6 +225,7 @@ remotes::install_github(
   dependencies = TRUE
 )
 
+
 #OR
 
 remotes::install_github(
@@ -232,6 +233,10 @@ remotes::install_github(
   build_vignettes = TRUE,
   dependencies = TRUE
 )
+
+remotes::install_git("git@git.bioconductor.org:packages/DspikeIn.git",
+                     build_vignettes = TRUE)
+
 
 # ---- Load and verify installation
 library(DspikeIn)
