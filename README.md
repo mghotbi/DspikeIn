@@ -221,6 +221,14 @@ if (!requireNamespace("remotes", quietly = TRUE))
 
 remotes::install_github(
   "mghotbi/DspikeIn",
+  build_vignettes = FALSE,
+  dependencies = TRUE
+)
+
+#OR
+
+remotes::install_github(
+  "mghotbi/DspikeIn",
   build_vignettes = TRUE,
   dependencies = TRUE
 )
