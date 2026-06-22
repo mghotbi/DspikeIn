@@ -1,3 +1,5 @@
+testthat::skip_on_bioc()
+
 test_that("quadrant_plot generates a valid ggplot object using Complete.graphml", {
   library(testthat)
   library(igraph)

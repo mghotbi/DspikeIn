@@ -67,5 +67,5 @@ if (requireNamespace("phyloseq", quietly = TRUE)) {
 
 }
 \seealso{
-\code{\link[phyloseq:tax_table-methods]{phyloseq::tax_table()}}
+\code{\link[phyloseq:tax_table]{phyloseq::tax_table()}}
 }

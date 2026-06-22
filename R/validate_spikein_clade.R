@@ -40,7 +40,7 @@
 #' sample_fasta <- system.file("extdata", "Sample.fasta", package = "DspikeIn")
 #' result <- validate_spikein_clade(ref_fasta, sample_fasta)
 #'
-#' @importFrom Biostrings readDNAStringSet
+#' @importFrom Biostrings readDNAStringSet DNAStringSet
 #' @importFrom msa msa msaConvert
 #' @importFrom phangorn phyDat dist.ml bootstrap.phyDat
 #' @importFrom ape nj ladderize is.monophyletic cophenetic.phylo prop.clades plot.phylo nodelabels tiplabels write.tree

@@ -1,3 +1,5 @@
+testthat::skip_on_bioc()
+
 library(testthat)
 library(DspikeIn)
 

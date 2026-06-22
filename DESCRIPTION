@@ -1,7 +1,7 @@
 Package: DspikeIn
 Type: Package
 Title: Estimating Absolute Abundance from Microbial Spike-in Controls
-Version: 0.99.28
+Version: 1.4.0
 Authors@R: c(
     person("Mitra", "Ghotbi", , "mitra.ghotbi@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9185-9993")),
@@ -21,6 +21,7 @@ Description: Provides a reproducible and modular workflow for absolute microbial
     to guide users through experimental design, quantification, and interpretation.
 License: MIT + file LICENSE
 Encoding: UTF-8
+LazyData: true
 LazyDataCompression: xz
 Depends: 
     R (>= 4.1.0)
@@ -108,6 +109,6 @@ biocViews:
 URL: https://github.com/mghotbi/DspikeIn
 BugReports: https://github.com/mghotbi/DspikeIn/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 NeedsCompilation: no
+Config/roxygen2/version: 8.0.0

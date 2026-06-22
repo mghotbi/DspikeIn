@@ -1,6 +1,12 @@
+# DspikeIn 1.4.0
+# DspikeIn 1.3.0
+# DspikeIn 1.2.0
+# DspikeIn 1.1.0
+# DspikeIn 0.99.29
+
+
 # DspikeIn 0.99.28
 - Bump version 
-
 
 # DspikeIn 0.99.27
 - Bump version 

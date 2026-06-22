@@ -16,6 +16,7 @@
 1. **Getting Started**
    DspikeIn Package
    - [DspikeIn](#DspikeIn-Package)
+   - [DspikeIn core functions installation](#Installing-DspikeIn-Core-Functions-from-Bioconductor)
    - [DspikeIn installation](#Install-DspikeIn-Package)
    - [Vignettes](#Vignettes) 
    - [Requirements](#To-Meet-Taxonomic-Ranks-Requirements)
@@ -196,56 +197,53 @@ qiime gcn-norm copy-num-normalize \
 
 ## Install DspikeIn Package
 
+
+```r
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("DspikeIn")
+
+```
+
+
 ```r
 
-# Install BiocManager if not already installed
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
 # Use Bioconductor’s repositories for dependencies
 options(repos = BiocManager::repositories())
 
-# Install vignette dependencies
+# Install required packages for vignette building
 install.packages(c("knitr", "rmarkdown"))
 BiocManager::install("BiocStyle", update = FALSE)
 
-# ---- **Option 1**: Install from Bioconductor 
-BiocManager::install("DspikeIn")
-
-# ---- **Option 2**: Install development version directly from Bioconductor Git server
-BiocManager::install("https://git.bioconductor.org/packages/DspikeIn")
-
-# ---- **Option 3**: Install development version from GitHub (latest updates)
-if (!requireNamespace("remotes", quietly = TRUE))
-    install.packages("remotes")
-
-remotes::install_github(
+# Install the DspikeIn development branch
+BiocManager::install(
   "mghotbi/DspikeIn",
-  build_vignettes = FALSE,
-  dependencies = TRUE
+  dependencies    = c("Depends", "Imports", "Suggests"),
+  build_vignettes = TRUE,
+  update          = FALSE
 )
 
+library(DspikeIn)
+packageVersion("DspikeIn")
 
-#OR
+
+browseVignettes("DspikeIn")
+# or
+vignette(package = "DspikeIn")
+
+
+install.packages("remotes")
 
 remotes::install_github(
-  "mghotbi/DspikeIn",
+  "mghotbi/DspikeIn@devel",
   build_vignettes = TRUE,
   dependencies = TRUE
 )
 
-remotes::install_git("git@git.bioconductor.org:packages/DspikeIn.git",
-                     build_vignettes = TRUE)
-
-
-# ---- Load and verify installation
-library(DspikeIn)
-packageVersion("DspikeIn")
-
-# ---- Access vignettes
-browseVignettes("DspikeIn")
-# or
-vignette(package = "DspikeIn")
 
 ```
 
@@ -1091,7 +1089,7 @@ results <- detect_common_asvs_taxa(list(rf_physeq, FTspiked_16S , core.microbiom
 
 
 
-
+=======
 
 
 - ⭐ **Please give us stars on GitHub!**

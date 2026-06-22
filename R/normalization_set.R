@@ -9,10 +9,9 @@
 #' @section Normalization Use Cases:
 #' These normalization methods are commonly used in microbiome analysis to ensure fair comparisons across samples.
 #'
-#' @keywords normalization microbiome
-#' NULL
-#' -----------------------------------------------------------
+#' @keywords normalization microbiome NULL
 #' @title Calculate Geometric Mean
+#' 
 #' @name gm_mean
 #'
 #' @description This function calculates the geometric mean of a numeric vector.
