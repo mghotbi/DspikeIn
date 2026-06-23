@@ -41,12 +41,9 @@
 #' @importFrom stats p.adjust relevel as.formula model.matrix
 #' @importFrom grDevices col2rgb rgb
 #' @importFrom dplyr rename mutate left_join filter group_by summarise distinct if_else
-#' @importFrom ggplot2 ggplot aes geom_point geom_hline geom_text geom_bar geom_linerange
-#'   geom_vline coord_flip labs theme_minimal theme element_text scale_color_manual
-#'   scale_fill_manual position_dodge element_blank element_text
+#' @importFrom ggplot2 ggplot aes geom_point geom_hline geom_text geom_bar geom_linerange geom_vline coord_flip labs theme_minimal theme element_text scale_color_manual scale_fill_manual position_dodge element_blank element_text
 #' @importFrom ggrepel geom_text_repel
-#' @importFrom phyloseq transform_sample_counts tax_glom tax_table sample_data prune_taxa
-#'   otu_table sample_names
+#' @importFrom phyloseq transform_sample_counts tax_glom tax_table sample_data prune_taxa otu_table sample_names
 #' @importFrom microbiome meta
 #' @importFrom edgeR DGEList calcNormFactors estimateDisp glmFit glmLRT topTags
 #' @importFrom limma makeContrasts

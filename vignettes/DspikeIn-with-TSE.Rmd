@@ -196,7 +196,7 @@ Blue bar ring=	Log10 mean abundance
 Outer colored tiles=	The metadata variable you choose (e.g., Animal.type)
 
 
-```{r fig.align='center', fig.width=7, fig.height=5, out.width='50%', dpi=120}
+```{r fig.align='center', fig.width=7, fig.height=5, out.width='50%', dpi=120, eval=requireNamespace("mia", quietly=TRUE)}
 
 library(ggstar)
 library(ggplot2)
@@ -303,27 +303,32 @@ This metric provides an essential quality-control checkpoint:
 samples with spike-in recovery outside the expected range (e.g., <0.1% or >20%) may indicate experimental anomalies or uneven DNA extraction efficiency. The resulting table allows quick identification of samples passing or failing QC thresholds, ensuring that downstream absolute quantitation is based on reliable input data.
 
 
-```{r}
-# * Calculate the percentage of spiked species retrieval per sample*
 
-library(mia)         
-library(dplyr)
-library(SummarizedExperiment)
+```{r eval=FALSE}
 
-# Subset TSE to remove blanks 
-Spiked_16S_sum_scaled_filtered <- Spiked_16S_sum_scaled[, colData(Spiked_16S_sum_scaled)$sample.or.blank != "blank"]
+# Calculate the percentage of spike-in species retrieval per sample
 
-# Calculate spike-in retrieval percentage
-Perc <- calculate_spike_percentage(
-  Spiked_16S_sum_scaled_filtered,
-  merged_spiked_species,
- #output_file = "output_tse.docx",
-  passed_range = c(0.1, 20)
-)
 
-head(Perc)
+  library(dplyr)
+  library(SummarizedExperiment)
+
+  Spiked_16S_sum_scaled_filtered <-
+    Spiked_16S_sum_scaled[
+      ,
+      colData(Spiked_16S_sum_scaled)$sample.or.blank != "blank"
+    ]
+
+  perc <- calculate_spike_percentage(
+    Spiked_16S_sum_scaled_filtered,
+    merged_spiked_species,
+    passed_range = c(0.1, 20)
+  )
+
+  head(perc)
+ 
 
 ```
+
 
 #           spiked species retrieval is system-dependent
 
@@ -334,7 +339,13 @@ As discussed in our paper (doi.org/10.1093/ismejo/wraf150), the acceptable range
 Interpretation: A strong linear trend (high R, low p-value) within a range indicates consistent quantitative behavior. Deviations or flattening slopes suggest technical bias or over-amplification. The empirically stable range can then be used to adjust the passed_range argument in calculate_spike_percentage() for future analyses.
 Why this matters: By empirically determining recovery behavior instead of assuming a fixed threshold, users ensure that spike-in QC is tailored to their experimental conditions, improving both accuracy and comparability of absolute quantitation results.
 
+
 ```{r fig.align='center', fig.width=7, fig.height=5, out.width='50%', dpi=120}
+
+# This section demonstrates alpha diversity analysis and distance-to-centroid calculations
+# It requires the 'mia' package, which currently has compatibility issues with rbiom.
+# Users can run this code manually in their own environment with compatible package versions.
+ 
 
 # The acceptable range of spiked species retrieval is system-dependent
 # Spiked species become centroid of the community (Distance to Centroid)
@@ -344,94 +355,176 @@ Why this matters: By empirically determining recovery behavior instead of assumi
 # Calculate Pielou's Evenness using Shannon index and species richness (Observed)
 # Hill number q = 1 = exp(Shannon index), representing the effective number of equally abundant species. Hill is weighted by relative abundance, so dominant species have more influence.
 # Unlike Pielou's evenness, this metric is not normalized by richness and it shows Effective number of common species
+ 
+
+# Alpha Diversity and Distance-to-Centroid Analysis
+# ============================================================================
 
 library(TreeSummarizedExperiment)
 library(SummarizedExperiment)
 library(dplyr)
 library(tibble)
-library(microbiome)
-library(mia)
 library(vegan)
 library(S4Vectors)
 library(ggplot2)
 
+# 1. Remove blank samples
+# ============================================================================
 
-# --- 1. Extract current metadata from TSE ---
-metadata <- colData(Spiked_16S_sum_scaled) %>%
-  as.data.frame() %>%
-  rownames_to_column("Sample")
+Spiked_16S_sum_scaled_filtered <-
+  Spiked_16S_sum_scaled[
+    ,
+    colData(Spiked_16S_sum_scaled)$sample.or.blank != "blank"
+  ]
 
-# --- 2. Add spike-in reads (Perc) ---
-# Ensure Perc has 'Sample' column and matching format
-metadata <- dplyr::left_join(metadata, Perc, by = "Sample")
+# 2. Calculate spike-in retrieval percentage
+# ============================================================================
 
-# --- 3. Estimate alpha diversity indices and extract ---
-Spiked_16S_sum_scaled <- mia::addAlpha(
-  Spiked_16S_sum_scaled,
-  index = c("observed", "shannon", "pielou", "hill")
+Perc <- calculate_spike_percentage(
+  Spiked_16S_sum_scaled_filtered,
+  merged_spiked_species,
+  passed_range = c(0.1, 20)
 )
 
-alpha_df <- colData(Spiked_16S_sum_scaled) %>%
+
+# 3. Extract sample metadata
+# ============================================================================
+
+sample_metadata <- colData(
+  Spiked_16S_sum_scaled_filtered
+) %>%
   as.data.frame() %>%
-  rownames_to_column("Sample") %>%
-  select(Sample, observed, shannon, pielou, hill)
+  tibble::rownames_to_column("Sample")
 
-metadata <- dplyr::left_join(metadata, alpha_df, by = "Sample")
 
-# --- 4. Compute Bray-Curtis distance to centroid ---
-otu_mat <- assay(Spiked_16S_sum_scaled, "counts")
-otu_mat <- t(otu_mat)  # samples as rows
-otu_mat_rel <- vegan::decostand(otu_mat, method = "total")
+# 4. Add spike-in retrieval information
+# ============================================================================
+
+sample_metadata <- dplyr::left_join(
+  sample_metadata,
+  Perc,
+  by = "Sample")
+
+
+# 5. Calculate alpha diversity indices
+# ============================================================================
+
+otu_mat <- assay(
+  Spiked_16S_sum_scaled_filtered,
+  "counts")
+
+otu_mat <- t(otu_mat)
+
+# Observed richness
+observed <- vegan::specnumber(otu_mat)
+
+# Shannon diversity
+shannon <- vegan::diversity(
+  otu_mat,
+  index = "shannon")
+
+# Pielou's evenness
+pielou <- ifelse(
+  observed > 1,
+  shannon / log(observed),
+  NA_real_
+)
+
+# Hill number (q = 1)
+hill <- exp(shannon)
+
+alpha_df <- data.frame(
+  Sample = rownames(otu_mat),
+  observed = observed,
+  shannon = shannon,
+  pielou = pielou,
+  hill = hill,
+  row.names = NULL
+)
+
+sample_metadata <- dplyr::left_join(
+  sample_metadata,
+  alpha_df,
+  by = "Sample"
+)
+
+# 6. Calculate Bray-Curtis distance to centroid
+# ============================================================================
+
+otu_mat_rel <- vegan::decostand(
+  otu_mat,
+  method = "total"
+)
 
 centroid_profile <- colMeans(otu_mat_rel)
 
-dist_to_centroid <- apply(otu_mat_rel, 1, function(x) {
-  vegan::vegdist(rbind(x, centroid_profile), method = "bray")[1]
-})
+dist_to_centroid <- apply(
+  otu_mat_rel,
+  1,
+  function(x) {
+    as.numeric(
+      vegan::vegdist(
+        rbind(x, centroid_profile),
+        method = "bray"
+      )
+    )
+  }
+)
 
-# Match and assign distances
-metadata$Dist_to_Centroid <- dist_to_centroid[metadata$Sample]
+sample_metadata$Dist_to_Centroid <-
+  dist_to_centroid[match(
+    sample_metadata$Sample,
+    names(dist_to_centroid)
+  )]
 
-# --- 5. Assign updated metadata to TSE ---
-metadata <- column_to_rownames(metadata, var = "Sample")
-metadata <- metadata[colnames(Spiked_16S_sum_scaled), , drop = FALSE]  # ensure correct order and size
-
-colData(Spiked_16S_sum_scaled) <- S4Vectors::DataFrame(metadata)
-
-
-# 4. Regression Plots: Diversity vs. Spike-in Reads
+# 7. Update TSE metadata
 # ============================================================================
 
-# Pielous Evenness
+sample_metadata_df <- sample_metadata
+
+rownames(sample_metadata_df) <-
+  sample_metadata_df$Sample
+
+sample_metadata_df$Sample <- NULL
+
+sample_metadata_df <-
+  sample_metadata_df[
+    colnames(Spiked_16S_sum_scaled_filtered),
+    ,
+    drop = FALSE
+  ]
+
+colData(Spiked_16S_sum_scaled_filtered) <-
+  S4Vectors::DataFrame(sample_metadata_df)
+
+# 8. Regression plots
+# ============================================================================
+
 plot_object_pielou <- regression_plot(
-  data = metadata,
+  data = sample_metadata,
   x_var = "pielou",
   y_var = "Spiked_Reads",
   custom_range = c(0.1, 20, 30, 40, 50, 60, 100),
-  plot_title = "Pielous Evenness vs. Spike-in Reads"
+  plot_title = "Pielou's Evenness vs. Spike-in Reads"
 )
 
-# Hill Number (q = 1)
 plot_object_hill <- regression_plot(
-  data = metadata,
+  data = sample_metadata,
   x_var = "hill",
   y_var = "Spiked_Reads",
   custom_range = c(0.1, 10, 20, 30, 100),
   plot_title = "Hill Number (q = 1) vs. Spike-in Reads"
 )
 
-plot_object_hill
-
-
-# Distance to Centroid
 plot_object_centroid <- regression_plot(
-  data = metadata,
+  data = sample_metadata,
   x_var = "Dist_to_Centroid",
   y_var = "Spiked_Reads",
   custom_range = c(0.1, 20, 30, 40, 50, 60, 100),
   plot_title = "Distance to Global Centroid vs. Spike-in Reads"
 )
 
+plot_object_hill
 
 # Interpretation
 # ============================================================================
@@ -559,7 +652,7 @@ It is adviced to be performed after absolute abundance conversion because -> If 
 ```{r}
 # * Calculate the percentage of spiked species retrieval per sample*
 
-library(mia)         
+       
 library(dplyr)
 library(SummarizedExperiment)
 
@@ -724,7 +817,7 @@ Available at: journal.r-project.org/articles/RN-2002-022/RN-2002-022.pdf
 # Ridge plot
 The ridge plot illustrates abundance distributions of the top 10 families across all samples, showing which taxa exhibit narrow, high-density peaks (consistent abundance) versus broader or multimodal patterns (context-dependent abundance)
 
-```{r fig.align='center', fig.width=7, fig.height=5, out.width='50%', dpi=120}
+```{r fig.align='center', fig.width=7, fig.height=5, out.width='50%', dpi=120, eval=requireNamespace("mia", quietly=TRUE)}
 
 normalized_tse_TC<-convert_phyloseq_to_tse(normalized_ps_TC)
 
@@ -747,7 +840,7 @@ Note: Before performing differential abundance analysis, it is recommended to re
 If you select the DESeq2 option embedded in DspikeIn, note that it internally handles all normalization and variance stabilization steps required for modeling raw count data. DESeq2 estimates size factors (accounting for library depth differences) and dispersion parameters (accounting for biological variability). Therefore, users should always provide integer, raw counts, not normalized, transformed, or rarefied data, as input.
 
 ```{r fig.align='center', fig.width=11, fig.height=7, out.width='60%', dpi=120}
-library(mia)
+
 library(dplyr)
 library(SummarizedExperiment)
 

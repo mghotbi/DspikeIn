@@ -41,6 +41,6 @@ if (requireNamespace("TreeSummarizedExperiment", quietly = TRUE)) {
 }
 }
 \seealso{
-\code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment-constructor]{TreeSummarizedExperiment::TreeSummarizedExperiment()}}
+\code{\link[TreeSummarizedExperiment:TreeSummarizedExperiment]{TreeSummarizedExperiment::TreeSummarizedExperiment()}}
 }
 \keyword{datasets}
