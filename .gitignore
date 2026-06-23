@@ -32,7 +32,6 @@ DspikeIn.Rcheck/
 ..Rcheck/
 .Rcheck/
 ..Rcheck/
-
 .Rcheck/
 .Rproj.user/
 *.tar.gz
@@ -43,8 +42,6 @@ docs/
 .DS_Store
 
 .DS_Store
-<<<<<<< HEAD
-=======
 .DS_Store
 .DS_Store
->>>>>>> MGhotbi
+
