@@ -1,10 +1,8 @@
 ## Welcome to the DspikeIn R package repository!
 
 **Author:** Mitra Ghotbi  
-**Version:** 0.99.10 
-**Date:** March 8, 2025  
-
-
+**Version:** 1.3.1
+**Date:** March 8, 2026  
 
 
 ![CheatSheetDspikeIn](https://github.com/user-attachments/assets/b2b23e59-d364-4bb6-8c9b-d5bf4c7f5b68)
@@ -1087,9 +1085,6 @@ results <- detect_common_asvs_taxa(list(rf_physeq, FTspiked_16S , core.microbiom
 
 ## If you use this package and find it useful
 
-
-
-=======
 
 
 - ⭐ **Please give us stars on GitHub!**
