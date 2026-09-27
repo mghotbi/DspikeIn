@@ -1,3 +1,24 @@
+# DspikeIn 1.3.2
+
+## Bug fixes
+- `validate_spikein_clade()`: fixed the `could not find function "DNAStringSet"`
+  error in R CMD check (BioC 3.24). Alignment now uses `DECIPHER::AlignSeqs()`
+  instead of `msa::msa()`, whose S4 constructor calls `DNAStringSet()`
+  unqualified and fails when Biostrings is not attached.
+- `validate_spikein_clade()`: terminal branch lengths are now matched to the
+  correct tips (previously taken in edge order, not tip order).
+- `validate_spikein_clade()`: the reported clade bootstrap is now the support
+  of the sample clade's MRCA node rather than the maximum support in the tree;
+  support is computed on bipartitions because NJ trees are unrooted.
+- `validate_spikein_clade()`: edge-length annotations are now drawn with
+  `ape::edgelabels()` (they were previously drawn on nodes).
+
+## Improvements
+- `validate_spikein_clade()`: input validation, unique tip labels, tree rooted
+  on the first reference, plots recorded off-screen (no stray devices or
+  `Rplots.pdf`), new `node_support` and `branch_table` outputs.
+- Removed the `msa` dependency (one fewer package in Imports).
+
 # DspikeIn 1.3.1
 
 # DspikeIn 1.3.0

@@ -46,7 +46,7 @@ methods, stats, utils, graphics, grDevices, data.table, dplyr, tibble, tidyr, re
 **Statistical analysis & modeling:**
 DESeq2, edgeR, limma, randomForest, microbiome
 **Phylogenetics & microbiome structure:**
-phyloseq, TreeSummarizedExperiment, SummarizedExperiment, phangorn, ape, DECIPHER, msa, Biostrings
+phyloseq, TreeSummarizedExperiment, SummarizedExperiment, phangorn, ape, DECIPHER, Biostrings
 **Network and graph analysis:**
 igraph, ggraph
 **Visualization & layout design:**

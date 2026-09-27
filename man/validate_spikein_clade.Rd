@@ -21,18 +21,24 @@ validate_spikein_clade(
 \item{output_prefix}{Character or NULL. File prefix for saving output.}
 }
 \value{
-A list with:
+An invisible list with:
 \describe{
-\item{tree}{NJ tree (class \code{phylo})}
+\item{tree}{NJ tree rooted on the first reference (class \code{phylo})}
 \item{monophyly}{TRUE if sample spike-ins form a clade}
-\item{clade_bootstrap}{Bootstrap support percentage}
-\item{branch_stats}{Branch length summary}
+\item{clade_bootstrap}{Bootstrap support (\\%) of the sample clade,
+or \code{NA} if the samples are not monophyletic or fewer than two
+reference or two sample sequences are supplied}
+\item{node_support}{Bootstrap support (\\%) for every internal node
+(\code{NA} for the root)}
+\item{branch_stats}{Terminal branch length summary by group}
+\item{branch_table}{Terminal branch length for every tip, taken from
+the unrooted NJ tree}
 \item{patristic_distances}{Patristic distance matrix}
-\item{tree_plot}{Tree plot object}
-\item{branch_boxplot}{Boxplot object}
-\item{patristic_histogram}{Histogram object}
+\item{tree_plot}{Recorded tree plot}
+\item{branch_boxplot}{Recorded boxplot}
+\item{patristic_histogram}{Recorded histogram}
 \item{summary_text}{Text summary}
-\item{alignment}{Multiple sequence alignment (MSA)}
+\item{alignment}{Aligned sequences (\code{DNAStringSet})}
 \item{aln_phydat}{Alignment converted to \code{phyDat}}
 \item{distance_matrix}{JC69 distance matrix}
 }
@@ -40,20 +46,35 @@ A list with:
 \description{
 Validates whether sample spike-in sequences form a monophyletic clade
 with known reference spike-in(s) using a Neighbor-Joining (NJ) tree
-with Jukes-Cantor correction and bootstrap support.
+with Jukes-Cantor (JC69) correction and bootstrap support.
+
+Sequences are aligned with \code{DECIPHER::AlignSeqs()}, converted to a
+\code{phyDat} object, and a JC69 distance matrix is used to build an NJ
+tree. The tree is rooted on the first reference sequence, and the
+bootstrap support reported is the support of the node joining all sample
+sequences (their most recent common ancestor), not the maximum support
+found anywhere in the tree.
 
 This function produces:
 \itemize{
 \item A bootstrap-annotated NJ tree
-\item A boxplot comparing branch lengths
-\item A histogram of patristic distances
+\item A boxplot comparing terminal branch lengths
+\item A histogram of patristic distances to the reference(s)
 }
-If \code{output_prefix} is provided, outputs are saved. Otherwise, they
-are shown interactively and recorded in-memory.
+If \code{output_prefix} is provided, outputs are saved to disk. In all
+cases the plots are also returned as recorded plots.
+}
+\details{
+With a single reference sequence, monophyly of the sample sequences is
+guaranteed by construction (the tree is rooted on that reference), so
+\code{monophyly} is only informative, and \code{clade_bootstrap} is only
+computed, when two or more reference sequences are supplied. The
+patristic distances to the reference are informative in either case.
 }
 \examples{
 ref_fasta <- system.file("extdata", "Ref.fasta", package = "DspikeIn")
 sample_fasta <- system.file("extdata", "Sample.fasta", package = "DspikeIn")
-result <- validate_spikein_clade(ref_fasta, sample_fasta)
+result <- validate_spikein_clade(ref_fasta, sample_fasta, bootstrap = 20)
+result$summary_text
 
 }

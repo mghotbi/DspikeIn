@@ -21,7 +21,6 @@
 #' @importFrom flextable save_as_docx flextable fontsize font color bold italic save_as_docx
 #' @importFrom Biostrings readDNAStringSet
 #' @importFrom phangorn phyDat dist.ml
-#' @importFrom msa msa msaConvert
 #' @importFrom microbiome plot_core
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom graphics mtext boxplot
